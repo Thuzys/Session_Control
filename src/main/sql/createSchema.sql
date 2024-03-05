@@ -1,5 +1,6 @@
 drop table if exists students;
 drop table if exists courses;
+drop table if exists test;
 
 create table courses (
   cid serial primary key,
@@ -11,3 +12,8 @@ create table students (
   name varchar(80),
   course int references courses(cid)
 );
+
+
+create table test (
+    name varchar(40)
+)

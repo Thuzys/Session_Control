@@ -1,11 +1,9 @@
-# Default ignored files
-/shelf/
-/workspace.xml
-# Editor-based HTTP Client requests
-/httpRequests/
-# Datasource local storage ignored files
-/dataSources/
-/dataSources.local.xml
 /build/
 .gradle
 .idea
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+# Ignore Gradle GUI config
+gradle-app.setting
+# Cache of project
+.gradletasknamecache

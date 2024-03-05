@@ -11,3 +11,9 @@ create table students (
   name varchar(80),
   course int references courses(cid)
 );
+
+
+create table test (
+    name varchar(40)
+)
+

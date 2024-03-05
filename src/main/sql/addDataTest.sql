@@ -1,1 +1,0 @@
-insert into courses(name) values ('LEIC');

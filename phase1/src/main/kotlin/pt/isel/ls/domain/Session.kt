@@ -1,8 +1,6 @@
 package pt.isel.ls.domain
 
 import kotlinx.datetime.LocalDateTime
-import java.util.*
-
 
 /**
  * Represents a game session with specified capacity, game identifier, date, and UUID.
@@ -17,17 +15,16 @@ data class Session(
     val gid: UInt,
     val date: LocalDateTime.Companion,
     val uuid: UInt,
-    val players: List<Player> = listOf()
-    ){
+    val players: List<Player> = listOf(),
+) {
     /**
      * Adds a player to the session.
      *
      * @param player The player to add.
      * @throws IllegalStateException if the session is already at maximum capacity.
      */
-    fun addPlayer(player: Player): Session{
-        check(players.size + 1 != capacity.toInt()){ "Session is already at maximum capacity" }
+    fun addPlayer(player: Player): Session {
+        check(players.size + 1 != capacity.toInt()) { "Session is already at maximum capacity" }
         return this.copy(players = players + player)
     }
 }
-

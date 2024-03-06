@@ -1,0 +1,1 @@
+C:\ISEL\4Semester\LS\2324-2-LEIC42D-G08\build\classes\kotlin\main\pt\isel\ls\AppDBKt.class;C:\ISEL\4Semester\LS\2324-2-LEIC42D-G08\build\classes\kotlin\main\pt\isel\ls\AppKt.class;C:\ISEL\4Semester\LS\2324-2-LEIC42D-G08\build\classes\kotlin\main\pt\isel\ls\utils\IntsKt.class

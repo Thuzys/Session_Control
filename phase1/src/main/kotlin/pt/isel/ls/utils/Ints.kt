@@ -23,10 +23,7 @@ fun max(
  * @return the index of an occurrence of {@code n}, if {@code n} exists in the sub-array;
  * -1 otherwise.
  */
-<<<<<<<< HEAD:phase0/src/main/kotlin/pt/isel/ls/utils/Ints.kt
 
-========
->>>>>>>> 409d3e16f7ddf726c0122045be603ddbd7312336:initial_demos_project/src/main/kotlin/pt/isel/ls/utils/Ints.kt
 fun indexOfBinary(
     a: IntArray,
     fromIndex: Int,
@@ -38,11 +35,7 @@ fun indexOfBinary(
     var high = toIndex - 1
     var mid: Int
     while (low < high) {
-<<<<<<<< HEAD:phase0/src/main/kotlin/pt/isel/ls/utils/Ints.kt
-        mid = (high + low) / 2 + 1
-========
         mid = (high + low) / 2
->>>>>>>> 409d3e16f7ddf726c0122045be603ddbd7312336:initial_demos_project/src/main/kotlin/pt/isel/ls/utils/Ints.kt
         if (n > a[mid]) {
             low = mid + 1
         } else if (n < a[mid]) {

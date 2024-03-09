@@ -5,7 +5,7 @@ import java.util.UUID
 
 /**
  * represents the Player's data.
- * @param uId the player’s identifier.
+ * @param uuid the player’s identifier (unique).
  * @param name the UserName of the player.
  * @param email the unique email of a player.
  * @param token the access token of each player.
@@ -13,11 +13,11 @@ import java.util.UUID
  * @throws IllegalArgumentException if the email is invalid.
  */
 data class Player(
-    val uId: UInt,
+    override val uuid: UInt? = null,
     val name: String,
     val email: String,
     val token: UUID = UUID.randomUUID(),
-) {
+) : Domain(uuid = uuid) {
     init {
         require(name.isNotEmpty()) { "name must not be blank." }
         require(validateEmail(email)) { "invalid email pattern." }

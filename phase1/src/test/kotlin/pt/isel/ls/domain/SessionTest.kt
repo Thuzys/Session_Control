@@ -15,18 +15,18 @@ class SessionTest {
 
     @Test
     fun `session instantiation`() {
-        Session(capacity, gid, date, uuid)
+        Session(uuid, capacity, gid, date)
     }
 
     @Test
     fun `unique session identifier`() {
-        val newSession = Session(capacity, gid, date, uuid)
+        val newSession = Session(uuid, capacity, gid, date)
         assert(newSession.uuid != randomUuid)
     }
 
     @Test
     fun `add player`() {
-        val session = Session(capacity, gid, date, uuid)
+        val session = Session(uuid, capacity, gid, date)
         val newPlayer = Player(123u, "João", "João@gmail.com", UUID.randomUUID())
         val finalSession = session.copy(players = listOf(newPlayer))
         val addPlayerSession = session.addPlayer(newPlayer)

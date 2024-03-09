@@ -15,7 +15,7 @@ class LocalStorage : SessionDataMem {
         TODO("Not yet implemented")
     }
 
-    override fun read(uInt: UInt) {
+    override fun read(uInt: UInt): Domain {
         TODO("Not yet implemented")
     }
 

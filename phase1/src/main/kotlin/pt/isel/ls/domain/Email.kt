@@ -11,5 +11,4 @@ data class Email(val email: String) {
     init {
         require(validateEmail(email)) { "invalid email pattern." }
     }
-    operator fun invoke() = email
 }

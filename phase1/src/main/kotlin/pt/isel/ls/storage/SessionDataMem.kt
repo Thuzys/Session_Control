@@ -16,18 +16,27 @@ interface SessionDataMem {
     /**
      * Returns a element given his uInt.
      * @param uInt the identifier of an [Domain].
+     * @param type the hash of each instance class of [Domain].
      * @return [Domain] the wanted data.
      */
-    fun read(uInt: UInt): Domain
+    fun read(
+        uInt: UInt,
+        type: Int,
+    ): Domain
 
     /**
      * Update an Item given his uInt.
-     * @param uInt the identifier
+     * @param uInt the identifier of an [Domain].
+     * @param newItem the newItem to be updated.
      */
     fun update(
         uInt: UInt,
         newItem: Domain,
     )
 
+    /**
+     * Delete an Item given his uInt.
+     * @param uInt the identifier of an [Domain].
+     */
     fun delete(uInt: UInt)
 }

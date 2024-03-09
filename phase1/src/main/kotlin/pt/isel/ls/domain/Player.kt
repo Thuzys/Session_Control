@@ -20,4 +20,10 @@ data class Player(
     init {
         require(name.isNotEmpty()) { "name must not be blank." }
     }
+
+    companion object {
+        val hash = hashCode()
+    }
 }
+
+val t = Player.hash

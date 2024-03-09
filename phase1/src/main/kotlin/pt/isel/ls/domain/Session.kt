@@ -21,4 +21,8 @@ data class Session(
     init {
         require(capacity > 0u) { "Capacity must be greater than 0" }
     }
+
+    companion object {
+        val hash: Int = hashCode()
+    }
 }

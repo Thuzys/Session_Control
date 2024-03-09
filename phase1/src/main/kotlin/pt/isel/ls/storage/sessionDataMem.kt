@@ -1,8 +1,16 @@
 package pt.isel.ls.storage
 
-interface SessionDataMem<T> {
-    fun <T>create(newItem: T)
+import pt.isel.ls.domain.Domain
+
+interface SessionDataMem {
+    fun create(newItem: Domain): UInt
+
     fun read(uInt: UInt)
-    fun <T>update(uInt: UInt, newItem: T)
+
+    fun update(
+        uInt: UInt,
+        newItem: Domain,
+    )
+
     fun delete(uInt: UInt)
 }

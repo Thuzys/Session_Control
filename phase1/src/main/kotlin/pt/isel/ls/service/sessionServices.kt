@@ -1,5 +1,7 @@
 package pt.isel.ls.service
 
-class SessionServices() {
+import pt.isel.ls.storage.SessionDataMem
 
+class SessionServices(dataMem: SessionDataMem) {
+    // TODO
 }

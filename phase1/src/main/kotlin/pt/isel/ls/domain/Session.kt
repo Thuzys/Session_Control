@@ -11,12 +11,12 @@ import kotlinx.datetime.LocalDateTime
  * @param uuid The universally unique identifier (UUID) of the session.
  */
 data class Session(
+    override val uuid: UInt? = null,
     val capacity: UInt,
     val gid: UInt,
     val date: LocalDateTime.Companion,
-    val uuid: UInt,
     val players: List<Player> = listOf(),
-) {
+) : Domain(uuid = uuid) {
     /**
      * Adds a player to the session.
      *

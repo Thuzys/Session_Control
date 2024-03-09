@@ -1,6 +1,5 @@
 package pt.isel.ls.domain
 
-import pt.isel.ls.utils.validateEmail
 import java.util.UUID
 
 /**
@@ -15,11 +14,10 @@ import java.util.UUID
 data class Player(
     override val uuid: UInt? = null,
     val name: String,
-    val email: String,
+    val email: Email,
     val token: UUID = UUID.randomUUID(),
 ) : Domain(uuid = uuid) {
     init {
         require(name.isNotEmpty()) { "name must not be blank." }
-        require(validateEmail(email)) { "invalid email pattern." }
     }
 }

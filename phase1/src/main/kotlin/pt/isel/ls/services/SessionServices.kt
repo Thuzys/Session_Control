@@ -1,9 +1,6 @@
 package pt.isel.ls.services
 
-import pt.isel.ls.domain.Domain
-import pt.isel.ls.domain.Email
-import pt.isel.ls.domain.Player
-import pt.isel.ls.domain.associatedTo
+import pt.isel.ls.domain.*
 import pt.isel.ls.storage.Storage
 
 /**
@@ -35,4 +32,41 @@ class SessionServices(private val dataMem: Storage) {
      * @return a [Player] containing all the information wanted or null if nothing is found.
      */
     fun getPlayerDetails(uuid: UInt): Domain? = dataMem.read(uuid, Player.hash)
+
+    /**
+     * Create a new game and storage the same.
+     * @param name the name of the game.
+     * @param dev the developer of the game.
+     * @param genres the genres of the game.
+     * @return [UInt] a unique key to be associated to the new [Game].
+     * @throws IllegalStateException containing the message of the error.
+     */
+    fun createGame(
+        name: String,
+        dev: String,
+        genres: Collection<String>,
+    ): UInt =
+        try {
+            dataMem.create(name associatedTo Pair(dev, genres))
+        } catch (error: IllegalArgumentException) {
+            error("unable to create a new game due to: ${error.message}")
+        }
+
+    /**
+     * returns the details of player.
+     * @param uuid the identifier of each player.
+     * @return a [Player] containing all the information wanted or null if nothing is found.
+     */
+    fun getGameDetails(uuid: UInt): Domain? = dataMem.read(uuid, Game.hash)
+
+    /**
+     * Search for a game by the developer and genres.
+     * @param dev the developer of the game.
+     * @param genres the genres of the game.
+     * @return a collection of [Game] containing all the information wanted or null if nothing is found.
+     */
+    fun searchGameBy(
+        dev: String,
+        genres: Collection<String>,
+    ): Collection<Game>? = dataMem.searchBy(dev, genres, Game.hash)
 }

@@ -37,4 +37,32 @@ class SessionServicesTest {
             assertFailsWith<IllegalStateException> { it.createPlayer("test", "badEmail") }
         }
     }
+
+    @Test
+    fun `create a new Game`() {
+        makeSessionTest {
+            assertEquals(1u, it.createGame("test", "dev", listOf("genre")))
+        }
+    }
+
+    @Test
+    fun `error creating a game`() {
+        makeSessionTest {
+            assertFailsWith<IllegalStateException> { it.createGame("test", "dev", listOf()) }
+        }
+    }
+
+    @Test
+    fun `get details of a game`() {
+        makeSessionTest {
+            assertNotNull(it.getGameDetails(1u))
+        }
+    }
+
+    @Test
+    fun `get details of a non-existent game`() {
+        makeSessionTest {
+            assertNull(it.getGameDetails(2u))
+        }
+    }
 }

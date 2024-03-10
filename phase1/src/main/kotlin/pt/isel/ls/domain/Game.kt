@@ -26,3 +26,11 @@ data class Game(
         val hash: Int = hashCode()
     }
 }
+
+/**
+ * Creates a new player.
+ * @receiver the name of the player([String]).
+ * @param email the email (is unique to each player) to be associated to the player.
+ * @return [Player] a new player.
+ */
+infix fun String.associatedTo(gameDetails: Pair<String, Collection<String>>) = Game(name = this, dev = gameDetails.first, genres = gameDetails.second)

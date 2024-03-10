@@ -6,14 +6,14 @@ import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.addPlayer
 import pt.isel.ls.domain.associatedTo
-import pt.isel.ls.storage.Storage
+import pt.isel.ls.storage.SessionDataMem
 
 /**
  * Represents the services made by the application.
  * @param dataMem the memory container to storage all the data.
  * @throws IllegalStateException containing the message of the error.
  */
-class SessionServices(private val dataMem: Storage) {
+class SessionServices(private val dataMem: SessionDataMem) {
     /**
      * Create a new player and storage the same.
      * @param name the name of the player.

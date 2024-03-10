@@ -30,12 +30,13 @@ class StorageStunt : Storage {
         }
 
     override fun read(
-        uInt: UInt,
+        uInt: UInt?,
         type: Int,
-    ): Domain? =
+    ): Collection<Domain>? =
         when (type) {
             Player.hash -> {
-                hashPlayer[uInt]
+                val player = hashPlayer[uInt]
+                if (player != null) listOf(player) else null
             }
             else -> null
         }

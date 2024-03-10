@@ -27,9 +27,9 @@ class LocalStorage : Storage {
     }
 
     override fun read(
-        uInt: UInt,
+        uInt: UInt?,
         type: Int,
-    ): Domain? {
+    ): Collection<Domain>? {
         TODO("Not yet implemented")
     }
 

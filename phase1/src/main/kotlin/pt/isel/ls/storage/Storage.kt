@@ -20,9 +20,9 @@ interface Storage {
      * @return [Domain] the wanted data.
      */
     fun read(
-        uInt: UInt,
+        uInt: UInt?,
         type: Int,
-    ): Domain?
+    ): Collection<Domain>?
 
     /**
      * Update an Item given his uInt.

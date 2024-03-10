@@ -1,14 +1,18 @@
 package pt.isel.ls.services
 
 import pt.isel.ls.domain.*
-import pt.isel.ls.storage.Storage
+import pt.isel.ls.domain.Domain
+import pt.isel.ls.domain.Email
+import pt.isel.ls.domain.Player
+import pt.isel.ls.domain.associatedTo
+import pt.isel.ls.storage.SessionDataMem
 
 /**
  * Represents the services made by the application.
  * @param dataMem the memory container to storage all the data.
  * @throws IllegalStateException containing the message of the error.
  */
-class SessionServices(private val dataMem: Storage) {
+class SessionServices(private val dataMem: SessionDataMem) {
     /**
      * Create a new player and storage the same.
      * @param name the name of the player.
@@ -57,7 +61,7 @@ class SessionServices(private val dataMem: Storage) {
      * @param uuid the identifier of each player.
      * @return a [Player] containing all the information wanted or null if nothing is found.
      */
-    fun getGameDetails(uuid: UInt): Domain? = dataMem.read(uuid, Game.hash)
+    fun getGameDetails(uuid: UInt): Domain = dataMem.read(uuid, Game.hash)
 
     /**
      * Search for a game by the developer and genres.
@@ -65,8 +69,12 @@ class SessionServices(private val dataMem: Storage) {
      * @param genres the genres of the game.
      * @return a collection of [Game] containing all the information wanted or null if nothing is found.
      */
-    fun searchGameBy(
+    fun searchGameByDevAndGenres(
         dev: String,
         genres: Collection<String>,
-    ): Collection<Game>? = dataMem.searchBy(dev, genres, Game.hash)
+    ): Collection<Game?> = dataMem.readBy(Game.hash) {
+        it.filter { game ->
+            game.dev == dev && game.genres.containsAll(genres)
+        }
+    }
 }

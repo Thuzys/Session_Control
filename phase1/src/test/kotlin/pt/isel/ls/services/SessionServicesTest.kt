@@ -1,6 +1,7 @@
 package pt.isel.ls.services
 
 import org.junit.jupiter.api.Test
+import pt.isel.ls.storage.SessionDataMem
 import pt.isel.ls.storage.StorageStunt
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -8,7 +9,9 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 class SessionServicesTest {
-    private fun makeSessionTest(code: (session: SessionServices) -> Unit) = SessionServices(StorageStunt()).run { code }
+    private fun makeSessionTest(code: (session: SessionServices) -> Unit) {
+        SessionServices(SessionDataMem(StorageStunt())).run { code }
+    }
 
     @Test
     fun `create a new Player`() {

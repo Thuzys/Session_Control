@@ -13,11 +13,10 @@ interface Storage {
      */
     fun create(newItem: Domain): UInt
 
-    /**
-     * Returns a element given his uInt.
-     * @param uInt the identifier of an [Domain].
+    /** Read the details of an item.
+     * @param uInt the identifier of each item.
      * @param type the hash of each instance class of [Domain].
-     * @return [Domain] the wanted data.
+     * @return a [Collection] of [Domain] containing all the information wanted or null if nothing is found.
      */
     fun read(
         uInt: UInt?,

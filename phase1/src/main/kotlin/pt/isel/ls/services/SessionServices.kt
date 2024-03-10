@@ -22,17 +22,32 @@ class SessionServices(private val dataMem: SessionDataMem) {
     fun createPlayer(
         name: String,
         email: String,
-    ): UInt =
-        try {
-            dataMem.create(name associatedTo Email(email))
-        } catch (error: IllegalArgumentException) {
-            error("unable to create a new player due: ${error.message}")
-        }
+    ): UInt = tryCatch("Unable to create a new player") { dataMem.create(name associatedTo Email(email)) }
 
     /**
      * returns the details of player.
      * @param uuid the identifier of each player.
      * @return a [Player] containing all the information wanted or null if nothing is found.
+     * @throws IllegalStateException containing the message of the error.
      */
-    fun getPlayerDetails(uuid: UInt): Domain? = dataMem.read(uuid, Player.hash)
+    fun getPlayerDetails(uuid: UInt): Domain =
+        tryCatch("Unable to get the details of a Player due") {
+            dataMem.read(uuid, Player.hash)
+        }
 }
+
+/**
+ * Represents the services made by the application.
+ * @param msg the memory container to storage all the data.
+ * @param block the code to be executed.
+ * @throws IllegalStateException containing the message of the error.
+ */
+private inline fun <T> tryCatch(
+    msg: String,
+    block: () -> T,
+): T =
+    try {
+        block()
+    } catch (error: IllegalArgumentException) {
+        error("$msg: ${error.message}")
+    }

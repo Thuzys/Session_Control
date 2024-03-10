@@ -4,7 +4,7 @@ import pt.isel.ls.domain.Domain
 
 /**
  * Represents the session data memory.
- * @property mem the storage [Storage].
+ * @property mem the storage of the application.
  */
 class SessionDataMem(private val mem: Storage) {
     /**
@@ -23,7 +23,7 @@ class SessionDataMem(private val mem: Storage) {
     fun read(
         uInt: UInt,
         type: Int,
-    ): Domain = mem.read(uInt, type)?.first() ?: throw IllegalArgumentException("unable to find the item")
+    ): Domain = mem.read(uInt, type)?.first() ?: throw IllegalArgumentException("Unable to find the item.")
 
     /**
      * Update an item given his uInt.
@@ -39,7 +39,7 @@ class SessionDataMem(private val mem: Storage) {
      * Delete an item given his uInt.
      * @param uInt the identifier of an [Domain].
      */
-    fun delete(uInt: UInt) = mem.delete(uInt)
+    fun delete(uInt: UInt) = mem.delete(uInt) // TODO: Implement delete and fix error
 
     /**
      * Read all the items of a specific type.
@@ -47,8 +47,9 @@ class SessionDataMem(private val mem: Storage) {
      * @param filter the filter to be applied to the collection.
      * @return a [Collection] of [Domain] containing all the information wanted or null if nothing is found.
      */
+    @Suppress("UNCHECKED_CAST")
     fun <T : Domain> readBy(
         type: Int,
         filter: (Collection<T>) -> Collection<T>,
-    ): Collection<T?> = filter((mem.read(null, type) as? Collection<T>) ?: emptyList())
+    ): Collection<T> = filter((mem.read(null, type) as? Collection<T>) ?: emptyList())
 }

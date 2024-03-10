@@ -7,7 +7,7 @@ import kotlin.test.assertTrue
 
 class PlayerTest {
     private val goodTestName = "player1"
-    private val goodEmailTest = "goodEmail@test.com"
+    private val goodEmailTest = Email("goodEmail@test.com")
     private val badTestName = ""
     private val tokenTest = UUID.randomUUID()
     private val uId: UInt = 1u

@@ -14,10 +14,16 @@ import java.util.UUID
 data class Player(
     override val uuid: UInt? = null,
     val name: String,
-    val email: String,
+    val email: Email,
     val token: UUID = UUID.randomUUID(),
 ) : Domain(uuid = uuid) {
     init {
         require(name.isNotEmpty()) { "name must not be blank." }
     }
+
+    companion object {
+        val hash = hashCode()
+    }
 }
+
+val t = Player.hash

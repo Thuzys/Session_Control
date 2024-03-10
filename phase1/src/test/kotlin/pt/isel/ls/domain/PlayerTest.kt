@@ -18,6 +18,11 @@ class PlayerTest {
     }
 
     @Test
+    fun `associatedTo test`() {
+        goodTestName associatedTo goodEmailTest // should not fail
+    }
+
+    @Test
     fun `good instantiation of an existent Player`() {
         assertTrue { Player(uId, goodTestName, goodEmailTest, tokenTest).token == tokenTest }
     }

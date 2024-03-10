@@ -5,11 +5,11 @@ import pt.isel.ls.domain.Domain
 /**
  * Representation of the domain's storage.
  */
-interface SessionDataMem {
+interface Storage {
     /**
      * create a newItem and insert into the correct container.
      * @param newItem the item to be added.
-     * @return the [UInt] that represents the newItem.
+     * @return [UInt] the unique identifier of the new item.
      */
     fun create(newItem: Domain): UInt
 
@@ -22,7 +22,7 @@ interface SessionDataMem {
     fun read(
         uInt: UInt,
         type: Int,
-    ): Domain
+    ): Domain?
 
     /**
      * Update an Item given his uInt.

@@ -33,4 +33,9 @@ data class Game(
  * @param email the email (is unique to each player) to be associated to the player.
  * @return [Player] a new player.
  */
-infix fun String.associatedTo(gameDetails: Pair<String, Collection<String>>) = Game(name = this, dev = gameDetails.first, genres = gameDetails.second)
+infix fun String.associatedTo(gameDetails: Pair<String, Collection<String>>) =
+    Game(
+        name = this,
+        dev = gameDetails.first,
+        genres = gameDetails.second,
+    )

@@ -1,6 +1,7 @@
 package pt.isel.ls.services
 
 import org.junit.jupiter.api.Test
+import pt.isel.ls.domain.Game
 import pt.isel.ls.storage.SessionDataMem
 import pt.isel.ls.storage.StorageStunt
 import kotlin.test.assertEquals
@@ -44,28 +45,47 @@ class SessionServicesTest {
     @Test
     fun `create a new Game`() {
         makeSessionTest {
-            assertEquals(1u, it.createGame("test", "dev", listOf("genre")))
+            assertEquals(4u, it.createGame("test", "dev", setOf("genre")))
         }
     }
 
     @Test
     fun `error creating a game`() {
         makeSessionTest {
-            assertFailsWith<IllegalStateException> { it.createGame("test", "dev", listOf()) }
+            assertFailsWith<IllegalStateException> { it.createGame("test", "dev", setOf()) }
         }
     }
 
     @Test
     fun `get details of a game`() {
         makeSessionTest {
-            assertNotNull(it.getGameDetails(1u))
+            val game = it.getGameDetails(1u) as Game
+            assertEquals("test", game.name)
+            assertEquals("dev", game.dev)
+            assertEquals(setOf("genre"), game.genres)
         }
     }
 
     @Test
-    fun `get details of a non-existent game`() {
+    fun `error getting details of a game`() {
         makeSessionTest {
-            assertNull(it.getGameDetails(2u))
+            assertFailsWith<IllegalStateException> { it.getGameDetails(60u) }
+        }
+    }
+
+    @Test
+    fun `get Game by developer and genres`() {
+        makeSessionTest {
+            val games = it.searchGameByDevAndGenres("dev", setOf("genre"))
+            assertEquals(2, games.size)
+        }
+    }
+
+    @Test
+    fun `get Game by developer and genres with no results`() {
+        makeSessionTest {
+            val games = it.searchGameByDevAndGenres("dev", setOf("genre2"))
+            assertEquals(0, games.size)
         }
     }
 }

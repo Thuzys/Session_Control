@@ -1,8 +1,8 @@
 package pt.isel.ls.services
 
-import pt.isel.ls.domain.*
 import pt.isel.ls.domain.Domain
 import pt.isel.ls.domain.Email
+import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.associatedTo
 import pt.isel.ls.storage.SessionDataMem
@@ -35,7 +35,7 @@ class SessionServices(private val dataMem: SessionDataMem) {
      * @param uuid the identifier of each player.
      * @return a [Player] containing all the information wanted or null if nothing is found.
      */
-    fun getPlayerDetails(uuid: UInt): Domain? = dataMem.read(uuid, Player.hash)
+    fun getPlayerDetails(uuid: UInt): Domain = dataMem.read(uuid, Player.hash)
 
     /**
      * Create a new game and storage the same.
@@ -61,7 +61,12 @@ class SessionServices(private val dataMem: SessionDataMem) {
      * @param uuid the identifier of each player.
      * @return a [Player] containing all the information wanted or null if nothing is found.
      */
-    fun getGameDetails(uuid: UInt): Domain = dataMem.read(uuid, Game.hash)
+    fun getGameDetails(uuid: UInt): Domain =
+        try {
+            dataMem.read(uuid, Game.hash)
+        } catch (error: IllegalArgumentException) {
+            error("unable to find the game due to: ${error.message}")
+        }
 
     /**
      * Search for a game by the developer and genres.
@@ -72,9 +77,10 @@ class SessionServices(private val dataMem: SessionDataMem) {
     fun searchGameByDevAndGenres(
         dev: String,
         genres: Collection<String>,
-    ): Collection<Game?> = dataMem.readBy(Game.hash) {
-        it.filter { game ->
-            game.dev == dev && game.genres.containsAll(genres)
+    ): Collection<Game> =
+        dataMem.readBy(Game.hash) {
+            it.filter { game ->
+                game.dev == dev && game.genres.containsAll(genres)
+            }
         }
-    }
 }

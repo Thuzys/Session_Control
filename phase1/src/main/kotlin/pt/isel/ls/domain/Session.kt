@@ -30,9 +30,6 @@ data class Session(
  * @throws IllegalStateException if the session is already at maximum capacity.
  */
 fun Session.addPlayer(player: Player): Session {
-    //get do player
-    //get da sessao
-    //update
     check(players.size + 1 != capacity.toInt()) { "Session is already at maximum capacity" }
     return this.copy(players = players + player)
 }

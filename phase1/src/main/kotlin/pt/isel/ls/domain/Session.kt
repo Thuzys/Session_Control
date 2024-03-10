@@ -22,3 +22,17 @@ data class Session(
         require(capacity > 0u) { "Capacity must be greater than 0" }
     }
 }
+
+/**
+ * Adds a player to the session.
+ *
+ * @param player The player to add.
+ * @throws IllegalStateException if the session is already at maximum capacity.
+ */
+fun Session.addPlayer(player: Player): Session {
+    //get do player
+    //get da sessao
+    //update
+    check(players.size + 1 != capacity.toInt()) { "Session is already at maximum capacity" }
+    return this.copy(players = players + player)
+}

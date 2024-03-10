@@ -50,5 +50,5 @@ class SessionDataMem(private val mem: Storage) {
     fun <T : Domain> readBy(
         type: Int,
         filter: (Collection<T>) -> Collection<T>,
-    ): Collection<T?> = filter((mem.read(null, type) as? Collection<T>) ?: emptyList())
+    ): Collection<T> = filter((mem.read(null, type) as? Collection<T>) ?: emptyList())
 }

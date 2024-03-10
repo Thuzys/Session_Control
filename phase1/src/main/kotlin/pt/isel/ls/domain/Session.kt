@@ -16,7 +16,7 @@ data class Session(
     val capacity: UInt,
     val gid: UInt,
     val date: LocalDateTime.Companion,
-    val players: List<Player> = listOf(),
+    val players: Collection<Player> = listOf(),
 ) : Domain(uuid = uuid) {
     init {
         require(capacity > 0u) { "Capacity must be greater than 0" }

@@ -79,6 +79,14 @@ class StorageStunt : Storage {
                     if (game != null) listOf(game) else null
                 }
             }
+            Session.hash -> {
+                if (uInt == null) {
+                    hashSession.values
+                } else {
+                    val session = hashSession[uInt]
+                    if (session != null) listOf(session) else null
+                }
+            }
             else -> null
         }
 
@@ -89,7 +97,7 @@ class StorageStunt : Storage {
         when (newItem) {
             is Session ->
                 {
-                    hashSession[sessionUuid] = newItem
+                    hashSession[uInt] = newItem
                 }
             else -> return
         }

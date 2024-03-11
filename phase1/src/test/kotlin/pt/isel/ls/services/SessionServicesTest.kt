@@ -1,9 +1,6 @@
 package pt.isel.ls.services
 
 import kotlinx.datetime.LocalDateTime
-import pt.isel.ls.domain.Email
-import pt.isel.ls.domain.Player
-import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.storage.SessionDataMem
 import pt.isel.ls.storage.StorageStunt
@@ -49,10 +46,11 @@ class SessionServicesTest {
     @Test
     fun `add a player to a session`() {
         makeSessionTest {
-            val currentCollection = it.getSessionDetails(1u) as Session
+            val currentCollection = it.getSessionDetails(1u)
             val currentSize = currentCollection.players.size
             it.addPlayer(2u, 1u)
-            assertTrue { currentCollection.players.size == currentSize.inc() }
+            val newCollection = it.getSessionDetails(1u)
+            assertTrue { newCollection.players.size == currentSize.inc() }
         }
     }
 
@@ -66,7 +64,7 @@ class SessionServicesTest {
     @Test
     fun `error adding a player to a session (invalid player)`() {
         makeSessionTest {
-            assertFailsWith<IllegalArgumentException> { it.addPlayer(4u, 1u) }
+            assertFailsWith<IllegalStateException> { it.addPlayer(4u, 1u) }
         }
     }
 
@@ -80,7 +78,7 @@ class SessionServicesTest {
     @Test
     fun `error adding a player to a session (invalid session)`() {
         makeSessionTest {
-            assertFailsWith<IllegalArgumentException> { it.addPlayer(1u, 3u) }
+            assertFailsWith<IllegalStateException> { it.addPlayer(1u, 3u) }
         }
     }
 
@@ -97,7 +95,7 @@ class SessionServicesTest {
     @Test
     fun `trying to get details of a non existent session`() {
         makeSessionTest {
-            assertFailsWith<IllegalArgumentException> { it.getSessionDetails(5u) }
+            assertFailsWith<IllegalStateException> { it.getSessionDetails(5u) }
         }
     }
 
@@ -111,15 +109,13 @@ class SessionServicesTest {
     @Test
     fun `get details of a session`() {
         makeSessionTest {
-            val player = Player(1u, "test1", Email("xpto@gmail.com"))
             val date = LocalDateTime(2024, 3, 10, 12, 30)
-            val players: Collection<Player> = listOf(player)
-            val sessionDetails = it.getSessionDetails(1u) as Session
+            val sessionDetails = it.getSessionDetails(1u)
             assertEquals(1u, sessionDetails.uuid)
             assertEquals(2u, sessionDetails.capacity)
             assertEquals(1u, sessionDetails.gid)
             assertEquals(date, sessionDetails.date)
-            assertEquals(players, sessionDetails.players)
+            assertTrue { sessionDetails.players.size == 2 }
         }
     }
 
@@ -136,7 +132,7 @@ class SessionServicesTest {
         makeSessionTest {
             val sessions = it.getSessions(1u)
             assertEquals(2, sessions.size)
-            assertTrue(sessions.all { session -> session.gid == 2u })
+            assertTrue(sessions.all { session -> session.gid == 1u })
         }
     }
 

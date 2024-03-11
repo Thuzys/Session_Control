@@ -9,7 +9,7 @@ class SessionTest {
     private val capacity = 10u
     private val gid = 1111u
     private val uuid = 1234u
-    private val date = LocalDateTime
+    private val date = LocalDateTime(2024, 3, 10, 12, 30)
     private val randomUuid = random().toUInt()
 
     @Test

@@ -8,6 +8,7 @@ import kotlin.test.assertTrue
 import kotlinx.datetime.LocalDateTime
 import org.junit.jupiter.api.Test
 import pt.isel.ls.domain.Email
+import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
@@ -58,9 +59,23 @@ class SessionServicesTest {
     }
 
     @Test
+    fun `create a new Game`() {
+        makeSessionTest {
+            assertEquals(4u, it.createGame("test", "dev", setOf("genre")))
+        }
+    }
+
+    @Test
     fun `error adding a player to a session (invalid player)`() {
         makeSessionTest {
             assertFailsWith<IllegalArgumentException> { it.addPlayer(4u, 1u) }
+        }
+    }
+
+    @Test
+    fun `error creating a game`() {
+        makeSessionTest {
+            assertFailsWith<IllegalStateException> { it.createGame("test", "dev", setOf()) }
         }
     }
 
@@ -72,9 +87,26 @@ class SessionServicesTest {
     }
 
     @Test
+    fun `get details of a game`() {
+        makeSessionTest {
+            val game = it.getGameDetails(1u) as Game
+            assertEquals("test", game.name)
+            assertEquals("dev", game.dev)
+            assertEquals(setOf("genre"), game.genres)
+        }
+    }
+
+    @Test
     fun `trying to get details of a non existent session`() {
         makeSessionTest {
             assertFailsWith<IllegalArgumentException> { it.getSessionDetails(5u) }
+        }
+    }
+
+    @Test
+    fun `error getting details of a game`() {
+        makeSessionTest {
+            assertFailsWith<IllegalStateException> { it.getGameDetails(60u) }
         }
     }
 
@@ -90,6 +122,14 @@ class SessionServicesTest {
             assertEquals(1u, sessionDetails.gid)
             assertEquals(date, sessionDetails.date)
             assertEquals(players, sessionDetails.players)
+        }
+    }
+    
+    @Test
+    fun `get Game by developer and genres`() {
+        makeSessionTest {
+            val games = it.searchGameByDevAndGenres("dev", setOf("genre"))
+            assertEquals(2, games.size)
         }
     }
 
@@ -135,6 +175,14 @@ class SessionServicesTest {
             val sessions = it.getSessions(1u, playerId = 1u)
             assertEquals(2, sessions.size)
             assertTrue(sessions.all { session -> session.players.any { player -> player.uuid == 1u } })
+        }
+    }
+    
+    @Test
+    fun `get Game by developer and genres with no results`() {
+        makeSessionTest {
+            val games = it.searchGameByDevAndGenres("dev", setOf("genre2"))
+            assertEquals(0, games.size)
         }
     }
 }

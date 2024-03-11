@@ -19,6 +19,7 @@ class SessionDataMem(private val mem: Storage) {
      * @param uInt the identifier of each item.
      * @param type the hash of each instance class of [Domain].
      * @return a [Domain] containing all the information wanted or null if nothing is found.
+     * @throws IllegalArgumentException if the item is not found.
      */
     fun read(
         uInt: UInt,

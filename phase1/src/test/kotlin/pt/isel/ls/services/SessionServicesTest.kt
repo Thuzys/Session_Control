@@ -2,7 +2,11 @@ package pt.isel.ls.services
 
 import pt.isel.ls.storage.SessionDataMem
 import pt.isel.ls.storage.StorageStunt
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 class SessionServicesTest {
     private fun makeSessionTest(code: (session: SessionServices) -> Unit) {

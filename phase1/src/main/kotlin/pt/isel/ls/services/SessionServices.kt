@@ -5,7 +5,6 @@ import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.associatedTo
 import pt.isel.ls.storage.SessionDataMem
-import pt.isel.ls.utils.tryCatch
 
 /**
  * Represents the services made by the application.
@@ -82,3 +81,21 @@ class SessionServices(private val dataMem: SessionDataMem) {
             }
         }
 }
+
+/**
+ * Tries to execute a block of code and catches any [IllegalArgumentException] thrown.
+ *
+ * @param msg The message to be displayed in case of an error.
+ * @param block The block of code to be executed.
+ * @return The result of the block of code.
+ * @throws IllegalStateException containing the message of the error.
+ */
+private inline fun <T> tryCatch(
+    msg: String,
+    block: () -> T,
+): T =
+    try {
+        block()
+    } catch (error: IllegalArgumentException) {
+        error("$msg: ${error.message}")
+    }

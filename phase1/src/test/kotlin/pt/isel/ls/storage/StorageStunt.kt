@@ -47,8 +47,12 @@ class StorageStunt : Storage {
                 if (player != null) listOf(player) else null
             }
             Game.hash -> {
-                val game = hashGame[uInt]
-                if (game != null) listOf(game) else null
+                if (uInt == null)
+                    hashGame.values
+                else {
+                    val game = hashGame[uInt]
+                    if (game != null) listOf(game) else null
+                }
             }
             else -> null
         }

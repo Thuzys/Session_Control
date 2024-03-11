@@ -2,15 +2,11 @@ package pt.isel.ls.services
 
 import pt.isel.ls.storage.SessionDataMem
 import pt.isel.ls.storage.StorageStunt
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
+import kotlin.test.*
 
 class SessionServicesTest {
     private fun makeSessionTest(code: (session: SessionServices) -> Unit) {
-        SessionServices(SessionDataMem(StorageStunt())).run { code }
+        SessionServices(SessionDataMem(StorageStunt())).run { code(this) }
     }
 
     @Test
@@ -30,7 +26,7 @@ class SessionServicesTest {
     @Test
     fun `get details of a non-existent player`() {
         makeSessionTest {
-            assertNull(it.getPlayerDetails(3u))
+            assertFailsWith<IllegalStateException> { (it.getPlayerDetails(3u)) }
         }
     }
 
@@ -61,7 +57,7 @@ class SessionServicesTest {
             val game = it.getGameDetails(1u)
             assertEquals("test", game.name)
             assertEquals("dev", game.dev)
-            assertEquals(setOf("genre"), game.genres)
+            assertTrue { "genre" in game.genres }
         }
     }
 

@@ -1,7 +1,7 @@
 package pt.isel.ls.domain
 
-import org.junit.jupiter.api.Assertions.assertEquals
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class SessionStateTest {
     @Test

@@ -7,25 +7,29 @@ import pt.isel.ls.domain.Domain
  */
 interface Storage {
     /**
-     * create a newItem and insert into the correct container.
+     * Create a newItem and insert into the correct container.
+     *
      * @param newItem the item to be added.
      * @return [UInt] the unique identifier of the new item.
      */
     fun create(newItem: Domain): UInt
 
     /**
-     * Returns a element given his uInt.
-     * @param uInt the identifier of an [Domain].
+     * Read the details of an item.
+     *
+     * @param uInt the identifier of each item.
      * @param type the hash of each instance class of [Domain].
-     * @return [Domain] the wanted data.
+     * @return a [Collection] of [Domain] containing all the information wanted or null if nothing is found.
      */
     fun read(
         uInt: UInt?,
         type: Int,
+        // TODO: Implement offset and limit
     ): Collection<Domain>?
 
     /**
      * Update an Item given his uInt.
+     *
      * @param uInt the identifier of an [Domain].
      * @param newItem the newItem to be updated.
      */
@@ -36,6 +40,7 @@ interface Storage {
 
     /**
      * Delete an Item given his uInt.
+     *
      * @param uInt the identifier of an [Domain].
      */
     fun delete(uInt: UInt)

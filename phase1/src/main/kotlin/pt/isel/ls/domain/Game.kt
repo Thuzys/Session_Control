@@ -2,6 +2,7 @@ package pt.isel.ls.domain
 
 /**
  * Represents a game.
+ *
  * @property uuid The game's id (unique).
  * @property name The game's name.
  * @property dev The game's developer.
@@ -17,8 +18,8 @@ data class Game(
     val genres: Collection<String>,
 ) : Domain(uuid = uuid) {
     init {
-        require(name.isNotEmpty()) { "Game's name can´t be empty." }
-        require(dev.isNotEmpty()) { "Game's developer can´t be empty." }
+        require(name.isNotBlank()) { "Game's name can´t be empty." }
+        require(dev.isNotBlank()) { "Game's developer can´t be empty." }
         require(genres.isNotEmpty()) { "Game needs to have at least one genre." }
     }
 
@@ -28,10 +29,11 @@ data class Game(
 }
 
 /**
- * Creates a new player.
- * @receiver the name of the player([String]).
- * @param email the email (is unique to each player) to be associated to the player.
- * @return [Player] a new player.
+ * Creates a new game.
+ *
+ * @receiver the name of the game([String]).
+ * @param gameDetails the developer and the genres to be associated to the game.
+ * @return [Game] a new game.
  */
 infix fun String.associatedTo(gameDetails: Pair<String, Collection<String>>) =
     Game(

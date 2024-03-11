@@ -7,6 +7,7 @@ import pt.isel.ls.domain.Session
 
 /**
  * Represents the local storage of the application.
+ *
  * @property uidPlayer the unique identifier of the player.
  * @property uidGame the unique identifier of the game.
  * @property uidSession the unique identifier of the session.

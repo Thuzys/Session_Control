@@ -10,7 +10,6 @@ import kotlinx.datetime.LocalDateTime
  * @param gid The identifier of the game associated with the session.
  * @param date The date and time of the session.
  * @param players Collection of players currently in the session.
- *
  * @throws IllegalArgumentException If the capacity is zero.
  */
 data class Session(

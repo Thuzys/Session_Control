@@ -1,6 +1,6 @@
 package pt.isel.ls.domain
 
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
 class GameTest {

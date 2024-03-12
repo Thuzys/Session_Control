@@ -65,6 +65,8 @@ class StorageStunt : Storage {
     override fun read(
         uInt: UInt?,
         type: Int,
+        offset: Int,
+        limit: Int,
     ): Collection<Domain>? =
         when (type) {
             Player.hash -> {

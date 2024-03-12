@@ -2,6 +2,7 @@ package pt.isel.ls.services
 
 import kotlinx.datetime.LocalDateTime
 import pt.isel.ls.domain.SessionState
+import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.storage.SessionDataMem
 import pt.isel.ls.storage.StorageStunt
 import kotlin.test.Test
@@ -32,14 +33,14 @@ class SessionServicesTest {
     @Test
     fun `get details of a non-existent player`() {
         makeSessionTest {
-            assertFailsWith<IllegalStateException> { (it.getPlayerDetails(3u)) }
+            assertFailsWith<ServicesError> { (it.getPlayerDetails(3u)) }
         }
     }
 
     @Test
     fun `error creating a player`() {
         makeSessionTest {
-            assertFailsWith<IllegalStateException> { it.createPlayer("test", "badEmail") }
+            assertFailsWith<ServicesError> { it.createPlayer("test", "badEmail") }
         }
     }
 
@@ -64,21 +65,21 @@ class SessionServicesTest {
     @Test
     fun `error adding a player to a session (invalid player)`() {
         makeSessionTest {
-            assertFailsWith<IllegalStateException> { it.addPlayer(4u, 1u) }
+            assertFailsWith<ServicesError> { it.addPlayer(4u, 1u) }
         }
     }
 
     @Test
     fun `error creating a game`() {
         makeSessionTest {
-            assertFailsWith<IllegalStateException> { it.createGame("test", "dev", setOf()) }
+            assertFailsWith<ServicesError> { it.createGame("test", "dev", setOf()) }
         }
     }
 
     @Test
     fun `error adding a player to a session (invalid session)`() {
         makeSessionTest {
-            assertFailsWith<IllegalStateException> { it.addPlayer(1u, 3u) }
+            assertFailsWith<ServicesError> { it.addPlayer(1u, 3u) }
         }
     }
 
@@ -95,14 +96,14 @@ class SessionServicesTest {
     @Test
     fun `trying to get details of a non existent session`() {
         makeSessionTest {
-            assertFailsWith<IllegalStateException> { it.getSessionDetails(5u) }
+            assertFailsWith<ServicesError> { it.getSessionDetails(5u) }
         }
     }
 
     @Test
     fun `error getting details of a game`() {
         makeSessionTest {
-            assertFailsWith<IllegalStateException> { it.getGameDetails(60u) }
+            assertFailsWith<ServicesError> { it.getGameDetails(60u) }
         }
     }
 

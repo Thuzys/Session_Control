@@ -1,11 +1,15 @@
 package pt.isel.ls.storage
 
 import pt.isel.ls.domain.Domain
+import pt.isel.ls.domain.errors.ReadError
 
 /**
  * Represents the session data memory.
  *
- * @property mem the storage of the application.
+ * This class provides methods for creating, reading, updating, and deleting [Domain] objects in the session data memory.
+ * It uses the [Storage] interface to interact with the underlying storage system.
+ *
+ * @property mem The storage of the application.
  */
 class SessionDataMem(private val mem: Storage) {
     /**
@@ -17,18 +21,27 @@ class SessionDataMem(private val mem: Storage) {
     fun create(newItem: Domain): UInt = mem.create(newItem)
 
     /**
-     * Read the details of an item.
+     * Reads the details of an item from the session data memory.
      *
-     * @param uInt the identifier of each item.
-     * @param type the hash of each instance class of [Domain].
-     * @return a [Domain] containing all the information wanted or null if nothing is found.
-     * @throws IllegalArgumentException if the item is not found.
+     * @param uInt The unique identifier of each item.
+     * If it's provided, the function will return the details of the item with this identifier.
+     * @param type The hash of each instance class of [Domain].
+     * It's used to determine the type of items to be retrieved from the storage.
+     * @param offset The offset to be applied to the collection.
+     * It's used for pagination purposes, to skip a certain number of items in the collection.
+     * @param limit The limit to be applied to the collection.
+     * It's used for pagination purposes, to limit the number of items returned in the collection.
+     * @return A [Domain] object containing all the information wanted
+     * or throws an IllegalArgumentException if nothing is found.
      */
     fun read(
-        uInt: UInt,
+        uInt: UInt?,
         type: Int,
-        // TODO: Implement offset and limit
-    ): Domain = mem.read(uInt, type)?.first() ?: throw IllegalArgumentException("Unable to find the item.")
+        offset: Int = 0,
+        limit: Int = 1,
+    ): Domain =
+        mem.read(uInt, type, offset, limit)?.first()
+            ?: throw ReadError("Unable to find the item.")
 
     /**
      * Update an item given his uInt.
@@ -49,16 +62,27 @@ class SessionDataMem(private val mem: Storage) {
     fun delete(uInt: UInt) = mem.delete(uInt) // TODO: Implement delete and fix error
 
     /**
-     * Read all the items of a specific type.
+     * Reads all the items of a specific type from the session data memory.
      *
-     * @param type the hash of each instance class of [Domain].
-     * @param filter the filter to be applied to the collection.
-     * @return a [Collection] of [Domain] containing all the information wanted or null if nothing is found.
+     * @param type The hash of each instance class of [Domain].
+     * It's used to determine the type of items to be retrieved from the storage.
+     * @param offset The offset to be applied to the collection.
+     * It's used for pagination purposes, to skip a certain number of items in the collection.
+     * @param limit The limit to be applied to the collection.
+     * It's used for pagination purposes, to limit the number of items returned in the collection.
+     * @param filter The filter to be applied to the collection.
+     * It's used to filter the items in the collection based on a certain condition.
+     * @return A collection of [Domain] objects containing all the information wanted
+     * or an empty list if nothing is found.
      */
     @Suppress("UNCHECKED_CAST")
     fun <T : Domain> readBy(
         type: Int,
+        offset: Int = 0,
+        limit: Int = 10,
         filter: (Collection<T>) -> Collection<T>,
-        // TODO: Implement offset and limit
-    ): Collection<T> = filter((mem.read(null, type) as? Collection<T>) ?: emptyList())
+    ): Collection<T> =
+        filter(
+            (mem.read(uInt = null, type = type, offset = offset, limit = limit) as? Collection<T>) ?: emptyList(),
+        )
 }

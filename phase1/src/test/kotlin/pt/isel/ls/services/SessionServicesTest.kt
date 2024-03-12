@@ -72,7 +72,7 @@ class SessionServicesTest {
     }
 
     @Test
-    fun `trying to get details of a non existent session`() {
+    fun `trying to get details of a non-existent session`() {
         makeSessionTest {
             assertFailsWith<IllegalArgumentException> { it.getSessionDetails(5u) }
         }

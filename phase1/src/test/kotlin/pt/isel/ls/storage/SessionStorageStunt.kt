@@ -6,17 +6,10 @@ import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 
-class StorageStunt : Storage {
+class SessionStorageStunt : Storage<Session> {
     private val defaultMail = Email("default@mail.com")
-
-    private var playerUuid: UInt = 3u
     private val player1 = Player(1u, "test1", defaultMail)
-    private val player2 = Player(2u, "test20", defaultMail)
-    private val hashPlayer: HashMap<UInt, Player> =
-        hashMapOf(
-            1u to player1,
-            2u to player2,
-        )
+    private val player2 = Player(2u, "test2", defaultMail)
 
     private var sessionUuid: UInt = 4u
     private val date1 = LocalDateTime(2024, 3, 10, 12, 30)
@@ -32,79 +25,36 @@ class StorageStunt : Storage {
             3u to session3,
         )
 
-    private var gameUuid: UInt = 4u
-    private val hashGame: HashMap<UInt, Domain> =
+    private val hashGame: HashMap<UInt, Game> =
         hashMapOf(
             1u to Game(1u, "test", "dev", listOf("genre")),
             2u to Game(2u, "test2", "dev2", listOf("genre2")),
             3u to Game(3u, "test3", "dev", listOf("genre")),
         )
 
-    override fun create(newItem: Domain): UInt =
-        when (newItem) {
-            is Player ->
-                {
-                    val uuid = playerUuid++
-                    hashPlayer[uuid] = newItem.copy(uuid = uuid)
-                    uuid
-                }
-            is Session ->
-                {
-                    val uuid = sessionUuid++
-                    hashSession[sessionUuid] = newItem.copy(uuid = uuid)
-                    uuid
-                }
-            is Game -> {
-                hashGame[gameUuid] = newItem.copy(uuid = gameUuid)
-                gameUuid
-            }
-            else -> 1u
-        }
+    override fun create(newItem: Session): UInt {
+        val sid = sessionUuid++
+        hashSession[sessionUuid] = newItem.copy(sid = sid)
+        return sid
+    }
 
     override fun read(
         uInt: UInt?,
-        type: Int,
         offset: UInt,
         limit: UInt,
-    ): Collection<Domain>? =
-        when (type) {
-            Player.hash -> {
-                val player = hashPlayer[uInt]
-                if (player != null) listOf(player) else null
-            }
-            Game.hash -> {
-                if (uInt == null) {
-                    hashGame.values
-                } else {
-                    val game = hashGame[uInt]
-                    if (game != null) listOf(game) else null
-                }
-            }
-            Session.hash -> {
-                if (uInt == null) {
-                    hashSession.values
-                } else {
-                    val session = hashSession[uInt]
-                    if (session != null) listOf(session) else null
-                }
-            }
-            else -> null
-        }
-
-    override fun update(
-        uInt: UInt,
-        newItem: Domain,
-    ) {
-        when (newItem) {
-            is Session ->
-                {
-                    hashSession[uInt] = newItem
-                }
-            else -> return
+    ): Collection<Session>? {
+        return if (uInt == null) {
+            hashSession.values
+        } else {
+            val session = hashSession[uInt]
+            return if (session != null) listOf(session) else null
         }
     }
 
-    override fun delete(uInt: UInt) {
-        TODO("Not yet implemented")
+    override fun update(
+        uInt: UInt,
+        newItem: Session,
+    ) {
+        hashSession[uInt] = newItem
     }
 }

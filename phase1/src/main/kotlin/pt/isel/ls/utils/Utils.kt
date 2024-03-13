@@ -46,6 +46,8 @@ internal inline fun <T> tryCatch(
 ): T =
     try {
         block()
+    } catch (error: NoSuchElementException) {
+        throw ServicesError("$msg: ${error.message}")
     } catch (error: DataMemError) {
         throw ServicesError("$msg: ${error.message}")
     } catch (domainError: IllegalArgumentException) {

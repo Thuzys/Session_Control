@@ -5,7 +5,7 @@ import kotlinx.datetime.LocalDateTime
 /**
  * Represents a game session with specified capacity, game identifier, date, and UUID.
  *
- * @param uuid The universally unique identifier (UUID) of the session.
+ * @param sid The universally unique identifier (UUID) of the session.
  * @param capacity The maximum number of players allowed in the session.
  * @param gid The identifier of the game associated with the session.
  * @param date The date and time of the session.
@@ -13,12 +13,12 @@ import kotlinx.datetime.LocalDateTime
  * @throws IllegalArgumentException If the capacity is zero.
  */
 data class Session(
-    override val uuid: UInt? = null,
+    val sid: UInt? = null,
     val capacity: UInt,
     val gid: UInt,
     val date: LocalDateTime,
     val players: Collection<Player> = listOf(),
-) : Domain(uuid = uuid) {
+) {
     init {
         require(capacity > 0u) { "Capacity must be greater than 0" }
     }

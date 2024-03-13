@@ -22,10 +22,6 @@ data class Game(
         require(dev.isNotBlank()) { "Game's developer can´t be empty." }
         require(genres.isNotEmpty()) { "Game needs to have at least one genre." }
     }
-
-    companion object {
-        val hash: Int = hashCode()
-    }
 }
 
 /**

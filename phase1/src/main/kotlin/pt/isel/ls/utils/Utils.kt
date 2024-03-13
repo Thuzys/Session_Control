@@ -2,7 +2,6 @@ package pt.isel.ls.utils
 
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
-import pt.isel.ls.domain.errors.DataMemError
 import pt.isel.ls.domain.errors.ServicesError
 
 private val emailPattern: Regex = "^[A-Za-z](.*)(@)(.+)(\\.)(.+)".toRegex()
@@ -33,11 +32,11 @@ fun getSessionState(session: Session): SessionState {
 }
 
 /**
- * Tries to execute a block of code and catches any [DataMemError] thrown.
+ * Tries to execute a block of code and catches any exception that may occur.
  *
  * @param msg The message to be displayed in case of an error.
  * @param block The block of code to be executed.
- * @return The result of the block of code.
+ * @return The resulting block of code.
  * @throws ServicesError containing the message of the error.
  */
 internal inline fun <T> tryCatch(
@@ -47,8 +46,6 @@ internal inline fun <T> tryCatch(
     try {
         block()
     } catch (error: NoSuchElementException) {
-        throw ServicesError("$msg: ${error.message}")
-    } catch (error: DataMemError) {
         throw ServicesError("$msg: ${error.message}")
     } catch (domainError: IllegalArgumentException) {
         throw ServicesError("$msg: ${domainError.message}")

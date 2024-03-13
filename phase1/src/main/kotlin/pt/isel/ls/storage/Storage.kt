@@ -28,7 +28,7 @@ interface Storage<T> {
      * @return A collection of [T] objects containing all the information wanted or null if nothing is found.
      */
     fun read(
-        uInt: UInt?,
+        uInt: UInt? = null,
         offset: UInt = 0u,
         limit: UInt = 10u,
     ): Collection<T>?
@@ -43,4 +43,11 @@ interface Storage<T> {
         uInt: UInt,
         newItem: T,
     )
+
+    /**
+     * Deletes an item given its unique identifier.
+     *
+     * @param uInt The identifier of a [T].
+     */
+    fun delete(uInt: UInt)
 }

@@ -6,9 +6,9 @@ import pt.isel.ls.domain.Player
 class PlayerStorageStunt : Storage<Player> {
     private val defaultMail = Email("default@mail.com")
     private val player1 = Player(1u, "test1", defaultMail)
-    private val player2 = Player(2u, "test20", defaultMail)
-    private var uid = 3u
-    private val players: HashMap<UInt, Player> =
+    private val player2 = Player(2u, "test2", defaultMail)
+    private var uid: UInt = 3u
+    private val players =
         hashMapOf(
             1u to player1,
             2u to player2,
@@ -16,7 +16,7 @@ class PlayerStorageStunt : Storage<Player> {
 
     override fun create(newItem: Player): UInt =
         uid++.also {
-            players[it] = newItem.copy(uuid = it)
+            players[it] = newItem.copy(pid = it)
         }
 
     override fun read(
@@ -30,10 +30,14 @@ class PlayerStorageStunt : Storage<Player> {
             players[uInt]?.let { listOf(it) }
         }
 
+    override fun delete(uInt: UInt) {
+        TODO("Not needed for this test")
+    }
+
     override fun update(
         uInt: UInt,
         newItem: Player,
     ) {
-        TODO("Not yet implemented")
+        TODO("Not needed for this test")
     }
 }

@@ -51,6 +51,10 @@ class SessionStorageStunt : Storage<Session> {
         }
     }
 
+    override fun delete(uInt: UInt) {
+        TODO("Not yet implemented")
+    }
+
     override fun update(
         uInt: UInt,
         newItem: Session,

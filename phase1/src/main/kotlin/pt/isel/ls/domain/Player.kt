@@ -12,11 +12,11 @@ import java.util.UUID
  * @throws IllegalArgumentException if the name is empty.
  */
 data class Player(
-    override val uuid: UInt? = null,
+    val uuid: UInt? = null,
     val name: String,
     val email: Email,
     val token: UUID = UUID.randomUUID(),
-) : Domain(uuid = uuid) {
+) {
     init {
         require(name.isNotBlank()) { "name must not be blank." }
     }

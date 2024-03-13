@@ -12,19 +12,15 @@ package pt.isel.ls.domain
  * @throws IllegalArgumentException If the genres are empty.
  */
 data class Game(
-    override val uuid: UInt? = null,
+    val uuid: UInt? = null,
     val name: String,
     val dev: String,
     val genres: Collection<String>,
-) : Domain(uuid = uuid) {
+) {
     init {
         require(name.isNotBlank()) { "Game's name can´t be empty." }
         require(dev.isNotBlank()) { "Game's developer can´t be empty." }
         require(genres.isNotEmpty()) { "Game needs to have at least one genre." }
-    }
-
-    companion object {
-        val hash: Int = hashCode()
     }
 }
 

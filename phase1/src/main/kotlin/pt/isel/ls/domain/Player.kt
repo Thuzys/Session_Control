@@ -5,24 +5,20 @@ import java.util.UUID
 /**
  * Represents a Player.
  *
- * @param uuid the player’s identifier (unique).
+ * @param pId the player’s identifier (unique).
  * @param name the UserName of the player.
  * @param email the unique email of a player.
  * @param token the access token of each player.
  * @throws IllegalArgumentException if the name is empty.
  */
 data class Player(
-    override val uuid: UInt? = null,
+    val pid: UInt? = null,
     val name: String,
     val email: Email,
     val token: UUID = UUID.randomUUID(),
-) : Domain(uuid = uuid) {
+) {
     init {
         require(name.isNotBlank()) { "name must not be blank." }
-    }
-
-    companion object {
-        val hash = hashCode()
     }
 }
 

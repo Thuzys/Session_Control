@@ -13,18 +13,14 @@ import kotlinx.datetime.LocalDateTime
  * @throws IllegalArgumentException If the capacity is zero.
  */
 data class Session(
-    override val uuid: UInt? = null,
+    val uuid: UInt? = null,
     val capacity: UInt,
     val gid: UInt,
     val date: LocalDateTime,
     val players: Collection<Player> = listOf(),
-) : Domain(uuid = uuid) {
+) {
     init {
         require(capacity > 0u) { "Capacity must be greater than 0" }
-    }
-
-    companion object {
-        val hash: Int = hashCode()
     }
 }
 

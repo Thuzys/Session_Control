@@ -13,6 +13,7 @@ class PlayerStorageStunt : Storage<Player> {
             1u to player1,
             2u to player2,
         )
+
     override fun create(newItem: Player): UInt =
         uid++.also {
             players[it] = newItem.copy(pid = it)

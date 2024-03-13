@@ -20,7 +20,7 @@ class SessionTest {
     @Test
     fun `unique session identifier`() {
         val newSession = Session(uuid, capacity, gid, date)
-        assert(newSession.uuid != randomUuid)
+        assert(newSession.sid != randomUuid)
     }
 
     @Test

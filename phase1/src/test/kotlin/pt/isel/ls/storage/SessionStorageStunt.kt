@@ -1,7 +1,6 @@
 package pt.isel.ls.storage
 
 import kotlinx.datetime.LocalDateTime
-import pt.isel.ls.domain.Domain
 import pt.isel.ls.domain.Email
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Player
@@ -65,6 +64,8 @@ class StorageStunt : Storage {
     override fun read(
         uInt: UInt?,
         type: Int,
+        offset: UInt,
+        limit: UInt,
     ): Collection<Domain>? =
         when (type) {
             Player.hash -> {

@@ -8,12 +8,9 @@ import pt.isel.ls.domain.Session
 /**
  * Represents the local storage of the application.
  *
- * @property uidPlayer the unique identifier of the player.
- * @property uidGame the unique identifier of the game.
- * @property uidSession the unique identifier of the session.
- * @property hashPlayer the hash of the player.
- * @property hashGame the hash of the game.
- * @property hashSession the hash of the session.
+ * This class implements the [Storage] interface and provides concrete implementations for its methods.
+ * It stores [Player], [Game], and [Session] objects, each identified by a unique identifier.
+ *
  */
 class LocalStorage : Storage {
     private var uidPlayer: UInt = 0u
@@ -30,6 +27,8 @@ class LocalStorage : Storage {
     override fun read(
         uInt: UInt?,
         type: Int,
+        offset: UInt,
+        limit: UInt,
     ): Collection<Domain>? {
         TODO("Not yet implemented")
     }

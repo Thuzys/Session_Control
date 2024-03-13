@@ -3,7 +3,9 @@ package pt.isel.ls.storage
 import pt.isel.ls.domain.Domain
 
 /**
- * Representation of the domain's storage.
+ * Interface representing the storage of domain objects.
+ *
+ * This interface provides methods for creating, reading, updating, and deleting [Domain] objects in the storage.
  */
 interface Storage {
     /**
@@ -15,16 +17,25 @@ interface Storage {
     fun create(newItem: Domain): UInt
 
     /**
-     * Read the details of an item.
+     * Reads the details of an item or a collection of items from the storage.
      *
-     * @param uInt the identifier of each item.
-     * @param type the hash of each instance class of [Domain].
-     * @return a [Collection] of [Domain] containing all the information wanted or null if nothing is found.
+     * @param uInt The unique identifier of each item.
+     * If it's provided, the function will return the details of the item with this identifier.
+     * If it's null, the function will return a collection of items.
+     * @param type The hash of each instance class of [Domain].
+     * It's used to determine the type of items to be retrieved from the storage.
+     * @param offset The offset to be applied to the collection.
+     * It's used for pagination purposes, to skip a certain number of items in the collection.
+     * @param limit The limit to be applied to the collection.
+     * It's used for pagination purposes, to limit the number of items returned in the collection.
+     * @return A collection of [Domain] objects containing all the information wanted
+     * or null if nothing is found.
      */
     fun read(
         uInt: UInt?,
         type: Int,
-        // TODO: Implement offset and limit
+        offset: UInt,
+        limit: UInt,
     ): Collection<Domain>?
 
     /**
@@ -43,5 +54,5 @@ interface Storage {
      *
      * @param uInt the identifier of an [Domain].
      */
-    fun delete(uInt: UInt)
+    fun delete(uInt: UInt) // TODO fix error
 }

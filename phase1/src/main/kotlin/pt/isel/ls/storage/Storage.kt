@@ -34,8 +34,8 @@ interface Storage {
     fun read(
         uInt: UInt?,
         type: Int,
-        offset: Int,
-        limit: Int,
+        offset: UInt,
+        limit: UInt,
     ): Collection<Domain>?
 
     /**

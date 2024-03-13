@@ -119,7 +119,7 @@ class SessionServices(private val dataMem: SessionDataMem) {
         }
 
     /**
-     * returns the details of player.
+     * Returns the details of player.
      *
      * @param uuid the identifier of each player.
      * @return a [Player] containing all the information wanted or null if nothing is found.

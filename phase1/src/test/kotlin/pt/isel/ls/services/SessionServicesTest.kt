@@ -1,10 +1,13 @@
 package pt.isel.ls.services
 
 import kotlinx.datetime.LocalDateTime
+import pt.isel.ls.domain.Game
+import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.storage.SessionDataMem
 import pt.isel.ls.storage.StorageStunt
+import pt.isel.ls.utils.getSessionState
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -123,7 +126,10 @@ class SessionServicesTest {
     @Test
     fun `get Game by developer and genres`() {
         makeSessionTest {
-            val games = it.searchGameByDevAndGenres("dev", setOf("genre"))
+            val games =
+                it.searchBy<Game>(Game.hash, 0u, 10u) { game ->
+                    game.dev == "dev" && game.genres.containsAll(setOf("genre"))
+                }
             assertEquals(2, games.size)
         }
     }
@@ -131,7 +137,7 @@ class SessionServicesTest {
     @Test
     fun `get Session by gameID`() {
         makeSessionTest {
-            val sessions = it.getSessions(1u)
+            val sessions = it.searchBy<Session>(Session.hash, 0u, 10u) { session -> session.gid == 1u }
             assertEquals(2, sessions.size)
             assertTrue(sessions.all { session -> session.gid == 1u })
         }
@@ -140,7 +146,7 @@ class SessionServicesTest {
     @Test
     fun `no match in trying to get Sessions`() {
         makeSessionTest {
-            val sessions = it.getSessions(8u)
+            val sessions = it.searchBy<Session>(Session.hash, 0u, 10u) { session -> session.gid == 8u }
             assertEquals(0, sessions.size)
         }
     }
@@ -148,7 +154,11 @@ class SessionServicesTest {
     @Test
     fun `get Sessions by date`() {
         makeSessionTest {
-            val sessions = it.getSessions(1u, date = LocalDateTime(2024, 3, 10, 12, 30))
+            val sessions =
+                it.searchBy<Session>(Session.hash, 0u, 10u) { session ->
+                    session.gid == 1u &&
+                        session.date == LocalDateTime(2024, 3, 10, 12, 30)
+                }
             assertEquals(2, sessions.size)
             assertTrue(sessions.all { session -> session.date == LocalDateTime(2024, 3, 10, 12, 30) })
         }
@@ -157,9 +167,15 @@ class SessionServicesTest {
     @Test
     fun `get Sessions by state`() {
         makeSessionTest {
-            val closeSessions = it.getSessions(1u, state = SessionState.CLOSE)
+            val closeSessions =
+                it.searchBy<Session>(Session.hash, 0u, 10u) { session ->
+                    session.gid == 1u && getSessionState(session) == SessionState.CLOSE
+                }
             assertEquals(1, closeSessions.size)
-            val openSessions = it.getSessions(1u, state = SessionState.OPEN)
+            val openSessions =
+                it.searchBy<Session>(Session.hash, 0u, 10u) { session ->
+                    session.gid == 1u && getSessionState(session) == SessionState.OPEN
+                }
             assertEquals(1, openSessions.size)
         }
     }
@@ -167,7 +183,10 @@ class SessionServicesTest {
     @Test
     fun `get Sessions by player ID`() {
         makeSessionTest {
-            val sessions = it.getSessions(1u, playerId = 1u)
+            val sessions =
+                it.searchBy<Session>(Session.hash, 0u, 10u) { session ->
+                    session.gid == 1u && session.players.any { player -> player.uuid == 1u }
+                }
             assertEquals(2, sessions.size)
             assertTrue(sessions.all { session -> session.players.any { player -> player.uuid == 1u } })
         }
@@ -176,7 +195,10 @@ class SessionServicesTest {
     @Test
     fun `get Game by developer and genres with no results`() {
         makeSessionTest {
-            val games = it.searchGameByDevAndGenres("dev", setOf("genre2"))
+            val games =
+                it.searchBy<Game>(Game.hash, 0u, 10u) { game ->
+                    game.dev == "dev" && game.genres.containsAll(setOf("genre2"))
+                }
             assertEquals(0, games.size)
         }
     }

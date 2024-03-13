@@ -1,10 +1,9 @@
 package pt.isel.ls.services
 
-import kotlin.test.Test
-import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.storage.GameDataMem
 import pt.isel.ls.storage.GameStorageStunt
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
@@ -42,10 +41,9 @@ class GameManagementTest {
     @Test
     fun `error getting details of a game`() {
         makeGameManagementTest {
-            assertFailsWith<NoSuchElementException> { it.getGameDetails(60u) }
+            assertFailsWith<ServicesError> { it.getGameDetails(60u) }
         }
     }
-
 
     @Test
     fun `get Game by developer and genres`() {

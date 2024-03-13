@@ -44,11 +44,12 @@ class GameDataMemTest {
     @Test
     fun `get Game by developer and genres`() {
         makeGameDataMemTest {
-            val games = it.getGameByDevAndGenres { games ->
-                games.filter { game ->
-                    game.dev == "dev" && game.genres.containsAll(setOf("genre"))
+            val games =
+                it.getGameByDevAndGenres { games ->
+                    games.filter { game ->
+                        game.dev == "dev" && game.genres.containsAll(setOf("genre"))
+                    }
                 }
-            }
             assertEquals(2, games.size)
         }
     }
@@ -56,11 +57,12 @@ class GameDataMemTest {
     @Test
     fun `get Game by developer and genres with no results`() {
         makeGameDataMemTest {
-            val games = it.getGameByDevAndGenres { games ->
-                games.filter { game ->
-                    game.dev == "dev" && game.genres.containsAll(setOf("genre1"))
+            val games =
+                it.getGameByDevAndGenres { games ->
+                    games.filter { game ->
+                        game.dev == "dev" && game.genres.containsAll(setOf("genre1"))
+                    }
                 }
-            }
             assertEquals(0, games.size)
         }
     }

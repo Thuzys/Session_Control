@@ -35,8 +35,9 @@ class GameManagement(private val gameDataMem: GameDataMem) : GameServices {
 
     private fun filterByDevAndGenres(
         dev: String,
-        genres: Collection<String>
-    ): (Iterable<Game>) -> Collection<Game> = { games ->
+        genres: Collection<String>,
+    ): (Iterable<Game>) -> Collection<Game> =
+        { games ->
             games.filter { game ->
                 game.dev == dev && game.genres.containsAll(genres)
             }

@@ -58,7 +58,7 @@ interface SessionMInterface {
         date: LocalDateTime? = null,
         state: SessionState? = null,
         playerId: UInt? = null,
-        offset: UInt = 0u,
-        limit: UInt = 10u,
+        offset: UInt? = 0u,
+        limit: UInt? = 10u,
     ): Collection<Session>
 }

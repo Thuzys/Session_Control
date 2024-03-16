@@ -1,5 +1,7 @@
 package pt.isel.ls.utils
 
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.toLocalDateTime
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
@@ -75,7 +77,59 @@ fun getParameter(
  * @param msg The message of the response.
  * @return The response with the given status and message.
  */
-fun returnRequest(
+fun makeResponse(
     status: Status,
     msg: String,
 ): Response = Response(status).body(msg).header("Content-Type", "application/json")
+
+/**
+ * Verifies and parses a date string into a LocalDateTime object.
+ *
+ * @param date A string representing the date.
+ * @return A LocalDateTime object parsed from the input date string, or null if the input date is invalid.
+ */
+fun dateVerification(date: String?): LocalDateTime? {
+    return try {
+        date?.toLocalDateTime()
+    } catch (e: IllegalArgumentException) {
+        null
+    }
+}
+
+/**
+ * Reads the body of a request and returns it as a map.
+ *
+ * @param request The request from which the body is to be read.
+ * @return The body of the request as a map.
+ */
+fun readBody(request: Request): Map<String, String> {
+    val body = request.bodyString()
+    return if (body.isBlank()) {
+        emptyMap()
+    } else {
+        body.filter { it !in setOf('{', '}') }
+            .split(", ").associate {
+                val (key, value) = it.split(": ")
+                key to value
+            }
+    }
+}
+
+/**
+ * Creates a response with a given status and message.
+ *
+ * @param status The status of the response.
+ * @param msg The message of the response.
+ * @param block The block of code to be executed.
+ * @return The response with the given status and message.
+ */
+inline fun tryResponse(
+    status: Status,
+    msg: String,
+    block: () -> Response,
+): Response =
+    try {
+        block()
+    } catch (e: ServicesError) {
+        makeResponse(status, e.message ?: msg)
+    }

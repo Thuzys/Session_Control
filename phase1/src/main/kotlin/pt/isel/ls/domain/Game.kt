@@ -22,22 +22,4 @@ data class Game(
         require(dev.isNotBlank()) { "Game's developer can´t be empty." }
         require(genres.isNotEmpty()) { "Game needs to have at least one genre." }
     }
-
-    companion object {
-        val hash: Int = hashCode()
-    }
 }
-
-/**
- * Creates a new game.
- *
- * @receiver the name of the game([String]).
- * @param gameDetails the developer and the genres to be associated to the game.
- * @return [Game] a new game.
- */
-infix fun String.associatedTo(gameDetails: Pair<String, Collection<String>>) =
-    Game(
-        name = this,
-        dev = gameDetails.first,
-        genres = gameDetails.second,
-    )

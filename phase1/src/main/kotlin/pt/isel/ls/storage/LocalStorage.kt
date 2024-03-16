@@ -37,4 +37,8 @@ class LocalStorage<T> : Storage<T> {
     ) {
         TODO("Not yet implemented")
     }
+
+    override fun delete(uInt: UInt) {
+        TODO("Not yet implemented")
+    }
 }

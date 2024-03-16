@@ -4,12 +4,15 @@ import kotlinx.datetime.LocalDateTime
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.addPlayer
-import pt.isel.ls.storage.PlayerDataMem
-import pt.isel.ls.storage.SessionDataMem
+import pt.isel.ls.storage.PlayerDataInterface
+import pt.isel.ls.storage.SessionDataInterface
 import pt.isel.ls.utils.getSessionState
 import pt.isel.ls.utils.tryCatch
 
-class SessionManagement(private val sessionDataMem: SessionDataMem, private val playerDataMem: PlayerDataMem) : SessionMInterface {
+class SessionManagement(
+    private val sessionDataMem: SessionDataInterface,
+    private val playerDataMem: PlayerDataInterface,
+) : SessionMInterface {
     override fun addPlayer(
         player: UInt,
         session: UInt,
@@ -46,7 +49,7 @@ class SessionManagement(private val sessionDataMem: SessionDataMem, private val 
             session.gid == gid &&
                 (date == null || session.date == date) &&
                 (state == null || getSessionState(session) == state) &&
-                (playerId == null || session.players.any { player -> player.uuid == playerId })
+                (playerId == null || session.players.any { player -> player.pid == playerId })
         }
     }
 }

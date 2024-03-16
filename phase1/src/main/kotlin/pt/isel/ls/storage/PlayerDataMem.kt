@@ -12,5 +12,7 @@ import pt.isel.ls.domain.Player
 class PlayerDataMem(private val mem: Storage<Player>) : PlayerDataInterface {
     override fun storePlayer(newPlayer: Player): UInt = mem.create(newPlayer)
 
-    override fun readPlayer(pid: UInt): Player = mem.read(pid)?.first() ?: throw NoSuchElementException("Player not found")
+    override fun readPlayer(pid: UInt): Player =
+        mem.read(pid)?.first()
+            ?: throw NoSuchElementException("Player not found.")
 }

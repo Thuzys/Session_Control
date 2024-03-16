@@ -104,7 +104,7 @@ class SessionManagementTest {
         makeSessionTest {
             val sessions = it.getSessions(1u, playerId = 1u)
             assertEquals(2, sessions.size)
-            assertTrue(sessions.all { session -> session.players.any { player -> player.uuid == 1u } })
+            assertTrue(sessions.all { session -> session.players.any { player -> player.pid == 1u } })
         }
     }
 }

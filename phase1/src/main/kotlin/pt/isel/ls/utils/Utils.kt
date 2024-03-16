@@ -1,5 +1,8 @@
 package pt.isel.ls.utils
 
+import org.http4k.core.Request
+import org.http4k.core.Response
+import org.http4k.core.Status
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.errors.DataMemError
@@ -55,3 +58,27 @@ internal inline fun <T> tryCatch(
     } catch (domainError: IllegalStateException) {
         throw ServicesError("$msg: ${domainError.message}")
     }
+
+/**
+ * Gets a parameter from a request.
+ *
+ * @param request The request from which the parameter is to be retrieved.
+ * @param parameter The parameter to be retrieved.
+ * @return The parameter from the request.
+ */
+fun getParameter(
+    request: Request,
+    parameter: String,
+): String? = request.query(parameter)
+
+/**
+ * Creates a response with a given status and message.
+ *
+ * @param status The status of the response.
+ * @param msg The message of the response.
+ * @return The response with the given status and message.
+ */
+fun returnRequest(
+    status: Status,
+    msg: String,
+): Response = Response(status).body(msg).header("Content-Type", "application/json")

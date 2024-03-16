@@ -1,10 +1,10 @@
 package pt.isel.ls.utils
 
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.toLocalDateTime
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.toLocalDateTime
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.errors.ServicesError

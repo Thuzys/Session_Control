@@ -3,6 +3,9 @@ package pt.isel.ls.webApi
 import org.http4k.core.Request
 import org.http4k.core.Response
 
+/**
+ * Interface defining operations for handling sessions in the web API.
+ */
 interface SessionHandlerInterface {
     /**
      * Creates a new session based on the request data.

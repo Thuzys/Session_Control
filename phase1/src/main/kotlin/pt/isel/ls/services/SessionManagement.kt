@@ -15,7 +15,7 @@ import pt.isel.ls.utils.tryCatch
 class SessionManagement(
     private val sessionDataMem: SessionDataInterface,
     private val playerDataMem: PlayerDataInterface,
-) : SessionMInterface {
+) : SessionServices {
     override fun addPlayer(
         player: UInt,
         session: UInt,

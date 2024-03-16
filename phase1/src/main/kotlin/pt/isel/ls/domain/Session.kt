@@ -1,6 +1,7 @@
 package pt.isel.ls.domain
 
 import kotlinx.datetime.LocalDateTime
+import kotlinx.serialization.Serializable
 
 /**
  * Represents a game session with specified capacity, game identifier, date, and UUID.
@@ -12,6 +13,7 @@ import kotlinx.datetime.LocalDateTime
  * @param players Collection of players currently in the session.
  * @throws IllegalArgumentException If the capacity is zero.
  */
+@Serializable
 data class Session(
     val sid: UInt? = null,
     val capacity: UInt,

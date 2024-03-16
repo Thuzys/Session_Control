@@ -7,4 +7,4 @@ package pt.isel.ls.domain.errors
  *
  * @param msg The detailed message of this error.
  */
-class ServicesError(msg: String) : IllegalStateException(msg)
+class ServicesError(msg: String?) : IllegalStateException(msg)

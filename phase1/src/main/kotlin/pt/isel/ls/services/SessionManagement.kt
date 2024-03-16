@@ -9,6 +9,9 @@ import pt.isel.ls.storage.SessionDataInterface
 import pt.isel.ls.utils.getSessionState
 import pt.isel.ls.utils.tryCatch
 
+/**
+ * Represents the services related to the session in the application.
+ */
 class SessionManagement(
     private val sessionDataMem: SessionDataInterface,
     private val playerDataMem: PlayerDataInterface,

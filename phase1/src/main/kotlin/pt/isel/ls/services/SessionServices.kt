@@ -5,7 +5,14 @@ import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.errors.ServicesError
 
-interface SessionMInterface {
+/**
+ * Represents the services related to the session in the application.
+ *
+ * This interface provides methods for adding a player to a session, creating a new session, and retrieving the details
+ * of a session.
+ * The operations are defined by the methods of the interface.
+ */
+interface SessionServices {
     /**
      * Adds a player to a session.
      * Retrieves the player information based on the given player identifier (uuid) and adds it to the session

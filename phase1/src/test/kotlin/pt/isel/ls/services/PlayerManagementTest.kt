@@ -8,7 +8,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class PlayerManagementTest {
-    private fun makePlayerTest(code: (player: PlayerManagement) -> Unit) {
+    private fun makePlayerTest(code: (player: PlayerServices) -> Unit) {
         PlayerManagement(PlayerDataMem(PlayerStorageStunt())).run { code(this) }
     }
 

@@ -1,21 +1,26 @@
 package pt.isel.ls.domain
 
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
 import java.util.UUID
 
 /**
  * Represents a Player.
  *
- * @param pId the player’s identifier (unique).
+ * @param pid the player’s identifier (unique).
  * @param name the UserName of the player.
  * @param email the unique email of a player.
  * @param token the access token of each player.
  * @throws IllegalArgumentException if the name is empty.
  */
+@Serializable
 data class Player(
     val pid: UInt? = null,
     val name: String,
     val email: Email,
+    @Contextual
     val token: UUID = UUID.randomUUID(),
+    // use what instead of @Contextual?
 ) {
     init {
         require(name.isNotBlank()) { "name must not be blank." }

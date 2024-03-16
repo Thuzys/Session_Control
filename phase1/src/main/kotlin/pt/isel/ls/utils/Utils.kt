@@ -20,7 +20,7 @@ private val emailPattern: Regex = "^[A-Za-z](.*)(@)(.+)(\\.)(.+)".toRegex()
  * - Followed by one or more characters.
  * - Contains a dot ('.') symbol.
  * - Ends with one or more characters.
- *
+ * 
  * @param email The email to be validated.
  * @return true if the email has the correct pattern, false otherwise.
  */

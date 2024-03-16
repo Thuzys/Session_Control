@@ -2,6 +2,13 @@ package pt.isel.ls.storage
 
 import pt.isel.ls.domain.Session
 
+/**
+ * The interface that defines the operations to be performed on the Session's data.
+ *
+ * @property createSession the operation to store a new session.
+ * @property readSession the operation to read the details of a session.
+ * @property updateSession the operation to update a session.
+ */
 interface SessionDataInterface {
     /**
      * Create a new item and storage the same.

@@ -15,11 +15,15 @@ class SessionDataMem(private val mem: Storage<Session>) : SessionDataInterface {
 
     override fun readSession(
         sid: UInt?,
-        offset: UInt,
-        limit: UInt,
-    ): Collection<Session> =
-        mem.read(sid, offset, limit)
-            ?: throw NoSuchElementException("Unable to find the item.")
+        offset: UInt?,
+        limit: UInt?,
+    ): Collection<Session> {
+        return if (offset == null || limit == null) {
+            mem.read(sid) ?: throw NoSuchElementException("Unable to find the item.")
+        } else {
+            return mem.read(sid, offset, limit) ?: throw NoSuchElementException("Unable to find the item.")
+        }
+    }
 
     override fun updateSession(
         sid: UInt,

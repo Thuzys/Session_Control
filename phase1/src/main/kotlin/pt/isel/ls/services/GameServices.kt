@@ -4,7 +4,7 @@ import pt.isel.ls.domain.Game
 
 /**
  * Represents the game's services management.
- * This interface allows to define the operations that can be performed over the game's data.
+ * This interface allows defining the operations that can be performed over the game's data.
  * The operations are:
  * - Create a new game.
  * - Get the game's details.

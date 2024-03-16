@@ -1,5 +1,8 @@
 package pt.isel.ls.utils
 
+import org.http4k.core.Request
+import org.http4k.core.Response
+import org.http4k.core.Status
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.errors.ServicesError
@@ -30,6 +33,71 @@ fun validateEmail(email: String): Boolean = email.matches(emailPattern)
 fun getSessionState(session: Session): SessionState {
     return if (session.players.size.toUInt() < session.capacity) SessionState.OPEN else SessionState.CLOSE
 }
+
+/**
+ * Gets a parameter from a request.
+ *
+ * @param request The request from which the parameter is to be retrieved.
+ * @param parameter The parameter to be retrieved.
+ * @return The parameter from the request.
+ */
+fun getParameter(
+    request: Request,
+    parameter: String,
+): String? = request.query(parameter)
+
+/**
+ * Reads the body of a request and returns it as a map.
+ *
+ * @param request The request from which the body is to be read.
+ * @return The body of the request as a map.
+ */
+fun readBody(request: Request): Map<String, String> {
+    val body = request.bodyString()
+    return if (body.isBlank()) {
+        emptyMap()
+    } else {
+        body.filter { it !in setOf('{', '}') }
+            .split(", ").associate {
+                val (key, value) = it.split(": ")
+                key to value
+            }
+    }
+}
+
+/**
+ * Creates a response with a given status and message.
+ * The response is created by executing a block of code.
+ * If an exception occurs, the response will have the given status and message.
+ * Otherwise, the response will be the block of code results.
+ *
+ * @param status The status of the response.
+ * @param msg The message of the response.
+ * @param block The block of code to be executed.
+ * @return The response with the given status and message.
+ */
+inline fun tryResponse(
+    status: Status,
+    msg: String,
+    block: () -> Response,
+): Response =
+    try {
+        block()
+    } catch (e: ServicesError) {
+        makeResponse(status, e.message ?: msg)
+    }
+
+/**
+ * Creates a response with a given status and message.
+ *
+ * @param status The status of the response.
+ * @param msg The message of the response.
+ * @return The response with the given status and message.
+ */
+fun makeResponse(
+    status: Status,
+    msg: String,
+): Response = Response(status).body(msg).header("Content-Type", "application/json")
 
 /**
  * Tries to execute a block of code and catches any exception that may occur.

@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class PlayerDataMemTest {
-    private fun makePlayerDataMemTest(code: (playerDataMem: PlayerDataMem) -> Unit) {
+    private fun makePlayerDataMemTest(code: (playerDataMem: PlayerDataInterface) -> Unit) {
         PlayerDataMem(PlayerStorageStunt()).run { code(this) }
     }
 

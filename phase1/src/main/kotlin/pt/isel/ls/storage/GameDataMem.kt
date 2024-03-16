@@ -2,6 +2,15 @@ package pt.isel.ls.storage
 
 import pt.isel.ls.domain.Game
 
+/**
+ * Represents the game's data management.
+ *
+ * This class allows defining the operations that can be performed over the game's data.
+ * The operations are:
+ * - Create a new game.
+ * - Get the game's details.
+ * - Get the game by developer and genres.
+ */
 class GameDataMem(private val storage: Storage<Game>) : GameDataInterface {
     override fun createGame(
         name: String,

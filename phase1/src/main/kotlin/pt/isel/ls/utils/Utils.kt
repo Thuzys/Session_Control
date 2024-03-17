@@ -1,5 +1,7 @@
 package pt.isel.ls.utils
 
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.toLocalDateTime
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
@@ -59,8 +61,12 @@ fun readBody(request: Request): Map<String, String> {
     } else {
         body.filter { it !in setOf('{', '}') }
             .split(", ").associate {
-                val (key, value) = it.split(": ")
-                key to value
+                val (key, value) =
+                    it.split(
+                        ":",
+                        limit = 2,
+                    )
+                key to value.trim()
             }
     }
 }
@@ -120,3 +126,17 @@ internal inline fun <T> tryCatch(
     } catch (domainError: IllegalStateException) {
         throw ServicesError("$msg: ${domainError.message}")
     }
+
+/**
+ * Verifies and parses a date string into a LocalDateTime object.
+ *
+ * @param date A string representing the date.
+ * @return A LocalDateTime object parsed from the input date string, or null if the input date is invalid.
+ */
+fun dateVerification(date: String?): LocalDateTime? {
+    return try {
+        date?.toLocalDateTime()
+    } catch (e: IllegalArgumentException) {
+        null
+    }
+}

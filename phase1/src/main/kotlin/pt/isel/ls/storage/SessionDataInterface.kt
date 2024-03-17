@@ -32,8 +32,8 @@ interface SessionDataInterface {
      */
     fun readSession(
         sid: UInt? = null,
-        offset: UInt = 0u,
-        limit: UInt = 1u,
+        offset: UInt? = 0u,
+        limit: UInt? = 1u,
     ): Collection<Session>
 
     /**

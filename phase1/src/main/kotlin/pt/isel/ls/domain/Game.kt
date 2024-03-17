@@ -1,5 +1,7 @@
 package pt.isel.ls.domain
 
+import kotlinx.serialization.Serializable
+
 /**
  * Represents a game.
  *
@@ -11,6 +13,7 @@ package pt.isel.ls.domain
  * @throws IllegalArgumentException If the developer is empty.
  * @throws IllegalArgumentException If the genres are empty.
  */
+@Serializable
 data class Game(
     val uuid: UInt? = null,
     val name: String,

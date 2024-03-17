@@ -11,3 +11,16 @@ enum class SessionState {
     OPEN,
     CLOSE,
 }
+
+/**
+ * Extension function to parse a string into a SessionState enum value.
+ *
+ * @return The corresponding SessionState enum value, or null if the string does not match any known state.
+ */
+fun String?.toSessionState(): SessionState? {
+    return when (this?.uppercase()) {
+        "OPEN" -> SessionState.OPEN
+        "CLOSE" -> SessionState.CLOSE
+        else -> null
+    }
+}

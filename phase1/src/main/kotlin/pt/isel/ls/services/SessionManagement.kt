@@ -45,8 +45,8 @@ class SessionManagement(
         date: LocalDateTime?,
         state: SessionState?,
         playerId: UInt?,
-        offset: UInt,
-        limit: UInt,
+        offset: UInt?,
+        limit: UInt?,
     ): Collection<Session> {
         return sessionDataMem.readSession(offset = offset, limit = limit).filter { session ->
             session.gid == gid &&

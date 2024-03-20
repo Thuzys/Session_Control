@@ -14,7 +14,7 @@ import java.util.UUID
  * This class provides methods for serializing and deserializing [UUID] objects.
  * @see KSerializer
  */
-object UUIDSerializer : KSerializer<UUID> { 
+object UUIDSerializer : KSerializer<UUID> {
     override val descriptor: SerialDescriptor =
         PrimitiveSerialDescriptor("UUID", PrimitiveKind.STRING)
 

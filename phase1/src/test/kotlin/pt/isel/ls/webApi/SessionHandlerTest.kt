@@ -128,4 +128,41 @@ class SessionHandlerTest {
             assertEquals(Status.NOT_FOUND, response.status)
         }
     }
+
+    @Test
+    fun `test getSessions with valid parameters`() {
+        val gid = "1"
+        val state = "close"
+        val getSessionsRequest = Request(Method.GET, "/sessions?gid=$gid&state=$state")
+        createSessionHandler(getSessionsRequest) { request: Request ->
+            val response = getSessions(request)
+            assertEquals(Status.FOUND, response.status)
+        }
+    }
+
+    @Test
+    fun `getSessions with missing gid`() {
+        createSessionHandler(Request(Method.GET, "/sessions")) { request: Request ->
+            val response = getSessions(request)
+            assertEquals(Status.BAD_REQUEST, response.status)
+        }
+    }
+
+    @Test
+    fun `getSessions with internal server error`() {
+        val gid = "3"
+        createSessionHandler(Request(Method.GET, "/sessions?gid=$gid")) { request: Request ->
+            val response = getSessions(request)
+            assertEquals(Status.INTERNAL_SERVER_ERROR, response.status)
+        }
+    }
+
+    @Test
+    fun `getSessions not found`() {
+        val gid = "400"
+        createSessionHandler(Request(Method.GET, "/sessions?gid=$gid")) { request: Request ->
+            val response = getSessions(request)
+            assertEquals(Status.NOT_FOUND, response.status)
+        }
+    }
 }

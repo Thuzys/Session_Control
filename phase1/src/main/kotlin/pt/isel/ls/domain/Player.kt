@@ -1,7 +1,7 @@
 package pt.isel.ls.domain
 
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
+import pt.isel.ls.storage.UUIDSerializer
 import java.util.UUID
 
 /**
@@ -18,9 +18,9 @@ data class Player(
     val pid: UInt? = null,
     val name: String,
     val email: Email,
-    @Contextual
+    @Serializable(with = UUIDSerializer::class)
     val token: UUID = UUID.randomUUID(),
-    // use what instead of @Contextual?
+    // Ist ok to use this Serializer here?
 ) {
     init {
         require(name.isNotBlank()) { "name must not be blank." }

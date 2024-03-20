@@ -9,11 +9,14 @@ import pt.isel.ls.domain.errors.ServicesError
 
 private val pid = 1u
 private val sid1 = 1u
+private val sid2 = 2u
 private val gid1 = 1u
 private val defaultMail = Email("default@mail.com")
 private val player1 = Player(1u, "test1", defaultMail)
+private val player2 = Player(2u, "test2", defaultMail)
 private val date1 = LocalDateTime(2024, 3, 10, 12, 30)
 private val players: Collection<Player> = listOf(player1)
+private val players2: Collection<Player> = listOf(player1, player2)
 
 object SessionManagementStunt : SessionServices {
     override fun addPlayer(
@@ -47,6 +50,12 @@ object SessionManagementStunt : SessionServices {
         offset: UInt?,
         limit: UInt?,
     ): Collection<Session> {
-        TODO()
+        return if (gid == gid1 && state == SessionState.CLOSE) {
+            listOf(Session(sid1, 1u, gid1, date1, players), Session(sid2, 2u, gid1, date1, players2))
+        } else if (gid == 400u) {
+            emptyList()
+        } else {
+            throw ServicesError("There are no Sessions that satisfy the given details")
+        }
     }
 }

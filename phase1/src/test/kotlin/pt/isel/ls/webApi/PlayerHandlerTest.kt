@@ -94,25 +94,27 @@ class PlayerHandlerTest {
             )
         }
 
-//    @Test
-//    fun `player found`() =
-//        createPlayerHandler(
-//            request = Request(Method.GET, "/playerTest?pid=${PlayerManagementStunt.playerId}"),
-//        ) {request: Request ->
-//            val response = getPlayer(request)
-//            assertEquals(Status.FOUND, response.status)
-//        }
-//
-//    @Test
-//    fun `message of player found`() =
-//        createPlayerHandler(
-//            request = Request(Method.GET, "/playerTest?pid=${PlayerManagementStunt.playerId}"),
-//        ) {request: Request ->
-//            val response = getPlayer(request)
-//            assertEquals(
-//                expected = "{\"id\":${PlayerManagementStunt.playerId},\"name\":\"Test\",\"email\":" +
-//                        "\"${PlayerManagementStunt.playerEmail}\",\"token\":\"${PlayerManagementStunt.playerToken}\"}",
-//                actual = response.bodyString(),
-//            )
-//        }
+    @Test
+    fun `player found`() =
+        createPlayerHandler(
+            request = Request(Method.GET, "/playerTest?pid=${PlayerManagementStunt.playerId}"),
+        ) { request: Request ->
+            val response = getPlayer(request)
+            assertEquals(Status.FOUND, response.status)
+        }
+
+    @Test
+    fun `message of player found`() =
+        createPlayerHandler(
+            request = Request(Method.GET, "/playerTest?pid=${PlayerManagementStunt.playerId}"),
+        ) { request: Request ->
+            val response = getPlayer(request)
+            assertEquals(
+                expected =
+                    "{\"pid\":${PlayerManagementStunt.playerId},\"name\":\"Test\",\"email\":" +
+                        "{\"email\":\"${PlayerManagementStunt.playerEmail.email}\"},\"token\"" +
+                        ":\"${PlayerManagementStunt.playerToken}\"}",
+                actual = response.bodyString(),
+            )
+        }
 }

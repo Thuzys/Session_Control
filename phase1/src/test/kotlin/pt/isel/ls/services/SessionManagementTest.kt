@@ -14,7 +14,9 @@ import kotlin.test.assertTrue
 
 class SessionManagementTest {
     private fun makeSessionTest(code: (session: SessionManagement) -> Unit) {
-        SessionManagement(SessionDataMem(SessionStorageStunt()), PlayerDataMem(PlayerStorageStunt())).run { code(this) }
+        SessionManagement(SessionDataMem(SessionStorageStunt()), PlayerDataMem(PlayerStorageStunt())).run {
+            code(this)
+        }
     }
 
     @Test

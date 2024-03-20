@@ -84,8 +84,7 @@ class GameHandlerTest {
             val response = getGameByDevAndGenres(request)
             assertEquals("Bad Request", response.bodyString())
         }
-
-    /*
+/*
     @Test
     fun `game by dev and genres found`() =
         makeGameHandlerTest(
@@ -128,10 +127,9 @@ class GameHandlerTest {
 
     @Test
     fun `message of game not found`() =
-        makeGameHandlerTest(Request(Method.GET, "/gameTest?") { request: Request ->
+        makeGameHandlerTest(Request(Method.GET, "/gameTest?")) { request: Request ->
             val response = getGameDetails(request)
             assertEquals("Game not found.", response.bodyString())
         }
-
-     */
+ */
 }

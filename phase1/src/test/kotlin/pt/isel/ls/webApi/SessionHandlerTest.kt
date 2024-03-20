@@ -24,7 +24,7 @@ class SessionHandlerTest {
     @Test
     fun `session created`() {
         createSessionHandler(
-            request = Request(Method.POST, "/sessionTest").body("{gid: 1, date: 2024-03-16T12:30:00, capacity: 10}"),
+            request = Request(Method.POST, "/sessionTest").body("{gid: 1, date: 2024-03-16T12:30, capacity: 10}"),
         ) { request: Request ->
             val response = createSession(request)
             assertEquals(Status.CREATED, response.status)
@@ -110,21 +110,22 @@ class SessionHandlerTest {
             assertEquals(Status.OK, response.status)
         }
     }
+
+    @Test
+    fun `session found`() {
+        val sid = "1"
+        createSessionHandler(Request(Method.GET, "/sessionTest?sid=$sid")) { request: Request ->
+            val response = getSession(request)
+            assertEquals(Status.FOUND, response.status)
+        }
+    }
+
+    @Test
+    fun `session not found`() {
+        val sid = "999"
+        createSessionHandler(Request(Method.GET, "/sessionTest?sid=$sid")) { request: Request ->
+            val response = getSession(request)
+            assertEquals(Status.NOT_FOUND, response.status)
+        }
+    }
 }
-//    @Test
-//    fun `session found`() {
-//        val sid = "1"
-//        createSessionHandler(Request(Method.GET, "/sessionTest?sid=$sid")) { request: Request ->
-//            val response = getSession(request)
-//            assertEquals(Status.FOUND, response.status)
-//        }
-//    }
-//
-//    @Test
-//    fun `session not found`() {
-//        val sid = "999"
-//        createSessionHandler(Request(Method.GET, "/sessionTest?sid=$sid")) { request: Request ->
-//            val response = getSession(request)
-//            assertEquals(Status.NOT_FOUND, response.status)
-//        }
-//    }

@@ -96,5 +96,5 @@ class GameHandler(private val gameManagement: GameServices) : GameHandlerInterfa
      * @param genres The string containing the genres.
      * @return The collection of genres.
      */
-    private fun processGenres(genres: String): Collection<String> = genres.split(",").map { it.trim() }
+    private fun processGenres(genres: String): Collection<String> = genres.split(",")
 }

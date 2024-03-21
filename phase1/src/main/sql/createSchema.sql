@@ -10,9 +10,9 @@ create table GENRES (
 );
 
 create table GAME (
-  gid serial primary key,
-  name varchar(80),
-  developer varchar(80)
+    gid serial primary key,
+    name varchar(80),
+    developer varchar(80)
 );
 
 create table GAME_GENRES (
@@ -28,10 +28,10 @@ create table PLAYER (
 );
 
 create table SESSION (
-    sid serial primary key,
-    capacity int not null check (capacity > 0),
-    gid int not null references GAME(gid),
-    date varchar(80) not null
+     sid serial primary key,
+     capacity int not null check (capacity > 0),
+     gid int not null references GAME(gid),
+     date varchar(80) not null
 );
 
 create table PLAYER_SESSION (

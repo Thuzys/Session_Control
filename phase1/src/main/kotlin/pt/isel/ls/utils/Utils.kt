@@ -192,3 +192,27 @@ fun makePlayers(stmt: PreparedStatement): Collection<Player> {
     }
     return players
 }
+
+fun Connection.makeSession(sessionStmt: PreparedStatement): Collection<Session> {
+    val rs = sessionStmt.executeQuery()
+    val sessions = mutableListOf<Session>()
+    while (rs.next()) {
+        val playerStmt =
+            prepareStatement(
+                "SELECT PLAYER.pid, name, email, token FROM PLAYER " +
+                        "JOIN PLAYER_SESSION ON PLAYER.pid = PLAYER_SESSION.pid" +
+                        " WHERE sid = ?;",
+            )
+        playerStmt.setInt(1, rs.getInt("sid"))
+        sessions.add(
+            Session(
+                rs.getInt("sid").toUInt(),
+                rs.getInt("capacity").toUInt(),
+                rs.getInt("gid").toUInt(),
+                rs.getString("date").toLocalDateTime(),
+                makePlayers(playerStmt),
+            ),
+        )
+    }
+    return sessions
+}

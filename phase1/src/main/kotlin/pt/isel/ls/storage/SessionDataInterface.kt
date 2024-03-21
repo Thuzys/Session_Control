@@ -19,10 +19,11 @@ interface SessionDataInterface {
     fun createSession(newItem: Session): UInt
 
     /**
-     * Reads the details of a [Session] from the session data memory.
+     * Reads the details of a [Session] or multiple [Session] from the session data memory.
      *
      * @param sid The unique identifier of the [Session] to read.
      * If it's provided, the function will return the details of the [Session] with this identifier.
+     * If not, the function will return the first limit sessions after offset index.
      * @param offset The offset to be applied to the collection.
      * It's used for pagination to skip a certain number of items in the collection.
      * @param limit The limit to be applied to the collection.
@@ -32,8 +33,8 @@ interface SessionDataInterface {
      */
     fun readSession(
         sid: UInt? = null,
-        offset: UInt? = 0u,
-        limit: UInt? = 1u,
+        offset: UInt = 0u,
+        limit: UInt = 1u,
     ): Collection<Session>
 
     /**

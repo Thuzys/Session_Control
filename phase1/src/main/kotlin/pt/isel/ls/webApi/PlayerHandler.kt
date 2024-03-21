@@ -6,7 +6,6 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
 import pt.isel.ls.services.PlayerServices
-import pt.isel.ls.utils.getParameter
 import pt.isel.ls.utils.makeResponse
 import pt.isel.ls.utils.readBody
 import pt.isel.ls.utils.tryResponse
@@ -23,9 +22,12 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
         val name = body["name"]
         val email = body["email"]
         return if (name == null || email == null) {
-            makeResponse(Status.BAD_REQUEST, "Bad Request")
+            makeResponse(Status.BAD_REQUEST, "Bad Request, insufficient parameters.")
         } else {
-            tryResponse(Status.INTERNAL_SERVER_ERROR, "Internal Server Error") {
+            tryResponse(
+                errorStatus = Status.INTERNAL_SERVER_ERROR,
+                errorMsg = "Internal Server Error",
+            ) {
                 val (id, token) = playerManagement.createPlayer(name, email)
                 makeResponse(Status.CREATED, "Player created with id $id and token $token.")
             }
@@ -34,11 +36,12 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
 
     override fun getPlayer(request: Request): Response {
         val pid =
-            getParameter(
-                request = request,
-                parameter = "pid",
-            )?.toUIntOrNull() ?: return makeResponse(Status.BAD_REQUEST, "Bad Request")
-        return tryResponse(Status.NOT_FOUND, "Player not found.") {
+            request.query("pid")?.toUIntOrNull()
+                ?: return makeResponse(Status.BAD_REQUEST, "Bad Request, pid not found.")
+        return tryResponse(
+            errorStatus = Status.NOT_FOUND,
+            errorMsg = "Player not found",
+        ) {
             val player = playerManagement.getPlayerDetails(pid)
             makeResponse(Status.FOUND, Json.encodeToString(player))
         }

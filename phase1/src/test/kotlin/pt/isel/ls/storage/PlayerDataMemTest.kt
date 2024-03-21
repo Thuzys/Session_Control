@@ -7,42 +7,43 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class PlayerDataMemTest {
-    private fun makePlayerDataMemTest(code: (playerDataMem: PlayerDataInterface) -> Unit) {
-        PlayerDataMem(PlayerStorageStunt()).run { code(this) }
-    }
+    private fun actionOfPlayerDataMemArrangement(code: (playerDataMem: PlayerDataInterface) -> Unit) =
+        // arrangement
+        PlayerDataMem(PlayerStorageStunt())
+            .let(code)
 
     @Test
-    fun `create a player`() =
-        makePlayerDataMemTest {
-            assertEquals(3u, it.storePlayer("test2" associatedTo Email("test@mail.com")))
+    fun `test of a successful player creation`() =
+        actionOfPlayerDataMemArrangement { dataMem: PlayerDataInterface ->
+            assertEquals(3u, dataMem.storePlayer("test2" associatedTo Email("test@mail.com")))
         }
 
     @Test
-    fun `get details of a player`() =
-        makePlayerDataMemTest {
-            assertEquals("test1", it.readPlayer(1u).name)
+    fun `getting details of a existing player`() =
+        actionOfPlayerDataMemArrangement { dataMem: PlayerDataInterface ->
+            assertEquals("test1", dataMem.readPlayer(1u).name)
         }
 
     @Test
-    fun `get details of a non-existent player`() =
-        makePlayerDataMemTest {
+    fun `message of exception due a readPlayer call of a non-existent player`() =
+        actionOfPlayerDataMemArrangement { dataMem: PlayerDataInterface ->
             assertEquals(
                 expected = "Player not found.",
-                actual = runCatching { it.readPlayer(3u) }.exceptionOrNull()?.message,
+                actual = runCatching { dataMem.readPlayer(3u) }.exceptionOrNull()?.message,
             )
         }
 
     @Test
     fun `type of error getting the details of a non-existing player`() =
-        makePlayerDataMemTest {
-            assertFailsWith<NoSuchElementException> { it.readPlayer(3u) }
+        actionOfPlayerDataMemArrangement { dataMem: PlayerDataInterface ->
+            assertFailsWith<NoSuchElementException> { dataMem.readPlayer(3u) }
         }
 
     @Test
-    fun `error creating a new player`() =
-        makePlayerDataMemTest {
+    fun `exception during a creation of a player with an invalid name`() =
+        actionOfPlayerDataMemArrangement { dataMem: PlayerDataInterface ->
             assertFailsWith<IllegalArgumentException> {
-                it.storePlayer("   " associatedTo Email("valid@mail.com"))
+                dataMem.storePlayer("   " associatedTo Email("valid@mail.com"))
             }
         }
 }

@@ -7,13 +7,13 @@ import kotlin.test.assertFailsWith
 
 class TryCatchTest {
     @Test
-    fun `tryCatch without exception test`() {
+    fun `test of tryCatch without an exception`() {
         val result = tryCatch("test") { 1 }
         assert(result == 1)
     }
 
     @Test
-    fun `tryCatch with IllegalStateException test`() {
+    fun `test of tryCatch with IllegalStateException`() {
         assertFailsWith<ServicesError> {
             tryCatch("test") {
                 throw IllegalStateException("the reason.")
@@ -22,7 +22,7 @@ class TryCatchTest {
     }
 
     @Test
-    fun `tryCatch with IllegalArgumentException test`() {
+    fun `test of tryCatch with IllegalArgumentException`() {
         assertFailsWith<ServicesError> {
             tryCatch("test") {
                 throw IllegalArgumentException("the reason.")
@@ -31,7 +31,7 @@ class TryCatchTest {
     }
 
     @Test
-    fun `tryCatch with NoSuchElementException test`() {
+    fun `test of tryCatch with NoSuchElementException`() {
         assertFailsWith<ServicesError> {
             tryCatch("test") {
                 throw NoSuchElementException("the reason.")
@@ -40,7 +40,7 @@ class TryCatchTest {
     }
 
     @Test
-    fun `tryCatch with exception message test`() {
+    fun `test of tryCatch with exception message`() {
         assertEquals(
             expected = "test: the reason.",
             actual =

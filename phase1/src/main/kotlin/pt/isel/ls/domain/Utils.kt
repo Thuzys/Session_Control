@@ -5,7 +5,6 @@ private val emailPattern: Regex = "^[A-Za-z](.*)(@)(.+)(\\.)(.+)".toRegex()
 /**
  * Validates if an email has the correct pattern.
  *
- * 
  * An email is considered to have the correct pattern if it follows the standard format:
  * - Starts with one or more letters (uppercase or lowercase).
  * - Contains an '@' symbol.

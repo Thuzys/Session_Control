@@ -2,7 +2,6 @@ package pt.isel.ls.services
 
 import pt.isel.ls.domain.Game
 import pt.isel.ls.storage.GameDataMem
-import pt.isel.ls.utils.tryCatch
 
 /**
  * Class responsible for managing the game services.

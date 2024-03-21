@@ -2,6 +2,7 @@ package pt.isel.ls.utils
 
 import org.http4k.core.Method
 import org.http4k.core.Request
+import pt.isel.ls.webApi.getParameter
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

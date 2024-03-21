@@ -3,14 +3,12 @@ package pt.isel.ls.storage
 import org.postgresql.ds.PGSimpleDataSource
 import pt.isel.ls.domain.Email
 import pt.isel.ls.domain.Player
-import pt.isel.ls.utils.executeCommand
-import pt.isel.ls.utils.makePlayers
 import java.sql.Statement
 
 /**
  * Represents the storage of player data.
  *
- * This class implements the [PlayerStorageInterface] and uses a PostgreSQL database to perform the operations.
+ * This class implements the [PlayerStorageInterface] and uses a PostgresSQL database to perform the operations.
  *
  * @param envName The name of the environment variable that contains the connection URL to the database.
  */

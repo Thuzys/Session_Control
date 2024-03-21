@@ -6,8 +6,6 @@ import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.addPlayer
 import pt.isel.ls.storage.PlayerDataInterface
 import pt.isel.ls.storage.SessionDataInterface
-import pt.isel.ls.utils.getSessionState
-import pt.isel.ls.utils.tryCatch
 
 const val DEFAULT_OFFSET = 0u
 const val DEFAULT_LIMIT = 10u

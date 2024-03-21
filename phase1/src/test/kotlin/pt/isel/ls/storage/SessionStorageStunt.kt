@@ -43,7 +43,10 @@ class SessionStorageStunt : Storage<Session> {
         offset: UInt,
         limit: UInt,
     ): Collection<Session>? {
-        return if (uInt == null) {
+        return if (limit == 2u) {
+            hashSession.values.drop(1)
+        }
+        else if (uInt == null) {
             hashSession.values
         } else {
             val session = hashSession[uInt]

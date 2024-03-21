@@ -4,6 +4,9 @@ import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
 import org.junit.jupiter.api.Test
+import pt.isel.ls.domain.Email
+import pt.isel.ls.domain.Player
+import pt.isel.ls.services.PlayerManagementStunt
 import pt.isel.ls.services.SessionManagementStunt
 import kotlin.test.assertEquals
 
@@ -104,7 +107,7 @@ class SessionHandlerTest {
         val playerId = "1"
         val sessionId = "1"
         createSessionHandler(
-            Request(Method.POST, "/addPlayerToSessionTest").body("{player: $playerId, session: $sessionId}"),
+            Request(Method.POST, "/sessionTest").body("{player: $playerId, session: $sessionId}"),
         ) { request: Request ->
             val response = addPlayerToSession(request)
             assertEquals(Status.OK, response.status)
@@ -142,7 +145,7 @@ class SessionHandlerTest {
 
     @Test
     fun `getSessions with missing gid`() {
-        createSessionHandler(Request(Method.GET, "/sessions")) { request: Request ->
+        createSessionHandler(Request(Method.GET, "/sessionTest")) { request: Request ->
             val response = getSessions(request)
             assertEquals(Status.BAD_REQUEST, response.status)
         }
@@ -151,7 +154,7 @@ class SessionHandlerTest {
     @Test
     fun `getSessions with internal server error`() {
         val gid = "3"
-        createSessionHandler(Request(Method.GET, "/sessions?gid=$gid")) { request: Request ->
+        createSessionHandler(Request(Method.GET, "/sessionTest?gid=$gid")) { request: Request ->
             val response = getSessions(request)
             assertEquals(Status.INTERNAL_SERVER_ERROR, response.status)
         }
@@ -160,9 +163,44 @@ class SessionHandlerTest {
     @Test
     fun `getSessions not found`() {
         val gid = "400"
-        createSessionHandler(Request(Method.GET, "/sessions?gid=$gid")) { request: Request ->
+        createSessionHandler(Request(Method.GET, "/sessionTest?gid=$gid")) { request: Request ->
             val response = getSessions(request)
             assertEquals(Status.NOT_FOUND, response.status)
+        }
+    }
+
+    @Test
+    fun `getSession found successfully body comparison`() {
+        val sid = "1"
+        createSessionHandler(
+            request = Request(Method.GET, "//sessionTest?sid=$sid"),
+        ) { request: Request ->
+            val response = getSession(request)
+            assertEquals(
+                expected = "{\"sid\":1,\"capacity\":1,\"gid\":1,\"date\":\"2024-03-10T12:30\"," +
+                        "\"players\":[{\"pid\":1,\"name\":\"test1\",\"email\":{\"email\":\"default@mail.com\"},\"token\":\"${SessionManagementStunt.playerToken}\"}]}",
+                actual = response.bodyString()
+            )
+        }
+    }
+    @Test
+    fun `getSessions found successfully body comparison`() {
+        val sid = "1"
+        val state = "close"
+        createSessionHandler(
+            request = Request(Method.GET, "//sessionTest?gid=$sid&state=$state"),
+        ) { request: Request ->
+            val response = getSessions(request)
+            assertEquals(
+                expected = "[{\"sid\":1,\"capacity\":1,\"gid\":1,\"date\":\"2024-03-10T12:30\"," +
+                        "\"players\":[{\"pid\":1,\"name\":\"test1\",\"email\":{\"email\":\"default@mail.com\"},\"token\":\"${SessionManagementStunt.playerToken}\"}]}," +
+                        "{\"sid\":2,\"capacity\":2,\"gid\":1,\"date\":\"2024-03-10T12:30\"," +
+                        "\"players\":[" +
+                        "{\"pid\":1,\"name\":\"test1\",\"email\":{\"email\":\"default@mail.com\"},\"token\":\"${SessionManagementStunt.playerToken}\"}," +
+                        "{\"pid\":2,\"name\":\"test2\",\"email\":{\"email\":\"default@mail.com\"},\"token\":\"${SessionManagementStunt.playerToken}\"}]}]",
+                actual = response.bodyString()
+
+            )
         }
     }
 }

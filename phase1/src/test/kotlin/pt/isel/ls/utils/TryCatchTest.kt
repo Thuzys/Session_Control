@@ -1,6 +1,7 @@
 package pt.isel.ls.utils
 
 import pt.isel.ls.domain.errors.ServicesError
+import pt.isel.ls.services.tryCatch
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith

@@ -1,5 +1,6 @@
 package pt.isel.ls.utils
 
+import pt.isel.ls.domain.validateEmail
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue

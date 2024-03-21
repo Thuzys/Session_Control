@@ -5,7 +5,6 @@ import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.associatedTo
 import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.storage.PlayerStorageInterface
-import pt.isel.ls.utils.tryCatch
 import java.util.UUID
 
 /**

@@ -21,7 +21,7 @@ class SessionDataMem(private val mem: Storage<Session>) : SessionDataInterface {
         return if (sid != null) {
             mem.read(sid) ?: throw NoSuchElementException("Unable to find the item.")
         } else {
-            mem.read(offset = offset, limit =  limit) ?: throw NoSuchElementException("Unable to find the item.")
+            mem.read(offset = offset, limit = limit) ?: throw NoSuchElementException("Unable to find the item.")
         }
     }
 

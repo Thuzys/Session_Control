@@ -53,12 +53,13 @@ class SessionManagement(
     ): Collection<Session> {
         return sessionDataMem.readSession(
             offset = offset ?: DEFAULT_OFFSET,
-            limit = limit ?: DEFAULT_LIMIT)
+            limit = limit ?: DEFAULT_LIMIT,
+        )
             .filter { session ->
-            session.gid == gid &&
-                (date == null || session.date == date) &&
-                (state == null || getSessionState(session) == state) &&
-                (playerId == null || session.players.any { player -> player.pid == playerId })
-        }
+                session.gid == gid &&
+                    (date == null || session.date == date) &&
+                    (state == null || getSessionState(session) == state) &&
+                    (playerId == null || session.players.any { player -> player.pid == playerId })
+            }
     }
 }

@@ -13,7 +13,7 @@ import pt.isel.ls.domain.errors.ServicesError
 import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.SQLException
-import java.util.*
+import java.util.UUID
 import kotlin.NoSuchElementException
 
 private val emailPattern: Regex = "^[A-Za-z](.*)(@)(.+)(\\.)(.+)".toRegex()
@@ -162,7 +162,7 @@ fun <T> Connection.executeCommand(cmd: Connection.() -> T): T {
         val response = cmd()
         autoCommit = true
         return response
-    }catch (e: SQLException){
+    } catch (e: SQLException) {
         rollback()
         autoCommit = true
         throw e
@@ -197,11 +197,12 @@ fun Connection.makeSession(sessionStmt: PreparedStatement): Collection<Session> 
     val rs = sessionStmt.executeQuery()
     val sessions = mutableListOf<Session>()
     while (rs.next()) {
-        val playerStmt = prepareStatement(
-            "SELECT PLAYER.pid, name, email, token FROM PLAYER " +
+        val playerStmt =
+            prepareStatement(
+                "SELECT PLAYER.pid, name, email, token FROM PLAYER " +
                     "JOIN PLAYER_SESSION ON PLAYER.pid = PLAYER_SESSION.pid" +
                     " WHERE sid = ?;",
-        )
+            )
         playerStmt.setInt(1, rs.getInt("sid"))
         sessions.add(
             Session(
@@ -209,9 +210,9 @@ fun Connection.makeSession(sessionStmt: PreparedStatement): Collection<Session> 
                 rs.getInt("capacity").toUInt(),
                 rs.getInt("gid").toUInt(),
                 rs.getString("date").toLocalDateTime(),
-                makePlayers(playerStmt)
-            )
+                makePlayers(playerStmt),
+            ),
         )
     }
-    return  sessions
+    return sessions
 }

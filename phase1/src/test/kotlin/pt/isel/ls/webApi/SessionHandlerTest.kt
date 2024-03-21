@@ -4,9 +4,6 @@ import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
 import org.junit.jupiter.api.Test
-import pt.isel.ls.domain.Email
-import pt.isel.ls.domain.Player
-import pt.isel.ls.services.PlayerManagementStunt
 import pt.isel.ls.services.SessionManagementStunt
 import kotlin.test.assertEquals
 
@@ -177,12 +174,15 @@ class SessionHandlerTest {
         ) { request: Request ->
             val response = getSession(request)
             assertEquals(
-                expected = "{\"sid\":1,\"capacity\":1,\"gid\":1,\"date\":\"2024-03-10T12:30\"," +
-                        "\"players\":[{\"pid\":1,\"name\":\"test1\",\"email\":{\"email\":\"default@mail.com\"},\"token\":\"${SessionManagementStunt.playerToken}\"}]}",
-                actual = response.bodyString()
+                expected =
+                    "{\"sid\":1,\"capacity\":1,\"gid\":1,\"date\":\"2024-03-10T12:30\"," +
+                        "\"players\":[{\"pid\":1,\"name\":\"test1\"," +
+                        "\"email\":{\"email\":\"default@mail.com\"},\"token\":\"${SessionManagementStunt.playerToken}\"}]}",
+                actual = response.bodyString(),
             )
         }
     }
+
     @Test
     fun `getSessions found successfully body comparison`() {
         val sid = "1"
@@ -192,14 +192,17 @@ class SessionHandlerTest {
         ) { request: Request ->
             val response = getSessions(request)
             assertEquals(
-                expected = "[{\"sid\":1,\"capacity\":1,\"gid\":1,\"date\":\"2024-03-10T12:30\"," +
-                        "\"players\":[{\"pid\":1,\"name\":\"test1\",\"email\":{\"email\":\"default@mail.com\"},\"token\":\"${SessionManagementStunt.playerToken}\"}]}," +
+                expected =
+                    "[{\"sid\":1,\"capacity\":1,\"gid\":1,\"date\":\"2024-03-10T12:30\"," +
+                        "\"players\":[{\"pid\":1,\"name\":\"test1\",\"email\":{\"email\":\"default@mail.com\"}," +
+                        "\"token\":\"${SessionManagementStunt.playerToken}\"}]}," +
                         "{\"sid\":2,\"capacity\":2,\"gid\":1,\"date\":\"2024-03-10T12:30\"," +
                         "\"players\":[" +
-                        "{\"pid\":1,\"name\":\"test1\",\"email\":{\"email\":\"default@mail.com\"},\"token\":\"${SessionManagementStunt.playerToken}\"}," +
-                        "{\"pid\":2,\"name\":\"test2\",\"email\":{\"email\":\"default@mail.com\"},\"token\":\"${SessionManagementStunt.playerToken}\"}]}]",
-                actual = response.bodyString()
-
+                        "{\"pid\":1,\"name\":\"test1\",\"email\":{\"email\":\"default@mail.com\"}," +
+                        "\"token\":\"${SessionManagementStunt.playerToken}\"}," +
+                        "{\"pid\":2,\"name\":\"test2\",\"email\":{\"email\":\"default@mail.com\"}," +
+                        "\"token\":\"${SessionManagementStunt.playerToken}\"}]}]",
+                actual = response.bodyString(),
             )
         }
     }

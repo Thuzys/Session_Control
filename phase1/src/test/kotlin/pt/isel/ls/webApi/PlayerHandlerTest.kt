@@ -4,6 +4,7 @@ import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
 import pt.isel.ls.services.PlayerManagementStunt
+import java.util.UUID
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -138,29 +139,23 @@ class PlayerHandlerTest {
             )
         }
 
-//    @Test
-//    fun `unauthorized status due lack of token during get player`() =
-//        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
-//            val action =
-//                handler.getPlayer(
-//                    Request(
-//                        Method.GET,
-//                        "$DUMMY_ROUTE?pid=${PlayerManagementStunt.playerId}",
-//                    ),
-//                )
-//            assertEquals(Status.UNAUTHORIZED, action.status)
-//        }
+    @Test
+    fun `unauthorized status due lack of token during get player`() =
+        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
+            val request = Request(Method.GET, "$DUMMY_ROUTE?pid=${PlayerManagementStunt.playerId}")
+            val action = handler.getPlayer(request)
+            assertEquals(Status.UNAUTHORIZED, action.status)
+        }
 
-//    @Test
-//    fun `unauthorized message due invalid token during get player`() =
-//        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
-//            val action =
-//                handler.getPlayer(
-//                    Request(
-//                        Method.GET,
-//                        "$DUMMY_ROUTE?pid=${PlayerManagementStunt.playerId}&token=${UUID.randomUUID()}",
-//                    ),
-//                )
-//            assertEquals("Unauthorized. Invalid token.", action.bodyString())
-//        }
+    @Test
+    fun `unauthorized message due invalid token during get player`() =
+        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
+            val request =
+                Request(
+                    Method.GET,
+                    "$DUMMY_ROUTE?pid=${PlayerManagementStunt.playerId}&token=${UUID.randomUUID()}",
+                )
+            val action = handler.getPlayer(request)
+            assertEquals("Unauthorized. Invalid token.", action.bodyString())
+        }
 }

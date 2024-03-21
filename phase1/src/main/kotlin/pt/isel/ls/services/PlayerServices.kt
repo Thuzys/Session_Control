@@ -33,4 +33,12 @@ interface PlayerServices {
      * @throws ServicesError containing the message of the error.
      */
     fun getPlayerDetails(pid: UInt): Player
+
+    /**
+     * Checks if the token is valid.
+     *
+     * @param token the token to be checked.
+     * @return true if the token is valid, false otherwise.
+     */
+    fun isValidToken(token: String): Boolean
 }

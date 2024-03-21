@@ -35,6 +35,11 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
     }
 
     override fun getPlayer(request: Request): Response {
+        request.query("token")?.let { token ->
+            if (!playerManagement.isValidToken(token)) {
+                return makeResponse(Status.UNAUTHORIZED, "Unauthorized. Invalid token.")
+            }
+        } ?: return makeResponse(Status.UNAUTHORIZED, "Bad Request, token not found.")
         val pid =
             request.query("pid")?.toUIntOrNull()
                 ?: return makeResponse(Status.BAD_REQUEST, "Bad Request, pid not found.")

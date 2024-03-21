@@ -9,7 +9,7 @@ import kotlin.test.assertFailsWith
 class PlayerDataMemTest {
     private fun actionOfPlayerDataMemArrangement(code: (playerDataMem: PlayerDataInterface) -> Unit) =
         // arrangement
-        PlayerDataMem(PlayerStorageStunt())
+        PlayerDataMem(PlayerStorageStuntDummy())
             .let(code)
 
     @Test

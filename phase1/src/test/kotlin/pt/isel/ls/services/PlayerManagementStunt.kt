@@ -27,4 +27,8 @@ object PlayerManagementStunt : PlayerServices {
         } else {
             throw ServicesError("Unable to get the details of a Player due to nonexistent pid.")
         }
+
+    override fun isValidToken(token: String): Boolean {
+        return token == playerToken.toString()
+    }
 }

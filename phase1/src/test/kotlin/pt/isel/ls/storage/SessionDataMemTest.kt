@@ -25,9 +25,16 @@ class SessionDataMemTest {
     }
 
     @Test
-    fun readSession() {
+    fun `readSession only with sid`() {
         makeSessionDataMemTest {
             assertEquals(1u, it.readSession(1u).first().gid)
+        }
+    }
+
+    @Test
+    fun `readSession with limit only`() {
+        makeSessionDataMemTest {
+            assertEquals(2, it.readSession(limit = 2u).size)
         }
     }
 

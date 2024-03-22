@@ -2,6 +2,8 @@ package pt.isel.ls.services
 
 import pt.isel.ls.domain.Game
 import pt.isel.ls.storage.GameDataMem
+import pt.isel.ls.utils.DEFAULT_LIMIT
+import pt.isel.ls.utils.DEFAULT_OFFSET
 import pt.isel.ls.utils.tryCatch
 
 /**
@@ -19,21 +21,28 @@ class GameManagement(private val gameDataMem: GameDataMem) : GameServices {
 
     override fun getGameDetails(
         gid: UInt,
-        offset: UInt,
-        limit: UInt,
+        offset: UInt?,
+        limit: UInt?,
     ): Game =
         tryCatch("Unable to find the game due to") {
-            gameDataMem.getGameDetails(gid, offset, limit)
+            gameDataMem.getGameDetails(gid,
+                offset ?: DEFAULT_OFFSET,
+                limit ?: DEFAULT_LIMIT,
+            )
         }
 
     override fun getGameByDevAndGenres(
-        offset: UInt,
-        limit: UInt,
         dev: String,
         genres: Collection<String>,
+        offset: UInt?,
+        limit: UInt?
     ): Collection<Game> =
         tryCatch("Unable to find the game due to") {
-            gameDataMem.getGameByDevAndGenres(offset, limit, filterByDevAndGenres(dev, genres))
+            gameDataMem.getGameByDevAndGenres(
+                offset ?: DEFAULT_OFFSET,
+                limit ?: DEFAULT_LIMIT,
+                filterByDevAndGenres(dev, genres),
+            )
         }
 
     private fun filterByDevAndGenres(

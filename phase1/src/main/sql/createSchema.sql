@@ -5,6 +5,7 @@ drop table if exists test;
 create table courses (
   cid serial primary key,
   name varchar(80)
+  genres integer[]
 );
 
 create table students (

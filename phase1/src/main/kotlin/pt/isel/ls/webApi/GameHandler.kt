@@ -1,5 +1,7 @@
 package pt.isel.ls.webApi
 
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
@@ -45,12 +47,12 @@ class GameHandler(private val gameManagement: GameServices) : GameHandlerInterfa
                 parameter = "limit",
             )?.toUIntOrNull()
 
-        return if (gid == null || offset == null || limit == null) {
+        return if (gid == null) {
             makeResponse(Status.BAD_REQUEST, "Bad Request")
         } else {
             tryResponse(Status.NOT_FOUND, "Game not found.") {
                 val game = gameManagement.getGameDetails(gid, offset, limit)
-                makeResponse(Status.FOUND, game.toString())
+                makeResponse(Status.FOUND, Json.encodeToString(game))
             }
         }
     }
@@ -80,12 +82,12 @@ class GameHandler(private val gameManagement: GameServices) : GameHandlerInterfa
                 parameter = "genres",
             )?.let { processGenres(it) }
 
-        return if (offset == null || limit == null || dev == null || genres == null) {
+        return if (dev == null || genres == null) {
             makeResponse(Status.BAD_REQUEST, "Bad Request")
         } else {
             tryResponse(Status.NOT_FOUND, "Game not found.") {
-                val games = gameManagement.getGameByDevAndGenres(offset, limit, dev, genres)
-                makeResponse(Status.FOUND, games.toString())
+                val games = gameManagement.getGameByDevAndGenres(dev, genres, offset, limit)
+                makeResponse(Status.FOUND, Json.encodeToString(games))
             }
         }
     }

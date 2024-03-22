@@ -8,8 +8,14 @@ import org.http4k.core.Status
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.errors.ServicesError
+import java.sql.Connection
+import java.sql.ResultSet
+import java.sql.SQLException
 
 private val emailPattern: Regex = "^[A-Za-z](.*)(@)(.+)(\\.)(.+)".toRegex()
+
+val DEFAULT_OFFSET = 0u
+val DEFAULT_LIMIT = 10u
 
 /**
  * Validates if an email has the correct pattern.
@@ -140,3 +146,26 @@ fun dateVerification(date: String?): LocalDateTime? {
         null
     }
 }
+
+/**
+
+Executes a command on a connection.
+If an exception occurs, the connection will be rolled back and the auto-commit will be set to true.
+Otherwise, the connection will be committed and the auto-commit will be set to true.
+@param cmd The command to be executed.
+@throws SQLException if an exception occurs.
+ */
+fun <T> Connection.executeCommand(cmd: Connection.() -> T): T {
+    try {
+        autoCommit = false
+        val response = cmd()
+        autoCommit = true
+        return response
+    }catch (e: SQLException){
+        rollback()
+        autoCommit = true
+        throw e
+    }
+}
+
+fun ResultSet.toUInt(columnIndex: Int): UInt = getInt(columnIndex).toUInt()

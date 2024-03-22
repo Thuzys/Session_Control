@@ -34,13 +34,13 @@ interface GameDataInterface {
      */
     fun getGameDetails(
         gid: UInt,
-        offset: UInt = 0u,
-        limit: UInt = 10u,
+        offset: UInt,
+        limit: UInt,
     ): Game
 
     fun getGameByDevAndGenres(
-        offset: UInt = 0u,
-        limit: UInt = 10u,
+        offset: UInt,
+        limit: UInt,
         filter: (Iterable<Game>) -> Collection<Game>,
     ): Collection<Game>
 }

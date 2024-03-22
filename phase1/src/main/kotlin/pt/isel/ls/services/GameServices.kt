@@ -36,8 +36,8 @@ interface GameServices {
      */
     fun getGameDetails(
         gid: UInt,
-        offset: UInt = 0u,
-        limit: UInt = 10u,
+        offset: UInt?,
+        limit: UInt?,
     ): Game
 
     /**
@@ -50,9 +50,9 @@ interface GameServices {
      * @return Collection of games.
      */
     fun getGameByDevAndGenres(
-        offset: UInt = 0u,
-        limit: UInt = 10u,
         dev: String,
         genres: Collection<String>,
+        offset: UInt?,
+        limit: UInt?,
     ): Collection<Game>
 }

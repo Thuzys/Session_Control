@@ -31,7 +31,7 @@ class GameManagementTest {
     @Test
     fun `get details of a game`() {
         makeGameManagementTest {
-            val game = it.getGameDetails(1u)
+            val game = it.getGameDetails(1u, null, null)
             assertEquals("test", game.name)
             assertEquals("dev", game.dev)
             assertTrue { "genre" in game.genres }
@@ -41,14 +41,14 @@ class GameManagementTest {
     @Test
     fun `error getting details of a game`() {
         makeGameManagementTest {
-            assertFailsWith<ServicesError> { it.getGameDetails(60u) }
+            assertFailsWith<ServicesError> { it.getGameDetails(60u, null, null) }
         }
     }
 
     @Test
     fun `get Game by developer and genres`() {
         makeGameManagementTest {
-            val games = it.getGameByDevAndGenres(dev = "dev", genres = setOf("genre"))
+            val games = it.getGameByDevAndGenres(dev = "dev", genres = setOf("genre"), null, null)
             assertEquals(2, games.size)
         }
     }
@@ -56,7 +56,7 @@ class GameManagementTest {
     @Test
     fun `get Game by developer and genres with no results`() {
         makeGameManagementTest {
-            val games = it.getGameByDevAndGenres(dev = "dev", genres = setOf("genre2"))
+            val games = it.getGameByDevAndGenres(dev = "dev", genres = setOf("genre2"), null, null)
             assertEquals(0, games.size)
         }
     }

@@ -17,7 +17,7 @@ class GameStorageStunt : Storage<Game> {
 
     override fun create(newItem: Game): UInt {
         val id = nextId++
-        games[id] = newItem.copy(uuid = id)
+        games[id] = newItem.copy(gid = id)
         return id
     }
 

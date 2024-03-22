@@ -1,5 +1,7 @@
 package pt.isel.ls.storage
 
+import pt.isel.ls.utils.DEFAULT_LIMIT
+import pt.isel.ls.utils.DEFAULT_OFFSET
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -27,7 +29,7 @@ class GameDataMemTest {
     @Test
     fun `get details of a game`() {
         makeGameDataMemTest {
-            val game = it.getGameDetails(1u)
+            val game = it.getGameDetails(1u, DEFAULT_OFFSET, DEFAULT_LIMIT)
             assertEquals("test", game.name)
             assertEquals("dev", game.dev)
             assertEquals(setOf("genre"), game.genres)
@@ -37,7 +39,7 @@ class GameDataMemTest {
     @Test
     fun `error getting details of a game`() {
         makeGameDataMemTest {
-            assertFailsWith<NoSuchElementException> { it.getGameDetails(60u) }
+            assertFailsWith<NoSuchElementException> { it.getGameDetails(60u, DEFAULT_OFFSET, DEFAULT_LIMIT) }
         }
     }
 
@@ -45,7 +47,7 @@ class GameDataMemTest {
     fun `get Game by developer and genres`() {
         makeGameDataMemTest {
             val games =
-                it.getGameByDevAndGenres { games ->
+                it.getGameByDevAndGenres(DEFAULT_OFFSET, DEFAULT_LIMIT) { games ->
                     games.filter { game ->
                         game.dev == "dev" && game.genres.containsAll(setOf("genre"))
                     }
@@ -58,7 +60,7 @@ class GameDataMemTest {
     fun `get Game by developer and genres with no results`() {
         makeGameDataMemTest {
             val games =
-                it.getGameByDevAndGenres { games ->
+                it.getGameByDevAndGenres(DEFAULT_OFFSET, DEFAULT_LIMIT) { games ->
                     games.filter { game ->
                         game.dev == "dev" && game.genres.containsAll(setOf("genre1"))
                     }

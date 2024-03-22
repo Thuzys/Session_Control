@@ -9,6 +9,9 @@ import pt.isel.ls.storage.SessionDataInterface
 import pt.isel.ls.utils.getSessionState
 import pt.isel.ls.utils.tryCatch
 
+const val DEFAULT_OFFSET = 0u
+const val DEFAULT_LIMIT = 10u
+
 /**
  * Represents the services related to the session in the application.
  */
@@ -48,11 +51,15 @@ class SessionManagement(
         offset: UInt?,
         limit: UInt?,
     ): Collection<Session> {
-        return sessionDataMem.readSession(offset = offset, limit = limit).filter { session ->
-            session.gid == gid &&
-                (date == null || session.date == date) &&
-                (state == null || getSessionState(session) == state) &&
-                (playerId == null || session.players.any { player -> player.pid == playerId })
-        }
+        return sessionDataMem.readSession(
+            offset = offset ?: DEFAULT_OFFSET,
+            limit = limit ?: DEFAULT_LIMIT,
+        )
+            .filter { session ->
+                session.gid == gid &&
+                    (date == null || session.date == date) &&
+                    (state == null || getSessionState(session) == state) &&
+                    (playerId == null || session.players.any { player -> player.pid == playerId })
+            }
     }
 }

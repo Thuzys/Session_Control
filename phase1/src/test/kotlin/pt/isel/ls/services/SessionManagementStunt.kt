@@ -6,19 +6,22 @@ import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.errors.ServicesError
+import java.util.UUID
 
 private val pid = 1u
 private val sid1 = 1u
 private val sid2 = 2u
 private val gid1 = 1u
 private val defaultMail = Email("default@mail.com")
-private val player1 = Player(1u, "test1", defaultMail)
-private val player2 = Player(2u, "test2", defaultMail)
 private val date1 = LocalDateTime(2024, 3, 10, 12, 30)
-private val players: Collection<Player> = listOf(player1)
-private val players2: Collection<Player> = listOf(player1, player2)
 
 object SessionManagementStunt : SessionServices {
+    val playerToken: UUID = UUID.randomUUID()
+    private val player1 = Player(1u, "test1", defaultMail, playerToken)
+    private val player2 = Player(2u, "test2", defaultMail, playerToken)
+    private val players: Collection<Player> = listOf(player1)
+    private val players2: Collection<Player> = listOf(player1, player2)
+
     override fun addPlayer(
         player: UInt,
         session: UInt,

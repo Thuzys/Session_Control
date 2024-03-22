@@ -4,10 +4,6 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
 import pt.isel.ls.services.GameServices
-import pt.isel.ls.utils.getParameter
-import pt.isel.ls.utils.makeResponse
-import pt.isel.ls.utils.readBody
-import pt.isel.ls.utils.tryResponse
 
 class GameHandler(private val gameManagement: GameServices) : GameHandlerInterface {
     override fun createGame(request: Request): Response {

@@ -3,7 +3,7 @@ package pt.isel.ls.storage
 import pt.isel.ls.domain.Email
 import pt.isel.ls.domain.Player
 
-class PlayerStorageStunt : PlayerStorageInterface {
+class PlayerStorageStuntDummy : Storage<Player> {
     private val defaultMail = Email("default@mail.com")
     private val player1 = Player(1u, "test1", defaultMail)
     private val player2 = Player(2u, "test2", defaultMail)
@@ -19,28 +19,25 @@ class PlayerStorageStunt : PlayerStorageInterface {
             players[it] = newItem.copy(pid = it)
         }
 
-    override fun read(pid: UInt): Player = players[pid] ?: throw NoSuchElementException("Player not found.")
-
-    override fun readBy(
-        email: Email?,
-        token: String?,
-        limit: UInt,
+    override fun read(
+        uInt: UInt?,
         offset: UInt,
+        limit: UInt,
     ): Collection<Player>? =
-        players.values
-            .filter { it.email == email || it.token.toString() == token }
-            .drop(offset.toInt())
-            .take(limit.toInt())
-            .ifEmpty { null }
+        if (uInt == null) {
+            players.values.drop(offset.toInt()).take(limit.toInt())
+        } else {
+            players[uInt]?.let { listOf(it) }
+        }
+
+    override fun delete(uInt: UInt) {
+        TODO("Not needed for this test")
+    }
 
     override fun update(
         uInt: UInt,
         newItem: Player,
     ) {
-        TODO("Not yet implemented")
-    }
-
-    override fun delete(uInt: UInt) {
-        TODO("Not yet implemented")
+        TODO("Not needed for this test")
     }
 }

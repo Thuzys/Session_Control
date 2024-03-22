@@ -4,117 +4,158 @@ import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
 import pt.isel.ls.services.PlayerManagementStunt
+import java.util.UUID
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+private const val DUMMY_ROUTE = "/dummyRoute"
+
 class PlayerHandlerTest {
-    private fun createPlayerHandler(
-        request: Request,
-        code: PlayerHandlerInterface.(request: Request) -> Unit,
-    ) = PlayerHandler(PlayerManagementStunt).run { code(request) }
+    private fun actionOfAPlayerArrangement(act: (PlayerHandlerInterface) -> Unit) =
+        // arrangement
+        PlayerHandler(PlayerManagementStunt)
+            .let(act)
 
     @Test
-    fun `bad request creating a player`() =
-        createPlayerHandler(Request(Method.POST, "/playersTest")) { request: Request ->
-            val response = createPlayer(request)
-            assertEquals(Status.BAD_REQUEST, response.status)
+    fun `status of bad request creating a player due lack of name and email`() =
+        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
+            val request = Request(Method.POST, DUMMY_ROUTE)
+            val action = handler.createPlayer(request)
+            assertEquals(Status.BAD_REQUEST, action.status)
         }
 
     @Test
-    fun `message of Bad Request creating a player`() =
-        createPlayerHandler(Request(Method.POST, "/playersTest")) { request: Request ->
-            val response = createPlayer(request)
-            assertEquals("Bad Request", response.bodyString())
+    fun `message of Bad Request creating a player due lack of name and email`() =
+        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
+            val request = Request(Method.POST, DUMMY_ROUTE)
+            val action = handler.createPlayer(request)
+            assertEquals("Bad Request, insufficient parameters.", action.bodyString())
         }
 
     @Test
-    fun `bad request getting a player`() =
-        createPlayerHandler(Request(Method.GET, "/playersTest")) { request: Request ->
-            val response = getPlayer(request)
-            assertEquals(Status.BAD_REQUEST, response.status)
+    fun `status of bad request getting a player due lack of pid`() =
+        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
+            val request = Request(Method.GET, "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}")
+            val action = handler.getPlayer(request)
+            assertEquals(Status.BAD_REQUEST, action.status)
         }
 
     @Test
-    fun `message of Bad Request getting a player`() =
-        createPlayerHandler(Request(Method.GET, "/playersTest")) { request: Request ->
-            val response = getPlayer(request)
-            assertEquals("Bad Request", response.bodyString())
+    fun `message of Bad Request getting a player due lack of pid`() =
+        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
+            val request = Request(Method.GET, "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}")
+            val action = handler.getPlayer(request)
+            assertEquals("Bad Request, pid not found.", action.bodyString())
         }
 
     @Test
-    fun `player created`() =
-        createPlayerHandler(
-            request = Request(Method.POST, "/playerTest").body("{name: name, email: email}"),
-        ) { request: Request ->
-            val response = createPlayer(request)
-            assertEquals(Status.CREATED, response.status)
+    fun `status of player created successfully`() =
+        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
+            val request = Request(Method.POST, DUMMY_ROUTE).body("{name: name, email: email}")
+            val action = handler.createPlayer(request)
+            assertEquals(Status.CREATED, action.status)
         }
 
     @Test
-    fun `message of player created`() =
-        createPlayerHandler(
-            request = Request(Method.POST, "/playerTest").body("{name: name, email: email}"),
-        ) { request: Request ->
-            val response = createPlayer(request)
+    fun `message of player created successfully`() =
+        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
+            val request = Request(Method.POST, DUMMY_ROUTE).body("{name: name, email: email}")
+            val action = handler.createPlayer(request)
             assertEquals(
                 expected =
                     "Player created with id ${PlayerManagementStunt.playerId} " +
                         "and token ${PlayerManagementStunt.playerToken}.",
-                actual = response.bodyString(),
+                actual = action.bodyString(),
             )
         }
 
     @Test
-    fun `internal server error creating a player`() =
-        createPlayerHandler(
-            request = Request(Method.POST, "/playerTest").body("{name: name, email: }"),
-        ) { request: Request ->
-            val response = createPlayer(request)
-            assertEquals(Status.INTERNAL_SERVER_ERROR, response.status)
+    fun `status of internal server error creating a player due invalid email provided`() =
+        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
+            // a space represents an invalid email
+            val request = Request(Method.POST, DUMMY_ROUTE).body("{name: name, email:  }")
+            val action = handler.createPlayer(request)
+            assertEquals(Status.INTERNAL_SERVER_ERROR, action.status)
         }
 
     @Test
-    fun `player not found`() =
-        createPlayerHandler(
-            request = Request(Method.GET, "/playerTest?pid=0"),
-        ) { request: Request ->
-            val response = getPlayer(request)
-            assertEquals(Status.NOT_FOUND, response.status)
-        }
-
-    @Test
-    fun `message of player not found`() =
-        createPlayerHandler(
-            request = Request(Method.GET, "/playerTest?pid=0"),
-        ) { request: Request ->
-            val response = getPlayer(request)
+    fun `message of internal server error creating a player due invalid email provided`() =
+        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
+            // a space represents an invalid email
+            val request = Request(Method.POST, DUMMY_ROUTE).body("{name: name, email:  }")
+            val action = handler.createPlayer(request)
             assertEquals(
-                expected = "Unable to get the details of a Player due to invalid pid.",
-                actual = response.bodyString(),
+                expected = "Internal Server Error: Unable to create a new Player due to invalid name or email.",
+                actual = action.bodyString(),
             )
         }
 
     @Test
-    fun `player found`() =
-        createPlayerHandler(
-            request = Request(Method.GET, "/playerTest?pid=${PlayerManagementStunt.playerId}"),
-        ) { request: Request ->
-            val response = getPlayer(request)
-            assertEquals(Status.FOUND, response.status)
+    fun `status of player not found due nonexistent pid`() =
+        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
+            val request = Request(Method.GET, "$DUMMY_ROUTE?pid=0&token=${PlayerManagementStunt.playerToken}")
+            val action = handler.getPlayer(request)
+            assertEquals(Status.NOT_FOUND, action.status)
         }
 
     @Test
-    fun `message of player found`() =
-        createPlayerHandler(
-            request = Request(Method.GET, "/playerTest?pid=${PlayerManagementStunt.playerId}"),
-        ) { request: Request ->
-            val response = getPlayer(request)
+    fun `message of player not found due nonexistent pid`() =
+        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
+            val request = Request(Method.GET, "$DUMMY_ROUTE?pid=0&token=${PlayerManagementStunt.playerToken}")
+            val action = handler.getPlayer(request)
+            assertEquals(
+                expected = "Player not found: Unable to get the details of a Player due to nonexistent pid.",
+                actual = action.bodyString(),
+            )
+        }
+
+    @Test
+    fun `status of player found successfully`() =
+        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
+            val request =
+                Request(
+                    Method.GET,
+                    "$DUMMY_ROUTE?pid=${PlayerManagementStunt.playerId}&token=${PlayerManagementStunt.playerToken}",
+                )
+            val action = handler.getPlayer(request)
+            assertEquals(Status.FOUND, action.status)
+        }
+
+    @Test
+    fun `message of player found successfully`() =
+        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
+            val request =
+                Request(
+                    Method.GET,
+                    "$DUMMY_ROUTE?pid=${PlayerManagementStunt.playerId}&token=${PlayerManagementStunt.playerToken}",
+                )
+            val action = handler.getPlayer(request)
             assertEquals(
                 expected =
                     "{\"pid\":${PlayerManagementStunt.playerId},\"name\":\"Test\",\"email\":" +
                         "{\"email\":\"${PlayerManagementStunt.playerEmail.email}\"},\"token\"" +
                         ":\"${PlayerManagementStunt.playerToken}\"}",
-                actual = response.bodyString(),
+                actual = action.bodyString(),
             )
+        }
+
+    @Test
+    fun `unauthorized status due lack of token during get player`() =
+        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
+            val request = Request(Method.GET, "$DUMMY_ROUTE?pid=${PlayerManagementStunt.playerId}")
+            val action = handler.getPlayer(request)
+            assertEquals(Status.UNAUTHORIZED, action.status)
+        }
+
+    @Test
+    fun `unauthorized message due invalid token during get player`() =
+        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
+            val request =
+                Request(
+                    Method.GET,
+                    "$DUMMY_ROUTE?pid=${PlayerManagementStunt.playerId}&token=${UUID.randomUUID()}",
+                )
+            val action = handler.getPlayer(request)
+            assertEquals("Unauthorized. Invalid token.", action.bodyString())
         }
 }

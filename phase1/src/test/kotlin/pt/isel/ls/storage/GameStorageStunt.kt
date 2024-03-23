@@ -27,13 +27,13 @@ class GameStorageStunt : GameStorageInterface {
     override fun readBy(
         offset: UInt,
         limit: UInt,
-        dev: String,
-        genres: Collection<String>,
+        dev: String?,
+        genres: Collection<String>?,
     ): Collection<Game> {
         val gamesToSearch = games.values.toList()
         val rangeToSearch = gamesToSearch.drop(offset.toInt()).take(limit.toInt())
 
-        val filtered = rangeToSearch.filter { it.dev == dev && it.genres.containsAll(genres) }
+        val filtered = rangeToSearch.filter { it.dev == dev && it.genres.containsAll(genres ?: emptyList()) }
 
         return filtered.ifEmpty { throw NoSuchElementException("Game with dev $dev and genres $genres not found") }
     }

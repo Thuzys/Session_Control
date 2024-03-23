@@ -20,22 +20,21 @@ class GameStorage(envVarName: String) : GameStorageInterface {
             it.executeCommand {
                 val addGameStmt =
                     it.prepareStatement(
-                        "INSERT INTO game(name, dev) VALUES (?, ?)",
+                        "INSERT INTO GAME(name, developer) VALUES (?, ?)",
                         Statement.RETURN_GENERATED_KEYS,
                     )
 
                 val addGenreStmt =
                     it.prepareStatement(
-                        "INSERT INTO genre(name) VALUES (?) IF NOT EXISTS",
+                        "INSERT INTO GENRE(name) VALUES (?) ON CONFLICT DO NOTHING",
                     )
 
                 val relateGameToGenreStmt =
                     it.prepareStatement(
-                        "INSERT INTO game_genre(game_id, genre) VALUES (?, ?)",
+                        "INSERT INTO GAME_GENRE(gid, genre) VALUES (?, ?)",
                     )
 
                 addGameToDB(newItem, addGameStmt, relateGameToGenreStmt, addGenreStmt)
-                getGameId(addGameStmt)
             }
         }
 
@@ -44,12 +43,12 @@ class GameStorage(envVarName: String) : GameStorageInterface {
             it.executeCommand {
                 val getGameStmt =
                     it.prepareStatement(
-                        "SELECT (gid, name, developer) from GAME WHERE gid = ?",
+                        "SELECT gid, name, developer FROM GAME WHERE gid = ?",
                     )
 
                 val getGenresStmt =
                     it.prepareStatement(
-                        "SELECT (name) FROM GENRE JOIN GAME_GENRE ON GENRE.name = GAME_GENRE.genre WHERE GAME_GENRE.gid = ?",
+                        "SELECT name FROM GENRE JOIN GAME_GENRE ON GENRE.name = GAME_GENRE.genre WHERE GAME_GENRE.gid = ?",
                     )
 
                 getGameStmt.setUInt(1, uInt)
@@ -61,25 +60,31 @@ class GameStorage(envVarName: String) : GameStorageInterface {
     override fun readBy(
         offset: UInt,
         limit: UInt,
-        dev: String,
-        genres: Collection<String>,
+        dev: String?,
+        genres: Collection<String>?,
     ): Collection<Game> =
         dataSource.connection.use {
             it.executeCommand {
-                val getGamesStmt =
-                    it.prepareStatement(
-                        "SELECT (gid, name, developer) from GAME WHERE developer = ? LIMIT ? OFFSET ?",
-                    )
+                val getGameStr = buildGameGetterString(dev)
+                val getGamesStmt = it.prepareStatement("$getGameStr LIMIT ? OFFSET ?")
 
                 val getGenresStmt =
                     it.prepareStatement(
-                        "SELECT (name) FROM GENRE JOIN GAME_GENRE ON GENRE.name = GAME_GENRE.genre WHERE GAME_GENRE.gid = ?",
+                        "SELECT name FROM GENRE JOIN GAME_GENRE ON GENRE.name = GAME_GENRE.genre WHERE GAME_GENRE.gid = ?",
                     )
 
-                getGamesStmt.setString(1, dev)
-                getGamesStmt.setUInt(2, limit)
-                getGamesStmt.setUInt(3, offset)
-                getGamesFromDB(getGamesStmt, getGenresStmt)
+                val areGenresInGameStmt =
+                    it.prepareStatement(
+                        "SELECT name FROM GENRE JOIN GAME_GENRE ON GENRE.name = GAME_GENRE.genre " +
+                            "WHERE GAME_GENRE.gid = ? AND GAME_GENRE.genre = ?",
+                    )
+
+                var paramIdx = 1
+                dev?.let { d -> getGamesStmt.setString(paramIdx++, d) }
+                getGamesStmt.setUInt(paramIdx++, limit)
+                getGamesStmt.setUInt(paramIdx, offset)
+
+                getGamesFromDB(getGamesStmt, getGenresStmt, areGenresInGameStmt, genres)
                     .ifEmpty { throw NoSuchElementException("Game with dev $dev not found") }
             }
         }

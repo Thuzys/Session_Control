@@ -26,8 +26,8 @@ class GameManagement(private val storage: GameStorageInterface) : GameServices {
         }
 
     override fun getGameByDevAndGenres(
-        dev: String,
-        genres: Collection<String>,
+        dev: String?,
+        genres: Collection<String>?,
         offset: UInt?,
         limit: UInt?,
     ): Collection<Game> =

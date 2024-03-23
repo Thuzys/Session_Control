@@ -63,10 +63,11 @@ class PlayerStorage(envName: String) : PlayerStorageInterface {
                     "SELECT pid, name, email, token FROM PLAYER " +
                         "WHERE email = ? OR token = ? OFFSET ? LIMIT ?"
                 val stmt = connection.prepareStatement(selectQuery)
-                stmt.setString(1, email?.email)
-                stmt.setString(2, token)
-                stmt.setInt(3, offset.toInt())
-                stmt.setInt(4, limit.toInt())
+                var idx = 1
+                stmt.setString(idx++, email?.email)
+                stmt.setString(idx++, token)
+                stmt.setInt(idx++, offset.toInt())
+                stmt.setInt(idx, limit.toInt())
                 makePlayers(stmt).ifEmpty { null }
             }
         }

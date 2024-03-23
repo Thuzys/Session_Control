@@ -22,7 +22,7 @@ data class Player(
     val token: UUID = UUID.randomUUID(),
 ) {
     init {
-        require(name.isNotBlank()) { "name must not be blank." }
+        require(name.isNotBlank()) { "Name must not be blank." }
     }
 }
 

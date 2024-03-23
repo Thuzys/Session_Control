@@ -43,8 +43,8 @@ interface GameStorageInterface {
     fun readBy(
         offset: UInt,
         limit: UInt,
-        dev: String,
-        genres: Collection<String>,
+        dev: String? = null,
+        genres: Collection<String>? = null,
     ): Collection<Game>
 
     /**

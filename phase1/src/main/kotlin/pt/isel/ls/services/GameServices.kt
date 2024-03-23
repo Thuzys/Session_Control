@@ -44,8 +44,8 @@ interface GameServices {
      * @return Collection of games.
      */
     fun getGameByDevAndGenres(
-        dev: String,
-        genres: Collection<String>,
+        dev: String?,
+        genres: Collection<String>?,
         offset: UInt? = null,
         limit: UInt? = null,
     ): Collection<Game>

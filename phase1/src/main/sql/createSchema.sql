@@ -1,11 +1,11 @@
 drop table if exists PLAYER_SESSION;
 drop table if exists SESSION;
-drop table if exists GAME_GENRES;
+drop table if exists GAME_GENRE;
 drop table if exists GAME;
 drop table if exists PLAYER;
-drop table if exists GENRES;
+drop table if exists GENRE;
 
-create table GENRES (
+create table GENRE (
     name varchar(80) primary key
 );
 
@@ -15,9 +15,9 @@ create table GAME (
     developer varchar(80)
 );
 
-create table GAME_GENRES (
+create table GAME_GENRE (
     gid int references GAME(gid),
-    genre varchar(80) references GENRES(name)
+    genre varchar(80) references GENRE(name)
 );
 
 create table PLAYER (

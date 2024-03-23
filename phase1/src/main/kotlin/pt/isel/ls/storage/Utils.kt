@@ -21,22 +21,49 @@ import java.util.UUID
 fun getGamesFromDB(
     getGameStmt: PreparedStatement,
     getGenresStmt: PreparedStatement,
+    areGenresInGameStmt: PreparedStatement,
+    genres: Collection<String>?,
 ): MutableList<Game> =
     mutableListOf<Game>().apply {
         val rs = getGameStmt.executeQuery()
 
         while (rs.next()) {
             val gid = rs.getUInt("gid")
-            add(
-                Game(
-                    gid = gid,
-                    name = rs.getString("name"),
-                    dev = rs.getString("developer"),
-                    genres = processGenres(getGenresStmt, gid),
-                ),
-            )
+
+            if (genres == null || areGenresInGame(areGenresInGameStmt, gid, genres)) {
+                add(
+                    Game(
+                        gid = gid,
+                        name = rs.getString("name"),
+                        dev = rs.getString("developer"),
+                        genres = processGenres(getGenresStmt, gid),
+                    ),
+                )
+            }
         }
     }
+
+/**
+ * Checks if the genres are in the game.
+ *
+ * @param areGenresInGameStmt The [PreparedStatement] to check if the genres are in the game.
+ * @param gid The game id.
+ * @param genres The genres to be checked.
+ * @return True if the genres are in the game, false otherwise.
+ */
+fun areGenresInGame(
+    areGenresInGameStmt: PreparedStatement,
+    gid: UInt,
+    genres: Collection<String>,
+): Boolean {
+    areGenresInGameStmt.setUInt(1, gid)
+
+    return genres.any { genre ->
+        areGenresInGameStmt.setString(2, genre)
+        val rs = areGenresInGameStmt.executeQuery()
+        rs.next()
+    }
+}
 
 /**
  * Gets a [Game] object from a [PreparedStatement].
@@ -77,12 +104,11 @@ fun processGenres(
     gid: UInt,
 ): Collection<String> {
     val genres = mutableSetOf<String>()
-    run {
-        getGenresStmt.setUInt(1, gid)
-        val genresRS = getGenresStmt.executeQuery()
-        while (genresRS.next()) {
-            genres.add(genresRS.getString("name"))
-        }
+
+    getGenresStmt.setUInt(1, gid)
+    val genresRS = getGenresStmt.executeQuery()
+    while (genresRS.next()) {
+        genres.add(genresRS.getString("name"))
     }
     return genres
 }
@@ -101,11 +127,13 @@ fun addGameToDB(
     addGameStmt: PreparedStatement,
     relateGameToGenreStmt: PreparedStatement,
     addGenreStmt: PreparedStatement,
-) {
+): UInt {
     setGameName(addGameStmt, newItem.name)
     setGameDev(addGameStmt, newItem.dev)
-    setGameGenres(newItem.genres, addGameStmt, relateGameToGenreStmt, addGenreStmt)
     addGameStmt.executeUpdate()
+    val gid = getGameId(addGameStmt)
+    setGameGenres(gid, newItem.genres, relateGameToGenreStmt, addGenreStmt)
+    return gid
 }
 
 /**
@@ -139,14 +167,14 @@ private fun setGameDev(
  * @param addGenreStmt The [PreparedStatement] to add a genre.
  */
 private fun setGameGenres(
+    gid: UInt,
     genres: Collection<String>,
-    addGameStmt: PreparedStatement,
     relateGameToGenreStmt: PreparedStatement,
     addGenreStmt: PreparedStatement,
 ) {
     genres.forEach { genre ->
         addGenreToDB(addGenreStmt, genre)
-        gameGenresRelation(relateGameToGenreStmt, getGameId(addGameStmt), genre)
+        gameGenresRelation(relateGameToGenreStmt, gid, genre)
     }
 }
 
@@ -188,9 +216,26 @@ private fun gameGenresRelation(
  * @return The game id.
  */
 fun getGameId(addGameStmt: PreparedStatement): UInt {
-    val rs = addGameStmt.generatedKeys
-    check(rs.next()) { "Failed to create game." }
-    return rs.getUInt("gid")
+    val key = addGameStmt.generatedKeys
+    check(key.next()) { "Failed to create game." }
+    return key.getUInt("gid")
+}
+
+/**
+ * Builds the string to get games from the database.
+ *
+ * @param dev The developer to get the games from.
+ * @return The string to get games from the database.
+ */
+fun buildGameGetterString(dev: String?): String {
+    var getGamesStr = "SELECT gid, name, developer from GAME"
+    getGamesStr +=
+        if (dev != null) {
+            " WHERE developer = ?"
+        } else {
+            ""
+        }
+    return getGamesStr
 }
 
 /**

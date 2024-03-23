@@ -30,12 +30,12 @@ object GameManagementStunt : GameServices {
         }
 
     override fun getGameByDevAndGenres(
-        dev: String,
-        genres: Collection<String>,
+        dev: String?,
+        genres: Collection<String>?,
         offset: UInt?,
         limit: UInt?,
     ): Collection<Game> =
-        if (dev == GAME_DEV && gameGenres.containsAll(genres)) {
+        if (dev == GAME_DEV && gameGenres.containsAll(genres ?: emptyList())) {
             listOf(Game(gameId, GAME_NAME, GAME_DEV, gameGenres))
         } else {
             throw ServicesError("Unable to find the game due to invalid dev or genres.")

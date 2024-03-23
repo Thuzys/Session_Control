@@ -9,20 +9,28 @@ import kotlin.test.Test
 import kotlin.test.assertIs
 
 class RoutesKtTest {
-    private fun buildRoutesTest(
-        request: Request,
-        body: RoutingHttpHandler.(Request) -> Unit,
-    ) = buildRoutes(PlayerHandlerStunt).run { this.body(request) }
+    private fun actionOfRoutesArrangement(body: (RoutingHttpHandler) -> Unit) =
+        // arrangement
+        buildRoutes(PlayerHandlerStunt)
+            .let(body)
 
     @Test
     fun `buildRoutes returns router with get PLAYER_ROUTE`() =
-        buildRoutesTest(Request(Method.GET, PLAYER_ROUTE)) { request: Request ->
-            assertIs<RouterMatch.MatchingHandler>(match(request), "No matching handler found for $request")
+        actionOfRoutesArrangement { handler: RoutingHttpHandler ->
+            val request = Request(Method.GET, PLAYER_ROUTE)
+            assertIs<RouterMatch.MatchingHandler>(
+                handler.match(request),
+                "No matching handler found for $request",
+            )
         }
 
     @Test
     fun `buildRoutes returns router with create PLAYER_ROUTE`() =
-        buildRoutesTest(Request(Method.POST, PLAYER_ROUTE)) { request: Request ->
-            assertIs<RouterMatch.MatchingHandler>(match(request), "No matching handler found for $request")
+        actionOfRoutesArrangement { handler: RoutingHttpHandler ->
+            val request = Request(Method.POST, PLAYER_ROUTE)
+            assertIs<RouterMatch.MatchingHandler>(
+                handler.match(request),
+                "No matching handler found for $request",
+            )
         }
 }

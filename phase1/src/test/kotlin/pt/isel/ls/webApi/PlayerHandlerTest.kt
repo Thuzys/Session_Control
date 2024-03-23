@@ -11,7 +11,7 @@ import kotlin.test.assertEquals
 private const val DUMMY_ROUTE = "/dummyRoute"
 
 class PlayerHandlerTest {
-    private fun actionOfAPlayerArrangement(act: (PlayerHandlerInterface) -> Unit) =
+    private inline fun actionOfAPlayerArrangement(act: (PlayerHandlerInterface) -> Unit) =
         // arrangement
         PlayerHandler(PlayerManagementStunt)
             .let(act)
@@ -49,7 +49,7 @@ class PlayerHandlerTest {
         }
 
     @Test
-    fun `status of player created successfully`() =
+    fun `status of a player created successfully`() =
         actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
             val request = Request(Method.POST, DUMMY_ROUTE).body("{name: name, email: email}")
             val action = handler.createPlayer(request)
@@ -57,7 +57,7 @@ class PlayerHandlerTest {
         }
 
     @Test
-    fun `message of player created successfully`() =
+    fun `message of a player created successfully`() =
         actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
             val request = Request(Method.POST, DUMMY_ROUTE).body("{name: name, email: email}")
             val action = handler.createPlayer(request)
@@ -156,6 +156,6 @@ class PlayerHandlerTest {
                     "$DUMMY_ROUTE?pid=${PlayerManagementStunt.playerId}&token=${UUID.randomUUID()}",
                 )
             val action = handler.getPlayer(request)
-            assertEquals("Unauthorized. Invalid token.", action.bodyString())
+            assertEquals("Unauthorized, token not found.", action.bodyString())
         }
 }

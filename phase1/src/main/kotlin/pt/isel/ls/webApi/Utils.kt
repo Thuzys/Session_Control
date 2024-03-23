@@ -35,19 +35,14 @@ internal fun getParameter(
  */
 internal fun readBody(request: Request): Map<String, String> {
     val body = request.bodyString()
-    return if (body.isBlank()) {
-        emptyMap()
-    } else {
-        body.filter { it !in setOf('{', '}') }
-            .split(", ").associate {
-                val (key, value) =
-                    it.split(
-                        ":",
-                        limit = 2,
-                    )
-                key to value.trim()
-            }
-    }
+    body.ifBlank { return emptyMap() }
+    return body
+        .filter { it !in setOf('{', '}') }
+        .split(", ")
+        .associate {
+            val (key, value) = it.split(":", limit = 2)
+            key to value.trim()
+        }
 }
 
 /**
@@ -69,7 +64,9 @@ internal inline fun tryResponse(
     try {
         block()
     } catch (e: ServicesError) {
-        e.message?.let { makeResponse(errorStatus, "$errorMsg: $it") } ?: makeResponse(errorStatus, "$errorMsg.")
+        e.message
+            ?.let { makeResponse(errorStatus, "$errorMsg: $it") }
+            ?: makeResponse(errorStatus, "$errorMsg.")
     }
 
 /**

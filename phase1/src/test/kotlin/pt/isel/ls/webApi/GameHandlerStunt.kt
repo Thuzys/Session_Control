@@ -3,7 +3,7 @@ package pt.isel.ls.webApi
 import org.http4k.core.Request
 import org.http4k.core.Response
 
-class GameHandlerStunt : GameHandlerInterface {
+object GameHandlerStunt : GameHandlerInterface {
     override fun createGame(request: Request): Response {
         TODO()
     }

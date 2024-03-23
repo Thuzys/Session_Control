@@ -1,48 +1,42 @@
 package pt.isel.ls.services
 
 import pt.isel.ls.domain.Game
-import pt.isel.ls.storage.GameDataMem
+import pt.isel.ls.storage.GameStorageInterface
+import pt.isel.ls.utils.DEFAULT_LIMIT
+import pt.isel.ls.utils.DEFAULT_OFFSET
 import pt.isel.ls.utils.tryCatch
 
 /**
  * Class responsible for managing the game services.
  */
-class GameManagement(private val gameDataMem: GameDataMem) : GameServices {
+class GameManagement(private val storage: GameStorageInterface) : GameServices {
     override fun createGame(
         name: String,
         dev: String,
         genres: Collection<String>,
     ): UInt =
         tryCatch("Unable to create a new game due to") {
-            gameDataMem.createGame(name, dev, genres)
+            val newGame = Game(name = name, dev = dev, genres = genres)
+            storage.create(newGame)
         }
 
-    override fun getGameDetails(
-        gid: UInt,
-        offset: UInt,
-        limit: UInt,
-    ): Game =
+    override fun getGameDetails(gid: UInt): Game =
         tryCatch("Unable to find the game due to") {
-            gameDataMem.getGameDetails(gid, offset, limit)
+            storage.read(gid)
         }
 
     override fun getGameByDevAndGenres(
-        offset: UInt,
-        limit: UInt,
         dev: String,
         genres: Collection<String>,
+        offset: UInt?,
+        limit: UInt?,
     ): Collection<Game> =
         tryCatch("Unable to find the game due to") {
-            gameDataMem.getGameByDevAndGenres(offset, limit, filterByDevAndGenres(dev, genres))
-        }
-
-    private fun filterByDevAndGenres(
-        dev: String,
-        genres: Collection<String>,
-    ): (Iterable<Game>) -> Collection<Game> =
-        { games ->
-            games.filter { game ->
-                game.dev == dev && game.genres.containsAll(genres)
-            }
+            storage.readBy(
+                offset ?: DEFAULT_OFFSET,
+                limit ?: DEFAULT_LIMIT,
+                dev,
+                genres,
+            )
         }
 }

@@ -9,6 +9,10 @@ import org.http4k.core.Response
  * This class provides methods for creating a new game, retrieving game details
  * and retrieving games by its corresponding developer and genres.
  * Each method corresponds to a specific HTTP request and returns an HTTP response.
+ * The operations are:
+ * - Create a new game
+ * - Retrieve game details
+ * - Retrieve games by developer and genres
  */
 interface GameHandlerInterface {
     /**

@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 /**
  * Represents a game.
  *
- * @property uuid The game's id (unique).
+ * @property gid The game's id (unique).
  * @property name The game's name.
  * @property dev The game's developer.
  * @property genres The game's genres.
@@ -15,7 +15,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class Game(
-    val uuid: UInt? = null,
+    val gid: UInt? = null,
     val name: String,
     val dev: String,
     val genres: Collection<String>,

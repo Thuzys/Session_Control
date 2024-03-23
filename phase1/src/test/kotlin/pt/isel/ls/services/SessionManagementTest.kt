@@ -4,7 +4,7 @@ import kotlinx.datetime.LocalDateTime
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.storage.PlayerDataMem
-import pt.isel.ls.storage.PlayerStorageStunt
+import pt.isel.ls.storage.PlayerStorageStuntDummy
 import pt.isel.ls.storage.SessionStorageStunt
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -16,7 +16,7 @@ private val date1 = LocalDateTime(2024, 3, 10, 12, 30)
 class SessionManagementTest {
     private fun actionSessionManagementTest(code: (session: SessionServices) -> Unit) =
         // arrangement
-        SessionManagement(SessionStorageStunt(), PlayerDataMem(PlayerStorageStunt()))
+        SessionManagement(SessionStorageStunt(), PlayerDataMem(PlayerStorageStuntDummy()))
             .let(code)
 
     @Test

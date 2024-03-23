@@ -14,9 +14,11 @@ import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.SQLException
 import java.util.UUID
-import kotlin.NoSuchElementException
 
 private val emailPattern: Regex = "^[A-Za-z](.*)(@)(.+)(\\.)(.+)".toRegex()
+
+val DEFAULT_OFFSET = 0u
+val DEFAULT_LIMIT = 10u
 
 /**
  * Validates if an email has the correct pattern.

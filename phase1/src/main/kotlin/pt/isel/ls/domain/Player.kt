@@ -1,7 +1,7 @@
 package pt.isel.ls.domain
 
 import kotlinx.serialization.Serializable
-import pt.isel.ls.storage.UUIDSerializer
+import pt.isel.ls.storage.serializer.UUIDSerializer
 import java.util.UUID
 
 /**
@@ -20,10 +20,9 @@ data class Player(
     val email: Email,
     @Serializable(with = UUIDSerializer::class)
     val token: UUID = UUID.randomUUID(),
-    // Ist ok to use this Serializer here?
 ) {
     init {
-        require(name.isNotBlank()) { "name must not be blank." }
+        require(name.isNotBlank()) { "Name must not be blank." }
     }
 }
 

@@ -30,15 +30,9 @@ interface GameServices {
      * Gets the game's details.
      *
      * @param gid The game's id.
-     * @param offset The offset.
-     * @param limit The limit.
      * @return The game's details.
      */
-    fun getGameDetails(
-        gid: UInt,
-        offset: UInt = 0u,
-        limit: UInt = 10u,
-    ): Game
+    fun getGameDetails(gid: UInt): Game
 
     /**
      * Gets the game by developer and genres.
@@ -50,9 +44,9 @@ interface GameServices {
      * @return Collection of games.
      */
     fun getGameByDevAndGenres(
-        offset: UInt = 0u,
-        limit: UInt = 10u,
         dev: String,
         genres: Collection<String>,
+        offset: UInt? = null,
+        limit: UInt? = null,
     ): Collection<Game>
 }

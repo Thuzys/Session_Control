@@ -1,7 +1,6 @@
 package pt.isel.ls.domain
 
 import kotlinx.serialization.Serializable
-import pt.isel.ls.utils.validateEmail
 
 /**
  * Represents an Email.

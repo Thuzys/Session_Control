@@ -2,7 +2,6 @@ package pt.isel.ls.storage
 
 import org.postgresql.ds.PGSimpleDataSource
 import pt.isel.ls.domain.Game
-import pt.isel.ls.utils.executeCommand
 import java.sql.Statement
 
 /**
@@ -20,7 +19,7 @@ class GameStorage(envVarName: String) : GameStorageInterface {
             it.executeCommand {
                 val addGameStmt =
                     it.prepareStatement(
-                        "INSERT INTO game(name, dev) VALUES (?, ?)",
+                        "INSERT INTO game(name, developer) VALUES (?, ?)",
                         Statement.RETURN_GENERATED_KEYS,
                     )
 
@@ -49,7 +48,8 @@ class GameStorage(envVarName: String) : GameStorageInterface {
 
                 val getGenresStmt =
                     it.prepareStatement(
-                        "SELECT (name) FROM GENRE JOIN GAME_GENRE ON GENRE.name = GAME_GENRE.genre WHERE GAME_GENRE.gid = ?",
+                        "SELECT (name) FROM GENRES JOIN GAME_GENRES ON " +
+                            "GENRE.name = GAME_GENRES.genre WHERE GAME_GENRES.gid = ?",
                     )
 
                 getGameStmt.setUInt(1, uInt)
@@ -73,7 +73,8 @@ class GameStorage(envVarName: String) : GameStorageInterface {
 
                 val getGenresStmt =
                     it.prepareStatement(
-                        "SELECT (name) FROM GENRE JOIN GAME_GENRE ON GENRE.name = GAME_GENRE.genre WHERE GAME_GENRE.gid = ?",
+                        "SELECT (name) FROM GENRE JOIN GAME_GENRE ON " +
+                            "GENRE.name = GAME_GENRE.genre WHERE GAME_GENRE.gid = ?",
                     )
 
                 getGamesStmt.setString(1, dev)

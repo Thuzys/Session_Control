@@ -7,9 +7,6 @@ import pt.isel.ls.domain.addPlayer
 import pt.isel.ls.storage.PlayerDataInterface
 import pt.isel.ls.storage.SessionDataInterface
 
-const val DEFAULT_OFFSET = 0u
-const val DEFAULT_LIMIT = 10u
-
 /**
  * Represents the services related to the session in the application.
  */

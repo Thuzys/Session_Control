@@ -49,7 +49,7 @@ class GameHandler(private val gameManagement: GameServices) : GameHandlerInterfa
 
         val genres = request.query("genres") ?.let { processGenres(it) }
 
-        return if (dev == null || genres == null) {
+        return if (dev == null && genres == null) {
             makeResponse(Status.BAD_REQUEST, "Bad Request")
         } else {
             tryResponse(Status.NOT_FOUND, "Game not found") {

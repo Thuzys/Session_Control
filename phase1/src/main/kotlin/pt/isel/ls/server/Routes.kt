@@ -15,6 +15,6 @@ const val PLAYER_ROUTE = "/players"
  */
 fun buildRoutes(playerHandler: PlayerHandlerInterface) =
     routes(
-        PLAYER_ROUTE bind Method.GET to { playerHandler.getPlayer(it) },
-        PLAYER_ROUTE bind Method.POST to { playerHandler.createPlayer(it) },
+        PLAYER_ROUTE bind Method.GET to playerHandler::getPlayer,
+        PLAYER_ROUTE bind Method.POST to playerHandler::createPlayer,
     )

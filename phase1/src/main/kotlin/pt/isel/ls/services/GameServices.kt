@@ -30,15 +30,9 @@ interface GameServices {
      * Gets the game's details.
      *
      * @param gid The game's id.
-     * @param offset The offset.
-     * @param limit The limit.
      * @return The game's details.
      */
-    fun getGameDetails(
-        gid: UInt,
-        offset: UInt?,
-        limit: UInt?,
-    ): Game
+    fun getGameDetails(gid: UInt): Game
 
     /**
      * Gets the game by developer and genres.

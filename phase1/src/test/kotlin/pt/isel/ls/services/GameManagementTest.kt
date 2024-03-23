@@ -1,7 +1,6 @@
 package pt.isel.ls.services
 
 import pt.isel.ls.domain.errors.ServicesError
-import pt.isel.ls.storage.GameDataMem
 import pt.isel.ls.storage.GameStorageStunt
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -10,7 +9,7 @@ import kotlin.test.assertTrue
 
 class GameManagementTest {
     private fun makeGameManagementTest(code: (gameServices: GameServices) -> Unit) {
-        GameManagement(GameDataMem(GameStorageStunt())).run { code(this) }
+        GameManagement((GameStorageStunt())).run { code(this) }
     }
 
     @Test
@@ -31,7 +30,7 @@ class GameManagementTest {
     @Test
     fun `get details of a game`() {
         makeGameManagementTest {
-            val game = it.getGameDetails(1u, null, null)
+            val game = it.getGameDetails(1u)
             assertEquals("test", game.name)
             assertEquals("dev", game.dev)
             assertTrue { "genre" in game.genres }
@@ -41,7 +40,7 @@ class GameManagementTest {
     @Test
     fun `error getting details of a game`() {
         makeGameManagementTest {
-            assertFailsWith<ServicesError> { it.getGameDetails(60u, null, null) }
+            assertFailsWith<ServicesError> { it.getGameDetails(60u) }
         }
     }
 
@@ -56,8 +55,9 @@ class GameManagementTest {
     @Test
     fun `get Game by developer and genres with no results`() {
         makeGameManagementTest {
-            val games = it.getGameByDevAndGenres(dev = "dev", genres = setOf("genre2"), null, null)
-            assertEquals(0, games.size)
+            assertFailsWith<ServicesError> {
+                it.getGameByDevAndGenres(dev = "dev", genres = setOf("genre2"), null, null)
+            }
         }
     }
 }

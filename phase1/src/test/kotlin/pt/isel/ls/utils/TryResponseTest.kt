@@ -3,12 +3,13 @@ package pt.isel.ls.utils
 import org.http4k.core.Response
 import org.http4k.core.Status
 import pt.isel.ls.domain.errors.ServicesError
+import pt.isel.ls.webApi.tryResponse
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class TryResponseTest {
     @Test
-    fun `try response status test`() {
+    fun `returning status ok with try response status test`() {
         val response =
             tryResponse(Status.OK, "Hello World!") {
                 Response(Status.OK).body("Hello World!")
@@ -17,7 +18,7 @@ class TryResponseTest {
     }
 
     @Test
-    fun `try response body test`() {
+    fun `comparing contend of try response body test`() {
         val response =
             tryResponse(Status.OK, "Hello World!") {
                 Response(Status.OK).body("Hello World!")
@@ -26,7 +27,7 @@ class TryResponseTest {
     }
 
     @Test
-    fun `try response status test with exception`() {
+    fun `returning status internal server error on try response test with an exception`() {
         val response =
             tryResponse(Status.INTERNAL_SERVER_ERROR, "Hello World!") {
                 throw ServicesError("an exception occurred!")
@@ -35,20 +36,20 @@ class TryResponseTest {
     }
 
     @Test
-    fun `try response body test with exception`() {
+    fun `comparing contend of try response body test with exception message`() {
         val response =
-            tryResponse(Status.INTERNAL_SERVER_ERROR, "Hello World!") {
+            tryResponse(Status.INTERNAL_SERVER_ERROR, "Hello World") {
                 throw ServicesError("an exception occurred!")
             }
-        assertEquals(response.bodyString(), "an exception occurred!")
+        assertEquals("Hello World: an exception occurred!", response.bodyString())
     }
 
     @Test
-    fun `try response test with exception and custom error`() {
+    fun `comparing contend of try response test with an exception without message`() {
         val response =
-            tryResponse(Status.INTERNAL_SERVER_ERROR, "Hello World!") {
+            tryResponse(Status.INTERNAL_SERVER_ERROR, "Hello World") {
                 throw ServicesError(null)
             }
-        assertEquals(response.bodyString(), "Hello World!")
+        assertEquals("Hello World.", response.bodyString())
     }
 }

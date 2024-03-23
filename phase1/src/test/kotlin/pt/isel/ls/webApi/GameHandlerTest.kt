@@ -100,7 +100,7 @@ class GameHandlerTest {
             request = Request(Method.GET, "/gameTest?dev=TestDev2&genres=TestGenre"),
         ) { request: Request ->
             val response = getGameByDevAndGenres(request)
-            assertEquals("Unable to find the game due to invalid dev or genres.", response.bodyString())
+            assertEquals("Game not found: Unable to find the game due to invalid dev or genres.", response.bodyString())
         }
 
     @Test
@@ -111,7 +111,7 @@ class GameHandlerTest {
             val response = getGameByDevAndGenres(request)
             assertEquals(
                 expected = "[{\"gid\":1,\"name\":\"Test\",\"dev\":\"TestDev\",\"genres\":[\"TestGenre\"]}]",
-                actual = response.bodyString()
+                actual = response.bodyString(),
             )
         }
 
@@ -124,12 +124,11 @@ class GameHandlerTest {
             assertEquals(Status.NOT_FOUND, response.status)
         }
 
-
     @Test
     fun `message of game not found`() =
         makeGameHandlerTest(Request(Method.GET, "/gameTest?gid=34")) { request: Request ->
             val response = getGameDetails(request)
-            assertEquals("Unable to find the game due to invalid game id.", response.bodyString())
+            assertEquals("Game not found: Unable to find the game due to invalid game id.", response.bodyString())
         }
 
     @Test
@@ -138,7 +137,7 @@ class GameHandlerTest {
             val response = getGameDetails(request)
             assertEquals(
                 expected = "{\"gid\":1,\"name\":\"Test\",\"dev\":\"TestDev\",\"genres\":[\"TestGenre\"]}",
-                actual = response.bodyString()
+                actual = response.bodyString(),
             )
         }
     }

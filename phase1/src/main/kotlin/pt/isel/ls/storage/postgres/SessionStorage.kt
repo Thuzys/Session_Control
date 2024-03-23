@@ -3,8 +3,8 @@ package pt.isel.ls.storage.postgres
 import org.postgresql.ds.PGSimpleDataSource
 import pt.isel.ls.domain.Session
 import pt.isel.ls.storage.Storage
-import pt.isel.ls.utils.executeCommand
-import pt.isel.ls.utils.makeSession
+import pt.isel.ls.storage.executeCommand
+import pt.isel.ls.storage.makeSession
 import java.sql.Statement
 
 class SessionStorage(envName: String) : Storage<Session> {

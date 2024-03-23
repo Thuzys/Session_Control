@@ -1,6 +1,7 @@
 package pt.isel.ls.utils
 
 import org.http4k.core.Status
+import pt.isel.ls.webApi.makeResponse
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

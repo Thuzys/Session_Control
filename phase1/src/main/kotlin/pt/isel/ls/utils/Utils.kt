@@ -13,7 +13,7 @@ import pt.isel.ls.domain.errors.ServicesError
 import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.SQLException
-import java.util.*
+import java.util.UUID
 
 private val emailPattern: Regex = "^[A-Za-z](.*)(@)(.+)(\\.)(.+)".toRegex()
 

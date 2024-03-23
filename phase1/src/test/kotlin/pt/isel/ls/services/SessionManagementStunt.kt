@@ -34,7 +34,7 @@ object SessionManagementStunt : SessionServices {
         if (sid == sid1) {
             Session(sid, 1u, 1u, date1, players)
         } else {
-            throw ServicesError("Unable to get the details of the Session due to invalid sid.")
+            throw ServicesError("Session not found.")
         }
 
     override fun createSession(
@@ -53,12 +53,15 @@ object SessionManagementStunt : SessionServices {
         offset: UInt?,
         limit: UInt?,
     ): Collection<Session> {
-        return if (gid == gid1 && state == SessionState.CLOSE) {
-            listOf(Session(sid1, 1u, gid1, date1, players), Session(sid2, 2u, gid1, date1, players2))
-        } else if (gid == 400u) {
-            emptyList()
-        } else {
-            throw ServicesError("There are no Sessions that satisfy the given details")
+        return when {
+            gid == gid1 && state == SessionState.CLOSE ->
+                listOf(
+                    Session(sid1, 1u, gid1, date1, players),
+                    Session(sid2, 2u, gid1, date1, players2),
+                )
+            gid == gid1 && state == SessionState.OPEN -> listOf(Session(sid2, 2u, gid1, date1, players2))
+            gid == 400u -> emptyList()
+            else -> throw ServicesError("There are no Sessions that satisfy the given details")
         }
     }
 }

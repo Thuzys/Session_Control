@@ -3,10 +3,10 @@ package pt.isel.ls.services
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.errors.ServicesError
 
-class GameManagementStunt : GameServices {
+object GameManagementStunt : GameServices {
     private val gameId = 1u
-    private val gameName = "Test"
-    private val gameDev = "TestDev"
+    private const val GAME_NAME = "Test"
+    private const val GAME_DEV = "TestDev"
     private val gameGenres = setOf("TestGenre")
 
     override fun createGame(
@@ -22,25 +22,21 @@ class GameManagementStunt : GameServices {
             )
         }
 
-    override fun getGameDetails(
-        gid: UInt,
-        offset: UInt,
-        limit: UInt,
-    ): Game =
+    override fun getGameDetails(gid: UInt): Game =
         if (gid == gameId) {
-            Game(gid, gameName, gameDev, gameGenres)
+            Game(gid, GAME_NAME, GAME_DEV, gameGenres)
         } else {
             throw ServicesError("Unable to find the game due to invalid game id.")
         }
 
     override fun getGameByDevAndGenres(
-        offset: UInt,
-        limit: UInt,
         dev: String,
         genres: Collection<String>,
+        offset: UInt?,
+        limit: UInt?,
     ): Collection<Game> =
-        if (dev.isNotBlank() && dev == gameDev && genres.isNotEmpty() && genres == gameGenres) {
-            listOf(Game(gameId, gameName, gameDev, gameGenres))
+        if (dev == GAME_DEV && gameGenres.containsAll(genres)) {
+            listOf(Game(gameId, GAME_NAME, GAME_DEV, gameGenres))
         } else {
             throw ServicesError("Unable to find the game due to invalid dev or genres.")
         }

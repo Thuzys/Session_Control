@@ -8,6 +8,14 @@ import org.http4k.core.Status
 import pt.isel.ls.domain.errors.ServicesError
 
 /**
+ * Processes the genres string and returns a collection of genres.
+ *
+ * @param genres The string containing the genres.
+ * @return The collection of genres.
+ */
+fun processGenres(genres: String): Collection<String> = genres.split(",")
+
+/**
  * Gets a parameter from a request.
  *
  * @param request The request from which the parameter is to be retrieved.

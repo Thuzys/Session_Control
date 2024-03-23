@@ -60,7 +60,8 @@ class SessionStorage(envName: String) : SessionStorageInterface {
         limit: UInt,
     ): Collection<Session>? =
         dataSource.connection.use { connection ->
-            val selectSessionCMD = "SELECT s.sid, s.capacity, s.gid, s.date\n" +
+            val selectSessionCMD =
+                "SELECT s.sid, s.capacity, s.gid, s.date\n" +
                     "FROM session s\n" +
                     "         JOIN player_session ps ON ps.sid = s.sid\n" +
                     "WHERE (s.gid = ?)\n" +
@@ -76,27 +77,29 @@ class SessionStorage(envName: String) : SessionStorageInterface {
             stmt2.setInt(idx++, gid.toInt())
             stmt2.setString(idx++, date.toString())
             playerId?.let { stmt2.setInt(idx++, playerId.toInt()) }
-            state.let { stmt2.setString(idx++, state.toString())}
+            state.let { stmt2.setString(idx++, state.toString()) }
             stmt2.setInt(idx++, offset.toInt())
             stmt2.setInt(idx, limit.toInt())
             val collection = connection.makeSession(stmt2)
             collection.ifEmpty { null }
         }
 
-    override fun updateAddPlayer(sid: UInt, newItem: Collection<Player>) =
-        dataSource.connection.use { connection ->
-            val insertPlayerCMD =
-                "INSERT INTO PLAYER_SESSION (pid, sid) " +
+    override fun updateAddPlayer(
+        sid: UInt,
+        newItem: Collection<Player>,
+    ) = dataSource.connection.use { connection ->
+        val insertPlayerCMD =
+            "INSERT INTO PLAYER_SESSION (pid, sid) " +
                 "SELECT ?, ?" +
                 "WHERE NOT EXISTS (" +
                 "SELECT 1 FROM PLAYER_SESSION WHERE pid = ? AND sid = ?);"
-            val stmt1 = connection.prepareStatement(insertPlayerCMD)
-            newItem.forEach { player ->
-                player.pid?.let { it1 -> stmt1.setInt(1, it1.toInt()) }
-                stmt1.setInt(2, sid.toInt())
-                player.pid?.let { stmt1.setInt(3, it.toInt()) }
-                stmt1.setInt(4, sid.toInt())
-                stmt1.executeUpdate()
-            }
+        val stmt1 = connection.prepareStatement(insertPlayerCMD)
+        newItem.forEach { player ->
+            player.pid?.let { it1 -> stmt1.setInt(1, it1.toInt()) }
+            stmt1.setInt(2, sid.toInt())
+            player.pid?.let { stmt1.setInt(3, it.toInt()) }
+            stmt1.setInt(4, sid.toInt())
+            stmt1.executeUpdate()
         }
+    }
 }

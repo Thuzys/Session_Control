@@ -6,7 +6,6 @@ import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.errors.ServicesError
-import pt.isel.ls.storage.SessionStorageStunt
 import java.util.UUID
 
 private val pid = 1u
@@ -55,7 +54,11 @@ object SessionManagementStunt : SessionServices {
         limit: UInt?,
     ): Collection<Session> {
         return when {
-            gid == gid1 && state == SessionState.CLOSE  -> listOf(Session(sid1, 1u, gid1, date1, players), Session(sid2, 2u, gid1, date1, players2))
+            gid == gid1 && state == SessionState.CLOSE ->
+                listOf(
+                    Session(sid1, 1u, gid1, date1, players),
+                    Session(sid2, 2u, gid1, date1, players2),
+                )
             gid == gid1 && state == SessionState.OPEN -> listOf(Session(sid2, 2u, gid1, date1, players2))
             gid == 400u -> emptyList()
             else -> throw ServicesError("There are no Sessions that satisfy the given details")

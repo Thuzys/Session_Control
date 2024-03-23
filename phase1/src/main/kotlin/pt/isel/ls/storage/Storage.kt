@@ -1,10 +1,7 @@
 package pt.isel.ls.storage
 
-
 interface Storage<T> {
-
     fun create(newItem: T): UInt
-
 
     fun read(
         uInt: UInt? = null,

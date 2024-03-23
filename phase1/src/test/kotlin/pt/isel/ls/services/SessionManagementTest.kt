@@ -3,17 +3,30 @@ package pt.isel.ls.services
 import kotlinx.datetime.LocalDateTime
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.errors.ServicesError
-import pt.isel.ls.storage.*
+import pt.isel.ls.storage.PlayerDataMem
+import pt.isel.ls.storage.PlayerStorageStunt
+import pt.isel.ls.storage.SessionStorageStunt
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
+
+private val date1 = LocalDateTime(2024, 3, 10, 12, 30)
 
 class SessionManagementTest {
     private fun actionSessionManagementTest(code: (session: SessionServices) -> Unit) =
         // arrangement
         SessionManagement(SessionStorageStunt(), PlayerDataMem(PlayerStorageStunt()))
             .let(code)
+
+    @Test
+    fun `creating a session returns and sid successfully`() {
+        actionSessionManagementTest { sessionManagement: SessionServices ->
+            val expectedSid = 4u
+            val actualSid = sessionManagement.createSession(1u, date1, 2u)
+            assertEquals(expectedSid, actualSid)
+        }
+    }
 
     @Test
     fun `add a player to a session increments size of session`() {
@@ -29,33 +42,32 @@ class SessionManagementTest {
     @Test
     fun `error adding a player to a session due to invalid player fails with ServicesError`() {
         actionSessionManagementTest { sessionManagement: SessionServices ->
-        assertFailsWith<ServicesError> { sessionManagement.addPlayer(4u, 1u) }
+            assertFailsWith<ServicesError> { sessionManagement.addPlayer(4u, 1u) }
         }
     }
 
     @Test
     fun `error adding a player to a session due to invalid session fails with ServicesError`() {
         actionSessionManagementTest { sessionManagement: SessionServices ->
-        assertFailsWith<ServicesError> { sessionManagement.addPlayer(1u, 3u) }
+            assertFailsWith<ServicesError> { sessionManagement.addPlayer(1u, 3u) }
         }
     }
 
     @Test
     fun `trying to get details of a non-existent session fails with ServicesError`() {
         actionSessionManagementTest { sessionManagement: SessionServices ->
-        assertFailsWith<ServicesError> { sessionManagement.getSessionDetails(5u) }
+            assertFailsWith<ServicesError> { sessionManagement.getSessionDetails(5u) }
         }
     }
 
     @Test
     fun `successfully getSessionDetails gets the correct details`() {
         actionSessionManagementTest { sessionManagement: SessionServices ->
-            val date = LocalDateTime(2024, 3, 10, 12, 30)
             val sessionDetails = sessionManagement.getSessionDetails(1u)
             assertEquals(1u, sessionDetails.sid)
             assertEquals(2u, sessionDetails.capacity)
             assertEquals(1u, sessionDetails.gid)
-            assertEquals(date, sessionDetails.date)
+            assertEquals(date1, sessionDetails.date)
             assertTrue { sessionDetails.players.size == 2 }
         }
     }
@@ -70,10 +82,9 @@ class SessionManagementTest {
     }
 
     @Test
-    fun `no match in trying to get Sessions returns an empty list`() {
+    fun `no match in trying to get Sessions throws ServicesError`() {
         actionSessionManagementTest { sessionManagement: SessionServices ->
-            val sessions = sessionManagement.getSessions(8u)
-            assertEquals(0, sessions.size)
+            assertFailsWith<ServicesError> { sessionManagement.getSessions(8u) }
         }
     }
 

@@ -26,9 +26,8 @@ interface SessionStorageInterface {
      * @param sid The unique identifier of the session to read.
      * @return A [Session] or null if nothing is found.
      */
-    fun readSession(
-        sid: UInt,
-        ): Session?
+
+    fun readSession(sid: UInt): Session?
 
     /**
      * Retrieves a collection of sessions based on the specified parameters.
@@ -58,6 +57,6 @@ interface SessionStorageInterface {
      */
     fun updateAddPlayer(
         sid: UInt,
-        newItem: Collection<Player>
+        newItem: Collection<Player>,
     )
 }

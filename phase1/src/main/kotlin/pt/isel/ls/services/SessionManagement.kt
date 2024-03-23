@@ -49,14 +49,15 @@ class SessionManagement(
         playerId: UInt?,
         offset: UInt?,
         limit: UInt?,
-    ): Collection<Session> = tryCatch("Unable to create a new session due to") {
-        sessionDataMem.readSessions(
-            gid = gid,
-            date = date,
-            state = state,
-            playerId = playerId,
-            offset = offset ?: DEFAULT_OFFSET,
-            limit = limit ?: DEFAULT_LIMIT,
-        ) ?: throw NoSuchElementException()
-    }
+    ): Collection<Session> =
+        tryCatch("Unable to create a new session due to") {
+            sessionDataMem.readSessions(
+                gid = gid,
+                date = date,
+                state = state,
+                playerId = playerId,
+                offset = offset ?: DEFAULT_OFFSET,
+                limit = limit ?: DEFAULT_LIMIT,
+            ) ?: throw NoSuchElementException()
+        }
 }

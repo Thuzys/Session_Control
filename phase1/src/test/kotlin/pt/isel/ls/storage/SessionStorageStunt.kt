@@ -1,7 +1,11 @@
 package pt.isel.ls.storage
 
 import kotlinx.datetime.LocalDateTime
-import pt.isel.ls.domain.*
+import pt.isel.ls.domain.Email
+import pt.isel.ls.domain.Game
+import pt.isel.ls.domain.Player
+import pt.isel.ls.domain.Session
+import pt.isel.ls.domain.SessionState
 import pt.isel.ls.utils.getSessionState
 
 class SessionStorageStunt : SessionStorageInterface {
@@ -30,13 +34,6 @@ class SessionStorageStunt : SessionStorageInterface {
             3u to Game(3u, "test3", "dev", listOf("genre")),
         )
 
-    fun update(
-        uInt: UInt,
-        newItem: Session,
-    ) {
-        hashSession[uInt] = newItem
-    }
-
     override fun createSession(newItem: Session): UInt {
         val sid = sessionUuid++
         hashSession[sessionUuid] = newItem.copy(sid = sid)
@@ -51,18 +48,19 @@ class SessionStorageStunt : SessionStorageInterface {
         state: SessionState?,
         playerId: UInt?,
         offset: UInt,
-        limit: UInt
-    ): Collection<Session> =
-            hashSession.values.filter { session ->
-                session.gid == gid &&
-                        (date == null || session.date == date) &&
-                        (state == null  || getSessionState(session) == state) &&
-                        (playerId == null || session.players.any { player -> player.pid == playerId })
-            }
+        limit: UInt,
+    ): Collection<Session>? =
+        hashSession.values.filter { session ->
+            session.gid == gid &&
+                (date == null || session.date == date) &&
+                (state == null || getSessionState(session) == state) &&
+                (playerId == null || session.players.any { player -> player.pid == playerId })
+        }.ifEmpty { null }
 
-
-
-    override fun updateAddPlayer(sid: UInt, newItem: Collection<Player>) {
+    override fun updateAddPlayer(
+        sid: UInt,
+        newItem: Collection<Player>,
+    ) {
         hashSession[sid]?.let { session ->
             hashSession[sid] = session.copy(players = newItem)
         }

@@ -2,143 +2,254 @@ package pt.isel.ls.webApi
 
 import org.http4k.core.Method
 import org.http4k.core.Request
+import org.http4k.core.Response
 import org.http4k.core.Status
 import pt.isel.ls.services.GameManagementStunt
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class GameHandlerTest {
-    private fun makeGameHandlerTest(
-        request: Request,
-        code: GameHandlerInterface.(request: Request) -> Unit,
-    ) = GameHandler(GameManagementStunt).run { code(request) }
+    private fun executeGameHandlerTest(action: (GameHandlerInterface) -> Response) =
+        GameHandler(GameManagementStunt)
+            .run(action)
 
     @Test
-    fun `bad request creating a game`() =
-        makeGameHandlerTest(Request(Method.POST, "/gamesTest")) { request: Request ->
-            val response = createGame(request)
-            assertEquals(Status.BAD_REQUEST, response.status)
-        }
+    fun `bad request creating a game due to missing parameters (name, developer and genres)`() {
+        // ARRANGE
+        val request = Request(Method.POST, "/gamesTest")
+        val expectedStatus = Status.BAD_REQUEST
+
+        // ACT
+        val response =
+            executeGameHandlerTest { handler ->
+                handler.createGame(request)
+            }
+
+        // ASSERT
+        assertEquals(expectedStatus, response.status)
+    }
 
     @Test
-    fun `message of Bad Request creating a game`() =
-        makeGameHandlerTest(Request(Method.POST, "/gamesTest")) { request: Request ->
-            val response = createGame(request)
-            assertEquals("Bad Request", response.bodyString())
-        }
+    fun `message of Bad Request creating a game due to missing parameters (name, developer and genres)`() {
+        // ARRANGE
+        val request = Request(Method.POST, "/gamesTest")
+        val expectedMessage = "Bad Request"
+
+        // ACT
+        val response =
+            executeGameHandlerTest { handler ->
+                handler.createGame(request)
+            }
+
+        // ASSERT
+        assertEquals(expectedMessage, response.bodyString())
+    }
 
     @Test
-    fun `bad request getting the game details`() =
-        makeGameHandlerTest(Request(Method.GET, "/gamesTest")) { request: Request ->
-            val response = getGameDetails(request)
-            assertEquals(Status.BAD_REQUEST, response.status)
-        }
+    fun `bad request getting the game details due to missing game id`() {
+        // ARRANGE
+        val request = Request(Method.GET, "/gamesTest")
+        val expectedStatus = Status.BAD_REQUEST
+
+        // ACT
+        val response =
+            executeGameHandlerTest { handler ->
+                handler.getGameDetails(request)
+            }
+
+        // ASSERT
+        assertEquals(expectedStatus, response.status)
+    }
 
     @Test
-    fun `message of Bad Request getting the game details`() =
-        makeGameHandlerTest(Request(Method.GET, "/gamesTest")) { request: Request ->
-            val response = getGameDetails(request)
-            assertEquals("Bad Request", response.bodyString())
-        }
+    fun `message of Bad Request getting the game details due to missing game id`() {
+        // ARRANGE
+        val request = Request(Method.GET, "/gamesTest")
+        val expectedMessage = "Bad Request"
+
+        // ACT
+        val response =
+            executeGameHandlerTest { handler ->
+                handler.getGameDetails(request)
+            }
+
+        // ASSERT
+        assertEquals(expectedMessage, response.bodyString())
+    }
 
     @Test
-    fun `game created with success`() =
-        makeGameHandlerTest(
-            request = Request(Method.POST, "/gameTest").body("{name: name, dev: dev, genres: genre1,genre2,genre3}"),
-        ) { request: Request ->
-            val response = createGame(request)
-            assertEquals(Status.CREATED, response.status)
-        }
+    fun `game created with success`() {
+        // ARRANGE
+        val request = Request(Method.POST, "/gameTest").body("{name: name, dev: dev, genres: genre1,genre2,genre3}")
+        val expectedStatus = Status.CREATED
+
+        // ACT
+        val response =
+            executeGameHandlerTest { handler ->
+                handler.createGame(request)
+            }
+
+        // ASSERT
+        assertEquals(expectedStatus, response.status)
+    }
 
     @Test
-    fun `message of game created with success`() =
-        makeGameHandlerTest(
-            request = Request(Method.POST, "/gameTest").body("{name: name, dev: dev, genres: genre1,genre2,genre3}"),
-        ) { request: Request ->
-            val response = createGame(request)
-            assertEquals(
-                expected = "Game created with id 1.",
-                actual = response.bodyString(),
-            )
-        }
+    fun `message of game created with success`() {
+        // ARRANGE
+        val request = Request(Method.POST, "/gameTest").body("{name: name, dev: dev, genres: genre1,genre2,genre3}")
+        val expectedMessage = "Game created with id 1."
+
+        // ACT
+        val response =
+            executeGameHandlerTest { handler ->
+                handler.createGame(request)
+            }
+
+        // ASSERT
+        assertEquals(expectedMessage, response.bodyString())
+    }
 
     @Test
-    fun `internal server error creating a game`() =
-        makeGameHandlerTest(
-            request = Request(Method.POST, "/gameTest").body("{name: , dev: dev, genres: genre1,genre2,genre3}"),
-        ) { request: Request ->
-            val response = createGame(request)
-            assertEquals(Status.INTERNAL_SERVER_ERROR, response.status)
-        }
+    fun `internal server error creating a game due to invalid parameter`() {
+        // ARRANGE
+        val request = Request(Method.POST, "/gameTest").body("{name: , dev: dev, genres: genre1,genre2,genre3}")
+        val expectedStatus = Status.INTERNAL_SERVER_ERROR
+
+        // ACT
+        val response =
+            executeGameHandlerTest { handler ->
+                handler.createGame(request)
+            }
+
+        // ASSERT
+        assertEquals(expectedStatus, response.status)
+    }
 
     @Test
-    fun `bad request getting the game by dev and genres`() =
-        makeGameHandlerTest(Request(Method.GET, "/gamesTest")) { request: Request ->
-            val response = getGameByDevAndGenres(request)
-            assertEquals(Status.BAD_REQUEST, response.status)
-        }
+    fun `bad request getting the game by dev and genres due to missing developer and genres`() {
+        // ARRANGE
+        val request = Request(Method.GET, "/gamesTest")
+        val expectedStatus = Status.BAD_REQUEST
+
+        // ACT
+        val response =
+            executeGameHandlerTest { handler ->
+                handler.getGameByDevAndGenres(request)
+            }
+
+        // ASSERT
+        assertEquals(expectedStatus, response.status)
+    }
 
     @Test
-    fun `message of Bad Request getting the game by dev and genres`() =
-        makeGameHandlerTest(Request(Method.GET, "/gamesTest")) { request: Request ->
-            val response = getGameByDevAndGenres(request)
-            assertEquals("Bad Request", response.bodyString())
-        }
+    fun `message of Bad Request getting the game by dev and genres due to missing developer and genres`() {
+        // ARRANGE
+        val request = Request(Method.GET, "/gamesTest")
+        val expectedMessage = "Bad Request"
+
+        // ACT
+        val response =
+            executeGameHandlerTest { handler ->
+                handler.getGameByDevAndGenres(request)
+            }
+
+        // ASSERT
+        assertEquals(expectedMessage, response.bodyString())
+    }
 
     @Test
-    fun `game found by dev and genres`() =
-        makeGameHandlerTest(
-            request = Request(Method.GET, "/gameTest?dev=TestDev&genres=TestGenre"),
-        ) { request: Request ->
-            val response = getGameByDevAndGenres(request)
-            assertEquals(Status.FOUND, response.status)
-        }
+    fun `game found by dev and genres successfully`() {
+        // ARRANGE
+        val request = Request(Method.GET, "/gameTest?dev=TestDev&genres=TestGenre")
+        val expectedStatus = Status.FOUND
+
+        // ACT
+        val response =
+            executeGameHandlerTest { handler ->
+                handler.getGameByDevAndGenres(request)
+            }
+
+        // ASSERT
+        assertEquals(expectedStatus, response.status)
+    }
 
     @Test
-    fun `message of game by dev and genres not found`() =
-        makeGameHandlerTest(
-            request = Request(Method.GET, "/gameTest?dev=TestDev2&genres=TestGenre"),
-        ) { request: Request ->
-            val response = getGameByDevAndGenres(request)
-            assertEquals("Game not found: Unable to find the game due to invalid dev or genres.", response.bodyString())
-        }
+    fun `message of game by dev and genres not found due to parameters that not correspond to an existing Game`() {
+        // ARRANGE
+        val request = Request(Method.GET, "/gameTest?dev=TestDev2&genres=TestGenre")
+        val expectedMessage = "Game not found: Unable to find the game due to invalid dev or genres."
+
+        // ACT
+        val response =
+            executeGameHandlerTest { handler ->
+                handler.getGameByDevAndGenres(request)
+            }
+
+        // ASSERT
+        assertEquals(expectedMessage, response.bodyString())
+    }
 
     @Test
-    fun `message of game by dev and genres found`() =
-        makeGameHandlerTest(
-            request = Request(Method.GET, "/gameTest?dev=TestDev&genres=TestGenre"),
-        ) { request: Request ->
-            val response = getGameByDevAndGenres(request)
-            assertEquals(
-                expected = "[{\"gid\":1,\"name\":\"Test\",\"dev\":\"TestDev\",\"genres\":[\"TestGenre\"]}]",
-                actual = response.bodyString(),
-            )
-        }
+    fun `message of game by dev and genres found`() {
+        // ARRANGE
+        val request = Request(Method.GET, "/gameTest?dev=TestDev&genres=TestGenre")
+        val expectedMessage = "[{\"gid\":1,\"name\":\"Test\",\"dev\":\"TestDev\",\"genres\":[\"TestGenre\"]}]"
+
+        // ACT
+        val response =
+            executeGameHandlerTest { handler ->
+                handler.getGameByDevAndGenres(request)
+            }
+
+        // ASSERT
+        assertEquals(expectedMessage, response.bodyString())
+    }
 
     @Test
-    fun `game by dev and genres not found`() =
-        makeGameHandlerTest(
-            request = Request(Method.GET, "/gameTest?dev=TestDev2&genres=TestGenre"),
-        ) { request: Request ->
-            val response = getGameByDevAndGenres(request)
-            assertEquals(Status.NOT_FOUND, response.status)
-        }
+    fun `game by dev and genres not found due to parameters that not correspond to an existing Game`() {
+        // ARRANGE
+        val request = Request(Method.GET, "/gameTest?dev=TestDev2&genres=TestGenre")
+        val expectedStatus = Status.NOT_FOUND
+
+        // ACT
+        val response =
+            executeGameHandlerTest { handler ->
+                handler.getGameByDevAndGenres(request)
+            }
+
+        // ASSERT
+        assertEquals(expectedStatus, response.status)
+    }
 
     @Test
-    fun `message of game not found`() =
-        makeGameHandlerTest(Request(Method.GET, "/gameTest?gid=34")) { request: Request ->
-            val response = getGameDetails(request)
-            assertEquals("Game not found: Unable to find the game due to invalid game id.", response.bodyString())
-        }
+    fun `message of game not found due to a game id that does not correspond to an existing Game`() {
+        // ARRANGE
+        val request = Request(Method.GET, "/gameTest?gid=34")
+        val expectedMessage = "Game not found: Unable to find the game due to invalid game id."
+
+        // ACT
+        val response =
+            executeGameHandlerTest { handler ->
+                handler.getGameDetails(request)
+            }
+
+        // ASSERT
+        assertEquals(expectedMessage, response.bodyString())
+    }
 
     @Test
-    fun `message of game found`() {
-        makeGameHandlerTest(Request(Method.GET, "/gameTest?gid=1")) { request: Request ->
-            val response = getGameDetails(request)
-            assertEquals(
-                expected = "{\"gid\":1,\"name\":\"Test\",\"dev\":\"TestDev\",\"genres\":[\"TestGenre\"]}",
-                actual = response.bodyString(),
-            )
-        }
+    fun `message of game found due to a game id that corresponds to an existing Game `() {
+        // ARRANGE
+        val request = Request(Method.GET, "/gameTest?gid=1")
+        val expectedMessage = "{\"gid\":1,\"name\":\"Test\",\"dev\":\"TestDev\",\"genres\":[\"TestGenre\"]}"
+
+        // ACT
+        val response =
+            executeGameHandlerTest { handler ->
+                handler.getGameDetails(request)
+            }
+
+        // ASSERT
+        assertEquals(expectedMessage, response.bodyString())
     }
 }

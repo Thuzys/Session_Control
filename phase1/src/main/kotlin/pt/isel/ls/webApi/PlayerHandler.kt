@@ -32,9 +32,10 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
     }
 
     override fun getPlayer(request: Request): Response {
-        if (!authorizedAccess(request)) {
-            return makeResponse(Status.UNAUTHORIZED, "Unauthorized, token not found.")
-        }
+        unauthorizedAccess(
+            request,
+            playerManagement,
+        )?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it") }
         val pid = request.toPidOrNull() ?: return makeResponse(Status.BAD_REQUEST, "Bad Request, pid not found.")
         return tryResponse(
             errorStatus = Status.NOT_FOUND,
@@ -44,10 +45,4 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
             makeResponse(Status.FOUND, Json.encodeToString(player))
         }
     }
-
-    private fun Request.toPidOrNull(): UInt? = query("pid")?.toUIntOrNull()
-
-    private fun authorizedAccess(request: Request): Boolean =
-        request.query("token")
-            ?.let(playerManagement::isValidToken) ?: false
 }

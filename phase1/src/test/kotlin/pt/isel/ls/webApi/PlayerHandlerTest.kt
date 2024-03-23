@@ -140,7 +140,7 @@ class PlayerHandlerTest {
         }
 
     @Test
-    fun `unauthorized status due lack of token during get player`() =
+    fun `unauthorized status due lack of token during get player request`() =
         actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
             val request = Request(Method.GET, "$DUMMY_ROUTE?pid=${PlayerManagementStunt.playerId}")
             val response = handler.getPlayer(request)
@@ -148,13 +148,21 @@ class PlayerHandlerTest {
         }
 
     @Test
-    fun `unauthorized message due invalid token during get player`() =
+    fun `unauthorized message due invalid token during get player request`() =
         actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
             val request =
                 Request(
                     Method.GET,
                     "$DUMMY_ROUTE?pid=${PlayerManagementStunt.playerId}&token=${UUID.randomUUID()}",
                 )
+            val response = handler.getPlayer(request)
+            assertEquals("Unauthorized, invalid token.", response.bodyString())
+        }
+
+    @Test
+    fun `unauthorized message due lack of token during get player request`() =
+        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
+            val request = Request(Method.GET, "$DUMMY_ROUTE?pid=${PlayerManagementStunt.playerId}")
             val response = handler.getPlayer(request)
             assertEquals("Unauthorized, token not found.", response.bodyString())
         }

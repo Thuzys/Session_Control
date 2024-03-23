@@ -36,7 +36,9 @@ class SessionHandler(private val sessionServices: SessionServices) : SessionHand
     }
 
     override fun getSession(request: Request): Response {
-        val sid = getParameter(request, "sid")?.toUInt() ?: return makeResponse(Status.BAD_REQUEST, "Missing or invalid sid.")
+        val sid =
+            getParameter(request, "sid")?.toUInt()
+                ?: return makeResponse(Status.BAD_REQUEST, "Missing or invalid sid.")
         return tryResponse(Status.NOT_FOUND, "Session not found.") {
             val session = sessionServices.getSessionDetails(sid)
             makeResponse(Status.FOUND, Json.encodeToString(session))

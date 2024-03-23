@@ -2,9 +2,6 @@ package pt.isel.ls.services
 
 import pt.isel.ls.domain.Game
 import pt.isel.ls.storage.GameStorageInterface
-import pt.isel.ls.utils.DEFAULT_LIMIT
-import pt.isel.ls.utils.DEFAULT_OFFSET
-import pt.isel.ls.utils.tryCatch
 
 /**
  * Class responsible for managing the game services.

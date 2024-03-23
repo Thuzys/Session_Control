@@ -6,7 +6,7 @@ import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
-import pt.isel.ls.utils.getSessionState
+import pt.isel.ls.services.getSessionState
 
 class SessionStorageStunt : SessionStorageInterface {
     private val defaultMail = Email("default@mail.com")

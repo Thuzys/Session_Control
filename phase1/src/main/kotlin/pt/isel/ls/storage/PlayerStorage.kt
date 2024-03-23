@@ -9,7 +9,6 @@ import java.sql.Statement
  * Represents the storage of player data.
  *
  * This class implements the [PlayerStorageInterface] and uses a PostgresSQL database to perform the operations.
- *
  * @param envName The name of the environment variable that contains the connection URL to the database.
  */
 class PlayerStorage(envName: String) : PlayerStorageInterface {

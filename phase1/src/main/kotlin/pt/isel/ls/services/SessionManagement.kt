@@ -4,25 +4,21 @@ import kotlinx.datetime.LocalDateTime
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.addPlayer
-import pt.isel.ls.storage.PlayerDataInterface
+import pt.isel.ls.storage.PlayerStorageInterface
 import pt.isel.ls.storage.SessionStorageInterface
-import pt.isel.ls.utils.tryCatch
-
-const val DEFAULT_OFFSET = 0u
-const val DEFAULT_LIMIT = 10u
 
 /**
  * Represents the services related to the session in the application.
  */
 class SessionManagement(
     private val sessionDataMem: SessionStorageInterface,
-    private val playerDataMem: PlayerDataInterface,
+    private val playerDataMem: PlayerStorageInterface,
 ) : SessionServices {
     override fun addPlayer(
         player: UInt,
         session: UInt,
     ) = tryCatch("Unable to add player to session") {
-        val playerToAdd = playerDataMem.readPlayer(pid = player)
+        val playerToAdd = playerDataMem.read(pid = player)
         val whereSession = sessionDataMem.readSession(sid = session)
         val updatedSession = whereSession?.addPlayer(playerToAdd) ?: throw NoSuchElementException()
         sessionDataMem.updateAddPlayer(sid = session, newItem = updatedSession.players)

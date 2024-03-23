@@ -5,8 +5,6 @@ import org.postgresql.ds.PGSimpleDataSource
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
-import pt.isel.ls.utils.executeCommand
-import pt.isel.ls.utils.makeSession
 import java.sql.Statement
 
 class SessionStorage(envName: String) : SessionStorageInterface {

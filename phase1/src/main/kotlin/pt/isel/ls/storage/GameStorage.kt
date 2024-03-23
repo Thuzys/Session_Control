@@ -2,7 +2,6 @@ package pt.isel.ls.storage
 
 import org.postgresql.ds.PGSimpleDataSource
 import pt.isel.ls.domain.Game
-import pt.isel.ls.utils.executeCommand
 import java.sql.Statement
 
 /**

@@ -6,6 +6,7 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
 import pt.isel.ls.domain.errors.ServicesError
+import pt.isel.ls.services.PlayerServices
 
 /**
  * Processes the genres string and returns a collection of genres.
@@ -94,3 +95,24 @@ internal fun dateVerification(date: String?): LocalDateTime? {
         null
     }
 }
+
+/**
+ * Get the pid of a query request, if incapable return null.
+ *
+ * @return The player id ([UInt]) or null.
+ */
+internal fun Request.toPidOrNull(): UInt? = query("pid")?.toUIntOrNull()
+
+/**
+ * Verifies if the request has a valid token.
+ *
+ * @param request The request to be verified.
+ * @param pManagement The player management service.
+ * @return The error message if the token is invalid, or null if the token is valid.
+ */
+internal fun unauthorizedAccess(
+    request: Request,
+    pManagement: PlayerServices,
+): String? =
+    request.query("token")
+        ?.let { return if (pManagement.isValidToken(it)) null else "invalid token." } ?: "token not found."

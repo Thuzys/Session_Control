@@ -7,10 +7,6 @@ import org.http4k.core.Response
 import org.http4k.core.Status
 import pt.isel.ls.domain.toSessionState
 import pt.isel.ls.services.SessionServices
-import pt.isel.ls.utils.dateVerification
-import pt.isel.ls.utils.makeResponse
-import pt.isel.ls.utils.readBody
-import pt.isel.ls.utils.tryResponse
 
 /**
  * Handles session-related HTTP requests.

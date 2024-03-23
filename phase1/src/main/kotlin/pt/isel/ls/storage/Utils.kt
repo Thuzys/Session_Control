@@ -110,7 +110,6 @@ fun processGenres(
     while (genresRS.next()) {
         genres.add(genresRS.getString("name"))
     }
-
     return genres
 }
 

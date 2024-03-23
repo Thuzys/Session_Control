@@ -5,8 +5,10 @@ import pt.isel.ls.domain.Email
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
+import pt.isel.ls.domain.SessionState
+import pt.isel.ls.services.getSessionState
 
-class SessionStorageStunt : Storage<Session> {
+class SessionStorageStunt : SessionStorageInterface {
     private val defaultMail = Email("default@mail.com")
     private val player1 = Player(1u, "test1", defaultMail)
     private val player2 = Player(2u, "test2", defaultMail)
@@ -32,35 +34,35 @@ class SessionStorageStunt : Storage<Session> {
             3u to Game(3u, "test3", "dev", listOf("genre")),
         )
 
-    override fun create(newItem: Session): UInt {
+    override fun createSession(newItem: Session): UInt {
         val sid = sessionUuid++
         hashSession[sessionUuid] = newItem.copy(sid = sid)
         return sid
     }
 
-    override fun read(
-        uInt: UInt?,
+    override fun readSession(sid: UInt): Session? = hashSession[sid]
+
+    override fun readSessions(
+        gid: UInt,
+        date: LocalDateTime?,
+        state: SessionState?,
+        playerId: UInt?,
         offset: UInt,
         limit: UInt,
-    ): Collection<Session>? {
-        return if (limit == 2u) {
-            hashSession.values.drop(1)
-        } else if (uInt == null) {
-            hashSession.values
-        } else {
-            val session = hashSession[uInt]
-            return if (session != null) listOf(session) else null
-        }
-    }
+    ): Collection<Session>? =
+        hashSession.values.filter { session ->
+            session.gid == gid &&
+                (date == null || session.date == date) &&
+                (state == null || getSessionState(session) == state) &&
+                (playerId == null || session.players.any { player -> player.pid == playerId })
+        }.ifEmpty { null }
 
-    override fun delete(uInt: UInt) {
-        TODO("Not yet implemented")
-    }
-
-    override fun update(
-        uInt: UInt,
-        newItem: Session,
+    override fun updateAddPlayer(
+        sid: UInt,
+        newItem: Collection<Player>,
     ) {
-        hashSession[uInt] = newItem
+        hashSession[sid]?.let { session ->
+            hashSession[sid] = session.copy(players = newItem)
+        }
     }
 }

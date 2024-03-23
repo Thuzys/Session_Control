@@ -9,7 +9,7 @@ import pt.isel.ls.domain.toSessionState
 import pt.isel.ls.services.SessionServices
 
 /**
- * Handles player-related HTTP requests.
+ * Handles session-related HTTP requests.
  *
  * This class provides methods for creating a new session, retrieving session details, retrieving sessions
  * by specified criteria and adding a player to a session.
@@ -36,9 +36,7 @@ class SessionHandler(private val sessionServices: SessionServices) : SessionHand
     }
 
     override fun getSession(request: Request): Response {
-        val sid =
-            getParameter(request, "sid")?.toUInt()
-                ?: return makeResponse(Status.BAD_REQUEST, "Missing or invalid sid.")
+        val sid = request.query("sid")?.toUInt() ?: return makeResponse(Status.BAD_REQUEST, "Missing or invalid sid.")
         return tryResponse(Status.NOT_FOUND, "Session not found.") {
             val session = sessionServices.getSessionDetails(sid)
             makeResponse(Status.FOUND, Json.encodeToString(session))
@@ -46,12 +44,12 @@ class SessionHandler(private val sessionServices: SessionServices) : SessionHand
     }
 
     override fun getSessions(request: Request): Response {
-        val gid = getParameter(request, "gid")?.toUIntOrNull()
-        val date = dateVerification(getParameter(request, "date"))
-        val state = getParameter(request, "state").toSessionState()
-        val playerId = getParameter(request, "playerId")?.toUIntOrNull()
-        val offset = getParameter(request, "offset")?.toUIntOrNull()
-        val limit = getParameter(request, "limit")?.toUIntOrNull()
+        val gid = request.query("gid")?.toUIntOrNull()
+        val date = dateVerification(request.query("date"))
+        val state = request.query("state").toSessionState()
+        val playerId = request.query("playerId")?.toUIntOrNull()
+        val offset = request.query("offset")?.toUIntOrNull()
+        val limit = request.query("limit")?.toUIntOrNull()
         return if (gid == null) {
             makeResponse(Status.BAD_REQUEST, "Invalid or Missing Game Identifier.")
         } else {

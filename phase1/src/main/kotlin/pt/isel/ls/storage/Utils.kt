@@ -77,7 +77,6 @@ fun processGenres(
     gid: UInt,
 ): Collection<String> {
     val genres = mutableSetOf<String>()
-
     run {
         getGenresStmt.setUInt(1, gid)
         val genresRS = getGenresStmt.executeQuery()
@@ -85,7 +84,6 @@ fun processGenres(
             genres.add(genresRS.getString("name"))
         }
     }
-
     return genres
 }
 

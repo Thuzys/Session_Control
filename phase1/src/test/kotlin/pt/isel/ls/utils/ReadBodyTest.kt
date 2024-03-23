@@ -9,7 +9,7 @@ import kotlin.test.assertEquals
 class ReadBodyTest {
     @Test
     fun `read body test`() {
-        val request = Request(Method.POST, "/echo").body("{msg: Hello_World!}")
+        val request = Request(Method.POST, "/echo").body("{\"msg\": \"Hello_World!\"}")
         val body = readBody(request)
         assertEquals("Hello_World!", body["msg"])
     }

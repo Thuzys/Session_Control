@@ -37,13 +37,12 @@ internal fun getParameter(
 internal fun readBody(request: Request): Map<String, String> {
     val body = request.bodyString()
     body.ifBlank { return emptyMap() }
-    return body
-        .filter { it !in setOf('{', '}') }
-        .split(", ")
-        .associate {
-            val (key, value) = it.split(":", limit = 2)
-            key to value.trim()
-        }
+    val keyValueRegex = Regex("\"(\\w+)\":\\s*\"(.*?)\"")
+    val matchResults = keyValueRegex.findAll(body)
+    return matchResults.associate {
+        val (key, value) = it.destructured
+        key to value
+    }
 }
 
 /**

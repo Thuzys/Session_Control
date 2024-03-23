@@ -28,7 +28,7 @@ class SessionHandlerTest {
     @Test
     fun `created status creating a session successfully`() {
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
-            val request = Request(Method.POST, DUMMY_ROUTE).body("{gid: 1, date: 2024-03-16T12:30, capacity: 10}")
+            val request = Request(Method.POST, DUMMY_ROUTE).body("{\"gid\": \"1\", \"date\": \"2024-03-16T12:30\", \"capacity\": \"10\"}")
             val response = handler.createSession(request)
             assertEquals(Status.CREATED, response.status)
         }
@@ -37,7 +37,7 @@ class SessionHandlerTest {
     @Test
     fun `message creating a session successfully`() {
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
-            val request = Request(Method.POST, DUMMY_ROUTE).body("{gid: 1, date: 2024-03-16T12:30, capacity: 10}")
+            val request = Request(Method.POST, DUMMY_ROUTE).body("{\"gid\": \"1\", \"date\": \"2024-03-16T12:30\", \"capacity\": \"10\"}")
             val response = handler.createSession(request)
             assertEquals("Session created with ID: 1 successfully.", response.bodyString())
         }
@@ -46,7 +46,7 @@ class SessionHandlerTest {
     @Test
     fun `bad request status creating a session due to missing gid`() {
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
-            val request = Request(Method.POST, DUMMY_ROUTE).body("{date: 2024-03-16T12:30:00, capacity: 10}")
+            val request = Request(Method.POST, DUMMY_ROUTE).body("{\"date\": \"2024-03-16T12:30:00\", \"capacity\": \"10\"}")
             val response = handler.createSession(request)
             assertEquals(Status.BAD_REQUEST, response.status)
         }
@@ -136,7 +136,7 @@ class SessionHandlerTest {
         val playerId = "1"
         val sessionId = "50000"
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
-            val request = Request(Method.POST, DUMMY_ROUTE).body("{player: $playerId, session: $sessionId}")
+            val request = Request(Method.POST, DUMMY_ROUTE).body("{\"player\": \"$playerId\", \"session\": \"$sessionId\"}")
             val response = handler.addPlayerToSession(request)
             assertEquals(Status.NOT_MODIFIED, response.status)
         }
@@ -147,7 +147,7 @@ class SessionHandlerTest {
         val playerId = "1"
         val sessionId = "1"
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
-            val request = Request(Method.POST, "/sessionTest").body("{player: $playerId, session: $sessionId}")
+            val request = Request(Method.POST, "/sessionTest").body("{\"player\": \"$playerId\", \"session\": \"$sessionId\"}")
             val response = handler.addPlayerToSession(request)
             assertEquals(Status.OK, response.status)
         }

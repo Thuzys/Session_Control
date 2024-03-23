@@ -51,7 +51,7 @@ class PlayerHandlerTest {
     @Test
     fun `status of a player created successfully`() =
         actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
-            val request = Request(Method.POST, DUMMY_ROUTE).body("{name: name, email: email}")
+            val request = Request(Method.POST, DUMMY_ROUTE).body("{\"name\": \"name\", \"email\": \"email\"}")
             val response = handler.createPlayer(request)
             assertEquals(Status.CREATED, response.status)
         }
@@ -59,7 +59,7 @@ class PlayerHandlerTest {
     @Test
     fun `message of a player created successfully`() =
         actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
-            val request = Request(Method.POST, DUMMY_ROUTE).body("{name: name, email: email}")
+            val request = Request(Method.POST, DUMMY_ROUTE).body("{\"name\": \"name\", \"email\": \"email\"}")
             val response = handler.createPlayer(request)
             assertEquals(
                 expected =
@@ -73,7 +73,7 @@ class PlayerHandlerTest {
     fun `status of internal server error creating a player due invalid email provided`() =
         actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
             // a space represents an invalid email
-            val request = Request(Method.POST, DUMMY_ROUTE).body("{name: name, email:  }")
+            val request = Request(Method.POST, DUMMY_ROUTE).body("{\"name\": \"name\", \"email\": \" \"}")
             val response = handler.createPlayer(request)
             assertEquals(Status.INTERNAL_SERVER_ERROR, response.status)
         }
@@ -82,7 +82,7 @@ class PlayerHandlerTest {
     fun `message of internal server error creating a player due invalid email provided`() =
         actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
             // a space represents an invalid email
-            val request = Request(Method.POST, DUMMY_ROUTE).body("{name: name, email:  }")
+            val request = Request(Method.POST, DUMMY_ROUTE).body("{\"name\": \"name\", \"email\": \" \"}")
             val response = handler.createPlayer(request)
             assertEquals(
                 expected = "Internal Server Error: Unable to create a new Player due to invalid name or email.",

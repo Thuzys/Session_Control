@@ -228,14 +228,9 @@ fun getGameId(addGameStmt: PreparedStatement): UInt {
  * @return The string to get games from the database.
  */
 fun buildGameGetterString(dev: String?): String {
-    var getGamesStr = "SELECT gid, name, developer from GAME"
-    getGamesStr +=
-        if (dev != null) {
-            " WHERE developer = ?"
-        } else {
-            ""
-        }
-    return getGamesStr
+    var getGameStr = "SELECT gid, name, developer from GAME"
+    dev?.let { getGameStr += " WHERE developer = ?" }
+    return getGameStr
 }
 
 /**

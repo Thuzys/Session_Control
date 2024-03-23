@@ -80,7 +80,7 @@ class GameHandlerTest {
     @Test
     fun `game created with success`() {
         // ARRANGE
-        val request = Request(Method.POST, "/gameTest").body("{name: name, dev: dev, genres: genre1,genre2,genre3}")
+        val request = Request(Method.POST, "/gameTest").body("{\"name\": \"name\", \"dev\": \"dev\", \"genres\": \"genre1,genre2,genre3\"")
         val expectedStatus = Status.CREATED
 
         // ACT
@@ -96,7 +96,7 @@ class GameHandlerTest {
     @Test
     fun `message of game created with success`() {
         // ARRANGE
-        val request = Request(Method.POST, "/gameTest").body("{name: name, dev: dev, genres: genre1,genre2,genre3}")
+        val request = Request(Method.POST, "/gameTest").body("{\"name\": \"name\", \"dev\": \"dev\", \"genres\": \"genre1,genre2,genre3\"")
         val expectedMessage = "Game created with id 1."
 
         // ACT
@@ -112,7 +112,7 @@ class GameHandlerTest {
     @Test
     fun `internal server error creating a game due to invalid parameter`() {
         // ARRANGE
-        val request = Request(Method.POST, "/gameTest").body("{name: , dev: dev, genres: genre1,genre2,genre3}")
+        val request = Request(Method.POST, "/gameTest").body("{\"name\": \"\", \"dev\": \"dev\", \"genres\": \"genre1,genre2,genre3\"}")
         val expectedStatus = Status.INTERNAL_SERVER_ERROR
 
         // ACT

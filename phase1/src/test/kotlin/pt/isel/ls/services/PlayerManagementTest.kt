@@ -2,7 +2,11 @@ package pt.isel.ls.services
 
 import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.storage.PlayerStorageStunt
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class PlayerManagementTest {
     private fun actionOfPlayerManagementTest(code: (player: PlayerServices) -> Unit) =

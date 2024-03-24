@@ -29,25 +29,25 @@ The following diagram holds the Entity-Relationship model for the information ma
 
 ### DomainDiagram:
 
-<img src="\phase1\src\main\resources\DomainDiagram.png">
+<img src="../../../../../resources/DomainDiagram.png">
 
 ---
 
 ### StorageDiagram:
 
-<img src="\phase1\src\main\resources\StorageDiagram.png">
+<img src="../../../../../resources/StorageDiagram.png">
 
 ---
 
 ### ServicesDiagram:
 
-<img src="\phase1\src\main\resources\ServicesDiagram.png">
+<img src="../../../../../resources/ServicesDiagram.png">
 
 ---
 
 ### WebApiDiagram:
 
-<img src="\phase1\src\main\resources\WebApiDiagram.png">
+<img src="../../../../../resources/WebApiDiagram.png">
 
 ---
 
@@ -72,7 +72,7 @@ And should follow a specific pattern.
 
 ## Physical Model
 
-The physical model of the database is available in [SQL script](/../sql/createSchema.sql).
+The physical model of the database is available in [SQL script](../../../../../sql/createSchema.sql).
 
 ---
 
@@ -213,7 +213,7 @@ persisting the changes made within the transaction to the database.
 
 The data access is handled in the storage the executeCommand function disables auto-commit mode on the connection, allowing multiple SQL statements to be executed as part of the same transaction scope.
 If an exception occurs during command execution, the connection is rolled back to its previous state, ensuring that any changes made within the transaction are undone.
-Upon successful execution of the command, the transaction is committed, persisting the changes made within the transaction to the database.odule, using a connection to make any query or update.
+Upon successful execution of the command, the transaction is committed, persisting the changes made within the transaction to the database module, using a connection to make any query or update.
 
 ### the main SQL statements used are:
 

@@ -18,7 +18,7 @@ object GameManagementStunt : GameServices {
             gameId
         } else {
             throw ServicesError(
-                "Unable to create a new game due to invalid name, dev or genres.",
+                "Unable to create a new game due to invalid name, dev or genres",
             )
         }
 
@@ -26,7 +26,7 @@ object GameManagementStunt : GameServices {
         if (gid == gameId) {
             Game(gid, GAME_NAME, GAME_DEV, gameGenres)
         } else {
-            throw ServicesError("Unable to find the game due to invalid game id.")
+            throw ServicesError("Unable to find the game due to invalid game id")
         }
 
     override fun getGameByDevAndGenres(
@@ -38,6 +38,6 @@ object GameManagementStunt : GameServices {
         if (dev == GAME_DEV && gameGenres.containsAll(genres ?: emptyList())) {
             listOf(Game(gameId, GAME_NAME, GAME_DEV, gameGenres))
         } else {
-            throw ServicesError("Unable to find the game due to invalid dev or genres.")
+            throw ServicesError("Unable to find the game due to invalid dev or genres")
         }
 }

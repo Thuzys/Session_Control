@@ -53,9 +53,17 @@ internal inline fun tryResponse(
         block()
     } catch (e: ServicesError) {
         e.message
-            ?.let { makeResponse(errorStatus, "$errorMsg: $it") }
+            ?.let { makeResponse(errorStatus, ReturnError(errorMsg, it).toString()) }
             ?: makeResponse(errorStatus, "$errorMsg.")
     }
+
+internal data class ReturnError(val error: String, val cause: String) {
+    override fun toString(): String =
+        """
+        Error:$error.
+        Cause:$cause.
+        """.trimIndent()
+}
 
 /**
  * Creates a response with a given status and message.

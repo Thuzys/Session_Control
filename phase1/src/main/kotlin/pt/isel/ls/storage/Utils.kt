@@ -242,9 +242,7 @@ internal fun buildGameGetterString(dev: String?): String {
 internal fun PreparedStatement.setUInt(
     parameterIndex: Int,
     value: UInt,
-) {
-    setInt(parameterIndex, value.toInt())
-}
+) = setInt(parameterIndex, value.toInt())
 
 /**
  * Gets the unsigned integer value from the result set.

@@ -1,0 +1,448 @@
+openapi: 3.0.0
+info:
+  title: Multiplayer Game Sessions Management API
+  description: API documentation for managing multiplayer game sessions
+  version: 1.0.0
+servers:
+  - url: https//localhost:8080
+    description: local server
+paths:
+  /players:
+    post:
+      summary: Create a new player
+      description: Creates a new player with the provided name and email.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewPlayer'
+      parameters:
+        - name: name
+          in: query
+          required: true
+          description: The player's name
+          schema:
+            type: string
+        - name: email
+          in: query
+          required: true
+          description: The player's email
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Player created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sid:
+                    type: integer
+                    format: uint
+        '400':
+          description: Bad Request, insufficient parameters.
+        '500':
+          description: Internal Server Error
+  /players/player:
+    get:
+      summary: Get player details
+      description: Retrieve details of a player by player ID.
+      parameters:
+        - name: pid
+          in: query
+          required: true
+          description: The unique identifier of the player
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: the authentication token
+          schema:
+            type: string
+            format: UUID
+      responses:
+        '200':
+          description: Player details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Player'
+        '401':
+          description: Unauthorized, token invalid.
+        '400':
+          description: Bad Request, pid not found.
+        '404':
+          description: Player not found
+  /games:
+    post:
+      summary: Create a new game
+      description: Creates a new game with the provided name, developer, and genres.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewGame'
+      responses:
+        '201':
+          description: Game created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+        '400':
+          description: Bad Request, insufficient or invalid parameters provided.
+        '500':
+          description: Internal Server Error, unable to create the game.
+    get:
+      summary: Get game by developer and genres
+      description: Retrieve games based on the provided developer and genres.
+      parameters:
+        - name: dev
+          in: query
+          required: true
+          description: The developer of the game
+          schema:
+            type: string
+        - name: genres
+          in: query
+          required: true
+          description: The genres of the game
+          schema:
+            type: string
+        - name: offset
+          in: query
+          description: The offset for pagination
+          schema:
+            type: integer
+            format: uint
+        - name: limit
+          in: query
+          description: The limit for pagination
+          schema:
+            type: integer
+            format: uint
+        - name: token
+          in: query
+          description: The authentication token
+          schema:
+            type: string
+            format: UUID
+      responses:
+        '201':
+          description: Games retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+        '400':
+          description: Bad Request, insufficient or invalid parameters provided.
+        '404':
+          description: Not Found, no games found with the provided criteria
+        '401':
+          description: Unauthorized, token invalid.
+  /games/game:
+    get:
+      summary: Get game details
+      description: Retrieve details of a game by game ID.
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          description: The unique identifier of the game
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: The authentication token
+          schema:
+            type: string
+            format: UUID
+      responses:
+        '201':
+          description: Game details retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+        '400':
+          description: Bad Request, invalid game ID provided.
+        '404':
+          description: Not Found, game with the provided ID not found.
+        '401':
+            description: Unauthorized, token invalid.
+  /sessions:
+    post:
+      summary: Create a new session
+      description: Creates a new session with the provided game ID, date, and capacity.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewSession'
+      parameters:
+        - name: gid
+          in: query
+          required: true
+          description: The game identifier
+          schema:
+            type: string
+        - name: date
+          in: query
+          required: true
+          description: The session date
+          schema:
+            type: string
+            format: date
+        - name: capacity
+          in: query
+          required: true
+          description: The maximum number of players for the session
+          schema:
+            type: integer
+            format: uint
+      responses:
+        '201':
+          description: Session created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sid:
+                    type: integer
+                    format: uint
+        '401':
+          description: Unauthorized, token invalid.
+        '400':
+          description: Missing or invalid parameters. Please provide 'gid', 'date', and 'capacity' as valid values.
+        '500':
+          description: Internal Server Error
+    get:
+      summary: Get sessions
+      description: Retrieve sessions based on specified criteria.
+      parameters:
+        - name: gid
+          in: query
+          required: true
+          description: The game identifier
+          schema:
+            type: integer
+            format: uint
+        - name: date
+          in: query
+          description: The session date
+          schema:
+            type: string
+            format: date
+        - name: state
+          in: query
+          description: The state of the session (open or close)
+          schema:
+            type: string
+            format: SessionState
+        - name: playerId
+          in: query
+          description: The player identifier
+          schema:
+            type: string
+        - name: offset
+          in: query
+          description: The offset for paging
+          schema:
+            type: integer
+            format: uint
+        - name: limit
+          in: query
+          description: The limit for paging
+          schema:
+            type: integer
+            format: uint
+        - name: token
+          in: query
+          description: The authentication token
+          schema:
+            type: string
+            format: UUID
+      responses:
+        '200':
+          description: Sessions retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '400':
+          description: Bad Request, invalid parameters provided.
+        '404':
+          description: No sessions found with the specified criteria.
+        '401':
+            description: Unauthorized, token invalid.
+  /sessions/session:
+    post:
+      summary: Add player to session
+      description: Add a player to a session with the provided player and session IDs.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              description: Player $pid added to Session $sid successfully.
+      parameters:
+        - name: pid
+          in: query
+          required: true
+          description: The player identifier
+          schema:
+            type: integer
+            format: uint
+        - name: sid
+          in: query
+          required: true
+          description: The session identifier
+          schema:
+            type: integer
+            format: uint
+        - name: token
+          in: query
+          description: The authentication token
+          schema:
+            type: string
+            format: UUID
+      responses:
+        '200':
+          description: Player added to session successfully
+        '400':
+          description: Bad Request, insufficient parameters.
+        '401':
+          description: Unauthorized, authentication token is missing or invalid.
+        '304':
+          description: Not Modified, player was already added to the session or an internal error occurred.
+    get:
+      summary: Get session details
+      description: Retrieve details of a session by session ID.
+      parameters:
+        - name: sid
+          in: query
+          required: true
+          description: The unique identifier of the session
+          schema:
+            type: integer
+            format: uint
+        - name: token
+          in: query
+          description: The authentication token
+          schema:
+              type: string
+              format: UUID
+      responses:
+        '200':
+          description: Session details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '400':
+          description: Bad Request, invalid session ID provided.
+        '404':
+          description: Session not found with the provided session ID.
+        '401':
+            description: Unauthorized, token invalid.
+components:
+  schemas:
+    NewPlayer:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The player's name
+        email:
+          type: string
+          format: email
+          description: The player's email
+    Player:
+      type: object
+      properties:
+        playerId:
+          type: integer
+          description: The unique identifier of the player
+          format: uint
+        name:
+          type: string
+          description: The player's name
+        email:
+          type: string
+          format: email
+          description: The player's email
+        token:
+          type: string
+          format: UUID
+          description: The player's authentication token
+    NewGame:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The game's name
+        developer:
+          type: string
+          description: The game's developer
+        genres:
+          type: array
+          items:
+            type: string
+          description: The genres of the game
+    Game:
+      type: object
+      properties:
+        gameId:
+          type: string
+          description: The unique identifier of the game
+        name:
+          type: string
+          description: The game's name
+        developer:
+          type: string
+          description: The game's developer
+        genres:
+          type: array
+          items:
+            type: string
+          description: The genres of the game
+    NewSession:
+      type: object
+      properties:
+        capacity:
+          type: integer
+          description: The maximum number of players for the session
+          format: uint
+        gameId:
+          type: integer
+          description: The unique identifier of the game associated with the session
+          format: uint
+        date:
+          type: string
+          format: date-time
+          description: The date and time of the session
+    Session:
+      type: object
+      properties:
+        sessionId:
+          type: integer
+          description: The unique identifier of the session
+          format: uint
+        capacity:
+          type: integer
+          description: The maximum number of players for the session
+          format: uint
+        gameId:
+          type: integer
+          description: The unique identifier of the game associated with the session
+          format: uint
+        date:
+          type: string
+          format: date-time
+          description: The date and time of the session
+

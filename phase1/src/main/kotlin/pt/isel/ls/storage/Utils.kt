@@ -18,7 +18,7 @@ import java.util.UUID
  * @param getGenresStmt The [PreparedStatement] to make the list from.
  * @return A list of [Game] objects.
  */
-fun getGamesFromDB(
+internal fun getGamesFromDB(
     getGameStmt: PreparedStatement,
     getGenresStmt: PreparedStatement,
     areGenresInGameStmt: PreparedStatement,
@@ -51,7 +51,7 @@ fun getGamesFromDB(
  * @param genres The genres to be checked.
  * @return True if the genres are in the game, false otherwise.
  */
-fun areGenresInGame(
+internal fun areGenresInGame(
     areGenresInGameStmt: PreparedStatement,
     gid: UInt,
     genres: Collection<String>,
@@ -73,7 +73,7 @@ fun areGenresInGame(
  * @param gid The game id.
  * @return A [Game] object.
  */
-fun getGameFromDB(
+internal fun getGameFromDB(
     getGameStmt: PreparedStatement,
     getGenresStmt: PreparedStatement,
     gid: UInt,
@@ -99,7 +99,7 @@ fun getGameFromDB(
  * @param gid The game id.
  * @return A collection of genres.
  */
-fun processGenres(
+internal fun processGenres(
     getGenresStmt: PreparedStatement,
     gid: UInt,
 ): Collection<String> {
@@ -122,7 +122,7 @@ fun processGenres(
  * @param addGenreStmt The [PreparedStatement] to add a genre.
  */
 
-fun addGameToDB(
+internal fun addGameToDB(
     newItem: Game,
     addGameStmt: PreparedStatement,
     relateGameToGenreStmt: PreparedStatement,
@@ -161,8 +161,8 @@ private fun setGameDev(
 /**
  * Sets the game genres in the database.
  *
+ * @param gid The game id.
  * @param genres The genres to be set.
- * @param addGameStmt The [PreparedStatement] to add the game.
  * @param relateGameToGenreStmt The [PreparedStatement] to relate the game to a genre.
  * @param addGenreStmt The [PreparedStatement] to add a genre.
  */
@@ -215,7 +215,7 @@ private fun gameGenresRelation(
  * @param addGameStmt The [PreparedStatement] to get the game id from.
  * @return The game id.
  */
-fun getGameId(addGameStmt: PreparedStatement): UInt {
+internal fun getGameId(addGameStmt: PreparedStatement): UInt {
     val key = addGameStmt.generatedKeys
     check(key.next()) { "Failed to create game." }
     return key.getUInt("gid")
@@ -227,7 +227,7 @@ fun getGameId(addGameStmt: PreparedStatement): UInt {
  * @param dev The developer to get the games from.
  * @return The string to get games from the database.
  */
-fun buildGameGetterString(dev: String?): String {
+internal fun buildGameGetterString(dev: String?): String {
     var getGameStr = "SELECT gid, name, developer from GAME"
     dev?.let { getGameStr += " WHERE developer = ?" }
     return getGameStr
@@ -239,7 +239,7 @@ fun buildGameGetterString(dev: String?): String {
  * @param parameterIndex The index of the parameter to be set.
  * @param value The value to be set.
  */
-fun PreparedStatement.setUInt(
+internal fun PreparedStatement.setUInt(
     parameterIndex: Int,
     value: UInt,
 ) {
@@ -252,7 +252,7 @@ fun PreparedStatement.setUInt(
  * @param columnLabel The index of the column to get the value from.
  * @return The unsigned integer value.
  */
-fun ResultSet.getUInt(columnLabel: String): UInt = getInt(columnLabel).toUInt()
+internal fun ResultSet.getUInt(columnLabel: String): UInt = getInt(columnLabel).toUInt()
 
 /**
  * Makes a list of [Player] objects from a [PreparedStatement].

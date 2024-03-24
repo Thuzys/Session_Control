@@ -84,8 +84,13 @@ class PlayerHandlerTest {
             // a space represents an invalid email
             val request = Request(Method.POST, DUMMY_ROUTE).body("{\"name\": \"name\", \"email\": \" \"}")
             val response = handler.createPlayer(request)
+            val expected =
+                """
+                Error:Internal Server Error.
+                Cause:Unable to create a new Player due to invalid name or email.
+                """.trimIndent()
             assertEquals(
-                expected = "Internal Server Error: Unable to create a new Player due to invalid name or email.",
+                expected = expected,
                 actual = response.bodyString(),
             )
         }
@@ -103,8 +108,13 @@ class PlayerHandlerTest {
         actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
             val request = Request(Method.GET, "$DUMMY_ROUTE?pid=0&token=${PlayerManagementStunt.playerToken}")
             val response = handler.getPlayer(request)
+            val expected =
+                """
+                Error:Player not found.
+                Cause:Unable to get the details of a Player due to nonexistent pid.
+                """.trimIndent()
             assertEquals(
-                expected = "Player not found: Unable to get the details of a Player due to nonexistent pid.",
+                expected = expected,
                 actual = response.bodyString(),
             )
         }

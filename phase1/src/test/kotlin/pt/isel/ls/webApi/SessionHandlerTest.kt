@@ -111,7 +111,7 @@ class SessionHandlerTest {
     @Test
     fun `bad request status getting a session due to missing sid`() {
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
-            val request = Request(Method.GET, DUMMY_ROUTE)
+            val request = Request(Method.GET, "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}")
             val response = handler.getSession(request)
             assertEquals(Status.BAD_REQUEST, response.status)
         }
@@ -120,7 +120,7 @@ class SessionHandlerTest {
     @Test
     fun `not found status getting a session`() {
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
-            val request = Request(Method.GET, "$DUMMY_ROUTE?sid=123")
+            val request = Request(Method.GET, "$DUMMY_ROUTE?sid=123&token=${PlayerManagementStunt.playerToken}")
             val response = handler.getSession(request)
             assertEquals(Status.NOT_FOUND, response.status)
         }
@@ -129,7 +129,7 @@ class SessionHandlerTest {
     @Test
     fun `found status getting a session`() {
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
-            val request = Request(Method.GET, "$DUMMY_ROUTE?sid=1")
+            val request = Request(Method.GET, "$DUMMY_ROUTE?sid=1&token=${PlayerManagementStunt.playerToken}")
             val response = handler.getSession(request)
             assertEquals(Status.FOUND, response.status)
         }
@@ -139,7 +139,7 @@ class SessionHandlerTest {
     fun `message of getting a session successfully`() {
         val sid = "1"
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
-            val request = Request(Method.GET, "/$DUMMY_ROUTE?sid=$sid")
+            val request = Request(Method.GET, "/$DUMMY_ROUTE?sid=$sid&token=${PlayerManagementStunt.playerToken}")
             val response = handler.getSession(request)
             assertEquals(
                 expected =
@@ -199,7 +199,11 @@ class SessionHandlerTest {
         val gid = "1"
         val state = "close"
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
-            val request = Request(Method.GET, "$DUMMY_ROUTE?gid=$gid&state=$state")
+            val request =
+                Request(
+                    Method.GET,
+                    "$DUMMY_ROUTE?gid=$gid&state=$state&token=${PlayerManagementStunt.playerToken}",
+                )
             val response = handler.getSessions(request)
             assertEquals(Status.FOUND, response.status)
         }
@@ -208,7 +212,7 @@ class SessionHandlerTest {
     @Test
     fun `bad request status getting sessions due to missing gid`() {
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
-            val request = Request(Method.GET, DUMMY_ROUTE)
+            val request = Request(Method.GET, "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}")
             val response = handler.getSessions(request)
             assertEquals(Status.BAD_REQUEST, response.status)
         }
@@ -218,7 +222,7 @@ class SessionHandlerTest {
     fun `internal server error status getting sessions `() {
         val gid = "3"
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
-            val request = Request(Method.GET, "$DUMMY_ROUTE?gid=$gid")
+            val request = Request(Method.GET, "$DUMMY_ROUTE?gid=$gid&token=${PlayerManagementStunt.playerToken}")
             val response = handler.getSessions(request)
             assertEquals(Status.INTERNAL_SERVER_ERROR, response.status)
         }
@@ -228,7 +232,7 @@ class SessionHandlerTest {
     fun `not found status getting sessions due to no sessions satisfy details provided`() {
         val gid = "400"
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
-            val request = Request(Method.GET, "$DUMMY_ROUTE?gid=$gid")
+            val request = Request(Method.GET, "$DUMMY_ROUTE?gid=$gid&token=${PlayerManagementStunt.playerToken}")
             val response = handler.getSessions(request)
             assertEquals(Status.NOT_FOUND, response.status)
         }
@@ -239,7 +243,11 @@ class SessionHandlerTest {
         val sid = "1"
         val state = "close"
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
-            val request = Request(Method.GET, "$DUMMY_ROUTE?gid=$sid&state=$state")
+            val request =
+                Request(
+                    Method.GET,
+                    "$DUMMY_ROUTE?gid=$sid&state=$state&token=${PlayerManagementStunt.playerToken}",
+                )
             val response = handler.getSessions(request)
             assertEquals(
                 expected =
@@ -319,5 +327,13 @@ class SessionHandlerTest {
             val request = Request(Method.GET, DUMMY_ROUTE)
             val response = handler.createSession(request)
             assertEquals("Unauthorized, token not provided.", response.bodyString())
+        }
+
+    @Test
+    fun `unauthorized status due lack of token during get session request`() =
+        actionOfASessionArrangement { handler: SessionHandlerInterface ->
+            val request = Request(Method.GET, DUMMY_ROUTE)
+            val response = handler.getSession(request)
+            assertEquals(Status.UNAUTHORIZED, response.status)
         }
 }

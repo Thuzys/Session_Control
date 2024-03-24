@@ -31,7 +31,7 @@ class GameHandler(
         } else {
             tryResponse(Status.INTERNAL_SERVER_ERROR, "Internal Server Error") {
                 val gid = gameManagement.createGame(name, dev, genres)
-                makeResponse(Status.CREATED, "Game created with id $gid.")
+                makeResponse(Status.CREATED, "Game created with id $gid")
             }
         }
     }

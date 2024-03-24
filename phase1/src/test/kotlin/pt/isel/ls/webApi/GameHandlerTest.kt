@@ -109,7 +109,7 @@ class GameHandlerTest {
                 method = Method.POST,
                 uri = "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}",
             ).body("{\"name\": \"name\", \"dev\": \"dev\", \"genres\": \"genre1,genre2,genre3\"")
-        val expectedMessage = "Game created with id 1."
+        val expectedMessage = "Game created with id 1"
 
         // ACT
         val response =
@@ -193,7 +193,11 @@ class GameHandlerTest {
     fun `message of game by dev and genres not found due to parameters that not correspond to an existing Game`() {
         // ARRANGE
         val request = Request(Method.GET, "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}&dev=TestDev2&genres=TestGenre")
-        val expectedMessage = "Game not found: Unable to find the game due to invalid dev or genres."
+        val expectedMessage =
+            """
+            Error:Game not found.
+            Cause:Unable to find the game due to invalid dev or genres.
+            """.trimIndent()
 
         // ACT
         val response =
@@ -241,7 +245,11 @@ class GameHandlerTest {
     fun `message of game not found due to a game id that does not correspond to an existing Game`() {
         // ARRANGE
         val request = Request(Method.GET, "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}&gid=34")
-        val expectedMessage = "Game not found: Unable to find the game due to invalid game id."
+        val expectedMessage =
+            """
+            Error:Game not found.
+            Cause:Unable to find the game due to invalid game id.
+            """.trimIndent()
 
         // ACT
         val response =

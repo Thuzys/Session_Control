@@ -34,7 +34,7 @@ object SessionManagementStunt : SessionServices {
         if (sid == sid1) {
             Session(sid, 1u, 1u, date1, players)
         } else {
-            throw ServicesError("Session not found.")
+            throw ServicesError("Session not found")
         }
 
     override fun createSession(

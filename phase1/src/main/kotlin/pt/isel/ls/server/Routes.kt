@@ -30,8 +30,9 @@ fun buildRoutes(
     GAME_ID_ROUTE bind Method.GET to gameHandler::getGameDetails,
     GAME_ROUTE bind Method.POST to gameHandler::createGame,
     GAME_ROUTE bind Method.GET to gameHandler::getGameByDevAndGenres,
-    SESSION_ROUTE bind Method.POST to sessionHandler::createSession,
+    SESSION_ID_ROUTE bind Method.POST to sessionHandler::addPlayerToSession,
     SESSION_ID_ROUTE bind Method.GET to sessionHandler::getSession,
+    SESSION_ROUTE bind Method.POST to sessionHandler::createSession,
     SESSION_ROUTE bind Method.GET to sessionHandler::getSessions,
     SESSION_ID_ROUTE bind Method.POST to sessionHandler::addPlayerToSession,
 )

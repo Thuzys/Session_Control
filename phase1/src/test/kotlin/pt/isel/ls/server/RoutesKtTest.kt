@@ -35,4 +35,44 @@ class RoutesKtTest {
                 "No matching handler found for $request",
             )
         }
+
+    @Test
+    fun `buildRoutes returns router with create SESSION_ROUTE`() =
+        actionOfRoutesArrangement { handler: RoutingHttpHandler ->
+            val request = Request(Method.POST, SESSION_ROUTE)
+            assertIs<RouterMatch.MatchingHandler>(
+                handler.match(request),
+                "No matching handler found for $request",
+            )
+        }
+
+    @Test
+    fun `buildRoutes returns router with get SESSION_ROUTE`() =
+        actionOfRoutesArrangement { handler: RoutingHttpHandler ->
+            val request = Request(Method.GET, SESSION_ROUTE)
+            assertIs<RouterMatch.MatchingHandler>(
+                handler.match(request),
+                "No matching handler found for $request",
+            )
+        }
+
+    @Test
+    fun `buildRoutes returns router with create SESSION_ID_ROUTE`() =
+        actionOfRoutesArrangement { handler: RoutingHttpHandler ->
+            val request = Request(Method.POST, SESSION_ID_ROUTE)
+            assertIs<RouterMatch.MatchingHandler>(
+                handler.match(request),
+                "No matching handler found for $request",
+            )
+        }
+
+    @Test
+    fun `buildRoutes returns router with get SESSION_ID_ROUTE`() =
+        actionOfRoutesArrangement { handler: RoutingHttpHandler ->
+            val request = Request(Method.GET, SESSION_ID_ROUTE)
+            assertIs<RouterMatch.MatchingHandler>(
+                handler.match(request),
+                "No matching handler found for $request",
+            )
+        }
 }

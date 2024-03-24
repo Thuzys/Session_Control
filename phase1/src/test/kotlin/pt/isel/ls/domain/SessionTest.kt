@@ -13,18 +13,18 @@ class SessionTest {
     private val randomUuid = random().toUInt()
 
     @Test
-    fun `session instantiation`() {
+    fun `instantiating a session successfully`() {
         Session(uuid, capacity, gid, date)
     }
 
     @Test
-    fun `unique session identifier`() {
+    fun `instantiating a session returns a unique session identifier`() {
         val newSession = Session(uuid, capacity, gid, date)
         assert(newSession.sid != randomUuid)
     }
 
     @Test
-    fun `creating a session with capacity equals to zero`() {
+    fun `creating a session with capacity equals to zero fails with IllegalArgumentException`() {
         assertFailsWith<IllegalArgumentException> { Session(uuid, 0u, gid, date) }
     }
 }

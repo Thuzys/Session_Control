@@ -17,18 +17,6 @@ import pt.isel.ls.services.PlayerServices
 fun processGenres(genres: String): Collection<String> = genres.split(",")
 
 /**
- * Gets a parameter from a request.
- *
- * @param request The request from which the parameter is to be retrieved.
- * @param parameter The parameter to be retrieved.
- * @return The parameter from the request.
- */
-internal fun getParameter(
-    request: Request,
-    parameter: String,
-): String? = request.query(parameter)
-
-/**
  * Reads the body of a request and returns it as a map.
  *
  * @param request The request from which the body is to be read.
@@ -114,4 +102,4 @@ internal fun unauthorizedAccess(
     pManagement: PlayerServices,
 ): String? =
     request.query("token")
-        ?.let { return if (pManagement.isValidToken(it)) null else "invalid token." } ?: "token not found."
+        ?.let { return if (pManagement.isValidToken(it)) null else "invalid token." } ?: "token not provided."

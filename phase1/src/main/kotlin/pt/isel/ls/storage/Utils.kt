@@ -244,7 +244,6 @@ fun PreparedStatement.setUInt(
     value: UInt,
 ) = setInt(parameterIndex, value.toInt())
 
-
 /**
  * Gets the unsigned integer value from the result set.
  *

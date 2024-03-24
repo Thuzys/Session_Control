@@ -5,13 +5,13 @@ import kotlin.test.assertEquals
 
 class SessionStateTest {
     @Test
-    fun `test OPEN state`() {
+    fun `OPEN state name equals to OPEN string`() {
         val state = SessionState.OPEN
         assertEquals("OPEN", state.name)
     }
 
     @Test
-    fun `test CLOSE state`() {
+    fun `CLOSE state name equals to CLOSE string`() {
         val state = SessionState.CLOSE
         assertEquals("CLOSE", state.name)
     }

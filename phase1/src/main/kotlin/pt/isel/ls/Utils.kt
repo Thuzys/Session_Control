@@ -30,7 +30,7 @@ internal fun routingHttpHandler(envName: String): RoutingHttpHandler {
 
     val playerHandler = PlayerHandler(playerServices)
     val gameHandler = GameHandler(gameServices, playerServices)
-    val sessionHandler = SessionHandler(sessionServices)
+    val sessionHandler = SessionHandler(sessionServices, playerServices)
 
     return buildRoutes(playerHandler, gameHandler, sessionHandler)
 }

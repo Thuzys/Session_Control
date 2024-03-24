@@ -6,6 +6,7 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
 import pt.isel.ls.domain.toSessionState
+import pt.isel.ls.services.PlayerServices
 import pt.isel.ls.services.SessionServices
 
 /**
@@ -16,8 +17,13 @@ import pt.isel.ls.services.SessionServices
  *
  * Each method corresponds to a specific HTTP request and returns an HTTP response.
  */
-class SessionHandler(private val sessionServices: SessionServices) : SessionHandlerInterface {
+class SessionHandler(
+    private val sessionManagement: SessionServices,
+    private val playerManagement: PlayerServices,
+) : SessionHandlerInterface {
     override fun createSession(request: Request): Response {
+        unauthorizedAccess(request, playerManagement)
+            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it") }
         val body = readBody(request)
         val gid = body["gid"]?.toUIntOrNull()
         val date = dateVerification(body["date"])
@@ -29,7 +35,7 @@ class SessionHandler(private val sessionServices: SessionServices) : SessionHand
             )
         } else {
             tryResponse(Status.INTERNAL_SERVER_ERROR, "Internal server error.") {
-                val sid = sessionServices.createSession(gid, date, capacity)
+                val sid = sessionManagement.createSession(gid, date, capacity)
                 makeResponse(Status.CREATED, "Session created with ID: $sid successfully.")
             }
         }
@@ -38,7 +44,7 @@ class SessionHandler(private val sessionServices: SessionServices) : SessionHand
     override fun getSession(request: Request): Response {
         val sid = request.query("sid")?.toUInt() ?: return makeResponse(Status.BAD_REQUEST, "Missing or invalid sid.")
         return tryResponse(Status.NOT_FOUND, "Session not found.") {
-            val session = sessionServices.getSessionDetails(sid)
+            val session = sessionManagement.getSessionDetails(sid)
             makeResponse(Status.FOUND, Json.encodeToString(session))
         }
     }
@@ -54,7 +60,7 @@ class SessionHandler(private val sessionServices: SessionServices) : SessionHand
             makeResponse(Status.BAD_REQUEST, "Invalid or Missing Game Identifier.")
         } else {
             tryResponse(Status.INTERNAL_SERVER_ERROR, "Internal Server Error.") {
-                val sessions = sessionServices.getSessions(gid, date, state, playerId, offset, limit)
+                val sessions = sessionManagement.getSessions(gid, date, state, playerId, offset, limit)
                 return if (sessions.isEmpty()) {
                     makeResponse(
                         Status.NOT_FOUND,
@@ -68,6 +74,8 @@ class SessionHandler(private val sessionServices: SessionServices) : SessionHand
     }
 
     override fun addPlayerToSession(request: Request): Response {
+        unauthorizedAccess(request, playerManagement)
+            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it") }
         val body = readBody(request)
         val player = body["player"]?.toUIntOrNull()
         val session = body["session"]?.toUIntOrNull()
@@ -78,7 +86,7 @@ class SessionHandler(private val sessionServices: SessionServices) : SessionHand
             )
         } else {
             tryResponse(Status.NOT_MODIFIED, "Error adding Player $player to the Session $session.") {
-                sessionServices.addPlayer(player, session)
+                sessionManagement.addPlayer(player, session)
                 return makeResponse(Status.OK, "Player $player added to Session $session successfully.")
             }
         }

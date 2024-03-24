@@ -23,12 +23,14 @@ internal fun routingHttpHandler(envName: String): RoutingHttpHandler {
     val playerStorage = PlayerStorage(envName)
     val gameStorage = GameStorage(envName)
     val sessionStorage = SessionStorage(envName)
+
     val playerServices = PlayerManagement(playerStorage)
     val gameServices = GameManagement(gameStorage)
     val sessionServices = SessionManagement(sessionStorage, playerStorage)
+
     val playerHandler = PlayerHandler(playerServices)
-    val gameHandler = GameHandler(gameServices)
+    val gameHandler = GameHandler(gameServices, playerServices)
     val sessionHandler = SessionHandler(sessionServices)
-    val routes = buildRoutes(playerHandler, gameHandler, sessionHandler)
-    return routes
+
+    return buildRoutes(playerHandler, gameHandler, sessionHandler)
 }

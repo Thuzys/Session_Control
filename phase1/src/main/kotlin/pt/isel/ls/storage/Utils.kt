@@ -30,7 +30,7 @@ fun getGamesFromDB(
         while (rs.next()) {
             val gid = rs.getUInt("gid")
 
-            if (genres == null || areGenresInGame(areGenresInGameStmt, gid, genres)) {
+            if (genres == null || areGenresFromGame(areGenresInGameStmt, gid, genres)) {
                 add(
                     Game(
                         gid = gid,
@@ -51,7 +51,7 @@ fun getGamesFromDB(
  * @param genres The genres to be checked.
  * @return True if the genres are in the game, false otherwise.
  */
-fun areGenresInGame(
+fun areGenresFromGame(
     areGenresInGameStmt: PreparedStatement,
     gid: UInt,
     genres: Collection<String>,
@@ -242,9 +242,8 @@ fun buildGameGetterString(dev: String?): String {
 fun PreparedStatement.setUInt(
     parameterIndex: Int,
     value: UInt,
-) {
-    setInt(parameterIndex, value.toInt())
-}
+) = setInt(parameterIndex, value.toInt())
+
 
 /**
  * Gets the unsigned integer value from the result set.

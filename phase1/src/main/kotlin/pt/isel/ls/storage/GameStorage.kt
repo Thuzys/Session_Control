@@ -84,7 +84,15 @@ class GameStorage(envVarName: String) : GameStorageInterface {
                 getGamesStmt.setUInt(paramIdx, offset)
 
                 getGamesFromDB(getGamesStmt, getGenresStmt, areGenresInGameStmt, genres)
-                    .ifEmpty { throw NoSuchElementException("Game with dev $dev not found") }
+                    .ifEmpty {
+                        val errorMsg =
+                            when {
+                                dev != null && genres == null -> "dev $dev"
+                                genres != null && dev == null -> "genres $genres"
+                                else -> "dev $dev and genres $genres"
+                            }
+                        throw NoSuchElementException("Game with $errorMsg not found")
+                    }
             }
         }
 

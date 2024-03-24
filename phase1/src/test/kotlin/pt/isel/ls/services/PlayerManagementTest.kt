@@ -2,9 +2,7 @@ package pt.isel.ls.services
 
 import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.storage.PlayerStorageStunt
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
+import kotlin.test.*
 
 class PlayerManagementTest {
     private fun actionOfPlayerManagementTest(code: (player: PlayerServices) -> Unit) =
@@ -73,5 +71,18 @@ class PlayerManagementTest {
                         playerManagement.createPlayer("   ", "valid@email.com")
                     }.exceptionOrNull()?.message,
             )
+        }
+
+    @Test
+    fun `isValidToken call with a valid token`() =
+        actionOfPlayerManagementTest { playerManagement: PlayerServices ->
+            assertTrue { playerManagement.isValidToken("validToken") }
+        }
+
+    @Test
+    fun `isValidToken call with an invalid token`() =
+        actionOfPlayerManagementTest { playerManagement: PlayerServices ->
+            val invalidToken = ""
+            assertFalse { playerManagement.isValidToken(invalidToken) }
         }
 }

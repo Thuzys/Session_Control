@@ -28,6 +28,9 @@ package webApi {
     Interface SessionHandler
 }
 
+package server {
+}
+
 domain -> services
 domain.errors -> services
 domain -> storage
@@ -36,5 +39,7 @@ domain -> webApi
 storage -> services
 
 services -> webApi
+
+webApi -> server
 
 @enduml

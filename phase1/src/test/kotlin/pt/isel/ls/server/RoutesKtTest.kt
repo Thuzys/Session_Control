@@ -75,4 +75,34 @@ class RoutesKtTest {
                 "No matching handler found for $request",
             )
         }
+
+    @Test
+    fun `buildRoutes returns router with get GAME_ROUTE`() =
+        actionOfRoutesArrangement { handler: RoutingHttpHandler ->
+            val request = Request(Method.GET, GAME_ROUTE)
+            assertIs<RouterMatch.MatchingHandler>(
+                handler.match(request),
+                "No matching handler found for $request",
+            )
+        }
+
+    @Test
+    fun `buildRoutes returns router with create GAME_ROUTE`() =
+        actionOfRoutesArrangement { handler: RoutingHttpHandler ->
+            val request = Request(Method.POST, GAME_ROUTE)
+            assertIs<RouterMatch.MatchingHandler>(
+                handler.match(request),
+                "No matching handler found for $request",
+            )
+        }
+
+    @Test
+    fun `buildRoutes returns router with get GAME_ID_ROUTE`() =
+        actionOfRoutesArrangement { handler: RoutingHttpHandler ->
+            val request = Request(Method.GET, GAME_ID_ROUTE)
+            assertIs<RouterMatch.MatchingHandler>(
+                handler.match(request),
+                "No matching handler found for $request",
+            )
+        }
 }

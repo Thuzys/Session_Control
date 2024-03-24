@@ -164,6 +164,6 @@ class PlayerHandlerTest {
         actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
             val request = Request(Method.GET, "$DUMMY_ROUTE?pid=${PlayerManagementStunt.playerId}")
             val response = handler.getPlayer(request)
-            assertEquals("Unauthorized, token not found.", response.bodyString())
+            assertEquals("Unauthorized, token not provided.", response.bodyString())
         }
 }

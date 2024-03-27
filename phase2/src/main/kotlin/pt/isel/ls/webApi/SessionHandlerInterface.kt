@@ -44,4 +44,12 @@ interface SessionHandlerInterface {
      * @return A response indicating the outcome of the player addition operation.
      */
     fun addPlayerToSession(request: Request): Response
+
+    /**
+     * Removes a player from a session based on the provided player ID and session ID.
+     *
+     * @param request The HTTP request containing the player and session data.
+     * @return A response indicating the outcome of the player removal operation.
+     */
+    fun removePlayerFromSession(request: Request): Response
 }

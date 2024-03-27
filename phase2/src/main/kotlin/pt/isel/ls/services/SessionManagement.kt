@@ -56,4 +56,9 @@ class SessionManagement(
                 limit = limit ?: DEFAULT_LIMIT,
             ) ?: throw NoSuchElementException()
         }
+
+    override fun removePlayer(player: UInt, session: UInt) =
+        tryCatch("Unable to remove player from session due") {
+            sessionDataMem.updateRemovePlayer(session, player)
+        }
 }

@@ -65,4 +65,10 @@ class SessionStorageStunt : SessionStorageInterface {
             hashSession[sid] = session.copy(players = newItem)
         }
     }
+
+    override fun updateRemovePlayer(sid: UInt, pid: UInt) {
+        hashSession[sid]?.let { session ->
+            hashSession[sid] = session.copy(players = session.players.filter { player -> player.pid != pid })
+        }
+    }
 }

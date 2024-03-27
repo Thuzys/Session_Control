@@ -68,4 +68,15 @@ interface SessionServices {
         offset: UInt? = 0u,
         limit: UInt? = 10u,
     ): Collection<Session>
+
+    /**
+     * Removes a player from a session.
+     *
+     * @param player The identifier of the player to remove.
+     * @param session The identifier of the session from which the player will be removed.
+     */
+    fun removePlayer(
+        player: UInt,
+        session: UInt,
+    )
 }

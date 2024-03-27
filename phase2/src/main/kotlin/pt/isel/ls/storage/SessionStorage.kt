@@ -102,4 +102,19 @@ class SessionStorage(envName: String) : SessionStorageInterface {
             stmt1.executeUpdate()
         }
     }
+
+    override fun updateRemovePlayer(
+        sid: UInt,
+        pid: UInt,
+    ) {
+        dataSource.connection.use { connection ->
+            connection.executeCommand {
+                val deletePlayerCMD = "DELETE FROM PLAYER_SESSION WHERE pid = ? AND sid = ?;"
+                val stmt1 = connection.prepareStatement(deletePlayerCMD)
+                stmt1.setInt(1, pid.toInt())
+                stmt1.setInt(2, sid.toInt())
+                stmt1.executeUpdate()
+            }
+        }
+    }
 }

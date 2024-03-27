@@ -25,9 +25,8 @@ object SessionManagementStunt : SessionServices {
     override fun addPlayer(
         player: UInt,
         session: UInt,
-    ) = if (player != pid || session != sid1) {
-        throw ServicesError("Unable to add player")
-    } else {
+    ) {
+        if (player != pid || session != sid1) throw ServicesError("Unable to add player")
     }
 
     override fun getSessionDetails(sid: UInt): Session =
@@ -63,5 +62,12 @@ object SessionManagementStunt : SessionServices {
             gid == 400u -> emptyList()
             else -> throw ServicesError("There are no Sessions that satisfy the given details")
         }
+    }
+
+    override fun removePlayer(
+        player: UInt,
+        session: UInt,
+    ) {
+        if (player != pid || session != sid1) throw ServicesError("Unable to remove player")
     }
 }

@@ -19,4 +19,8 @@ object SessionHandlerStunt : SessionHandlerInterface {
     override fun addPlayerToSession(request: Request): Response {
         TODO("Not yet implemented")
     }
+
+    override fun removePlayerFromSession(request: Request): Response {
+        TODO("Not yet implemented")
+    }
 }

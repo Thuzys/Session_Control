@@ -1,7 +1,7 @@
 @startuml
 'https://plantuml.com/sequence-diagram
 
-interface GameInterface {
+interface GameServices {
     +createGame()
     +getGameDetails()
     +getGameByDevAndGenres()
@@ -43,7 +43,7 @@ class SessionManagement {
     -playerDataMem: PlayerStorageInterface
 }
 
-GameInterface <|-- GameManagement
+GameServices <|-- GameManagement
 PlayerServices <|-- PlayerManagement
 SessionServices <|-- SessionManagement
 

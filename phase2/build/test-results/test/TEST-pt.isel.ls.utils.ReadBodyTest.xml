@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="pt.isel.ls.utils.ReadBodyTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2024-03-27T14:29:48" hostname="LAPTOP-RPUNL8UP" time="0.006">
+  <properties/>
+  <testcase name="read body test()" classname="pt.isel.ls.utils.ReadBodyTest" time="0.005"/>
+  <testcase name="read non existing body test()" classname="pt.isel.ls.utils.ReadBodyTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

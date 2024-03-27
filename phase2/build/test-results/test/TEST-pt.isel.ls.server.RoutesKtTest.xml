@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="pt.isel.ls.server.RoutesKtTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2024-03-27T14:29:48" hostname="LAPTOP-RPUNL8UP" time="0.185">
+  <properties/>
+  <testcase name="buildRoutes returns router with get SESSION_ROUTE()" classname="pt.isel.ls.server.RoutesKtTest" time="0.133"/>
+  <testcase name="buildRoutes returns router with get GAME_ID_ROUTE()" classname="pt.isel.ls.server.RoutesKtTest" time="0.005"/>
+  <testcase name="buildRoutes returns router with create SESSION_ROUTE()" classname="pt.isel.ls.server.RoutesKtTest" time="0.006"/>
+  <testcase name="buildRoutes returns router with get PLAYER_ROUTE()" classname="pt.isel.ls.server.RoutesKtTest" time="0.006"/>
+  <testcase name="buildRoutes returns router with get SESSION_ID_ROUTE()" classname="pt.isel.ls.server.RoutesKtTest" time="0.006"/>
+  <testcase name="buildRoutes returns router with get GAME_ROUTE()" classname="pt.isel.ls.server.RoutesKtTest" time="0.006"/>
+  <testcase name="buildRoutes returns router with create SESSION_ID_ROUTE()" classname="pt.isel.ls.server.RoutesKtTest" time="0.007"/>
+  <testcase name="buildRoutes returns router with create GAME_ROUTE()" classname="pt.isel.ls.server.RoutesKtTest" time="0.006"/>
+  <testcase name="buildRoutes returns router with create PLAYER_ROUTE()" classname="pt.isel.ls.server.RoutesKtTest" time="0.005"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

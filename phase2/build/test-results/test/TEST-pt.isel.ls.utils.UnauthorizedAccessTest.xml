@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="pt.isel.ls.utils.UnauthorizedAccessTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2024-03-27T14:29:48" hostname="LAPTOP-RPUNL8UP" time="0.006">
+  <properties/>
+  <testcase name="return null for an authorized request()" classname="pt.isel.ls.utils.UnauthorizedAccessTest" time="0.001"/>
+  <testcase name="return unauthorized message for a missing token request()" classname="pt.isel.ls.utils.UnauthorizedAccessTest" time="0.001"/>
+  <testcase name="return unauthorized message for an unauthorized request with invalid token()" classname="pt.isel.ls.utils.UnauthorizedAccessTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

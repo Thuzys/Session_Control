@@ -13,7 +13,8 @@ const val SESSION_ROUTE = "/sessions"
 const val PLAYER_ID_ROUTE = "$PLAYER_ROUTE/player"
 const val GAME_ID_ROUTE = "$GAME_ROUTE/game"
 const val SESSION_ID_ROUTE = "$SESSION_ROUTE/session"
-const val SESSION_ID_PLAYER_ROUTE = "$SESSION_ID_ROUTE/delete/player"
+const val SESSION_DELETE_ROUTE = "$SESSION_ROUTE/delete"
+const val SESSION_ID_PLAYER_DELETE_ROUTE = "$SESSION_DELETE_ROUTE/player"
 
 /**
  * Builds the routes for the application services
@@ -36,5 +37,6 @@ fun buildRoutes(
     SESSION_ROUTE bind Method.POST to sessionHandler::createSession,
     SESSION_ROUTE bind Method.GET to sessionHandler::getSessions,
     SESSION_ID_ROUTE bind Method.POST to sessionHandler::addPlayerToSession,
-    SESSION_ID_PLAYER_ROUTE bind Method.POST to sessionHandler::removePlayerFromSession,
+    SESSION_ID_PLAYER_DELETE_ROUTE bind Method.POST to sessionHandler::removePlayerFromSession,
+    SESSION_DELETE_ROUTE bind Method.POST to sessionHandler::deleteSession,
 )

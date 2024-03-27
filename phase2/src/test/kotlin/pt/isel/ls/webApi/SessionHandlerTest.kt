@@ -350,7 +350,9 @@ class SessionHandlerTest {
     fun `unsuccessfully delete session due to session id not found`() {
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             // ARRANGE
-            val request = Request(Method.DELETE, "$DUMMY_ROUTE?sid=50000&token=${PlayerManagementStunt.playerToken}")
+            val request =
+                Request(Method.DELETE, "$DUMMY_ROUTE?&token=${PlayerManagementStunt.playerToken}")
+                    .body("{\"sid\": \"50000\"")
 
             // ACT
             val response = handler.deleteSession(request)
@@ -364,8 +366,9 @@ class SessionHandlerTest {
     fun `successfully delete of a player from a session`() {
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             // ARRANGE
-            val request = Request(Method.DELETE, "$DUMMY_ROUTE?&token=${PlayerManagementStunt.playerToken}")
-                .body("{\"player\": \"1\", \"session\": \"1\"}")
+            val request =
+                Request(Method.DELETE, "$DUMMY_ROUTE?&token=${PlayerManagementStunt.playerToken}")
+                    .body("{\"player\": \"1\", \"session\": \"1\"}")
 
             // ACT
             val response = handler.removePlayerFromSession(request)
@@ -388,13 +391,14 @@ class SessionHandlerTest {
             assertEquals(Status.BAD_REQUEST, response.status)
         }
     }
-    
+
     @Test
     fun `unsuccessfully delete of a player due to nonexistent pid and sid`() {
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             // ARRANGE
-            val request = Request(Method.DELETE, "$DUMMY_ROUTE?&token=${PlayerManagementStunt.playerToken}")
-                .body("{\"player\": \"3\", \"session\": \"9\"}")
+            val request =
+                Request(Method.DELETE, "$DUMMY_ROUTE?&token=${PlayerManagementStunt.playerToken}")
+                    .body("{\"player\": \"3\", \"session\": \"9\"}")
 
             // ACT
             val response = handler.removePlayerFromSession(request)

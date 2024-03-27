@@ -119,7 +119,8 @@ class SessionHandler(
         unauthorizedAccess(request, playerManagement)
             ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it") }
 
-        val sid = request.query("sid")?.toUIntOrNull()
+        val body = readBody(request)
+        val sid = body["sid"]?.toUIntOrNull()
 
         return if (sid == null) {
             makeResponse(Status.BAD_REQUEST, "Invalid or Missing Session Identifier.")

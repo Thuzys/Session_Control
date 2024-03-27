@@ -61,4 +61,11 @@ class SessionManagement(
         tryCatch("Unable to delete the session due") {
             sessionDataMem.deleteSession(sid = sid)
         }
+
+    override fun removePlayer(
+        player: UInt,
+        session: UInt,
+    ) = tryCatch("Unable to remove player from session due") {
+        sessionDataMem.updateRemovePlayer(session, player)
+    }
 }

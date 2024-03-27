@@ -61,6 +61,17 @@ interface SessionStorageInterface {
     )
 
     /**
+     * Updates a session by removing players from it.
+     *
+     * @param sid The unique identifier of the [Session] to be updated.
+     * @param pid The unique identifier of the [Player] to be removed from the session.
+     */
+    fun updateRemovePlayer(
+        sid: UInt,
+        pid: UInt,
+    )
+
+    /**
      * Deletes a session from the storage.
      *
      * @param sid The unique identifier of the [Session] to be deleted.

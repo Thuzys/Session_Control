@@ -117,6 +117,28 @@ class SessionManagementTest {
     }
 
     @Test
+    fun `remove a player from a session decrements size of session player list`() {
+        actionSessionManagementTest { sessionManagement: SessionServices ->
+            val currentCollection = sessionManagement.getSessionDetails(1u)
+            val currentSize = currentCollection.players.size
+            sessionManagement.removePlayer(1u, 1u)
+            val newCollection = sessionManagement.getSessionDetails(1u)
+            assertTrue { newCollection.players.size == currentSize.dec() }
+        }
+    }
+
+    @Test
+    fun `error removing a player from a session due to invalid player fails with ServicesError`() {
+        actionSessionManagementTest { sessionManagement: SessionServices ->
+            val currentCollection = sessionManagement.getSessionDetails(1u)
+            val currentSize = currentCollection.players.size
+            sessionManagement.removePlayer(4u, 1u)
+            val newCollection = sessionManagement.getSessionDetails(1u)
+            assertTrue { newCollection.players.size == currentSize }
+        }
+    }
+
+    @Test
     fun `delete session successfully`() {
         actionSessionManagementTest { sessionManagement: SessionServices ->
             // ARRANGE

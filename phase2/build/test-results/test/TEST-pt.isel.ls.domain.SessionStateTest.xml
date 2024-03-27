@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="pt.isel.ls.domain.SessionStateTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2024-03-27T14:29:48" hostname="LAPTOP-RPUNL8UP" time="0.004">
-  <properties/>
-  <testcase name="OPEN state name equals to OPEN string()" classname="pt.isel.ls.domain.SessionStateTest" time="0.001"/>
-  <testcase name="CLOSE state name equals to CLOSE string()" classname="pt.isel.ls.domain.SessionStateTest" time="0.001"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

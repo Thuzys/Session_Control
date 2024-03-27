@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="pt.isel.ls.utils.ToPidOrNullTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2024-03-27T14:29:48" hostname="LAPTOP-RPUNL8UP" time="0.011">
-  <properties/>
-  <testcase name="test with a valid pid in request()" classname="pt.isel.ls.utils.ToPidOrNullTest" time="0.009"/>
-  <testcase name="test with an invalid pid in request()" classname="pt.isel.ls.utils.ToPidOrNullTest" time="0.001"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

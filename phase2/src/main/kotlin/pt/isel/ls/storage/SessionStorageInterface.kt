@@ -70,4 +70,11 @@ interface SessionStorageInterface {
         sid: UInt,
         pid: UInt,
     )
+
+    /**
+     * Deletes a session from the storage.
+     *
+     * @param sid The unique identifier of the [Session] to be deleted.
+     */
+    fun deleteSession(sid: UInt)
 }

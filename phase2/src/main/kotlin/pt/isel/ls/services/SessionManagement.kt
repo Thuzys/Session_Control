@@ -57,6 +57,11 @@ class SessionManagement(
             ) ?: throw NoSuchElementException()
         }
 
+    override fun deleteSession(sid: UInt) =
+        tryCatch("Unable to delete the session due") {
+            sessionDataMem.deleteSession(sid = sid)
+        }
+
     override fun removePlayer(
         player: UInt,
         session: UInt,

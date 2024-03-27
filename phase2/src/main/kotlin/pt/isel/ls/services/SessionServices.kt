@@ -79,4 +79,11 @@ interface SessionServices {
         player: UInt,
         session: UInt,
     )
+
+    /**
+     * Deletes a session from the storage.
+     *
+     * @param sid The unique identifier of the session to be deleted.
+     */
+    fun deleteSession(sid: UInt)
 }

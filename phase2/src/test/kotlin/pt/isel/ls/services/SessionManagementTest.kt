@@ -137,4 +137,20 @@ class SessionManagementTest {
             assertTrue { newCollection.players.size == currentSize }
         }
     }
+
+    @Test
+    fun `delete session successfully`() {
+        actionSessionManagementTest { sessionManagement: SessionServices ->
+            // ARRANGE
+            val sessions = sessionManagement.getSessions(1u)
+            val sessionsSizeBeforeDelete = sessions.size
+
+            // ACT
+            sessionManagement.deleteSession(1u)
+
+            // ASSERT
+            assertEquals(sessionsSizeBeforeDelete.dec(), sessionManagement.getSessions(1u).size)
+            assertFailsWith<ServicesError> { sessionManagement.getSessionDetails(1u) }
+        }
+    }
 }

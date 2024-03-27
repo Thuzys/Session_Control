@@ -23,7 +23,7 @@ internal fun getGamesFromDB(
     getGenresStmt: PreparedStatement,
     areGenresInGameStmt: PreparedStatement,
     genres: Collection<String>?,
-): MutableList<Game> =
+): Collection<Game> =
     mutableListOf<Game>().apply {
         val rs = getGameStmt.executeQuery()
 
@@ -131,6 +131,7 @@ internal fun addGameToDB(
     setGameName(addGameStmt, newItem.name)
     setGameDev(addGameStmt, newItem.dev)
     addGameStmt.executeUpdate()
+
     val gid = getGameId(addGameStmt)
     setGameGenres(gid, newItem.genres, relateGameToGenreStmt, addGenreStmt)
     return gid

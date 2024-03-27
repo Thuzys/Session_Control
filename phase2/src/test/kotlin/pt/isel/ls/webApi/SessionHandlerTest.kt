@@ -350,7 +350,9 @@ class SessionHandlerTest {
     fun `unsuccessfully delete session due to session id not found`() {
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             // ARRANGE
-            val request = Request(Method.DELETE, "$DUMMY_ROUTE?sid=50000&token=${PlayerManagementStunt.playerToken}")
+            val request =
+                Request(Method.DELETE, "$DUMMY_ROUTE?&token=${PlayerManagementStunt.playerToken}")
+                    .body("{\"sid\": \"50000\"")
 
             // ACT
             val response = handler.deleteSession(request)

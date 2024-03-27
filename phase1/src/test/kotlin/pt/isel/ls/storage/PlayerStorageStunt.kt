@@ -28,7 +28,7 @@ class PlayerStorageStunt : PlayerStorageInterface {
         offset: UInt,
     ): Collection<Player>? =
         players.values
-            .filter { it.email == email || it.token.toString() == token }
+            .filter { it.email == email || token.toString().isNotEmpty() }
             .drop(offset.toInt())
             .take(limit.toInt())
             .ifEmpty { null }

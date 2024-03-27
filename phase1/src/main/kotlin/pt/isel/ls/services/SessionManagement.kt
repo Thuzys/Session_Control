@@ -17,7 +17,7 @@ class SessionManagement(
     override fun addPlayer(
         player: UInt,
         session: UInt,
-    ) = tryCatch("Unable to add player to session") {
+    ) = tryCatch("Unable to add player to session due") {
         val playerToAdd = playerDataMem.read(pid = player)
         val whereSession = sessionDataMem.readSession(sid = session)
         val updatedSession = whereSession?.addPlayer(playerToAdd) ?: throw NoSuchElementException()
@@ -34,7 +34,7 @@ class SessionManagement(
         date: LocalDateTime,
         capacity: UInt,
     ): UInt =
-        tryCatch("Unable to create a new session due to") {
+        tryCatch("Unable to create a new session due") {
             sessionDataMem.createSession(Session(gid = gid, date = date, capacity = capacity))
         }
 
@@ -46,7 +46,7 @@ class SessionManagement(
         offset: UInt?,
         limit: UInt?,
     ): Collection<Session> =
-        tryCatch("Unable to create a new session due to") {
+        tryCatch("Unable to create a new session due") {
             sessionDataMem.readSessions(
                 gid = gid,
                 date = date,

@@ -131,6 +131,17 @@ class SessionManagementTest {
     }
 
     @Test
+    fun `remove a player from a session decrements size of session player list`() {
+        actionSessionManagementTest { sessionManagement: SessionServices ->
+            val currentCollection = sessionManagement.getSessionDetails(1u)
+            val currentSize = currentCollection.players.size
+            sessionManagement.removePlayer(1u, 1u)
+            val newCollection = sessionManagement.getSessionDetails(1u)
+            assertTrue { newCollection.players.size == currentSize.dec() }
+        }
+    }
+
+    @Test
     fun `updating session successfully with date equal to null does not change actual date`() {
         actionSessionManagementTest { sessionManagement: SessionServices ->
             val oldSession = sessionManagement.getSessionDetails(1u)
@@ -138,6 +149,17 @@ class SessionManagementTest {
             val updatedSession = sessionManagement.getSessionDetails(1u)
             assertEquals(10u, updatedSession.capacity)
             assertEquals(oldSession.date, updatedSession.date)
+        }
+    }
+
+    @Test
+    fun `error removing a player from a session due to invalid player fails with ServicesError`() {
+        actionSessionManagementTest { sessionManagement: SessionServices ->
+            val currentCollection = sessionManagement.getSessionDetails(1u)
+            val currentSize = currentCollection.players.size
+            sessionManagement.removePlayer(4u, 1u)
+            val newCollection = sessionManagement.getSessionDetails(1u)
+            assertTrue { newCollection.players.size == currentSize }
         }
     }
 
@@ -160,6 +182,22 @@ class SessionManagementTest {
             val updatedSession = sessionManagement.getSessionDetails(1u)
             assertEquals(oldSession.date, updatedSession.date)
             assertEquals(oldSession.capacity, updatedSession.capacity)
+        }
+    }
+
+    @Test
+    fun `delete session successfully`() {
+        actionSessionManagementTest { sessionManagement: SessionServices ->
+            // ARRANGE
+            val sessions = sessionManagement.getSessions(1u)
+            val sessionsSizeBeforeDelete = sessions.size
+
+            // ACT
+            sessionManagement.deleteSession(1u)
+
+            // ASSERT
+            assertEquals(sessionsSizeBeforeDelete.dec(), sessionManagement.getSessions(1u).size)
+            assertFailsWith<ServicesError> { sessionManagement.getSessionDetails(1u) }
         }
     }
 }

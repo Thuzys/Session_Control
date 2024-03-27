@@ -58,30 +58,32 @@ class SessionStorage(envName: String) : SessionStorageInterface {
         limit: UInt,
     ): Collection<Session>? =
         dataSource.connection.use { connection ->
-            val selectSessionCMD =
-                "SELECT s.sid, s.capacity, s.gid, s.date\n" +
-                    "FROM session s\n" +
-                    "         LEFT JOIN player_session ps ON ps.sid = s.sid\n" +
-                    "WHERE (s.gid = ?)\n" +
-                    "  OR (s.date = ?)\n" +
-                    "  OR (ps.pid = ?)\n" +
-                    "GROUP BY s.sid, s.capacity, s.gid, s.date\n" +
-                    "HAVING (? = 'null') OR\n" +
-                    "    (? = 'OPEN' AND s.capacity > count(ps.pid)) OR\n" +
-                    "    (? = 'CLOSE' AND s.capacity = count(ps.pid))\n" +
-                    "OFFSET ? LIMIT ?;"
-            val stmt2 = connection.prepareStatement(selectSessionCMD)
-            var idx = 1
-            stmt2.setInt(idx++, gid.toInt())
-            stmt2.setString(idx++, date.toString())
-            stmt2.setInt(idx++, playerId?.toInt() ?: 0)
-            repeat(3) {
-                stmt2.setString(idx++, state.toString())
+            connection.executeCommand {
+                val selectSessionCMD =
+                    "SELECT s.sid, s.capacity, s.gid, s.date\n" +
+                        "FROM session s\n" +
+                        "         LEFT JOIN player_session ps ON ps.sid = s.sid\n" +
+                        "WHERE (s.gid = ?)\n" +
+                        "  OR (s.date = ?)\n" +
+                        "  OR (ps.pid = ?)\n" +
+                        "GROUP BY s.sid, s.capacity, s.gid, s.date\n" +
+                        "HAVING (? = 'null') OR\n" +
+                        "    (? = 'OPEN' AND s.capacity > count(ps.pid)) OR\n" +
+                        "    (? = 'CLOSE' AND s.capacity = count(ps.pid))\n" +
+                        "OFFSET ? LIMIT ?;"
+                val stmt2 = connection.prepareStatement(selectSessionCMD)
+                var idx = 1
+                stmt2.setInt(idx++, gid.toInt())
+                stmt2.setString(idx++, date.toString())
+                stmt2.setInt(idx++, playerId?.toInt() ?: 0)
+                repeat(3) {
+                    stmt2.setString(idx++, state.toString())
+                }
+                stmt2.setInt(idx++, offset.toInt())
+                stmt2.setInt(idx, limit.toInt())
+                val collection = connection.makeSession(stmt2)
+                collection.ifEmpty { null }
             }
-            stmt2.setInt(idx++, offset.toInt())
-            stmt2.setInt(idx, limit.toInt())
-            val collection = connection.makeSession(stmt2)
-            collection.ifEmpty { null }
         }
 
     override fun updateAddPlayer(
@@ -121,6 +123,32 @@ class SessionStorage(envName: String) : SessionStorageInterface {
             repeat(2) { stmt1.setString(idx++, date.toString()) }
             stmt1.setInt(idx, sid.toInt())
             stmt1.executeUpdate()
+        }
+    }
+
+    override fun deleteSession(sid: UInt) {
+        dataSource.connection.use { connection ->
+            connection.executeCommand {
+                val deleteSessionCMD = "DELETE FROM SESSION WHERE sid = ?;"
+                val stmt1 = connection.prepareStatement(deleteSessionCMD)
+                stmt1.setUInt(1, sid)
+                stmt1.executeUpdate()
+            }
+        }
+    }
+
+    override fun updateRemovePlayer(
+        sid: UInt,
+        pid: UInt,
+    ) {
+        dataSource.connection.use { connection ->
+            connection.executeCommand {
+                val deletePlayerCMD = "DELETE FROM PLAYER_SESSION WHERE pid = ? AND sid = ?;"
+                val stmt1 = connection.prepareStatement(deletePlayerCMD)
+                stmt1.setInt(1, pid.toInt())
+                stmt1.setInt(2, sid.toInt())
+                stmt1.executeUpdate()
+            }
         }
     }
 }

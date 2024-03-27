@@ -23,4 +23,12 @@ object SessionHandlerStunt : SessionHandlerInterface {
     override fun updateCapacityOrDate(request: Request): Response {
         TODO("Not yet implemented")
     }
+
+    override fun removePlayerFromSession(request: Request): Response {
+        TODO("Not yet implemented")
+    }
+
+    override fun deleteSession(request: Request): Response {
+        TODO("Not yet implemented")
+    }
 }

@@ -42,6 +42,8 @@ class SessionHandler(
     }
 
     override fun getSession(request: Request): Response {
+        unauthorizedAccess(request, playerManagement)
+            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it") }
         val sid = request.query("sid")?.toUInt() ?: return makeResponse(Status.BAD_REQUEST, "Missing or invalid sid.")
         return tryResponse(Status.NOT_FOUND, "Session not found.") {
             val session = sessionManagement.getSessionDetails(sid)
@@ -50,6 +52,8 @@ class SessionHandler(
     }
 
     override fun getSessions(request: Request): Response {
+        unauthorizedAccess(request, playerManagement)
+            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it") }
         val gid = request.query("gid")?.toUIntOrNull()
         val date = dateVerification(request.query("date"))
         val state = request.query("state").toSessionState()

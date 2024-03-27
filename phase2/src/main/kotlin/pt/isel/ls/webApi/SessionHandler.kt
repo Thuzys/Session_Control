@@ -109,16 +109,54 @@ class SessionHandler(
                     Status.BAD_REQUEST,
                     "capacity and date not provided. Session not modified",
                 )
+
             (sid == null) ->
                 makeResponse(
                     Status.BAD_REQUEST,
                     "Invalid or Missing parameters. Please provide sid",
                 )
+
             else ->
                 tryResponse(Status.NOT_MODIFIED, "Error updating session $sid. Check if $sid is valid") {
                     sessionManagement.updateCapacityOrDate(sid, capacity, date)
                     return makeResponse(Status.OK, "Session $sid updated successfully")
                 }
+        }
+    }
+
+    override fun removePlayerFromSession(request: Request): Response {
+        unauthorizedAccess(request, playerManagement)
+            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it") }
+        val body = readBody(request)
+        val player = body["player"]?.toUIntOrNull()
+        val session = body["session"]?.toUIntOrNull()
+        return if (player == null || session == null) {
+            makeResponse(
+                Status.BAD_REQUEST,
+                "Invalid or Missing parameters. Please provide 'player' and 'session' as valid values.",
+            )
+        } else {
+            tryResponse(Status.NOT_MODIFIED, "Error removing Player $player from the Session $session.") {
+                sessionManagement.removePlayer(player, session)
+                return makeResponse(Status.OK, "Player $player removed from Session $session successfully.")
+            }
+        }
+    }
+
+    override fun deleteSession(request: Request): Response {
+        unauthorizedAccess(request, playerManagement)
+            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it") }
+
+        val body = readBody(request)
+        val sid = body["sid"]?.toUIntOrNull()
+
+        return if (sid == null) {
+            makeResponse(Status.BAD_REQUEST, "Invalid or Missing Session Identifier.")
+        } else {
+            tryResponse(Status.NOT_MODIFIED, "Error deleting Session $sid.") {
+                sessionManagement.deleteSession(sid)
+                return makeResponse(Status.OK, "Session $sid deleted successfully.")
+            }
         }
     }
 }

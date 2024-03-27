@@ -23,7 +23,7 @@ internal fun getGamesFromDB(
     getGenresStmt: PreparedStatement,
     areGenresInGameStmt: PreparedStatement,
     genres: Collection<String>?,
-): MutableList<Game> =
+): Collection<Game> =
     mutableListOf<Game>().apply {
         val rs = getGameStmt.executeQuery()
 
@@ -51,7 +51,7 @@ internal fun getGamesFromDB(
  * @param genres The genres to be checked.
  * @return True if the genres are in the game, false otherwise.
  */
-internal fun areGenresInGame(
+private fun areGenresInGame(
     areGenresInGameStmt: PreparedStatement,
     gid: UInt,
     genres: Collection<String>,
@@ -99,7 +99,7 @@ internal fun getGameFromDB(
  * @param gid The game id.
  * @return A collection of genres.
  */
-internal fun processGenres(
+private fun processGenres(
     getGenresStmt: PreparedStatement,
     gid: UInt,
 ): Collection<String> {
@@ -215,7 +215,7 @@ private fun gameGenresRelation(
  * @param addGameStmt The [PreparedStatement] to get the game id from.
  * @return The game id.
  */
-internal fun getGameId(addGameStmt: PreparedStatement): UInt {
+private fun getGameId(addGameStmt: PreparedStatement): UInt {
     val key = addGameStmt.generatedKeys
     check(key.next()) { "Failed to create game." }
     return key.getUInt("gid")

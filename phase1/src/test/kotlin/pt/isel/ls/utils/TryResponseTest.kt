@@ -39,9 +39,14 @@ class TryResponseTest {
     fun `comparing contend of try response body test with exception message`() {
         val response =
             tryResponse(Status.INTERNAL_SERVER_ERROR, "Hello World") {
-                throw ServicesError("an exception occurred!")
+                throw ServicesError("an exception occurred")
             }
-        assertEquals("Hello World: an exception occurred!", response.bodyString())
+        val expected =
+            """
+            Error:Hello World.
+            Cause:an exception occurred.
+            """.trimIndent()
+        assertEquals(expected, response.bodyString())
     }
 
     @Test

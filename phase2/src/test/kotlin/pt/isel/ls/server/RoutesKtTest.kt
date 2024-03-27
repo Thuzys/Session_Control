@@ -115,4 +115,14 @@ class RoutesKtTest {
                 "No matching handler found for $request",
             )
         }
+
+    @Test
+    fun `buildRoutes returns router with delete SESSION_DELETE_ROUTE`() =
+        actionOfRoutesArrangement { handler: RoutingHttpHandler ->
+            val request = Request(Method.POST, SESSION_DELETE_ROUTE)
+            assertIs<RouterMatch.MatchingHandler>(
+                handler.match(request),
+                "No matching handler found for $request",
+            )
+        }
 }

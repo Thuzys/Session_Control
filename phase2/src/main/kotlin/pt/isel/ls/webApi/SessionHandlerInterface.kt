@@ -58,4 +58,20 @@ interface SessionHandlerInterface {
      * @return A response indicating the outcome of the session update operation.
      */
     fun updateCapacityOrDate(request: Request): Response
+
+    /**
+     * Removes a player from a session based on the provided player ID and session ID.
+     *
+     * @param request The HTTP request containing the player and session data.
+     * @return A response indicating the outcome of the player removal operation.
+     */
+    fun removePlayerFromSession(request: Request): Response
+
+    /**
+     * Deletes a session based on the provided session ID.
+     *
+     * @param request The HTTP request containing the session ID.
+     * @return A response indicating the outcome of the session deletion operation.
+     */
+    fun deleteSession(request: Request): Response
 }

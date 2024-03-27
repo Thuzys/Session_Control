@@ -53,7 +53,15 @@ internal inline fun tryResponse(
         block()
     } catch (e: ServicesError) {
         e.message
-            ?.let { makeResponse(errorStatus, "$errorMsg: $it") }
+            ?.let {
+                makeResponse(
+                    errorStatus,
+                    """
+                    Error:$errorMsg.
+                    Cause:$it.
+                    """.trimIndent(),
+                )
+            }
             ?: makeResponse(errorStatus, "$errorMsg.")
     }
 

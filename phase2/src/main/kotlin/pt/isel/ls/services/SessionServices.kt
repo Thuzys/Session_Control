@@ -87,4 +87,22 @@ interface SessionServices {
         capacity: UInt? = null,
         date: LocalDateTime? = null,
     )
+
+    /**
+     * Removes a player from a session.
+     *
+     * @param player The identifier of the player to remove.
+     * @param session The identifier of the session from which the player will be removed.
+     */
+    fun removePlayer(
+        player: UInt,
+        session: UInt,
+    )
+
+    /**
+     * Deletes a session from the storage.
+     *
+     * @param sid The unique identifier of the session to be deleted.
+     */
+    fun deleteSession(sid: UInt)
 }

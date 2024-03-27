@@ -11,9 +11,9 @@ fun main() {
     val server = routes.asServer(Jetty(8080)).start()
     println("Server started at ${server.port()}")
 
-    println("Press Enter to stop the server")
+    println("Press Enter to stop the server:")
     readln()
     server.stop()
 
-    println("Server stopped")
+    println("Server stopped.")
 }

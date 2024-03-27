@@ -71,4 +71,17 @@ object SessionManagementStunt : SessionServices {
         date: LocalDateTime?,
     ) {
     }
+
+    override fun removePlayer(
+        player: UInt,
+        session: UInt,
+    ) {
+        if (player != pid || session != sid1) throw ServicesError("Unable to remove player")
+    }
+
+    override fun deleteSession(sid: UInt) {
+        if (sid != sid1) {
+            throw ServicesError("Unable to delete the session")
+        }
+    }
 }

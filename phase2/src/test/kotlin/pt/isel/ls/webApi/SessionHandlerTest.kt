@@ -336,4 +336,27 @@ class SessionHandlerTest {
             val response = handler.getSession(request)
             assertEquals(Status.UNAUTHORIZED, response.status)
         }
+
+    @Test
+    fun `unauthorized status due to lack of token during delete session request`() {
+        actionOfASessionArrangement { handler: SessionHandlerInterface ->
+            val request = Request(Method.DELETE, DUMMY_ROUTE)
+            val response = handler.deleteSession(request)
+            assertEquals(Status.UNAUTHORIZED, response.status)
+        }
+    }
+
+    @Test
+    fun `unsuccessfully delete session due to session id not found`() {
+        actionOfASessionArrangement { handler: SessionHandlerInterface ->
+            // ARRANGE
+            val request = Request(Method.DELETE, "$DUMMY_ROUTE?sid=50000&token=${PlayerManagementStunt.playerToken}")
+
+            // ACT
+            val response = handler.deleteSession(request)
+
+            // ASSERT
+            assertEquals(Status.NOT_MODIFIED, response.status)
+        }
+    }
 }

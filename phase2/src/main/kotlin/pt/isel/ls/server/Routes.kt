@@ -10,10 +10,10 @@ import pt.isel.ls.webApi.SessionHandlerInterface
 const val PLAYER_ROUTE = "/players"
 const val GAME_ROUTE = "/games"
 const val SESSION_ROUTE = "/sessions"
-const val PLAYER_ID_ROUTE = "$PLAYER_ROUTE/{pid}"
+const val PLAYER_ID_ROUTE = "$PLAYER_ROUTE/player"
 const val GAME_ID_ROUTE = "$GAME_ROUTE/game"
 const val SESSION_ID_ROUTE = "$SESSION_ROUTE/session"
-const val SESSION_PLAYER_ROUTE = "$SESSION_ID_ROUTE/delete/player/"
+const val SESSION_ID_PLAYER_ROUTE = "$SESSION_ID_ROUTE/delete/player"
 
 /**
  * Builds the routes for the application services
@@ -36,5 +36,5 @@ fun buildRoutes(
     SESSION_ROUTE bind Method.POST to sessionHandler::createSession,
     SESSION_ROUTE bind Method.GET to sessionHandler::getSessions,
     SESSION_ID_ROUTE bind Method.POST to sessionHandler::addPlayerToSession,
-    SESSION_PLAYER_ROUTE bind Method.DELETE to sessionHandler::removePlayerFromSession,
+    SESSION_ID_PLAYER_ROUTE bind Method.POST to sessionHandler::removePlayerFromSession,
 )

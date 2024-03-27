@@ -56,4 +56,9 @@ class SessionManagement(
                 limit = limit ?: DEFAULT_LIMIT,
             ) ?: throw NoSuchElementException()
         }
+
+    override fun deleteSession(sid: UInt) =
+        tryCatch("Unable to delete the session due") {
+            sessionDataMem.deleteSession(sid = sid)
+        }
 }

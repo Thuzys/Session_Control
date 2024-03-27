@@ -59,4 +59,11 @@ interface SessionStorageInterface {
         sid: UInt,
         newItem: Collection<Player>,
     )
+
+    /**
+     * Deletes a session from the storage.
+     *
+     * @param sid The unique identifier of the [Session] to be deleted.
+     */
+    fun deleteSession(sid: UInt)
 }

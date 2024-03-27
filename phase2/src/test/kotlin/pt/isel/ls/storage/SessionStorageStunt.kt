@@ -65,4 +65,8 @@ class SessionStorageStunt : SessionStorageInterface {
             hashSession[sid] = session.copy(players = newItem)
         }
     }
+
+    override fun deleteSession(sid: UInt) {
+        hashSession.remove(sid)
+    }
 }

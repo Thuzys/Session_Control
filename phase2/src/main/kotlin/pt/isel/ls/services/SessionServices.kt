@@ -68,4 +68,11 @@ interface SessionServices {
         offset: UInt? = 0u,
         limit: UInt? = 10u,
     ): Collection<Session>
+
+    /**
+     * Deletes a session from the storage.
+     *
+     * @param sid The unique identifier of the session to be deleted.
+     */
+    fun deleteSession(sid: UInt)
 }

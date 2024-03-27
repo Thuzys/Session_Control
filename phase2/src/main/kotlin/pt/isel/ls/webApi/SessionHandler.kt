@@ -95,4 +95,20 @@ class SessionHandler(
             }
         }
     }
+
+    override fun deleteSession(request: Request): Response {
+        unauthorizedAccess(request, playerManagement)
+            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it") }
+
+        val sid = request.query("sid")?.toUIntOrNull()
+
+        return if (sid == null) {
+            makeResponse(Status.BAD_REQUEST, "Invalid or Missing Session Identifier.")
+        } else {
+            tryResponse(Status.NOT_MODIFIED, "Error deleting Session $sid.") {
+                sessionManagement.deleteSession(sid)
+                return makeResponse(Status.OK, "Session $sid deleted successfully.")
+            }
+        }
+    }
 }

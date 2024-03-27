@@ -115,4 +115,20 @@ class SessionManagementTest {
             assertTrue(sessions.all { session -> session.players.any { player -> player.pid == 1u } })
         }
     }
+
+    @Test
+    fun `delete session successfully`() {
+        actionSessionManagementTest { sessionManagement: SessionServices ->
+            // ARRANGE
+            val sessions = sessionManagement.getSessions(1u)
+            val sessionsSizeBeforeDelete = sessions.size
+
+            // ACT
+            sessionManagement.deleteSession(1u)
+
+            // ASSERT
+            assertEquals(sessionsSizeBeforeDelete.dec(), sessionManagement.getSessions(1u).size)
+            assertFailsWith<ServicesError> { sessionManagement.getSessionDetails(1u) }
+        }
+    }
 }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="pt.isel.ls.services.SessionManagementTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2024-03-27T14:29:48" hostname="LAPTOP-RPUNL8UP" time="0.037">
+  <properties/>
+  <testcase name="get Sessions by date returns successfully()" classname="pt.isel.ls.services.SessionManagementTest" time="0.004"/>
+  <testcase name="error adding a player to a session due to invalid player fails with ServicesError()" classname="pt.isel.ls.services.SessionManagementTest" time="0.002"/>
+  <testcase name="get Session by gameID successfully()" classname="pt.isel.ls.services.SessionManagementTest" time="0.003"/>
+  <testcase name="get Sessions by state returns successfully()" classname="pt.isel.ls.services.SessionManagementTest" time="0.003"/>
+  <testcase name="no match in trying to get Sessions throws ServicesError()" classname="pt.isel.ls.services.SessionManagementTest" time="0.004"/>
+  <testcase name="successfully getSessionDetails gets the correct details()" classname="pt.isel.ls.services.SessionManagementTest" time="0.002"/>
+  <testcase name="creating a session returns and sid successfully()" classname="pt.isel.ls.services.SessionManagementTest" time="0.002"/>
+  <testcase name="get Sessions by player ID successfully()" classname="pt.isel.ls.services.SessionManagementTest" time="0.002"/>
+  <testcase name="trying to get details of a non-existent session fails with ServicesError()" classname="pt.isel.ls.services.SessionManagementTest" time="0.002"/>
+  <testcase name="add a player to a session increments size of session()" classname="pt.isel.ls.services.SessionManagementTest" time="0.003"/>
+  <testcase name="error adding a player to a session due to invalid session fails with ServicesError()" classname="pt.isel.ls.services.SessionManagementTest" time="0.003"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

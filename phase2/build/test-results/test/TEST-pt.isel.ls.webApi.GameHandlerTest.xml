@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="pt.isel.ls.webApi.GameHandlerTest" tests="15" skipped="0" failures="0" errors="0" timestamp="2024-03-27T14:29:48" hostname="LAPTOP-RPUNL8UP" time="0.061">
+  <properties/>
+  <testcase name="message of game found due to a game id that corresponds to an existing Game ()" classname="pt.isel.ls.webApi.GameHandlerTest" time="0.019"/>
+  <testcase name="message of game by dev and genres found()" classname="pt.isel.ls.webApi.GameHandlerTest" time="0.003"/>
+  <testcase name="internal server error creating a game due to invalid parameter()" classname="pt.isel.ls.webApi.GameHandlerTest" time="0.003"/>
+  <testcase name="message of game by dev and genres not found due to parameters that not correspond to an existing Game()" classname="pt.isel.ls.webApi.GameHandlerTest" time="0.004"/>
+  <testcase name="bad request creating a game due to missing parameters (name, developer and genres)()" classname="pt.isel.ls.webApi.GameHandlerTest" time="0.002"/>
+  <testcase name="bad request getting the game by dev and genres due to missing developer and genres()" classname="pt.isel.ls.webApi.GameHandlerTest" time="0.002"/>
+  <testcase name="bad request getting the game details due to missing game id()" classname="pt.isel.ls.webApi.GameHandlerTest" time="0.002"/>
+  <testcase name="message of Bad Request creating a game due to missing parameters (name, developer and genres)()" classname="pt.isel.ls.webApi.GameHandlerTest" time="0.002"/>
+  <testcase name="game found by dev and genres successfully()" classname="pt.isel.ls.webApi.GameHandlerTest" time="0.003"/>
+  <testcase name="message of game created with success()" classname="pt.isel.ls.webApi.GameHandlerTest" time="0.002"/>
+  <testcase name="message of game not found due to a game id that does not correspond to an existing Game()" classname="pt.isel.ls.webApi.GameHandlerTest" time="0.003"/>
+  <testcase name="game created with success()" classname="pt.isel.ls.webApi.GameHandlerTest" time="0.002"/>
+  <testcase name="message of Bad Request getting the game by dev and genres due to missing developer and genres()" classname="pt.isel.ls.webApi.GameHandlerTest" time="0.002"/>
+  <testcase name="message of Bad Request getting the game details due to missing game id()" classname="pt.isel.ls.webApi.GameHandlerTest" time="0.002"/>
+  <testcase name="game by dev and genres not found due to parameters that not correspond to an existing Game()" classname="pt.isel.ls.webApi.GameHandlerTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

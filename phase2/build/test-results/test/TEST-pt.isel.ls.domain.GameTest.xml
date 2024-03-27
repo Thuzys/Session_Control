@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="pt.isel.ls.domain.GameTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2024-03-27T14:29:48" hostname="LAPTOP-RPUNL8UP" time="0.019">
+  <properties/>
+  <testcase name="empty set of genres of Game class implementation()" classname="pt.isel.ls.domain.GameTest" time="0.015"/>
+  <testcase name="empty dev of Game class implementation()" classname="pt.isel.ls.domain.GameTest" time="0.001"/>
+  <testcase name="empty name of Game class implementation()" classname="pt.isel.ls.domain.GameTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

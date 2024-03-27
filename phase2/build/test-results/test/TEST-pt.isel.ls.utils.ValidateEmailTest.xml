@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="pt.isel.ls.utils.ValidateEmailTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2024-03-27T14:29:48" hostname="LAPTOP-RPUNL8UP" time="0.008">
+  <properties/>
+  <testcase name="returning true with a valid email()" classname="pt.isel.ls.utils.ValidateEmailTest" time="0.001"/>
+  <testcase name="returning false with an email without Top-Level Domain()" classname="pt.isel.ls.utils.ValidateEmailTest" time="0.001"/>
+  <testcase name="returning false with an email without starting letters()" classname="pt.isel.ls.utils.ValidateEmailTest" time="0.001"/>
+  <testcase name="retuning false with an email without specified mail service()" classname="pt.isel.ls.utils.ValidateEmailTest" time="0.001"/>
+  <testcase name="returning false with an email without @()" classname="pt.isel.ls.utils.ValidateEmailTest" time="0.001"/>
+  <testcase name="returning false with an email without dot()" classname="pt.isel.ls.utils.ValidateEmailTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -61,6 +61,19 @@ interface SessionStorageInterface {
     )
 
     /**
+     * Updates a [Session] capacity, date or both.
+     *
+     * @param sid The unique identifier of the [Session] to be updated.
+     * @param capacity the new value for the capacity. Defaults to null.
+     * @param date the new value for the date. Defaults to null
+     */
+    fun updateCapacityOrDate(
+        sid: UInt,
+        capacity: UInt? = null,
+        date: LocalDateTime? = null,
+    )
+
+    /**
      * Updates a session by removing players from it.
      *
      * @param sid The unique identifier of the [Session] to be updated.

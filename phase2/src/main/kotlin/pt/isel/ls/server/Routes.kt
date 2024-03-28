@@ -36,5 +36,6 @@ fun buildRoutes(
     SESSION_ROUTE bind Method.POST to sessionHandler::createSession,
     SESSION_ROUTE bind Method.GET to sessionHandler::getSessions,
     SESSION_ID_ROUTE bind Method.POST to sessionHandler::addPlayerToSession,
+    SESSION_ID_ROUTE bind Method.PUT to sessionHandler::updateCapacityOrDate,
     SESSION_DELETE_ROUTE bind Method.POST to sessionHandler::deleteSession,
 )

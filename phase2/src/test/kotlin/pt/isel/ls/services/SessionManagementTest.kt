@@ -11,6 +11,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 private val date1 = LocalDateTime(2024, 3, 10, 12, 30)
+private val date2 = LocalDateTime(1904, 3, 10, 12, 30)
 
 class SessionManagementTest {
     private fun actionSessionManagementTest(code: (session: SessionServices) -> Unit) =
@@ -28,7 +29,7 @@ class SessionManagementTest {
     }
 
     @Test
-    fun `add a player to a session increments size of session`() {
+    fun `add a player to a session increments size of session players`() {
         actionSessionManagementTest { sessionManagement: SessionServices ->
             val currentCollection = sessionManagement.getSessionDetails(1u)
             val currentSize = currentCollection.players.size
@@ -117,6 +118,19 @@ class SessionManagementTest {
     }
 
     @Test
+    fun `updating session capacity and date successfully updates both`() {
+        actionSessionManagementTest { sessionManagement: SessionServices ->
+            val oldSession = sessionManagement.getSessionDetails(1u)
+            sessionManagement.updateCapacityOrDate(1u, 10u, date2)
+            val updatedSession = sessionManagement.getSessionDetails(1u)
+            assertTrue { oldSession.date != updatedSession.date }
+            assertTrue { oldSession.capacity != updatedSession.capacity }
+            assertEquals(10u, updatedSession.capacity)
+            assertEquals(date2, updatedSession.date)
+        }
+    }
+
+    @Test
     fun `remove a player from a session decrements size of session player list`() {
         actionSessionManagementTest { sessionManagement: SessionServices ->
             val currentCollection = sessionManagement.getSessionDetails(1u)
@@ -128,6 +142,17 @@ class SessionManagementTest {
     }
 
     @Test
+    fun `updating session successfully with date equal to null does not change actual date`() {
+        actionSessionManagementTest { sessionManagement: SessionServices ->
+            val oldSession = sessionManagement.getSessionDetails(1u)
+            sessionManagement.updateCapacityOrDate(1u, 10u, null)
+            val updatedSession = sessionManagement.getSessionDetails(1u)
+            assertEquals(10u, updatedSession.capacity)
+            assertEquals(oldSession.date, updatedSession.date)
+        }
+    }
+
+    @Test
     fun `error removing a player from a session due to invalid player fails with ServicesError`() {
         actionSessionManagementTest { sessionManagement: SessionServices ->
             val currentCollection = sessionManagement.getSessionDetails(1u)
@@ -135,6 +160,28 @@ class SessionManagementTest {
             sessionManagement.removePlayer(4u, 1u)
             val newCollection = sessionManagement.getSessionDetails(1u)
             assertTrue { newCollection.players.size == currentSize }
+        }
+    }
+
+    @Test
+    fun `updating session successfully with capacity equal to null does not change actual capacity`() {
+        actionSessionManagementTest { sessionManagement: SessionServices ->
+            val oldSession = sessionManagement.getSessionDetails(1u)
+            sessionManagement.updateCapacityOrDate(1u, null, date2)
+            val updatedSession = sessionManagement.getSessionDetails(1u)
+            assertEquals(date2, updatedSession.date)
+            assertEquals(oldSession.capacity, updatedSession.capacity)
+        }
+    }
+
+    @Test
+    fun `trying to update a session with capacity and date null does not affect the session`() {
+        actionSessionManagementTest { sessionManagement: SessionServices ->
+            val oldSession = sessionManagement.getSessionDetails(1u)
+            sessionManagement.updateCapacityOrDate(1u, null, null)
+            val updatedSession = sessionManagement.getSessionDetails(1u)
+            assertEquals(oldSession.date, updatedSession.date)
+            assertEquals(oldSession.capacity, updatedSession.capacity)
         }
     }
 

@@ -338,6 +338,90 @@ class SessionHandlerTest {
         }
 
     @Test
+    fun `bad request updating a session by capacity or date due to invalid sid`() =
+        actionOfASessionArrangement { handler: SessionHandlerInterface ->
+            val request =
+                Request(
+                    Method.PUT,
+                    "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}",
+                ).body("{\"sid\": \"dummy\", \"date\": \"2024-03-16T12:30\", \"capacity\": \"10\"}")
+            val response = handler.updateCapacityOrDate(request)
+            assertEquals(Status.BAD_REQUEST, response.status)
+        }
+
+    @Test
+    fun `bad request updating a session by capacity or date due to lack of sid`() =
+        actionOfASessionArrangement { handler: SessionHandlerInterface ->
+            val request =
+                Request(
+                    Method.PUT,
+                    "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}",
+                ).body("{\"date\": \"2024-03-16T12:30\", \"capacity\": \"10\"}")
+            val response = handler.updateCapacityOrDate(request)
+            assertEquals(Status.BAD_REQUEST, response.status)
+        }
+
+    @Test
+    fun `invalid date but valid sid and capacity returns OK status response`() =
+        actionOfASessionArrangement { handler: SessionHandlerInterface ->
+            val request =
+                Request(
+                    Method.PUT,
+                    "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}",
+                ).body("{\"sid\": \"1\", \"date\": \"invalid_date_format\", \"capacity\": \"10\"}")
+            val response = handler.updateCapacityOrDate(request)
+            assertEquals(Status.OK, response.status)
+        }
+
+    @Test
+    fun `invalid capacity but valid sid and date returns OK status response`() =
+        actionOfASessionArrangement { handler: SessionHandlerInterface ->
+            val request =
+                Request(
+                    Method.PUT,
+                    "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}",
+                ).body("{\"sid\": \"1\", \"date\": \"2024-03-16T12:30\", \"capacity\": \"invalid_format\"}")
+            val response = handler.updateCapacityOrDate(request)
+            assertEquals(Status.OK, response.status)
+        }
+
+    @Test
+    fun `bad request response when trying to update a session by capacity and date due to lack of capacity and date`() =
+        actionOfASessionArrangement { handler: SessionHandlerInterface ->
+            val request =
+                Request(
+                    Method.PUT,
+                    "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}",
+                ).body("{\"sid\": \"1\"}")
+            val response = handler.updateCapacityOrDate(request)
+            assertEquals(Status.BAD_REQUEST, response.status)
+        }
+
+    @Test
+    fun `OK response updating a session by capacity and date with valid parameters`() =
+        actionOfASessionArrangement { handler: SessionHandlerInterface ->
+            val request =
+                Request(
+                    Method.PUT,
+                    "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}",
+                ).body("{\"sid\": \"1\", \"date\": \"2024-03-16T12:30\", \"capacity\": \"10\"}")
+            val response = handler.updateCapacityOrDate(request)
+            assertEquals(Status.OK, response.status)
+        }
+
+    @Test
+    fun `OK response updating a session by capacity only`() =
+        actionOfASessionArrangement { handler: SessionHandlerInterface ->
+            val request =
+                Request(
+                    Method.PUT,
+                    "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}",
+                ).body("{\"sid\": \"1\", \"capacity\": \"10\"}")
+            val response = handler.updateCapacityOrDate(request)
+            assertEquals(Status.OK, response.status)
+        }
+
+    @Test
     fun `unauthorized status due to lack of token during delete session request`() {
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request = Request(Method.DELETE, DUMMY_ROUTE)

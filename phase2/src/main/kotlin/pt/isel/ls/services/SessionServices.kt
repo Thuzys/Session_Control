@@ -70,6 +70,25 @@ interface SessionServices {
     ): Collection<Session>
 
     /**
+     * Updates the capacity or date of a session.
+     *
+     * This function allows updating either the capacity or the date of a session identified by the given session identifier.
+     * The session identified by 'sid' will have its capacity updated to the new value provided in 'capacity', and/or its date
+     * updated to the new value provided in 'date'. If 'capacity' is null, only the date will be updated, and vice versa.
+     * If both 'capacity' and 'date' are null, no changes will be applied to the session.
+     *
+     * @param sid The identifier of the session to update.
+     * @param capacity The new capacity of the session (optional). If null, the capacity will not be updated.
+     * @param date The new date and time of the session (optional). If null, the date will not be updated.
+     * @throws ServicesError if there's an issue updating the session.
+     */
+    fun updateCapacityOrDate(
+        sid: UInt,
+        capacity: UInt? = null,
+        date: LocalDateTime? = null,
+    )
+
+    /**
      * Removes a player from a session.
      *
      * @param player The identifier of the player to remove.

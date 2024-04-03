@@ -264,7 +264,7 @@ INSERT INTO PLAYER_SESSION (pid, sid) VALUES (?,?)
 SELECT sid, capacity, gid, date FROM SESSION WHERE sid = ?;
 ```
 ---
-- to read a session by gameId, date, playerId or state:
+- to read a session by dev, date, playerId or state:
 ```sql
 SELECT s.sid, s.capacity, s.gid, s.date
   FROM session s

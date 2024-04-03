@@ -95,9 +95,9 @@ class SessionStorage(envName: String) : SessionStorageInterface {
         connection.executeCommand {
             val insertPlayerCMD =
                 "INSERT INTO PLAYER_SESSION (pid, sid) " +
-                        "SELECT ?, ?" +
-                        "WHERE NOT EXISTS (" +
-                        "SELECT 1 FROM PLAYER_SESSION WHERE pid = ? AND sid = ?);"
+                    "SELECT ?, ?" +
+                    "WHERE NOT EXISTS (" +
+                    "SELECT 1 FROM PLAYER_SESSION WHERE pid = ? AND sid = ?);"
             val stmt1 = connection.prepareStatement(insertPlayerCMD)
             newItem.forEach { player ->
                 player.pid?.let { it1 -> stmt1.setInt(1, it1.toInt()) }
@@ -118,10 +118,10 @@ class SessionStorage(envName: String) : SessionStorageInterface {
             connection.executeCommand {
                 val updateCMD =
                     "UPDATE SESSION\n" +
-                            "SET\n" +
-                            "    capacity = CASE WHEN ? IS NOT NULL THEN ? ELSE capacity END,\n" +
-                            "    date = CASE WHEN ? IS NOT NULL THEN ? ELSE date END\n" +
-                            "WHERE sid = ?;"
+                        "SET\n" +
+                        "    capacity = CASE WHEN ? IS NOT NULL THEN ? ELSE capacity END,\n" +
+                        "    date = CASE WHEN ? IS NOT NULL THEN ? ELSE date END\n" +
+                        "WHERE sid = ?;"
                 val stmt1 = connection.prepareStatement(updateCMD)
                 var idx = 1
                 repeat(2) { stmt1.setInt(idx++, capacity?.toInt() ?: 0) }

@@ -96,6 +96,34 @@ class SessionHandler(
         }
     }
 
+    override fun updateCapacityOrDate(request: Request): Response {
+        unauthorizedAccess(request, playerManagement)
+            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it") }
+        val body = readBody(request)
+        val sid = body["sid"]?.toUIntOrNull()
+        val capacity = body["capacity"]?.toUIntOrNull()
+        val date = dateVerification(body["date"])
+        return when {
+            (capacity == null && date == null) ->
+                makeResponse(
+                    Status.BAD_REQUEST,
+                    "capacity and date not provided. Session not modified",
+                )
+
+            (sid == null) ->
+                makeResponse(
+                    Status.BAD_REQUEST,
+                    "Invalid or Missing parameters. Please provide sid",
+                )
+
+            else ->
+                tryResponse(Status.NOT_MODIFIED, "Error updating session $sid. Check if $sid is valid") {
+                    sessionManagement.updateCapacityOrDate(sid, capacity, date)
+                    return makeResponse(Status.OK, "Session $sid updated successfully")
+                }
+        }
+    }
+
     override fun removePlayerFromSession(request: Request): Response {
         unauthorizedAccess(request, playerManagement)
             ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it") }

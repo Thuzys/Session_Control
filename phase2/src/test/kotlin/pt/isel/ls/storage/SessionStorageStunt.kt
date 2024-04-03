@@ -66,6 +66,21 @@ class SessionStorageStunt : SessionStorageInterface {
         }
     }
 
+    override fun updateCapacityOrDate(
+        sid: UInt,
+        capacity: UInt?,
+        date: LocalDateTime?,
+    ) {
+        val sessionToUpdate = hashSession[sid]
+        sessionToUpdate?.let { session ->
+            hashSession[sid] =
+                session.copy(
+                    capacity = capacity ?: sessionToUpdate.capacity,
+                    date = date ?: sessionToUpdate.date,
+                )
+        }
+    }
+
     override fun updateRemovePlayer(
         sid: UInt,
         pid: UInt,

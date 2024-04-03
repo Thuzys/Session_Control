@@ -46,6 +46,20 @@ interface SessionHandlerInterface {
     fun addPlayerToSession(request: Request): Response
 
     /**
+     * Updates the capacity or date of a session based on the provided request data.
+     *
+     * This function handles the request data to update the capacity or date of a session.
+     * The request should contain the session identifier (sid) and optionally the new capacity and/or date.
+     * If both capacity and date are provided in the request, the session's capacity and date will be updated.
+     * If either capacity or date is not provided, only the specified value will be updated.
+     * If neither capacity nor date is provided, the function will return an error response.
+     *
+     * @param request The HTTP request containing the session identifier and optionally the new capacity and/or date.
+     * @return A response indicating the outcome of the session update operation.
+     */
+    fun updateCapacityOrDate(request: Request): Response
+
+    /**
      * Removes a player from a session based on the provided player ID and session ID.
      *
      * @param request The HTTP request containing the player and session data.

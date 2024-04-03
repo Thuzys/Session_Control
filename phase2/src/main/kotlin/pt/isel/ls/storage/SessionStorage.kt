@@ -95,15 +95,38 @@ class SessionStorage(envName: String) : SessionStorageInterface {
         connection.executeCommand {
             val insertPlayerCMD =
                 "INSERT INTO PLAYER_SESSION (pid, sid) " +
-                    "SELECT ?, ?" +
-                    "WHERE NOT EXISTS (" +
-                    "SELECT 1 FROM PLAYER_SESSION WHERE pid = ? AND sid = ?);"
+                        "SELECT ?, ?" +
+                        "WHERE NOT EXISTS (" +
+                        "SELECT 1 FROM PLAYER_SESSION WHERE pid = ? AND sid = ?);"
             val stmt1 = connection.prepareStatement(insertPlayerCMD)
             newItem.forEach { player ->
                 player.pid?.let { it1 -> stmt1.setInt(1, it1.toInt()) }
                 stmt1.setInt(2, sid.toInt())
                 player.pid?.let { stmt1.setInt(3, it.toInt()) }
                 stmt1.setInt(4, sid.toInt())
+                stmt1.executeUpdate()
+            }
+        }
+    }
+
+    override fun updateCapacityOrDate(
+        sid: UInt,
+        capacity: UInt?,
+        date: LocalDateTime?,
+    ) {
+        dataSource.connection.use { connection ->
+            connection.executeCommand {
+                val updateCMD =
+                    "UPDATE SESSION\n" +
+                            "SET\n" +
+                            "    capacity = CASE WHEN ? IS NOT NULL THEN ? ELSE capacity END,\n" +
+                            "    date = CASE WHEN ? IS NOT NULL THEN ? ELSE date END\n" +
+                            "WHERE sid = ?;"
+                val stmt1 = connection.prepareStatement(updateCMD)
+                var idx = 1
+                repeat(2) { stmt1.setInt(idx++, capacity?.toInt() ?: 0) }
+                repeat(2) { stmt1.setString(idx++, date.toString()) }
+                stmt1.setInt(idx, sid.toInt())
                 stmt1.executeUpdate()
             }
         }

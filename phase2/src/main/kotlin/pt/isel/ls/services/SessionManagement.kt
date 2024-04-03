@@ -57,6 +57,18 @@ class SessionManagement(
             ) ?: throw NoSuchElementException()
         }
 
+    override fun updateCapacityOrDate(
+        sid: UInt,
+        capacity: UInt?,
+        date: LocalDateTime?,
+    ) = tryCatch("Unable to update session $sid due") {
+        sessionDataMem.updateCapacityOrDate(
+            sid = sid,
+            capacity = capacity,
+            date = date,
+        )
+    }
+
     override fun deleteSession(sid: UInt) =
         tryCatch("Unable to delete the session due") {
             sessionDataMem.deleteSession(sid = sid)

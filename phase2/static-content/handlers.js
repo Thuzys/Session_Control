@@ -12,7 +12,7 @@ function executeRequest(url, execute){
 
 function searchSessions(mainContent) {
     const form = views.form(
-        views.h1({textContent: "Search Sessions"}),
+        views.h1({}, "Search Sessions: "), //assert: is not showing text
         views.label({qualifiedName: "for", value: "textbox"}, "Enter Game Id: "),
         views.input({type: "text", id: "gameId"}),
         views.p(),
@@ -23,64 +23,72 @@ function searchSessions(mainContent) {
         views.input({type: "datetime-local", id: "date"}),
         views.p(),
         views.label({qualifiedName: "for", value: "textbox"}, "Enter State: "),
-        views.radioButton({ name: "state", value: "open", checked: true }),
+        views.radioButton({name: "state", value: "open", checked: true}),
         views.radioButtonLabel("open", "Open"),
-        views.radioButton({ name: "state", value: "close" }),
+        views.radioButton({name: "state", value: "close"}),
         views.radioButtonLabel("close", "Close"),
-        views.radioButton({ name: "state", value: "both" }),
+        views.radioButton({name: "state", value: "both"}),
         views.radioButtonLabel("both", "Both"),
         views.p(),
-        views.button({ type: "submit" }, "Search")
+        views.button({type: "submit"}, "Search")
     )
-
     mainContent.replaceChildren(form)
+    form.addEventListener('submit', (e) => handleSearchSessionsSubmit(e, mainContent));
+}
 
-    form.onsubmit = (e) => {
-        e.preventDefault()
-        const inputGid = document.getElementById('gameId');
-        const inputPid = document.getElementById('playerId');
-        const inputDate = document.getElementById('date');
-        const inputOpen = document.querySelector('input[name="state"][value="open"]');
-        const inputClose = document.querySelector('input[name="state"][value="close"]');
+function handleSearchSessionsSubmit(e, mainContent) {
+    e.preventDefault();
+    const inputGid = document.getElementById('gameId');
+    const inputPid = document.getElementById('playerId');
+    const inputDate = document.getElementById('date');
+    const inputOpen = document.querySelector('input[name="state"][value="open"]');
+    const inputClose = document.querySelector('input[name="state"][value="close"]');
 
-        let url = API_BASE_URL + SESSION_ROUTE
-        if(inputGid.value) {
-            url += "?gid=" + inputGid.value
-        }
-        if(inputPid.value) {
-            url += "&pid=" + inputPid.value
-        }
-        if(inputDate.value) {
-            url += "&date=" + inputDate.value
-        }
-        if(inputOpen.checked) {
-            url += "&state=" + inputOpen.value
-        }
-        else if (inputClose.checked) {
-            url += "&state=" + inputClose.value
-        }
-        url += TOKEN //only for testing
-        getSessions(mainContent, url)
+    let url = API_BASE_URL + SESSION_ROUTE;
+    if (inputGid.value) {
+        url += "?gid=" + inputGid.value;
     }
+    if (inputPid.value) {
+        url += "&pid=" + inputPid.value;
+    }
+    if (inputDate.value) {
+        url += "&date=" + inputDate.value;
+    }
+    if (inputOpen.checked) {
+        url += "&state=" + inputOpen.value;
+    } else if (inputClose.checked) {
+        url += "&state=" + inputClose.value;
+    }
+    url += TOKEN; //only for testing
+    console.log(url)
+    getSessions(mainContent, url)
 }
 
 function getSessions(mainContent, url) {
     executeRequest(url, sessions => {
-        const div = document.createElement("div")
-        const h1 = document.createElement("h1")
-        const text = document.createTextNode("text")
-        h1.appendChild(text)
-        div.appendChild(h1)
+        const div = views.div(
+            views.h1({}, "Sessions Found"), //assert: is not showing text
+        )
         sessions.forEach(session => {
-            const p = document.createElement("p")
-            const a = document.createElement("a")
-            const aText = document.createTextNode("a")
-            a.appendChild(aText)
-            a.href="#sessions/" + session.number
-            p.appendChild(a)
-            div.appendChild(p)
-        })
-        mainContent.replaceChildren(div)
+            const sessionDiv = views.div({},
+                views.label(
+                    {qualifiedName: "for"},
+                    "Session ID: " + session.sid
+                ),
+                views.ul(
+                    views.li("Capacity: " + session.capacity),
+                    views.li("Group ID: " + session.gid),
+                    views.li("Date: " + session.date),
+                    views.li("Players:"),
+                    views.ul(
+                        session.players.map(player => views.li({ textContent: "Player ID: " + player.pid })) //assert: is not showing text
+                    )
+                ),
+            )
+            div.appendChild(sessionDiv);
+        });
+
+        mainContent.replaceChildren(div);
     })
 }
 

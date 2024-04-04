@@ -9,10 +9,11 @@ window.addEventListener('hashchange', hashChangeHandler)
 
 function loadHandler(){
 
-    router.addRouteHandler("home", handlers.getHome)
-    router.addRouteHandler("students", handlers.getStudents)
-    router.addRouteHandler("students/10", handlers.getStudent)
-    router.addDefaultNotFoundRouteHandler(() => window.location.hash = "home")
+    router.addRouteHandler("playerHome", handlers.getHome)
+    router.addRouteHandler("gameSearch", handlers.searchGames)
+    router.addRouteHandler("games", handlers.getGames)
+    // router.addRouteHandler("games/:gid", ...)
+    router.addDefaultNotFoundRouteHandler(() => window.location.hash = "playerHome")
 
     hashChangeHandler()
 }
@@ -20,8 +21,12 @@ function loadHandler(){
 function hashChangeHandler(){
 
     const mainContent = document.getElementById("mainContent")
-    const path =  window.location.hash.replace("#", "")
-
+    const path = getPath()
     const handler = router.getRouteHandler(path)
+    console.log(window.location.hash)
     handler(mainContent)
+}
+
+function getPath(){
+    return window.location.hash.replace("#", "").split("?")[0]
 }

@@ -13,65 +13,127 @@ or
 Note: You have to use the DOM Api, but not directly
 */
 
-const API_BASE_URL = "http://localhost:9000/"
+const API_BASE_URL = "http://localhost:8080"
+const TOKEN = "e247758f-02b6-4037-bd85-fc245b84d5f2"
+
+const PLAYER_ROUTE = "/players"
+const GAME_ROUTE = "/games"
+const SESSION_ROUTE = "/sessions"
+const PLAYER_ID_ROUTE = "$PLAYER_ROUTE/player"
+const GAME_ID_ROUTE = "$GAME_ROUTE/game"
+const SESSION_ID_ROUTE = "$SESSION_ROUTE/session"
+const SESSION_DELETE_ROUTE = "$SESSION_ROUTE/delete"
+const SESSION_ID_PLAYER_DELETE_ROUTE = "$SESSION_DELETE_ROUTE/player"
 
 function getHome(mainContent){
-
     const h1 = document.createElement("h1")
     const text = document.createTextNode("Home")
     h1.appendChild(text)
     mainContent.replaceChildren(h1)
 }
 
-function getStudents(mainContent){
-    fetch(API_BASE_URL + "students")
+function executeRequest(url) {
+    return fetch(url)
         .then(res => res.json())
-        .then(students => {
-            const div = document.createElement("div")
-
-            const h1 = document.createElement("h1")
-            const text = document.createTextNode("Students")
-            h1.appendChild(text)
-            div.appendChild(h1)
-
-            students.forEach(s => {
-                const p = document.createElement("p")
-                const a = document.createElement("a")
-                const aText = document.createTextNode("Link Example to students/" + s.number);
-                a.appendChild(aText)
-                a.href="#students/" + s.number
-                p.appendChild(a)
-                div.appendChild(p)
-            })
-            mainContent.replaceChildren(div)
-        })
 }
 
-function getStudent(mainContent){
-    fetch(API_BASE_URL + "students/10")
-        .then(res => res.json())
-        .then(student => {
-            const ulStd = document.createElement("ul")
+function searchGames(mainContent) {
+    const form = document.createElement("form")
 
-            const liName = document.createElement("li")
-            const textName = document.createTextNode("Name : " + student.name)
-            liName.appendChild(textName)
+    const title = document.createElement("p")
+    const titleText = document.createTextNode("Search Games by Developer and/or Genre(s)")
+    title.appendChild(titleText)
 
-            const liNumber = document.createElement("li")
-            const textNumber = document.createTextNode("Number : " + student.number)
-            liNumber.appendChild(textNumber)
+    const inputDev = document.createElement("input")
+    inputDev.type = "text"
+    inputDev.placeholder = "Insert Developer Name"
+    form.appendChild(inputDev)
 
-            ulStd.appendChild(liName)
-            ulStd.appendChild(liNumber)
+    const inputGenres = document.createElement("input")
+    inputGenres.type = "text"
+    inputGenres.placeholder = "Insert Genre(s) separated by comma and no spaces"
+    form.appendChild(inputGenres)
 
-            mainContent.replaceChildren(ulStd)
+    const button = document.createElement("button")
+    const buttonText = document.createTextNode("Search")
+    button.appendChild(buttonText)
+    form.appendChild(button)
+
+    const areInputsEmpty = () => {
+        return !inputDev.value.trim() && !inputGenres.value.trim();
+    }
+
+    button.disabled = areInputsEmpty()
+
+    inputDev.addEventListener('input', () => {
+        button.disabled = areInputsEmpty()
+    });
+
+    inputGenres.addEventListener('input', () => {
+        button.disabled = areInputsEmpty()
+    });
+
+    form.onsubmit = (e) => {
+        e.preventDefault()
+        let hash = "#games?"
+        if(inputDev.value){
+            hash += "dev=" + inputDev.value
+        }
+        if(inputGenres.value){
+            if(inputDev.value){
+                hash += "&"
+            }
+            hash += "genres=" + inputGenres.value
+        }
+
+        window.location.hash = hash
+    }
+
+    mainContent.replaceChildren(form)
+}
+
+function getGames(mainContent){
+    const url = `${API_BASE_URL}${GAME_ROUTE}?${getQuery()}&token=${TOKEN}`
+    console.log(url)
+    executeRequest(url).then(games => {
+        const div = document.createElement("div")
+
+        const h1 = document.createElement("h1")
+        const text = document.createTextNode("Games")
+        h1.appendChild(text)
+        div.appendChild(h1)
+
+        games.forEach(game => {
+            const gameDiv = document.createElement("div")
+            const title = document.createElement("h2")
+            const titleText = document.createTextNode(game.name)
+            title.appendChild(titleText)
+            gameDiv.appendChild(title)
+
+            const developer = document.createElement("p")
+            const developerText = document.createTextNode("Developer: " + game.dev)
+            developer.appendChild(developerText)
+            gameDiv.appendChild(developer)
+
+            const genres = document.createElement("p")
+            const genresText = document.createTextNode("Genres: " + game.genres.join(", "))
+            genres.appendChild(genresText)
+            gameDiv.appendChild(genres)
+
+            div.appendChild(gameDiv)
+        })
+        mainContent.replaceChildren(div)
     })
+}
+
+function getQuery(){
+    return window.location.hash.replace("#", "").split("?")[1]
 }
 
 export const handlers = {
     getHome,
-    getStudent,
-    getStudents,
+    searchGames,
+    getGames,
 }
 
 export default handlers

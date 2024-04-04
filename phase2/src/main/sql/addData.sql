@@ -8,7 +8,7 @@ INSERT INTO GAME (name, developer) VALUES ('Game 1', 'Developer A'), ('Game 2', 
 INSERT INTO GAME_GENRES (gid, genre) VALUES (1, 'Action'), (1, 'Adventure'), (2, 'RPG'), (3, 'Simulation');
 
 -- Insert values into PLAYER table
-INSERT INTO PLAYER (name, email, token) VALUES ('Player 1', 'player1@example.com', 'token1'), ('Player 2', 'player2@example.com', 'token2');
+INSERT INTO PLAYER (name, email, token) VALUES ('Player 1', 'player1@example.com', 'e247758f-02b6-4037-bd85-fc245b84d5f2'), ('Player 2', 'player2@example.com', 'token2');
 
 -- Insert values into SESSION table
 INSERT INTO SESSION (capacity, gid, date) VALUES (10, 1, '2024-03-11T12:30'), (8, 2, '2024-03-11T12:30'), (12, 3, '2024-03-13T12:30');

@@ -12,6 +12,7 @@ function loadHandler(){
     router.addRouteHandler("home", handlers.getHome)
     router.addRouteHandler("students", handlers.getStudents)
     router.addRouteHandler("students/10", handlers.getStudent)
+    router.addRouteHandler("sessionSearch", handlers.searchSessions)
     router.addDefaultNotFoundRouteHandler(() => window.location.hash = "home")
 
     hashChangeHandler()

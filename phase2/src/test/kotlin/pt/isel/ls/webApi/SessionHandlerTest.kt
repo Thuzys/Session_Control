@@ -240,13 +240,13 @@ class SessionHandlerTest {
 
     @Test
     fun `message of getting sessions successfully`() {
-        val sid = "1"
+        val gid = "1"
         val state = "close"
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request =
                 Request(
                     Method.GET,
-                    "$DUMMY_ROUTE?gid=$sid&state=$state&token=${PlayerManagementStunt.playerToken}",
+                    "$DUMMY_ROUTE?gid=$gid&state=$state&token=${PlayerManagementStunt.playerToken}",
                 )
             val response = handler.getSessions(request)
             assertEquals(
@@ -440,6 +440,52 @@ class SessionHandlerTest {
 
             // ACT
             val response = handler.deleteSession(request)
+
+            // ASSERT
+            assertEquals(Status.NOT_MODIFIED, response.status)
+        }
+    }
+
+    @Test
+    fun `successfully delete of a player from a session`() {
+        actionOfASessionArrangement { handler: SessionHandlerInterface ->
+            // ARRANGE
+            val request =
+                Request(Method.DELETE, "$DUMMY_ROUTE?&token=${PlayerManagementStunt.playerToken}")
+                    .body("{\"player\": \"1\", \"session\": \"1\"}")
+
+            // ACT
+            val response = handler.removePlayerFromSession(request)
+
+            // ASSERT
+            assertEquals(Status.OK, response.status)
+        }
+    }
+
+    @Test
+    fun `unsuccessfully delete of a player due to missing parameters`() {
+        actionOfASessionArrangement { handler: SessionHandlerInterface ->
+            // ARRANGE
+            val request = Request(Method.DELETE, "$DUMMY_ROUTE?&token=${PlayerManagementStunt.playerToken}")
+
+            // ACT
+            val response = handler.removePlayerFromSession(request)
+
+            // ASSERT
+            assertEquals(Status.BAD_REQUEST, response.status)
+        }
+    }
+
+    @Test
+    fun `unsuccessfully delete of a player due to nonexistent pid and sid`() {
+        actionOfASessionArrangement { handler: SessionHandlerInterface ->
+            // ARRANGE
+            val request =
+                Request(Method.DELETE, "$DUMMY_ROUTE?&token=${PlayerManagementStunt.playerToken}")
+                    .body("{\"player\": \"3\", \"session\": \"9\"}")
+
+            // ACT
+            val response = handler.removePlayerFromSession(request)
 
             // ASSERT
             assertEquals(Status.NOT_MODIFIED, response.status)

@@ -1,6 +1,9 @@
 package pt.isel.ls
 
+import org.http4k.routing.ResourceLoader
 import org.http4k.routing.RoutingHttpHandler
+import org.http4k.routing.routes
+import org.http4k.routing.singlePageApp
 import pt.isel.ls.server.buildRoutes
 import pt.isel.ls.services.GameManagement
 import pt.isel.ls.services.PlayerManagement
@@ -31,6 +34,9 @@ internal fun routingHttpHandler(envName: String): RoutingHttpHandler {
     val playerHandler = PlayerHandler(playerServices)
     val gameHandler = GameHandler(gameServices, playerServices)
     val sessionHandler = SessionHandler(sessionServices, playerServices)
-
-    return buildRoutes(playerHandler, gameHandler, sessionHandler)
+    val apiRoutes = buildRoutes(playerHandler, gameHandler, sessionHandler)
+    return routes(
+        apiRoutes,
+        singlePageApp(ResourceLoader.Directory("static-content")),
+    )
 }

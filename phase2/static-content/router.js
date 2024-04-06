@@ -1,5 +1,5 @@
 const routes = []
-let notFoundRouteHandler = () => { throw "Route handler for unknown routes not defined" }
+let notFoundRouteHandler = (mainContent, mainHeader) => { throw "Route handler for unknown routes not defined" }
 
 function addRouteHandler(path, handler){
     routes.push({path, handler})

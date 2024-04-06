@@ -1,3 +1,5 @@
+import { menu, utils } from "./utils.js";
+
 /*
 This example creates the students views using directly the DOM Api
 But you can create the views in a different way, for example, for the student details you can:
@@ -13,65 +15,70 @@ or
 Note: You have to use the DOM Api, but not directly
 */
 
-const API_BASE_URL = "http://localhost:9000/"
+const API_BASE_URL = "http://localhost:8080/"
+const PLAYER_ROUTE = "players/player"
+const TOKEN = "e247758f-02b6-4037-bd85-fc245b84d5f2"
 
-function getHome(mainContent){
-
+function getHome(mainContent, mainHeader){
     const h1 = document.createElement("h1")
-    const text = document.createTextNode("Home")
+    const text = document.createTextNode("Home page.")
     h1.appendChild(text)
-    mainContent.replaceChildren(h1)
+    const pid = document.createElement("input")
+    const button = document.createElement("button")
+    button.type = "submit"
+    button.textContent = "Player Details"
+    pid.type = "text"
+    pid.name = "pid"
+    pid.maxLength = 10
+    const form = document.createElement("form")
+    form.action = "#playerDetails"
+    form.method = "get"
+    form.appendChild(pid)
+    form.appendChild(button)
+    form.onsubmit = (e) => {
+        e.preventDefault()
+        window.location.hash = `#playerDetails?pid=${pid.value}`
+    }
+    mainHeader.innerHTML = ""
+    mainHeader.appendChild(menu.get("home"))
+    mainHeader.appendChild(menu.get("gameSearch"))
+    mainHeader.appendChild(menu.get("sessionSearch"))
+    mainContent.replaceChildren(h1, form)
 }
 
-function getStudents(mainContent){
-    fetch(API_BASE_URL + "students")
-        .then(res => res.json())
-        .then(students => {
-            const div = document.createElement("div")
-
-            const h1 = document.createElement("h1")
-            const text = document.createTextNode("Students")
-            h1.appendChild(text)
-            div.appendChild(h1)
-
-            students.forEach(s => {
-                const p = document.createElement("p")
-                const a = document.createElement("a")
-                const aText = document.createTextNode("Link Example to students/" + s.number);
-                a.appendChild(aText)
-                a.href="#students/" + s.number
-                p.appendChild(a)
-                div.appendChild(p)
-            })
-            mainContent.replaceChildren(div)
-        })
-}
-
-function getStudent(mainContent){
-    fetch(API_BASE_URL + "students/10")
-        .then(res => res.json())
-        .then(student => {
-            const ulStd = document.createElement("ul")
-
-            const liName = document.createElement("li")
-            const textName = document.createTextNode("Name : " + student.name)
-            liName.appendChild(textName)
-
-            const liNumber = document.createElement("li")
-            const textNumber = document.createTextNode("Number : " + student.number)
-            liNumber.appendChild(textNumber)
-
-            ulStd.appendChild(liName)
-            ulStd.appendChild(liNumber)
-
-            mainContent.replaceChildren(ulStd)
+function getPlayerDetails(mainContent, mainHeader){
+    const url = `${API_BASE_URL}${PLAYER_ROUTE}?${utils.getQuery()}&token=${TOKEN}`
+    executeRequest(url).then(player => {
+        const h1 = document.createElement("h1")
+        const text = document.createTextNode("Player Details:")
+        h1.appendChild(text)
+        const name = document.createElement("p")
+        const nameText = document.createTextNode(`Name: ${player.name}`)
+        name.appendChild(nameText)
+        const email = document.createElement("p")
+        const emailText = document.createTextNode(`Email: ${player.email.email}`)
+        email.appendChild(emailText)
+        const pid = document.createElement("p")
+        const pidText = document.createTextNode(`Pid: ${player.pid}`)
+        pid.appendChild(pidText)
+        mainContent.replaceChildren(h1, name, email, pid)
     })
+}
+
+function executeRequest(url) {
+    return fetch(url)
+        .then(res => {
+            if (res.ok) {
+                return res.json()
+            } else {
+                throw new Error("Error fetching data:" + res.statusText)
+            }
+        } )
 }
 
 export const handlers = {
     getHome,
-    getStudent,
-    getStudents,
+    getPlayerDetails,
 }
 
 export default handlers

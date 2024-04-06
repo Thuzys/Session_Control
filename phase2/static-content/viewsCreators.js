@@ -33,6 +33,14 @@ function h1(attributes = {}, ...children) {
     return createElement("h1", attributes, ...children);
 }
 
+function h2(attributes = {}, ...children) {
+    return createElement("h2", attributes, ...children);
+}
+
+function h3(attributes = {}, ...children) {
+    return createElement("h3", attributes, ...children);
+}
+
 function a(attributes = {}, ...children) {
     return createElement("a", attributes, ...children);
 }
@@ -62,7 +70,6 @@ function button(attributes = {}, textContent) {
 }
 
 const views = {
-    createElement,
     ul,
     li,
     form,
@@ -74,6 +81,9 @@ const views = {
     div,
     h1,
     button,
+    h2,
+    h3,
+    a
 }
 
 export default views

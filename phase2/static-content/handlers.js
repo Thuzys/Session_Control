@@ -13,58 +13,31 @@ function executeRequest(url, execute){
 }
 
 function searchSessions(mainContent) {
-    const h1 = views.h1({}, "Search Sessions")
-    const form = views.form(
-        {},
-        views.label({qualifiedName: "for", value: "textbox"}, "Enter Game Id: "),
-        views.input({type: "text", id: "gameId"}),
-        views.p(),
-        views.label({qualifiedName: "for", value: "textbox"}, "Enter Player Id: "),
-        views.input({type: "text", id: "playerId"}),
-        views.p(),
-        views.label({qualifiedName: "for", value: "textbox"}, "Enter Date: "),
-        views.input({type: "datetime-local", id: "date"}),
-        views.p(),
-        views.label({qualifiedName: "for", value: "textbox"}, "Enter State: "),
-        views.radioButton({ name: "state", value: "open", checked: true }),
-        views.radioButtonLabel("open", "Open"),
-        views.radioButton({ name: "state", value: "close" }),
-        views.radioButtonLabel("close", "Close"),
-        views.radioButton({ name: "state", value: "both" }),
-        views.radioButtonLabel("both", "Both"),
-        views.p(),
-        views.button({ type: "submit" }, "Search")
-    )
+    const h1 = handlerUtils.createHeader();
+    const formContent = handlerUtils.createFormContent();
+    const form = views.form({}, ...formContent);
+    mainContent.replaceChildren(h1, form);
+    form.addEventListener('submit', (e) => handleSearchSessionsSubmit(e, mainContent));
+}
 
-    mainContent.replaceChildren(h1, form)
+function handleSearchSessionsSubmit(e, mainContent) {
+    e.preventDefault();
+    const { value: gid } = document.getElementById('gameId');
+    const { value: pid } = document.getElementById('playerId');
+    const { value: date } = document.getElementById('date');
+    const { checked: open } = document.querySelector('input[name="state"][value="open"]');
+    const { checked: close } = document.querySelector('input[name="state"][value="close"]');
 
-    form.onsubmit = (e) => {
-        e.preventDefault()
-        const inputGid = document.getElementById('gameId');
-        const inputPid = document.getElementById('playerId');
-        const inputDate = document.getElementById('date');
-        const inputOpen = document.querySelector('input[name="state"][value="open"]');
-        const inputClose = document.querySelector('input[name="state"][value="close"]');
+    const params = new URLSearchParams();
+    if (gid) params.set('gid', gid);
+    if (pid) params.set('pid', pid);
+    if (date) params.set('date', date);
+    if (open) params.set('state', 'open');
+    if (close) params.set('state', 'close');
 
-        let url = API_BASE_URL + SESSION_ROUTE
-        if(inputGid.value) {
-            url += "?gid=" + inputGid.value
-        }
-        if(inputPid.value) {
-            url += "&pid=" + inputPid.value
-        }
-        if(inputDate.value) {
-            url += "&date=" + inputDate.value
-        }
-        if(inputOpen.checked) {
-            url += "&state=" + inputOpen.value
-        }
-        else if (inputClose.checked) {
-            url += "&state=" + inputClose.value
-        }
-        url += TOKEN //only for testing
-        getSessions(mainContent, url)
-    }
+    const url = `${API_BASE_URL}${SESSION_ROUTE}?${params}${TOKEN}`;
+    // window.location.hash =
+    getSessions(mainContent, url);
 }
 
 function getSessions(mainContent, url) {

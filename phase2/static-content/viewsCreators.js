@@ -33,6 +33,14 @@ function h1(attributes = {}, ...children) {
     return createElement("h1", attributes, ...children);
 }
 
+function h2(attributes = {}, ...children) {
+    return createElement("h2", attributes, ...children);
+}
+
+function h3(attributes = {}, ...children) {
+    return createElement("h3", attributes, ...children);
+}
+
 function a(attributes = {}, ...children) {
     return createElement("a", attributes, ...children);
 }
@@ -59,14 +67,6 @@ function radioButtonLabel(forId, textContent, attributes = {}) {
 
 function button(attributes = {}, textContent) {
     return createElement("button", attributes, textContent);
-}
-
-function h2(attributes = {}, ...children) {
-    return createElement("h2", attributes, ...children);
-}
-
-function h3(attributes = {}, ...children) {
-    return createElement("h3", attributes, ...children);
 }
 
 const views = {

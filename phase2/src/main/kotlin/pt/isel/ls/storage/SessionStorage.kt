@@ -143,6 +143,21 @@ class SessionStorage(envName: String) : SessionStorageInterface {
         }
     }
 
+//    override fun getPlayerSessions(pid: UInt): Collection<Int> =
+//        dataSource.connection.use { connection ->
+//            connection.executeCommand {
+//                val selectSessionCMD = "SELECT sid FROM PLAYER_SESSION WHERE pid = ?;"
+//                val stmt1 = connection.prepareStatement(selectSessionCMD)
+//                stmt1.setInt(1, pid.toInt())
+//                val response= stmt1.executeQuery()
+//                val collection = emptyList<Int>().toMutableList()
+//                while (response.next()) {
+//                    collection.add(response.getInt(1))
+//                }
+//                collection
+//            }
+//        }
+
     override fun updateRemovePlayer(
         sid: UInt,
         pid: UInt,

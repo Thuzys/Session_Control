@@ -74,6 +74,11 @@ class SessionManagement(
             sessionDataMem.deleteSession(sid = sid)
         }
 
+//    override fun getSessionsByPlayer(pid: UInt): Collection<Int> =
+//        tryCatch("Unable to get the sessions by player due") {
+//            sessionDataMem.getPlayerSessions(pid)
+//        }
+
     override fun removePlayer(
         player: UInt,
         session: UInt,

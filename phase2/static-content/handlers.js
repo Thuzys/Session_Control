@@ -1,83 +1,151 @@
-import { menu, utils } from "./utils.js";
-
-/*
-This example creates the students views using directly the DOM Api
-But you can create the views in a different way, for example, for the student details you can:
-    createElement("ul",
-        createElement("li", "Name : " + student.name),
-        createElement("li", "Number : " + student.number)
-    )
-or
-    ul(
-        li("Name : " + student.name),
-        li("Number : " + student.name)
-    )
-Note: You have to use the DOM Api, but not directly
-*/
+import menu from "./menuLinks.js";
+import requestUtils from "./requestUtils.js";
+import views from './viewsCreators.js';
+import handlerUtils from "./handlerUtils.js";
 
 const API_BASE_URL = "http://localhost:8080/"
 const PLAYER_ROUTE = "players/player"
+const SESSION_ROUTE = "sessions"
 const TOKEN = "e247758f-02b6-4037-bd85-fc245b84d5f2"
 
-function getHome(mainContent, mainHeader){
-    const h1 = document.createElement("h1")
-    const text = document.createTextNode("Home page.")
-    h1.appendChild(text)
-    const pid = document.createElement("input")
-    const button = document.createElement("button")
-    button.type = "submit"
-    button.textContent = "Player Details"
-    pid.type = "text"
-    pid.name = "pid"
-    pid.maxLength = 10
-    const form = document.createElement("form")
-    form.action = "#playerDetails"
-    form.method = "get"
-    form.appendChild(pid)
-    form.appendChild(button)
+function executeRequest(url, execute){
+    fetch(url).then(it => execute(it))
+}
+
+function searchSessions(mainContent) {
+    const h1 = views.h1({}, "Search Sessions")
+    const form = views.form(
+        {},
+        views.label({qualifiedName: "for", value: "textbox"}, "Enter Game Id: "),
+        views.input({type: "text", id: "gameId"}),
+        views.p(),
+        views.label({qualifiedName: "for", value: "textbox"}, "Enter Player Id: "),
+        views.input({type: "text", id: "playerId"}),
+        views.p(),
+        views.label({qualifiedName: "for", value: "textbox"}, "Enter Date: "),
+        views.input({type: "datetime-local", id: "date"}),
+        views.p(),
+        views.label({qualifiedName: "for", value: "textbox"}, "Enter State: "),
+        views.radioButton({ name: "state", value: "open", checked: true }),
+        views.radioButtonLabel("open", "Open"),
+        views.radioButton({ name: "state", value: "close" }),
+        views.radioButtonLabel("close", "Close"),
+        views.radioButton({ name: "state", value: "both" }),
+        views.radioButtonLabel("both", "Both"),
+        views.p(),
+        views.button({ type: "submit" }, "Search")
+    )
+
+    mainContent.replaceChildren(h1, form)
+
     form.onsubmit = (e) => {
         e.preventDefault()
-        window.location.hash = `#playerDetails?pid=${pid.value}`
+        const inputGid = document.getElementById('gameId');
+        const inputPid = document.getElementById('playerId');
+        const inputDate = document.getElementById('date');
+        const inputOpen = document.querySelector('input[name="state"][value="open"]');
+        const inputClose = document.querySelector('input[name="state"][value="close"]');
+
+        let url = API_BASE_URL + SESSION_ROUTE
+        if(inputGid.value) {
+            url += "?gid=" + inputGid.value
+        }
+        if(inputPid.value) {
+            url += "&pid=" + inputPid.value
+        }
+        if(inputDate.value) {
+            url += "&date=" + inputDate.value
+        }
+        if(inputOpen.checked) {
+            url += "&state=" + inputOpen.value
+        }
+        else if (inputClose.checked) {
+            url += "&state=" + inputClose.value
+        }
+        url += TOKEN //only for testing
+        getSessions(mainContent, url)
     }
-    mainHeader.innerHTML = ""
-    mainHeader.appendChild(menu.get("home"))
-    mainHeader.appendChild(menu.get("gameSearch"))
-    mainHeader.appendChild(menu.get("sessionSearch"))
+}
+
+function getSessions(mainContent, url) {
+    executeRequest(url, response => {
+        if (response.ok){
+            const sessions = response.json()
+            const div = document.createElement("div")
+            const h1 = document.createElement("h1")
+            const text = document.createTextNode("text")
+            h1.appendChild(text)
+            div.appendChild(h1)
+            sessions.forEach(session => {
+                const p = document.createElement("p")
+                const a = document.createElement("a")
+                const aText = document.createTextNode("a")
+                a.appendChild(aText)
+                a.href="#sessions/" + session.number
+                p.appendChild(a)
+                div.appendChild(p)
+            })
+            mainContent.replaceChildren(div)
+        }
+    })
+}
+
+function getHome(mainContent, headerContent){
+    const h1 = views.h1({},"Home page.")
+    const form = views.form({action: "#playerDetails", method: "get"},
+        views.input({type: "text", id: "pid", maxLength: 10}),
+        views.button({type: "submit"}, "Player Details")
+    )
+    form.onsubmit = (e) => {
+        e.preventDefault()
+        const pid = document.getElementById("pid")
+        if (pid.value === "") {
+            alert("Please enter a player id")
+            return
+        }
+        window.location.hash = `#playerDetails/${pid.value}`
+    }
+    headerContent.replaceChildren(menu.get("home"), menu.get("gameSearch"), menu.get("sessionSearch"))
     mainContent.replaceChildren(h1, form)
 }
 
 function getPlayerDetails(mainContent, mainHeader){
-    const url = `${API_BASE_URL}${PLAYER_ROUTE}?${utils.getQuery()}&token=${TOKEN}`
-    executeRequest(url).then(player => {
-        const h1 = document.createElement("h1")
-        const text = document.createTextNode("Player Details:")
-        h1.appendChild(text)
-        const name = document.createElement("p")
-        const nameText = document.createTextNode(`Name: ${player.name}`)
-        name.appendChild(nameText)
-        const email = document.createElement("p")
-        const emailText = document.createTextNode(`Email: ${player.email.email}`)
-        email.appendChild(emailText)
-        const pid = document.createElement("p")
-        const pidText = document.createTextNode(`Pid: ${player.pid}`)
-        pid.appendChild(pidText)
-        mainContent.replaceChildren(h1, name, email, pid)
+    const url = `${API_BASE_URL}${PLAYER_ROUTE}?pid=${requestUtils.getQuery()}&token=${TOKEN}`
+    executeRequest(url, response => {
+        if (handlerUtils.isOkResponse(response)) {
+            response.json().then(
+                player => {
+                    const h2 = views.h2(
+                        {},
+                        "Player Details"
+                    )
+                    const ul = views.ul(
+                        views.li("Name: " + player.name),
+                        views.li("Email: " + player.email.email),
+                        views.li("Pid: " + player.pid),
+                    )
+                    mainContent.replaceChildren(
+                        views.div(
+                            {},
+                            h2,
+                            ul
+                        )
+                    )
+                    mainHeader.replaceChildren(menu.get("home"), menu.get("sessionSearch"))
+                }
+            )
+        }
+        else {
+            alert("Error fetching data:" + response.statusText)
+        }
     })
 }
 
-function executeRequest(url) {
-    return fetch(url)
-        .then(res => {
-            if (res.ok) {
-                return res.json()
-            } else {
-                throw new Error("Error fetching data:" + res.statusText)
-            }
-        } )
-}
+
 
 export const handlers = {
     getHome,
+    searchSessions,
     getPlayerDetails,
 }
 

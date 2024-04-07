@@ -51,13 +51,33 @@ function sessionHrefConstructor(session) {
         ]
 }
 
+function executeCommandWithResponse(url, responseHandler) {
+    fetch(url)
+        .then(response => {
+            if(isOkResponse(response)) {
+                responseHandler(response);
+            } else {
+                response.text().then(text => alert("Error fetching data: " + text));
+            }
+        })
+}
+
+function makeQueryString(query) {
+    const queryString = new URLSearchParams();
+    for (const [key, value] of query) {
+        queryString.set(key, value);
+    }
+    return queryString;
+}
+
 const handlerUtils = {
-    isOkResponse,
     createStateInputs,
     createHeader,
     createLabeledInput,
     createFormContent,
-    sessionHrefConstructor
+    sessionHrefConstructor,
+    executeCommandWithResponse,
+    makeQueryString
 }
 
 export default handlerUtils

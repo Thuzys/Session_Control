@@ -46,7 +46,7 @@ class SessionManagement(
         offset: UInt?,
         limit: UInt?,
     ): Collection<Session> =
-        tryCatch("Unable to create a new session due") {
+        tryCatch("Unable to get the sessions due") {
             sessionDataMem.readSessions(
                 gid = gid,
                 date = date,

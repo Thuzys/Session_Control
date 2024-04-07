@@ -2,12 +2,9 @@ package pt.isel.ls.webApi
 
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.toLocalDateTime
-import kotlinx.serialization.Serializable
-import org.http4k.core.Body
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
-import org.http4k.core.with
 import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.services.PlayerServices
 

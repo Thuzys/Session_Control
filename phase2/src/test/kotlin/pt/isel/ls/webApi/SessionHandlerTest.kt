@@ -240,13 +240,13 @@ class SessionHandlerTest {
 
     @Test
     fun `message of getting sessions successfully`() {
-        val sid = "1"
+        val gid = "1"
         val state = "close"
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request =
                 Request(
                     Method.GET,
-                    "$DUMMY_ROUTE?gid=$sid&state=$state&token=${PlayerManagementStunt.playerToken}",
+                    "$DUMMY_ROUTE?gid=$gid&state=$state&token=${PlayerManagementStunt.playerToken}",
                 )
             val response = handler.getSessions(request)
             assertEquals(

@@ -9,21 +9,22 @@ window.addEventListener('hashchange', hashChangeHandler)
 
 function loadHandler(){
 
+    router.addRouteHandler("home", handlers.getHome)
+    router.addRouteHandler("sessionSearch", handlers.searchSessions)
+    router.addDefaultNotFoundRouteHandler(() => window.location.hash = "home")
     router.addRouteHandler("playerHome", handlers.getHome)
     router.addRouteHandler("gameSearch", handlers.searchGames)
     router.addRouteHandler("games", handlers.getGames)
-    // router.addRouteHandler("games/:gid", ...)
+    router.addRouteHandler("games/:gid", handlers.getGameDetails)
     router.addDefaultNotFoundRouteHandler(() => window.location.hash = "playerHome")
 
     hashChangeHandler()
 }
 
 function hashChangeHandler(){
-
     const mainContent = document.getElementById("mainContent")
     const path = getPath()
     const handler = router.getRouteHandler(path)
-    console.log(window.location.hash)
     handler(mainContent)
 }
 

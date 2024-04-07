@@ -6,13 +6,16 @@ import handlerUtils from "./handlerUtils.js";
 const API_BASE_URL = "http://localhost:8080/"
 const PLAYER_ROUTE = "players/player"
 const SESSION_ROUTE = "sessions"
+const SESSION_ID_ROUTE = SESSION_ROUTE + "/session"
 const TOKEN = "e247758f-02b6-4037-bd85-fc245b84d5f2"
+const LIMIT = 10
+
 
 function executeRequest(url, execute){
     fetch(url).then(it => execute(it))
 }
 
-function searchSessions(mainContent) {
+function searchSessions(mainContent, mainHeader) {
     const h1 = handlerUtils.createHeader();
     const formContent = handlerUtils.createFormContent();
     const form = views.form({}, ...formContent);
@@ -20,7 +23,7 @@ function searchSessions(mainContent) {
     form.addEventListener('submit', (e) => handleSearchSessionsSubmit(e, mainContent));
 }
 
-function handleSearchSessionsSubmit(e, mainContent) {
+function handleSearchSessionsSubmit(e, mainContent, mainHeader) {
     e.preventDefault();
     const { value: gid } = document.getElementById('gameId');
     const { value: pid } = document.getElementById('playerId');
@@ -35,30 +38,27 @@ function handleSearchSessionsSubmit(e, mainContent) {
     if (open) params.set('state', 'open');
     if (close) params.set('state', 'close');
 
-    const url = `${API_BASE_URL}${SESSION_ROUTE}?${params}${TOKEN}`;
-    // window.location.hash =
-    getSessions(mainContent, url);
+
+    window.location.hash = `#sessions?${params}&offset=0`;
 }
 
-function getSessions(mainContent, url) {
+function getSessions(mainContent, mainHeader) {
+    const url = `${API_BASE_URL}${SESSION_ROUTE}?${requestUtils.getParams()}&token=${TOKEN}`
     executeRequest(url, response => {
-        if (response.ok){
-            const sessions = response.json()
-            const div = document.createElement("div")
-            const h1 = document.createElement("h1")
-            const text = document.createTextNode("text")
-            h1.appendChild(text)
-            div.appendChild(h1)
-            sessions.forEach(session => {
-                const p = document.createElement("p")
-                const a = document.createElement("a")
-                const aText = document.createTextNode("a")
-                a.appendChild(aText)
-                a.href="#sessions/" + session.number
-                p.appendChild(a)
-                div.appendChild(p)
-            })
-            mainContent.replaceChildren(div)
+        if(handlerUtils.isOkResponse(response)) {
+            response.json().then(sessions => {
+                const div = views.div({},
+                    views.h1({}, "Sessions Found:")
+                );
+                sessions.forEach(session => {
+                    const sessionHref = handlerUtils.sessionHrefConstructor(session)
+                    div.appendChild(views.form({}, ...sessionHref))
+                });
+                mainContent.replaceChildren(div);
+                mainHeader.replaceChildren(menu.get("home"), menu.get("sessionSearch"))
+            });
+        } else {
+            alert("Error fetching data: " + response.statusText);
         }
     })
 }
@@ -78,7 +78,7 @@ function getHome(mainContent, headerContent){
         }
         window.location.hash = `#playerDetails/${pid.value}`
     }
-    headerContent.replaceChildren(menu.get("home"), menu.get("gameSearch"), menu.get("sessionSearch"))
+    headerContent.replaceChildren(menu.get("gameSearch"), menu.get("sessionSearch"))
     mainContent.replaceChildren(h1, form)
 }
 
@@ -114,12 +114,57 @@ function getPlayerDetails(mainContent, mainHeader){
     })
 }
 
+function createSessionDetails(mainContent, mainHeader) {
+    const url = `${API_BASE_URL}${SESSION_ID_ROUTE}?sid=${requestUtils.getQuery()}&token=${TOKEN}`
+    executeRequest(url, response => {
+        if (handlerUtils.isOkResponse(response)) {
+            response.json().then(
+                session => {
+                    const playerList = views.ul();
+                    session.players.forEach(player => {
+                        const playerLi = views.li(
+                            views.a(
+                                {href: `#playerDetails/${player.pid}`},
+                                "Player ID: " + player.pid
+                            )
+                        );
+                        playerList.appendChild(playerLi);
+                    });
+                    mainContent.replaceChildren(
+                        views.div(
+                            {},
+                            views.h3({}, "Session ID: " + session.sid),
+                            views.ul(
+                                views.li("Capacity: " + session.capacity),
+                                views.li(
+                                    views.a(
+                                        {href: `#gameDetails/${session.gid}`},
+                                        "Game ID: " + session.gid
+                                    )
+                                ),
+                                views.li("Date: " + session.date),
+                                views.li("Players:"),
+                                playerList
+                            )
+                        )
+                    )
+                    mainHeader.replaceChildren(menu.get("home"))
+                }
+            )
+        }
+        else {
+            alert("Error fetching data:" + response.statusText)
+        }
+    })
+}
 
 
 export const handlers = {
     getHome,
     searchSessions,
     getPlayerDetails,
+    getSessions,
+    createSessionDetails
 }
 
 export default handlers

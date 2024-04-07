@@ -16,6 +16,7 @@ function findRoute(path) {
         if (routePath.length !== pathParams.length) return false
 
         return routePath.slice(1).every((routePart) => routePart.startsWith(":"))
+            && routePath[0] === pathParams[0]
     })
 }
 

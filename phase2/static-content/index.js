@@ -13,6 +13,8 @@ function loadHandler(){
     router.addRouteHandler("playerHome", handlers.getHome)
     router.addRouteHandler("playerDetails/:pid", handlers.getPlayerDetails)
     router.addRouteHandler("sessionSearch", handlers.searchSessions)
+    router.addRouteHandler("sessions", handlers.getSessions)
+    router.addRouteHandler("sessionDetails/:sid", handlers.createSessionDetails)
     router.addDefaultNotFoundRouteHandler((dummy1, dummy2) => window.location.hash = "home")
 
     hashChangeHandler()

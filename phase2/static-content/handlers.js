@@ -33,7 +33,6 @@ function handleSearchSessionsSubmit(e, mainContent) {
     if (close) params.set('state', 'close');
 
     const url = `${API_BASE_URL}${SESSION_ROUTE}?${params}${TOKEN}`;
-    // window.location.hash =
     getSessions(mainContent, url);
 }
 

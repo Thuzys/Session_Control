@@ -1,5 +1,6 @@
 import router from "./router.js";
 import handlers from "./handlers.js";
+import requestUtils from "./requestUtils.js";
 
 // For more information on ES6 modules, see https://www.javascripttutorial.net/es6/es6-modules/ or
 // https://www.w3schools.com/js/js_modules.asp
@@ -9,20 +10,20 @@ window.addEventListener('hashchange', hashChangeHandler)
 
 function loadHandler(){
 
-    router.addRouteHandler("home", handlers.getHome)
-    router.addRouteHandler("students", handlers.getStudents)
-    router.addRouteHandler("students/10", handlers.getStudent)
+    router.addRouteHandler("playerHome", handlers.getHome)
+    router.addRouteHandler("playerDetails/:pid", handlers.getPlayerDetails)
     router.addRouteHandler("sessionSearch", handlers.searchSessions)
-    router.addDefaultNotFoundRouteHandler(() => window.location.hash = "home")
+    router.addRouteHandler("sessions", handlers.getSessions)
+    router.addRouteHandler("sessionDetails/:sid", handlers.createSessionDetails)
+    router.addDefaultNotFoundRouteHandler((dummy1, dummy2) => window.location.hash = "home")
 
     hashChangeHandler()
 }
 
 function hashChangeHandler(){
-
     const mainContent = document.getElementById("mainContent")
-    const path =  window.location.hash.replace("#", "")
-
+    const mainHeader = document.getElementById("mainHeader")
+    const path =  requestUtils.getPath()
     const handler = router.getRouteHandler(path)
-    handler(mainContent)
+    handler(mainContent, mainHeader)
 }

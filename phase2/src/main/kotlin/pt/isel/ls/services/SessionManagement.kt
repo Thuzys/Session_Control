@@ -46,7 +46,7 @@ class SessionManagement(
         offset: UInt?,
         limit: UInt?,
     ): Collection<Session> =
-        tryCatch("Unable to create a new session due") {
+        tryCatch("Unable to get the sessions due") {
             sessionDataMem.readSessions(
                 gid = gid,
                 date = date,
@@ -73,6 +73,11 @@ class SessionManagement(
         tryCatch("Unable to delete the session due") {
             sessionDataMem.deleteSession(sid = sid)
         }
+
+//    override fun getSessionsByPlayer(pid: UInt): Collection<Int> =
+//        tryCatch("Unable to get the sessions by player due") {
+//            sessionDataMem.getPlayerSessions(pid)
+//        }
 
     override fun removePlayer(
         player: UInt,

@@ -90,4 +90,12 @@ interface SessionStorageInterface {
      * @param sid The unique identifier of the [Session] to be deleted.
      */
     fun deleteSession(sid: UInt)
+
+//    /**
+//     * Gets the sessions of a given player.
+//     *
+//     * @param pid The unique identifier of the player.
+//     * @return A collection of sessions containing the player.
+//     */
+//    fun getPlayerSessions(pid: UInt): Collection<Int>
 }

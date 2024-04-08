@@ -37,6 +37,10 @@ function h2(attributes = {}, ...children) {
     return createElement("h2", attributes, ...children);
 }
 
+function h3(attributes = {}, ...children) {
+    return createElement("h3", attributes, ...children);
+}
+
 function a(attributes = {}, ...children) {
     return createElement("a", attributes, ...children);
 }
@@ -66,8 +70,6 @@ function button(attributes = {}, textContent) {
 }
 
 const views = {
-    createElement,
-    a,
     ul,
     li,
     form,
@@ -78,8 +80,10 @@ const views = {
     p,
     div,
     h1,
-    h2,
     button,
+    a,
+    h2,
+    h3
 }
 
 export default views

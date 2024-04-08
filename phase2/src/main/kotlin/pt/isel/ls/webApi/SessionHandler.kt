@@ -159,4 +159,25 @@ class SessionHandler(
             }
         }
     }
+
+//    override fun getSessionsByPlayer(request: Request): Response {
+//        unauthorizedAccess(request, playerManagement)
+//            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it") }
+//        val pid = request.query("pid")?.toUIntOrNull()
+//        return if (pid == null) {
+//            makeResponse(Status.BAD_REQUEST, "Invalid or Missing Player Identifier.")
+//        } else {
+//            tryResponse(Status.INTERNAL_SERVER_ERROR, "Internal Server Error.") {
+//                val sessions = sessionManagement.getSessionsByPlayer(pid)
+//                return if (sessions.isEmpty()) {
+//                    makeResponse(
+//                        Status.NOT_FOUND,
+//                        "No sessions found for player with ID $pid.",
+//                    )
+//                } else {
+//                    makeResponse(Status.FOUND, Json.encodeToString(sessions))
+//                }
+//            }
+//        }
+//    }
 }

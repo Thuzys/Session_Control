@@ -1,32 +1,178 @@
-import views from './viewsCreators.js'
-import RequestUtils from "./requestUtils.js"
-import handlerUtils from "./handlerUtils.js"
+import menu from "./menuLinks.js";
+import views from './viewsCreators.js';
+import handlerUtils from "./handlerUtils.js";
+import requestUtils from "./requestUtils.js";
 
-const API_BASE_URL = "http://localhost:8080"
+const API_BASE_URL = "http://localhost:8080/"
 const TOKEN = "e247758f-02b6-4037-bd85-fc245b84d5f2"
+const LIMIT = 10
 
-const GAME_ROUTE = "/games"
+const PLAYER_ROUTE = "players/player"
+const SESSION_ROUTE = "sessions"
+const SESSION_ID_ROUTE = SESSION_ROUTE + "/session"
+const GAME_ROUTE = "games"
 const GAME_ID_ROUTE = `${GAME_ROUTE}/game`
 
-function executeCommandWithResponse(url, responseHandler) {
-    fetch(url)
-        .then(response => {
-            if(handlerUtils.isOkResponse(response)) {
-                responseHandler(response)
-            } else {
-                response.text().then(text => alert("Error fetching data: " + text));
+
+function getHome(mainContent, headerContent){
+    const h1 = views.h1({},"Home page")
+    const form = views.form({action: "#playerDetails", method: "get"},
+        views.input({type: "text", id: "pid", maxLength: 10}),
+        views.button({type: "submit"}, "Player Details")
+    )
+    form.onsubmit = (e) => {
+        e.preventDefault()
+        const pid = document.getElementById("pid")
+        if (pid.value === "") {
+            alert("Please enter a player id")
+            return
+        }
+        window.location.hash = `#playerDetails/${pid.value}`
+    }
+    headerContent.replaceChildren(menu.get("gameSearch"), menu.get("sessionSearch"))
+    mainContent.replaceChildren(h1, form)
+}
+
+
+function searchSessions(mainContent, mainHeader) {
+    const h1 = handlerUtils.createHeader("Search Sessions: ");
+    const formContent = handlerUtils.createFormContent();
+    const form = views.form({}, ...formContent);
+    mainContent.replaceChildren(h1, form);
+    mainHeader.replaceChildren(menu.get("home"));
+    form.addEventListener('submit', (e) => handleSearchSessionsSubmit(e));
+}
+
+function handleSearchSessionsSubmit(e) {
+    e.preventDefault();
+    const { value: gid } = document.getElementById('gameId');
+    const { value: pid } = document.getElementById('playerId');
+    const { value: date } = document.getElementById('date');
+    const { checked: open } = document.querySelector('input[name="state"][value="open"]');
+    const { checked: close } = document.querySelector('input[name="state"][value="close"]');
+
+    const params = new URLSearchParams();
+    if (gid) params.set('gid', gid);
+    if (pid) params.set('pid', pid);
+    if (date) params.set('date', date);
+    if (open) params.set('state', 'open');
+    if (close) params.set('state', 'close');
+    params.set('offset', "0");
+
+    window.location.hash = `#sessions?${params}`;
+}
+
+function getSessions(mainContent, mainHeader) {
+    const query = requestUtils.getQuery();
+    const queryString = handlerUtils.makeQueryString(query);
+    const url = `${API_BASE_URL}${SESSION_ROUTE}?${queryString}&token=${TOKEN}`
+    handlerUtils.executeCommandWithResponse(url, response => {
+        response.json().then(sessions => {
+            if (sessions.length === 0) {
+                query.set("offset", 0)
+                window.location.hash = `#sessions?${handlerUtils.makeQueryString(query)}`
+                alert("No sessions found.")
             }
-        })
+            const div = views.div({},
+                views.h1({}, "Sessions Found:")
+            );
+            sessions.forEach(session => {
+                const sessionHref = handlerUtils.sessionHrefConstructor(session)
+                div.appendChild(views.form({}, ...sessionHref))
+            });
+            const prevButton = views.button({id: "prev", type: "button"}, "Previous")
+            prevButton.addEventListener('click', () => {
+                if (query.get("offset") > 0) {
+                    query.set("offset", query.get("offset") - LIMIT)
+                    window.location.hash = `#sessions?${handlerUtils.makeQueryString(query)}`
+                }
+            });
+            const nextButton = views.button({id: "next", type: "button"}, "Next")
+            nextButton.addEventListener('click', () => {
+                query.set("offset", query.get("offset") + LIMIT)
+                window.location.hash = `#sessions?${handlerUtils.makeQueryString(query)}`
+            });
+            const nextPrev = views.div(
+                {},
+                prevButton,
+                nextButton,
+            );
+            mainContent.replaceChildren(div, nextPrev);
+            mainHeader.replaceChildren(menu.get("home"), menu.get("sessionSearch"))
+        });
+    })
 }
 
-function getHome(mainContent) {
-    const h1 = document.createElement("h1")
-    const text = document.createTextNode("Home")
-    h1.appendChild(text)
-    mainContent.replaceChildren(h1)
+function getPlayerDetails(mainContent, mainHeader){
+    const url = `${API_BASE_URL}${PLAYER_ROUTE}?pid=${requestUtils.getParams()}&token=${TOKEN}`
+    handlerUtils.executeCommandWithResponse(url, response => {
+        response.json().then(
+            player => {
+                const h2 = views.h2(
+                    {},
+                    "Player Details"
+                )
+                const ul = views.ul(
+                    views.li("Name: " + player.name),
+                    views.li("Email: " + player.email.email),
+                    views.li("Pid: " + player.pid),
+                )
+                mainContent.replaceChildren(
+                    views.div(
+                        {},
+                        h2,
+                        ul
+                    )
+                )
+                mainHeader.replaceChildren(menu.get("home"), menu.get("sessionSearch"))
+            }
+        )
+    })
 }
 
-function gameSearchHandler(mainContent) {
+function createSessionDetails(mainContent, mainHeader) {
+    const url = `${API_BASE_URL}${SESSION_ID_ROUTE}?sid=${requestUtils.getParams()}&token=${TOKEN}`
+    handlerUtils.executeCommandWithResponse(url, response => {
+        response.json().then(
+            session => {
+                const playerList = views.ul();
+                if (session.players){
+                    session.players.forEach(player => {
+                        const playerLi = views.li(
+                            views.a(
+                                {href: `#playerDetails/${player.pid}`},
+                                "Player ID: " + player.pid
+                            )
+                        );
+                        playerList.appendChild(playerLi);
+                    });
+                }
+                mainContent.replaceChildren(
+                    views.div(
+                        {},
+                        views.h3({}, "Session ID: " + session.sid),
+                        views.ul(
+                            views.li("Capacity: " + session.capacity),
+                            views.li(
+                                views.a(
+                                    {href: `#gameDetails/${session.gid}`},
+                                    "Game ID: " + session.gid
+                                )
+                            ),
+                            views.li("Date: " + session.date),
+                            views.li("Players:"),
+                            playerList
+                        )
+                    )
+                )
+                mainHeader.replaceChildren(menu.get("home"))
+            }
+        )
+    })
+}
+
+function gameSearchHandler(mainContent, mainHeader) {
+    const header = handlerUtils.createHeader("Search Games by developer and/or Genre(s): ")
     const inputDev =
         views.input({
             id: "InputDev",
@@ -37,14 +183,14 @@ function gameSearchHandler(mainContent) {
         views.input({
             id: "InputGenres",
             type: "text",
-            placeholder: "Insert Genre(s) separated by comma and no spaces"
+            placeholder: "Insert Genre(s)"
         })
     const searchButton = views.button({
         id: "SearchGamesButton",
         type: "submit",
     }, "Search")
 
-    handlerUtils.updateSearchButton(
+    handlerUtils.updateGameSearchButton(
         searchButton,
         inputDev,
         inputGenres
@@ -67,40 +213,45 @@ function gameSearchHandler(mainContent) {
         window.location.hash = `${hash}${params.toString()}`
     }
 
-    mainContent.replaceChildren(form)
+    mainHeader.replaceChildren(menu.get("home"))
+    mainContent.replaceChildren(header, form)
 }
 
-function getGamesHandler(mainContent) {
-    const url = `${API_BASE_URL}${GAME_ROUTE}?${RequestUtils.getQuery()}&token=${TOKEN}`;
+function getGamesHandler(mainContent, mainHeader) {
+    const query = handlerUtils.makeQueryString(requestUtils.getQuery())
+    const url = `${API_BASE_URL}${GAME_ROUTE}?${query}&token=${TOKEN}`
 
-    executeCommandWithResponse(url, response => {
+    handlerUtils.executeCommandWithResponse(url, response => {
         response.json().then(games => {
-            const gameList = views.ul();
-
+            const header = handlerUtils.createHeader("Games: ");
+            const gameList = views.ul()
             games.forEach(game => {
-                const button = views.button({}, "View Details")
-                button.addEventListener("click", () => { handlerUtils.changeHash(`games/${game.gid}`) })
-
-                gameList.appendChild(
-                    views.li(
-                        views.h2({}, game.name),
-                        button
+                    gameList.appendChild(
+                        views.li(
+                            views.h2({}, game.name),
+                            handlerUtils.createEventHandlerButton(
+                                {},
+                                "View Details",
+                                () => handlerUtils.changeHash(`#games/${game.gid}`)
+                            )
+                        )
                     )
-                )
-            })
-
-            mainContent.replaceChildren(gameList);
+                }
+            )
+            mainContent.replaceChildren(header, gameList)
         })
     })
+
+    mainHeader.replaceChildren(menu.get("home"), menu.get("gameSearch")) // Será que posso voltar para o gameSearch?
 }
 
-function getGameDetailsHandler(mainContent){
-    const pathParams = RequestUtils.getPathParams();
-    const gameId = pathParams[0];
+function getGameDetailsHandler(mainContent, mainHeader){
+    const gameId = requestUtils.getParams()
     const url = `${API_BASE_URL}${GAME_ID_ROUTE}?gid=${gameId}&token=${TOKEN}`;
 
-    executeCommandWithResponse(url, response => {
+    handlerUtils.executeCommandWithResponse(url, response => {
         response.json().then(game => {
+            const header = handlerUtils.createHeader("Game Details: ");
             const div = views.div(
                 {},
                 views.h1({}, `${game.name}`),
@@ -108,16 +259,22 @@ function getGameDetailsHandler(mainContent){
                 views.p({}, `Genres: ${game.genres.join(",")}`)
             )
 
-            mainContent.replaceChildren(div);
+            mainContent.replaceChildren(header, div);
         })
     })
+
+    mainHeader.replaceChildren(menu.get("home"), menu.get("sessionSearch")) // ?? não deveria ir para as sessions do game especifico?
 }
 
 export const handlers = {
     getHome,
     gameSearchHandler,
     getGamesHandler,
-    getGameDetailsHandler
+    getGameDetailsHandler,
+    searchSessions,
+    getPlayerDetails,
+    getSessions,
+    createSessionDetails
 }
 
 export default handlers

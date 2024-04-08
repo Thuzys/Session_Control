@@ -8,18 +8,24 @@ const updateButtonState = (searchButton, inputDev, inputGenres) => {
     searchButton.disabled = !inputDev.value.trim() && !inputGenres.value.trim()
 }
 
-function updateSearchButton(searchButton, inputDev, inputGenres) {
+function updateGameSearchButton(searchButton, inputDev, inputGenres) {
     const update = () => updateButtonState(searchButton, inputDev, inputGenres)
     inputDev.addEventListener("input", update)
     inputGenres.addEventListener("input", update)
 }
 
-function isOkResponse(response) {
+function createEventHandlerButton(attributes, textContent, handler) {
+    const button = views.button(attributes, textContent)
+    button.addEventListener("click", handler)
+    return button
+}
+
+function isResponseOK(response) {
     return response.status >= 200 && response.status < 399
 }
 
-function createHeader() {
-    return views.h1({}, "Search Sessions: ");
+function createHeader(text) {
+    return views.h1({}, text);
 }
 
 function createStateInputs() {
@@ -58,6 +64,21 @@ function createFormContent() {
     ];
 }
 
+function createLabeledInput2(labelText, inputType, inputId, attributes = {}) {
+    return [
+        views.label({ qualifiedName: "for", value: inputId }, labelText),
+        views.input({ type: inputType, id: inputId, ...attributes }),
+        views.p()
+    ];
+}
+
+function createFormContent2(inputs, buttonAttributes = { type: "submit" }) {
+    const formContent = inputs.map(input => createLabeledInput(input.labelText, input.inputType, input.inputId, input.attributes));
+    formContent.push(views.p());
+    formContent.push(views.button(buttonAttributes, "Search"));
+    return formContent;
+}
+
 function sessionHrefConstructor(session) {
     return [
         views.a({href: `#sessionDetails/${session.sid}`}, "Session" + session.sid),
@@ -65,15 +86,38 @@ function sessionHrefConstructor(session) {
         ]
 }
 
+function executeCommandWithResponse(url, responseHandler) {
+    fetch(url)
+        .then(response => {
+            if(isResponseOK(response)) {
+                responseHandler(response);
+            } else {
+                response.text().then(text => alert("Error fetching data: " + text));
+            }
+        })
+}
+
+function makeQueryString(query) {
+    const queryString = new URLSearchParams();
+    for (const [key, value] of query) {
+        queryString.set(key, value);
+    }
+    return queryString;
+}
+
 const handlerUtils = {
+    createLabeledInput2,
+    createFormContent2,
+    sessionHrefConstructor,
+    createEventHandlerButton,
     changeHash,
-    updateSearchButton,
-    isOkResponse,
+    updateGameSearchButton,
     createStateInputs,
     createHeader,
     createLabeledInput,
     createFormContent,
-    sessionHrefConstructor
+    executeCommandWithResponse,
+    makeQueryString
 }
 
 export default handlerUtils

@@ -1,4 +1,7 @@
 import views from "./viewsCreators.js";
+import requestUtils from "./requestUtils.js";
+
+const LIMIT = 10;
 
 function changeHash(hash) {
     window.location.hash = hash;
@@ -14,18 +17,21 @@ function updateGameSearchButton(searchButton, inputDev, inputGenres) {
     inputGenres.addEventListener("input", update)
 }
 
-function createEventHandlerButton(attributes, textContent, handler) {
-    const button = views.button(attributes, textContent)
-    button.addEventListener("click", handler)
-    return button
-}
-
 function isResponseOK(response) {
     return response.status >= 200 && response.status < 399
 }
 
 function createHeader(text) {
     return views.h1({}, text);
+}
+
+function createHomeView() {
+    const h1 = views.h1({}, "Home page");
+    const form = views.form({action: "#playerDetails", method: "get"},
+        views.input({type: "text", id: "pid", maxLength: 10}),
+        views.button({type: "submit"}, "Player Details")
+    );
+    return [h1, form];
 }
 
 function createStateInputs() {
@@ -64,21 +70,6 @@ function createFormContent() {
     ];
 }
 
-function createLabeledInput2(labelText, inputType, inputId, attributes = {}) {
-    return [
-        views.label({ qualifiedName: "for", value: inputId }, labelText),
-        views.input({ type: inputType, id: inputId, ...attributes }),
-        views.p()
-    ];
-}
-
-function createFormContent2(inputs, buttonAttributes = { type: "submit" }) {
-    const formContent = inputs.map(input => createLabeledInput(input.labelText, input.inputType, input.inputId, input.attributes));
-    formContent.push(views.p());
-    formContent.push(views.button(buttonAttributes, "Search"));
-    return formContent;
-}
-
 function sessionHrefConstructor(session) {
     return [
         views.a({href: `#sessionDetails/${session.sid}`}, "Session" + session.sid),
@@ -105,11 +96,125 @@ function makeQueryString(query) {
     return queryString;
 }
 
+function createPlayerListView(session) {
+    const playerList = views.ul();
+    if (session.players){
+        session.players.forEach(player => {
+            const playerLi = views.li(
+                views.a(
+                    {href: `#playerDetails/${player.pid}`},
+                    "Player ID: " + player.pid
+                )
+            );
+            playerList.appendChild(playerLi);
+        });
+    }
+    return playerList;
+}
+
+function createSessionDetailsViews(session, playerList) {
+    const backButton = createBackButtonView();
+    return views.div(
+        {},
+        views.h3({}, "Session ID: " + session.sid),
+        views.ul(
+            views.li("Capacity: " + session.capacity),
+            views.li(
+                views.a(
+                    {href: `#gameDetails/${session.gid}`},
+                    "Game ID: " + session.gid
+                )
+            ),
+            views.li("Date: " + session.date),
+            views.li("Players:"),
+            playerList
+        ),
+        backButton
+    );
+}
+
+function createBackButtonView() {
+    const backButton = views.button({type: "button"}, "Back");
+    backButton.addEventListener('click', () => {
+        window.history.back();
+    });
+    return backButton;
+}
+
+function createPagination(query, hash, hasNext) {
+    const prevButton = views.button({id: "prev", type: "button"}, "Previous")
+    prevButton.addEventListener('click', () => {
+        if (query.get("offset") > 0) {
+            query.set("offset", query.get("offset") - LIMIT)
+            window.location.hash = `${hash}?${handlerUtils.makeQueryString(query)}`
+        }
+    })
+
+    const nextButton = views.button({id: "next", type: "button", enabled: hasNext}, "Next")
+    nextButton.addEventListener('click', () => {
+        if (hasNext) {
+            query.set("offset", query.get("offset") + LIMIT)
+            window.location.hash = `${hash}?${handlerUtils.makeQueryString(query)}`
+        }
+        nextButton.disabled = true;
+    })
+
+    return views.div(
+        {},
+        prevButton,
+        nextButton,
+    )
+}
+
+function createGetSessionsView(sessions) {
+    const query = requestUtils.getQuery();
+    const div = views.div({},
+        views.h1({}, "Sessions Found:")
+    );
+    sessions.forEach(session => {
+        const sessionHref = handlerUtils.sessionHrefConstructor(session)
+        div.appendChild(views.form({}, ...sessionHref))
+    });
+    const prevButton = views.button({id: "prev", type: "button"}, "Previous")
+    prevButton.addEventListener('click', () => {
+        if (query.get("offset") > 0) {
+            query.set("offset", query.get("offset") - LIMIT)
+            window.location.hash = `#sessions?${handlerUtils.makeQueryString(query)}`
+        }
+    });
+    const hasNext = sessions.length === LIMIT;
+    const nextButton = views.button({id: "next", type: "button", enabled: hasNext}, "Next")
+    nextButton.addEventListener('click', () => {
+        if (hasNext) {
+            query.set("offset", query.get("offset") + LIMIT)
+            window.location.hash = `#sessions?${handlerUtils.makeQueryString(query)}`
+        }
+        nextButton.disabled = true;
+    });
+
+    const nextPrev = views.div(
+        {},
+        prevButton,
+        nextButton,
+    );
+    return [div, nextPrev];
+}
+
+function createPlayerDetailsView(player) {
+    const h2 = views.h2({}, "Player Details");
+    const playerDetailsView = views.ul(
+        views.li("Name: " + player.name),
+        views.li("Email: " + player.email.email),
+        views.li("Pid: " + player.pid),
+    );
+    const backButtonView = createBackButtonView();
+    return views.div({}, h2, playerDetailsView, backButtonView);
+}
+
 const handlerUtils = {
-    createLabeledInput2,
-    createFormContent2,
+    createBackButtonView,
+    createPagination,
     sessionHrefConstructor,
-    createEventHandlerButton,
     changeHash,
     updateGameSearchButton,
     createStateInputs,
@@ -117,7 +222,12 @@ const handlerUtils = {
     createLabeledInput,
     createFormContent,
     executeCommandWithResponse,
-    makeQueryString
+    makeQueryString,
+    createPlayerListView,
+    createSessionDetailsViews,
+    createGetSessionsView,
+    createPlayerDetailsView,
+    createHomeView,
 }
 
 export default handlerUtils

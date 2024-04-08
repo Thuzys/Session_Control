@@ -1,5 +1,9 @@
 import views from "./viewsCreators.js";
 
+function isOkResponse(response) {
+    return response.status >= 200 && response.status < 399
+}
+
 function createHeader() {
     return views.h1({}, "Search Sessions: ");
 }
@@ -40,39 +44,19 @@ function createFormContent() {
     ];
 }
 
-function createSessionDetails(session) {
-    const playerList = views.ul();
-
-    session.players.forEach(player => {
-        const playerLi = views.li("Player ID: " + player.pid);
-        playerList.appendChild(playerLi);
-    });
-
-    return views.div({},
-        views.h3({}, "Session ID: " + session.sid),
-        views.ul(
-            views.li("Capacity: " + session.capacity),
-            views.li("Group ID: " + session.gid),
-            views.li("Date: " + session.date),
-            views.li("Players:"),
-            playerList
-        )
-    );
-}
-
 function sessionHrefConstructor(session) {
     return [
-        views.a({href: "#"}, "Session" + session.sid),
+        views.a({href: `#sessionDetails/${session.sid}`}, "Session" + session.sid),
         views.p()
         ]
 }
 
 const handlerUtils = {
+    isOkResponse,
     createStateInputs,
     createHeader,
     createLabeledInput,
     createFormContent,
-    createSessionDetails,
     sessionHrefConstructor
 }
 

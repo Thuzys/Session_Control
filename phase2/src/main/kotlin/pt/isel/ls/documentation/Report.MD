@@ -104,7 +104,7 @@ The physical model of the database is available in [SQL script](../../../../../s
 ### Request Processing
 
 #### 1. Client Request
-- A client initiates a request by sending an HTTP request to the server, containing relevant headers,
+- A client initiates a request by sending an HTTP request to the server, containing relevant headersBuilder,
 parameters, and possibly a request body.
 
 #### 2. Routing
@@ -128,7 +128,7 @@ and the objective of the requested application.
 
 #### 6. Response Generation
 - Based on the outcome of program execution, an appropriate response is
-generated. Responses include an HTTP status code, response headers, and
+generated. Responses include an HTTP status code, response headersBuilder, and
 possibly a response body containing data or error messages.
 
 ---

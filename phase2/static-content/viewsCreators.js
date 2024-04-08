@@ -81,9 +81,9 @@ const views = {
     div,
     h1,
     button,
+    a,
     h2,
-    h3,
-    a
+    h3
 }
 
 export default views

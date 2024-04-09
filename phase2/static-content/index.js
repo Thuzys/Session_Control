@@ -1,5 +1,6 @@
 import router from "./router.js";
 import handlers from "./handlers.js";
+import RequestUtils from "./requestUtils.js";
 import requestUtils from "./requestUtils.js";
 
 // For more information on ES6 modules, see https://www.javascripttutorial.net/es6/es6-modules/ or
@@ -10,6 +11,13 @@ window.addEventListener('hashchange', hashChangeHandler)
 
 function loadHandler(){
 
+    router.addRouteHandler("home", handlers.getHome)
+    router.addDefaultNotFoundRouteHandler(() => window.location.hash = "home")
+    router.addRouteHandler("playerHome", handlers.getHome)
+    router.addRouteHandler("gameSearch", handlers.searchGames)
+    router.addRouteHandler("games", handlers.getGames)
+    router.addRouteHandler("games/:gid", handlers.getGameDetails)
+    router.addDefaultNotFoundRouteHandler(() => window.location.hash = "playerHome")
     router.addRouteHandler("playerHome", handlers.getHome)
     router.addRouteHandler("playerDetails/:pid", handlers.getPlayerDetails)
     router.addRouteHandler("sessionSearch", handlers.searchSessions)

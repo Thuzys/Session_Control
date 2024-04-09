@@ -3,12 +3,26 @@ import requestUtils from "./requestUtils.js";
 
 const LIMIT = 10;
 
-function isOkResponse(response) {
+function changeHash(hash) {
+    window.location.hash = hash;
+}
+
+const updateButtonState = (searchButton, inputDev, inputGenres) => {
+    searchButton.disabled = !inputDev.value.trim() && !inputGenres.value.trim()
+}
+
+function updateGameSearchButton(searchButton, inputDev, inputGenres) {
+    const update = () => updateButtonState(searchButton, inputDev, inputGenres)
+    inputDev.addEventListener("input", update)
+    inputGenres.addEventListener("input", update)
+}
+
+function isResponseOK(response) {
     return response.status >= 200 && response.status < 399
 }
 
-function createHeader() {
-    return views.h1({}, "Search Sessions: ");
+function createHeader(text) {
+    return views.h1({}, text);
 }
 
 function createHomeView() {
@@ -66,7 +80,7 @@ function sessionHrefConstructor(session) {
 function executeCommandWithResponse(url, responseHandler) {
     fetch(url)
         .then(response => {
-            if(isOkResponse(response)) {
+            if(isResponseOK(response)) {
                 responseHandler(response);
             } else {
                 response.text().then(text => alert("Error fetching data: " + text));
@@ -127,8 +141,33 @@ function createBackButtonView() {
     return backButton;
 }
 
+function createPagination(query, hash, hasNext) {
+    const prevButton = views.button({id: "prev", type: "button"}, "Previous")
+    prevButton.addEventListener('click', () => {
+        if (query.get("offset") > 0) {
+            query.set("offset", query.get("offset") - LIMIT)
+            window.location.hash = `${hash}?${handlerUtils.makeQueryString(query)}`
+        }
+    })
+
+    const nextButton = views.button({id: "next", type: "button", enabled: hasNext}, "Next")
+    nextButton.addEventListener('click', () => {
+        if (hasNext) {
+            query.set("offset", query.get("offset") + LIMIT)
+            window.location.hash = `${hash}?${handlerUtils.makeQueryString(query)}`
+        }
+        nextButton.disabled = true;
+    })
+
+    return views.div(
+        {},
+        prevButton,
+        nextButton,
+    )
+}
+
 function createGetSessionsView(sessions) {
-const query = requestUtils.getQuery();
+    const query = requestUtils.getQuery();
     const div = views.div({},
         views.h1({}, "Sessions Found:")
     );
@@ -173,11 +212,15 @@ function createPlayerDetailsView(player) {
 }
 
 const handlerUtils = {
+    createBackButtonView,
+    createPagination,
+    sessionHrefConstructor,
+    changeHash,
+    updateGameSearchButton,
     createStateInputs,
     createHeader,
     createLabeledInput,
     createFormContent,
-    sessionHrefConstructor,
     executeCommandWithResponse,
     makeQueryString,
     createPlayerListView,

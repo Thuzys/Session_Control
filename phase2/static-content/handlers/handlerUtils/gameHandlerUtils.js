@@ -1,10 +1,11 @@
-import handlerUtils from "./handlerUtils";
-import views from "./viewsCreators";
-import requestUtils from "./requestUtils";
-import constants from "./constants";
+import handlerUtils from "./handlerUtils.js";
+import views from "../../views/viewsCreators.js";
+import requestUtils from "../../utils/requestUtils.js";
+import constants from "../../constants/constants.js";
+import handlerViews from "../../views/handlerViews/handlerViews.js";
 
 function createSearchGamesView() {
-    const header = handlerUtils.createHeader("Search Games by developer and/or Genre(s): ")
+    const header = handlerViews.createHeader("Search Games by developer and/or Genre(s): ")
     const inputDev =
         views.input({
             id: "InputDev",
@@ -68,7 +69,7 @@ function handleGetGamesResponse(response, mainContent) {
  * @returns {any[]}
  */
 function createGetGameView(games) {
-    const header = handlerUtils.createHeader("Games: ")
+    const header = handlerViews.createHeader("Games: ")
     const gameList = views.ul()
     games.forEach(game => {
             gameList.appendChild(
@@ -82,7 +83,7 @@ function createGetGameView(games) {
         }
     )
 
-    const pagination = handlerUtils.createPagination(
+    const pagination = handlerViews.createPagination(
         requestUtils.getQuery(),
         "games",
         games.length === constants.LIMIT
@@ -111,13 +112,13 @@ function handleGetGameDetailsResponse(response, mainContent) {
  * @returns {any[]}
  */
 function createGameDetailsView(game) {
-    const header = handlerUtils.createHeader("Game Details: ")
+    const header = handlerViews.createHeader("Game Details: ")
     const div = views.div(
         {},
         views.h2({}, `${game.name}`),
         views.p({}, `Developer: ${game.dev}`),
         views.p({}, `Genres: ${game.genres.join(",")}`),
-        handlerUtils.createBackButtonView()
+        handlerViews.createBackButtonView()
     )
     return [header, div]
 }

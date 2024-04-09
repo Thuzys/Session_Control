@@ -1,9 +1,9 @@
-import gameHandlerUtils from "./gameHandlerUtils.js";
-import handlerUtils from "./handlerUtils.js";
-import views from "./viewsCreators";
-import menu from "./menuLinks";
-import requestUtils from "./requestUtils";
-import constants from "./constants.js"
+import gameHandlerUtils from "./handlerUtils/gameHandlerUtils.js";
+import handlerUtils from "./handlerUtils/handlerUtils.js";
+import views from "../views/viewsCreators.js";
+import menu from "../navigation/menuLinks.js";
+import requestUtils from "../utils/requestUtils.js";
+import constants from "../constants/constants.js"
 
 /**
  * Search games by developer and/or genre(s)

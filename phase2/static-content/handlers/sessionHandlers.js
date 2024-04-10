@@ -1,40 +1,31 @@
-import menu from "./menuLinks.js";
-import requestUtils from "./requestUtils.js";
-import views from './viewsCreators.js';
-import handlerUtils from "./handlerUtils.js";
+import handlerUtils from "./handlerUtils/handlerUtils.js";
+import views from "../views/viewsCreators.js";
+import menu from "../navigation/menuLinks.js";
+import requestUtils from "../utils/requestUtils.js";
+import constants from "../constants/constants.js";
+import sessionHandlerViews from "../views/handlerViews/sessionHandlerViews.js";
+import handlerViews from "../views/handlerViews/handlerViews.js";
 
-const API_BASE_URL = "http://localhost:8080/"
-const PLAYER_ROUTE = "players/player"
-const SESSION_ROUTE = "sessions"
-const SESSION_ID_ROUTE = SESSION_ROUTE + "/session"
-const TOKEN = "e247758f-02b6-4037-bd85-fc245b84d5f2"
-
-function getHome(mainContent, headerContent) {
-    const [h1, form] = handlerUtils.createHomeView();
-    form.onsubmit = (e) => handleHomeSubmit(e);
-    headerContent.replaceChildren(menu.get("gameSearch"), menu.get("sessionSearch"));
-    mainContent.replaceChildren(h1, form);
-}
-
-function handleHomeSubmit(e) {
-    e.preventDefault();
-    const pid = document.getElementById("pid");
-    if (pid.value === "") {
-        alert("Please enter a player id");
-        return;
-    }
-    window.location.hash = `#playerDetails/${pid.value}`;
-}
-
+/**
+ * Search sessions by game id, player id, date and state
+ *
+ * @param mainContent main content of the page
+ * @param mainHeader main header of the page
+ */
 function searchSessions(mainContent, mainHeader) {
-    const h1 = handlerUtils.createHeader();
-    const formContent = handlerUtils.createFormContent();
+    const h1 = handlerViews.createHeader("Search Sessions: ");
+    const formContent = sessionHandlerViews.createSessionFormContentView();
     const form = views.form({}, ...formContent);
     mainContent.replaceChildren(h1, form);
     mainHeader.replaceChildren(menu.get("home"));
     form.addEventListener('submit', (e) => handleSearchSessionsSubmit(e));
 }
 
+/**
+ * Handle search sessions submit event
+ *
+ * @param e event that triggered submit
+ */
 function handleSearchSessionsSubmit(e) {
     e.preventDefault();
     const { value: gid } = document.getElementById('gameId');
@@ -54,13 +45,26 @@ function handleSearchSessionsSubmit(e) {
     window.location.hash = `#sessions?${params}`;
 }
 
+/**
+ * Get sessions by query parameters and display them in the main content area of the page
+ *
+ * @param mainContent main content of the page
+ * @param mainHeader main header of the page
+ */
 function getSessions(mainContent, mainHeader) {
     const query = requestUtils.getQuery();
     const queryString = handlerUtils.makeQueryString(query);
-    const url = `${API_BASE_URL}${SESSION_ROUTE}?${queryString}&token=${TOKEN}`;
+    const url = `${constants.API_BASE_URL}${constants.SESSION_ROUTE}?${queryString}&token=${constants.TOKEN}`;
     handlerUtils.executeCommandWithResponse(url, response => handleGetSessionsResponse(response, mainContent, mainHeader));
 }
 
+/**
+ * Handle get sessions response from the server
+ *
+ * @param response response from the server
+ * @param mainContent main content of the page
+ * @param mainHeader main header of the page
+ */
 function handleGetSessionsResponse(response, mainContent, mainHeader) {
     response.json().then(sessions => {
         if (sessions.length === 0) {
@@ -68,47 +72,43 @@ function handleGetSessionsResponse(response, mainContent, mainHeader) {
             window.location.hash = `#sessions?${handlerUtils.makeQueryString(query)}`
             alert("No sessions found.")
         }
-        const [sessionsView, nextPrevView] = handlerUtils.createGetSessionsView(sessions);
+        const [sessionsView, nextPrevView] = sessionHandlerViews.createGetSessionsView(sessions);
         mainContent.replaceChildren(sessionsView, nextPrevView);
         mainHeader.replaceChildren(menu.get("home"), menu.get("sessionSearch"))
     });
 }
 
+/**
+ * Get session details by session id and display them in the main content area of the page
+ *
+ * @param mainContent
+ * @param mainHeader
+ */
 function getSessionDetails(mainContent, mainHeader) {
-    const url = `${API_BASE_URL}${SESSION_ID_ROUTE}?sid=${requestUtils.getParams()}&token=${TOKEN}`;
+    const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}?sid=${requestUtils.getParams()}&token=${constants.TOKEN}`;
     handlerUtils.executeCommandWithResponse(url, response => handleGetSessionDetailsResponse(response, mainContent, mainHeader));
 }
 
+/**
+ * Handle get session details response from the server
+ *
+ * @param response response from the server
+ * @param mainContent main content of the page
+ * @param mainHeader main header of the page
+ */
 function handleGetSessionDetailsResponse(response, mainContent, mainHeader) {
     response.json().then(
         session => {
-            const playerListView = handlerUtils.createPlayerListView(session);
-            const sessionDetailsView = handlerUtils.createSessionDetailsViews(session, playerListView);
+            const playerListView = sessionHandlerViews.createPlayerListView(session);
+            const sessionDetailsView = sessionHandlerViews.createSessionDetailsViews(session, playerListView);
             mainContent.replaceChildren(sessionDetailsView);
             mainHeader.replaceChildren(menu.get("home"));
         }
     );
 }
 
-function getPlayerDetails(mainContent, mainHeader) {
-    const url = `${API_BASE_URL}${PLAYER_ROUTE}?pid=${requestUtils.getParams()}&token=${TOKEN}`;
-    handlerUtils.executeCommandWithResponse(url, response => handleGetPlayerDetailsResponse(response, mainContent, mainHeader));
-}
-
-function handleGetPlayerDetailsResponse(response, mainContent, mainHeader) {
-    response.json().then(player => {
-        const playerDetailsView = handlerUtils.createPlayerDetailsView(player);
-        mainContent.replaceChildren(playerDetailsView);
-        mainHeader.replaceChildren(menu.get("home"), menu.get("sessionSearch"));
-    });
-}
-
-export const handlers = {
-    getHome,
+export default {
     searchSessions,
-    getPlayerDetails,
     getSessions,
-    getSessionDetails
-}
-
-export default handlers
+    getSessionDetails,
+};

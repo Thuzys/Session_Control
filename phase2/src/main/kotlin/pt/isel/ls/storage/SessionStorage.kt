@@ -64,7 +64,7 @@ class SessionStorage(envName: String) : SessionStorageInterface {
                 val selectSessionCMD =
                     "SELECT s.sid, s.capacity, s.gid, s.date\n" +
                         "FROM session s\n" +
-                        "         INNER JOIN player_session ps ON ps.sid = s.sid\n" +
+                        "   LEFT JOIN player_session ps ON ps.sid = s.sid\n" +
                         "WHERE (s.gid = ? OR ? = 0)\n" +
                         "  AND (s.date = ? OR ? = 'null')\n" +
                         "  AND (ps.pid = ? OR ? = 0)\n" +

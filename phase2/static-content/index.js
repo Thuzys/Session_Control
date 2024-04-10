@@ -10,7 +10,6 @@ window.addEventListener('hashchange', hashChangeHandler)
 function loadHandler(){
 
     router.addRouteHandler("home", handlers.getHome)
-    router.addDefaultNotFoundRouteHandler(() => window.location.hash = "home")
     router.addRouteHandler("playerHome", handlers.getHome)
     router.addRouteHandler("gameSearch", handlers.searchGames)
     router.addRouteHandler("games", handlers.getGames)

@@ -1,3 +1,8 @@
+function getParams() {
+    const list = window.location.hash.replace("#", "").split("/")
+    return list.length > 1 ? list[1] : ""
+}
+
 function getQuery() {
     const retMap = new Map();
     const list = window.location.hash
@@ -6,14 +11,14 @@ function getQuery() {
         .split("&")
     list.forEach(pair => {
         const [key, value] = pair.split("=")
-        retMap.set(key, value)
+        if (key === 'offset') {
+            retMap.set(key, parseInt(value))
+        }
+        else {
+            retMap.set(key, value)
+        }
     })
     return retMap
-}
-
-function getParams() {
-    const list = window.location.hash.replace("#", "").split("?")
-    return list.length > 1 ? list[1] : ""
 }
 
 function getPath(){
@@ -21,9 +26,9 @@ function getPath(){
 }
 
 const RequestUtils = {
-    getQuery,
+    getParams,
     getPath,
-    getParams
+    getQuery
 }
 
 export default RequestUtils

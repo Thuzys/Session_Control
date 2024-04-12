@@ -58,7 +58,7 @@ function form(attributes = {}, ...children) {
 }
 
 function radioButton(attributes = {}) {
-    return createElement("input", {type: "radio", ...attributes});
+    return createElement("input", {type: "radio", class: "state-button", ...attributes});
 }
 
 function radioButtonLabel(forId, textContent, attributes = {}) {

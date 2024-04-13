@@ -8,7 +8,8 @@ function createHeader(text) {
 
 function createHomeView() {
     const h1 = views.h1({}, "Home page");
-    const form = views.form({action: "#playerDetails", method: "get"},
+    const form =
+        views.form({action: "#playerDetails", method: "get"},
         views.input({type: "text", id: "pid", maxLength: 10}),
         views.button({type: "submit", class: "submit-button"}, "Player Details")
     );

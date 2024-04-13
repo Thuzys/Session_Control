@@ -43,7 +43,7 @@ class SessionStorageStunt : SessionStorageInterface {
     override fun readSession(sid: UInt): Session? = hashSession[sid]
 
     override fun readSessions(
-        gid: UInt,
+        gid: UInt?,
         date: LocalDateTime?,
         state: SessionState?,
         playerId: UInt?,
@@ -51,7 +51,7 @@ class SessionStorageStunt : SessionStorageInterface {
         limit: UInt,
     ): Collection<Session>? =
         hashSession.values.filter { session ->
-            session.gid == gid &&
+            (gid == null || session.gid == gid) &&
                 (date == null || session.date == date) &&
                 (state == null || getSessionState(session) == state) &&
                 (playerId == null || session.players.any { player -> player.pid == playerId })

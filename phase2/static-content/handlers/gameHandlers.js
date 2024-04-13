@@ -4,6 +4,7 @@ import views from "../views/viewsCreators.js";
 import menu from "../navigation/menuLinks.js";
 import requestUtils from "../utils/requestUtils.js";
 import constants from "../constants/constants.js"
+import handlerViews from "../views/handlerViews/handlerViews.js";
 
 /**
  * Search games by developer and/or genre(s)

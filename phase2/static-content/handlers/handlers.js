@@ -164,7 +164,8 @@ function handleGetGameDetailsResponse(response, mainContent) {
             views.h2({}, `${game.name}`),
             views.p({}, `Developer: ${game.dev}`),
             views.p({}, `Genres: ${game.genres.join(",")}`),
-            handlerViews.createBackButtonView()
+            handlerViews.createBackButtonView(),
+            handlerViews.sessionsButtonView("Sessions", `sessions?gid=${game.gid}`)
         )
 
         mainContent.replaceChildren(header, div)

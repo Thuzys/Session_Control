@@ -46,12 +46,12 @@ object SessionManagementStunt : SessionServices {
     }
 
     override fun getSessions(
-        gid: UInt,
+        gid: UInt?,
         date: LocalDateTime?,
         state: SessionState?,
         playerId: UInt?,
         offset: UInt?,
-        limit: UInt?,
+        limit: UInt?
     ): Collection<Session> {
         return when {
             gid == gid1 && state == SessionState.CLOSE ->

@@ -1,4 +1,4 @@
-function createPlayerDetailsView(player, query) {
+function createPlayerDetailsView(player) {
     const h2 = views.h2({}, "Player Details");
     const playerDetailsView = views.ul(
         views.li("Name: " + player.name),

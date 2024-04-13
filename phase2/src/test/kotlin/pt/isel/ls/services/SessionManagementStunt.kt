@@ -46,7 +46,7 @@ object SessionManagementStunt : SessionServices {
     }
 
     override fun getSessions(
-        gid: UInt,
+        gid: UInt?,
         date: LocalDateTime?,
         state: SessionState?,
         playerId: UInt?,
@@ -54,12 +54,17 @@ object SessionManagementStunt : SessionServices {
         limit: UInt?,
     ): Collection<Session> {
         return when {
-            gid == gid1 && state == SessionState.CLOSE ->
+            gid == gid1  && state == SessionState.CLOSE ->
                 listOf(
                     Session(sid1, 1u, gid1, date1, players),
                     Session(sid2, 2u, gid1, date1, players2),
                 )
             gid == gid1 && state == SessionState.OPEN -> listOf(Session(sid2, 2u, gid1, date1, players2))
+            date == date1 && state == SessionState.OPEN ->
+                listOf(
+                    Session(sid1, 1u, gid1, date1, players),
+                    Session(sid2, 2u, gid1, date1, players2),
+                )
             gid == 400u -> emptyList()
             else -> throw ServicesError("There are no Sessions that satisfy the given details")
         }

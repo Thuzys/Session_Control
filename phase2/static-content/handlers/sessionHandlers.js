@@ -37,7 +37,7 @@ function handleSearchSessionsSubmit(e) {
     const params = new URLSearchParams();
     if (gid) params.set('gid', gid);
     if (pid) params.set('pid', pid);
-    if (date) params.set('date', date);
+    if (date) params.set('date', date.replace(':', '_'));
     if (open) params.set('state', 'open');
     if (close) params.set('state', 'close');
     params.set('offset', "0");

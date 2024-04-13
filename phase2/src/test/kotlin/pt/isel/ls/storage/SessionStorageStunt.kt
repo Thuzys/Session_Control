@@ -51,7 +51,7 @@ class SessionStorageStunt : SessionStorageInterface {
         limit: UInt
     ): Collection<Session>? =
         hashSession.values.filter { session ->
-            session.gid == gid &&
+            (gid == null || session.gid == gid) &&
                 (date == null || session.date == date) &&
                 (state == null || getSessionState(session) == state) &&
                 (playerId == null || session.players.any { player -> player.pid == playerId })

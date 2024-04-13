@@ -85,7 +85,7 @@ internal fun makeResponse(
  */
 internal fun dateVerification(date: String?): LocalDateTime? {
     return try {
-        date?.toLocalDateTime()
+        date?.replace('_', ':')?.toLocalDateTime()
     } catch (e: IllegalArgumentException) {
         null
     }

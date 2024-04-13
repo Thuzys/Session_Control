@@ -45,6 +45,7 @@ function searchGames(mainContent, mainHeader) {
     const searchButton = views.button({
         id: "SearchGamesButton",
         type: "submit",
+        class: "submit-button"
     }, "Search")
 
     handlerUtils.updateGameSearchButton(

@@ -287,6 +287,33 @@ INSERT INTO PLAYER_SESSION (pid, sid)
 ```
 ---
 
+---
+- to update a session by capacity or date:
+```sql
+UPDATE SESSION
+   SET
+     capacity = CASE WHEN ? IS NOT NULL THEN ? ELSE capacity END
+     date = CASE WHEN ? IS NOT NULL THEN ? ELSE date END 
+     WHERE sid = ?
+```
+---
+
+---
+- to delete a session:
+```sql
+DELETE FROM SESSION WHERE sid = ?
+```
+
+---
+
+--- 
+- to remove a player from a session:
+```sql
+DELETE FROM PLAYER_SESSION WHERE pid = ? AND sid = ?
+```
+
+---
+
 ## Error Handling
 
 The errors are handled in the services module, where the exceptions are caught,
@@ -304,11 +331,10 @@ the error caught are:
 
 ## Not concluded functionalities and defects
 - the lack of possibility to update a player. (can be used to update the token).
-- the lack of possibility to delete a player, game or session.
+- the lack of possibility to delete a player or game
 - the possibility to filter the players using its email.
 
 ## Improvements to be made:
 - Implement the possibility to update a player.
-- Implement the possibility to delete a player, game or session.
+- Implement the possibility to delete a player or game. 
 - Implement the possibility to filter the players using its email.
-- Implement a graphical interface to make the application more user-friendly.

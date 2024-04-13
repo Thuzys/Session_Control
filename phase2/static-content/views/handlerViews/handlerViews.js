@@ -10,7 +10,7 @@ function createHomeView() {
     const h1 = views.h1({}, "Home page");
     const form = views.form({action: "#playerDetails", method: "get"},
         views.input({type: "text", id: "pid", maxLength: 10}),
-        views.button({type: "submit"}, "Player Details")
+        views.button({type: "submit", class: "submit-button"}, "Player Details")
     );
     return [h1, form];
 }
@@ -25,7 +25,7 @@ function createLabeledInput(labelText, inputType, inputId) {
 
 function hrefConstructor(hrefBase, id, textBase) {
     return [
-        views.a({href: `${hrefBase}/${id}`}, `${textBase} ${id}`),
+        views.a({href: `${hrefBase}/${id}`, class: "hRef"}, `${textBase} ${id}`),
         views.p()
     ]
 }

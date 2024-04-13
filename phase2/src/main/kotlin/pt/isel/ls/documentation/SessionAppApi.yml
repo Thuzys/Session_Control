@@ -350,6 +350,134 @@ paths:
           description: Session not found with the provided session ID.
         '401':
             description: Unauthorized, token invalid.
+    put:
+      summary: Update session capacity or date
+      description: Updates the capacity or date of a session with the provided session ID, capacity, and date.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sid:
+                  type: integer
+                  format: uint
+                  description: The unique identifier of the session
+                capacity:
+                  type: integer
+                  format: uint
+                  description: The new capacity of the session
+                date:
+                  type: string
+                  format: date-time
+                  description: The new date and time of the session
+      parameters:
+        - name: token
+          in: query
+          description: The authentication token
+          schema:
+            type: string
+            format: UUID
+      responses:
+        '200':
+          description: Session updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+        '400':
+          description: Bad Request, invalid or missing parameters.
+        '401':
+          description: Unauthorized, authentication token is missing or invalid.
+        '304':
+          description: Not Modified, error updating session.
+  /sessions/delete/player:
+    post:
+      summary: Remove player from session
+      description: Removes a player from a session with the provided player ID and session ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                player:
+                  type: integer
+                  format: uint
+                  description: The unique identifier of the player
+                session:
+                  type: integer
+                  format: uint
+                  description: The unique identifier of the session
+      parameters:
+        - name: token
+          in: query
+          description: The authentication token
+          schema:
+            type: string
+            format: UUID
+      responses:
+        '200':
+          description: Player removed from session successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+        '400':
+          description: Bad Request, invalid or missing parameters.
+        '401':
+          description: Unauthorized, authentication token is missing or invalid.
+        '304':
+          description: Not Modified, error removing player from session.
+  /sessions/delete:
+    post:
+      summary: Delete session
+      description: Deletes a session with the provided session ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sid:
+                  type: integer
+                  format: uint
+                  description: The unique identifier of the session
+      parameters:
+        - name: token
+          in: query
+          description: The authentication token
+          schema:
+            type: string
+            format: UUID
+      responses:
+        '200':
+          description: Session deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+        '400':
+          description: Bad Request, invalid or missing parameters.
+        '401':
+          description: Unauthorized, authentication token is missing or invalid.
+        '304':
+          description: Not Modified, error deleting session.
 components:
   schemas:
     NewPlayer:

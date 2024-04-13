@@ -21,6 +21,7 @@ function createSearchGamesView() {
     const searchButton = views.button({
         id: "SearchGamesButton",
         type: "submit",
+        class: "submit-button"
     }, "Search")
 
     return [header, inputDev, inputGenres, searchButton]

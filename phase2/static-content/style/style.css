@@ -1,0 +1,29 @@
+body {
+    background-color: #656b77;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+}
+
+#mainHeader {
+    text-align: center;
+    background-color: #535865;
+}
+
+.navigation-bar {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    line-height: 1;
+}
+
+.navigation-bar:hover {
+    background-color: #414552;
+}

@@ -26,9 +26,9 @@ function getPath(){
 }
 
 const RequestUtils = {
-    getParams,
+    getQuery,
     getPath,
-    getQuery
+    getParams
 }
 
 export default RequestUtils

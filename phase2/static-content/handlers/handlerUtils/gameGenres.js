@@ -1,0 +1,27 @@
+const genres = {
+    RPG: "RPG",
+    Adventure: "Adventure",
+    Shooter: "Shooter",
+    TurnBasedStrategy: "Turn-based Strategy",
+    Action: "Action",
+    Platformer: "Platformer",
+    Puzzle: "Puzzle",
+    Simulation: "Simulation",
+    Sports: "Sports",
+    Racing: "Racing",
+    Fighting: "Fighting",
+    Sandbox: "Sandbox",
+    Stealth: "Stealth",
+    Survival: "Survival",
+    Horror: "Horror",
+    OpenWorld: "Open world",
+    TacticalRPG: "Tactical RPG",
+    RTS: "Real-time Strategy",
+    MMO: "MMO",
+    Roguelike: "Roguelike",
+    MOBA: "MOBA",
+    TowerDefense: "Tower Defense",
+    BattleRoyale: "Battle Royale",
+}
+
+export default genres;

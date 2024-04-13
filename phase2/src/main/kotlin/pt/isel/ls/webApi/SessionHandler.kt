@@ -57,22 +57,25 @@ class SessionHandler(
         val gid = request.query("gid")?.toUIntOrNull()
         val date = dateVerification(request.query("date"))
         val state = request.query("state").toSessionState()
-        val playerId = request.query("playerId")?.toUIntOrNull()
+        val playerId = request.query("pid")?.toUIntOrNull()
         val offset = request.query("offset")?.toUIntOrNull()
         val limit = request.query("limit")?.toUIntOrNull()
-        return if (gid == null) {
-            makeResponse(Status.BAD_REQUEST, "Invalid or Missing Game Identifier.")
-        } else {
-            tryResponse(Status.INTERNAL_SERVER_ERROR, "Internal Server Error.") {
-                val sessions = sessionManagement.getSessions(gid, date, state, playerId, offset, limit)
-                return if (sessions.isEmpty()) {
-                    makeResponse(
-                        Status.NOT_FOUND,
-                        "No sessions found with the specified details.",
-                    )
-                } else {
-                    makeResponse(Status.FOUND, Json.encodeToString(sessions))
-                }
+        if (gid == null && date == null && state == null && playerId == null && offset == null && limit == null) {
+            return makeResponse(
+                Status.BAD_REQUEST,
+                "Missing or invalid parameters. Please provide at" +
+                        " least one of the following: 'gid', 'date', 'state', 'pid', 'offset', 'limit'.",
+            )
+        }
+        return tryResponse(Status.INTERNAL_SERVER_ERROR, "Internal Server Error.") {
+            val sessions = sessionManagement.getSessions(gid, date, state, playerId, offset, limit)
+            return if (sessions.isEmpty()) {
+                makeResponse(
+                    Status.NOT_FOUND,
+                    "No sessions found with the specified details.",
+                )
+            } else {
+                makeResponse(Status.FOUND, Json.encodeToString(sessions))
             }
         }
     }

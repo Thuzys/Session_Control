@@ -55,7 +55,7 @@ function createGetSessionsView(sessions) {
         views.h1({}, "Sessions Found:")
     );
     sessions.forEach(session => {
-        const sessionHref = handlerViews.hrefConstructor("#sessionDetails", session.sid, "Session ID:")
+        const sessionHref = handlerViews.hrefConstructor("#sessions", session.sid, "Session ID:")
         div.appendChild(views.form({}, ...sessionHref))
     });
     const nextPrev = handlerViews.createPagination(query, "#sessions", sessions.length === constants.LIMIT);
@@ -67,7 +67,7 @@ export function createPlayerListView(session) {
     if (session.players) {
         session.players.forEach(player => {
             const playerLi = views.li(
-                ...handlerViews.hrefConstructor("#playerDetails", player.pid, "Player ID:")
+                ...handlerViews.hrefConstructor("#players", player.pid, "Player ID:")
             );
             playerList.appendChild(playerLi);
         });

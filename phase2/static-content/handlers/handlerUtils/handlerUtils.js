@@ -1,18 +1,16 @@
-import views from "../../views/viewsCreators.js";
-import handlerViews from "../../views/handlerViews/handlerViews.js";
 function changeHash(hash) {
     window.location.hash = hash;
 }
 
-const updateButtonState = (searchButton, inputDev, inputGenres) => {
-    searchButton.disabled = !inputDev.value.trim() && !inputGenres.value.trim()
-}
+// const updateButtonState = (searchButton, inputDev, inputGenres) => {
+//     searchButton.disabled = !inputDev.value.trim() && !inputGenres.value.trim()
+// }
 
-function updateGameSearchButton(searchButton, inputDev, inputGenres) {
-    const update = () => updateButtonState(searchButton, inputDev, inputGenres)
-    inputDev.addEventListener("input", update)
-    inputGenres.addEventListener("input", update)
-}
+// function updateGameSearchButton(searchButton, inputDev, inputGenres) {
+//     const update = () => updateButtonState(searchButton, inputDev, inputGenres)
+//     inputDev.addEventListener("input", update)
+//     inputGenres.addEventListener("input", update)
+// }
 
 function isResponseOK(response) {
     return response.status >= 200 && response.status < 399
@@ -24,6 +22,7 @@ function executeCommandWithResponse(url, responseHandler) {
             if(isResponseOK(response)) {
                 responseHandler(response);
             } else {
+
                 response.text().then(text => alert("Error fetching data: " + text));
             }
         })
@@ -39,7 +38,6 @@ function makeQueryString(query) {
 
 const handlerUtils = {
     changeHash,
-    updateGameSearchButton,
     executeCommandWithResponse,
     makeQueryString,
 }

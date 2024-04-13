@@ -1,10 +1,8 @@
 import gameHandlerUtils from "./handlerUtils/gameHandlerUtils.js";
 import handlerUtils from "./handlerUtils/handlerUtils.js";
-import views from "../views/viewsCreators.js";
 import menu from "../navigation/menuLinks.js";
 import requestUtils from "../utils/requestUtils.js";
 import constants from "../constants/constants.js"
-import handlerViews from "../views/handlerViews/handlerViews.js";
 
 /**
  * Search games by developer and/or genre(s)
@@ -13,25 +11,8 @@ import handlerViews from "../views/handlerViews/handlerViews.js";
  * @param mainHeader
  */
 function searchGames(mainContent, mainHeader) {
-    const [
-        header,
-        inputDev,
-        inputGenres,
-        searchButton
-    ] = gameHandlerUtils.createSearchGamesView()
 
-    handlerUtils.updateGameSearchButton(
-        searchButton,
-        inputDev,
-        inputGenres
-    )
-
-    const form = views.form(
-        {},
-        inputDev,
-        inputGenres,
-        searchButton,
-    )
+    const [header, form] = gameHandlerUtils.createSearchGamesView()
 
     form.onsubmit = (e) => gameHandlerUtils.handleSearchGamesSubmit(e)
 
@@ -47,7 +28,6 @@ function searchGames(mainContent, mainHeader) {
  */
 function getGames(mainContent, mainHeader) {
     const query = handlerUtils.makeQueryString(requestUtils.getQuery())
-    // const query = window.location.hash.split("?")[1]
     const url = `${constants.API_BASE_URL}${constants.GAME_ROUTE}?${query}&token=${constants.TOKEN}`
 
     handlerUtils.executeCommandWithResponse(url, response => {
@@ -79,3 +59,5 @@ const gameHandlers = {
     getGames,
     getGameDetails,
 }
+
+export default gameHandlers

@@ -41,7 +41,7 @@ interface SessionStorageInterface {
      * @return A collection of sessions matching the specified parameters, or null if no sessions are found.
      */
     fun readSessions(
-        gid: UInt,
+        gid: UInt? = null,
         date: LocalDateTime? = null,
         state: SessionState? = null,
         playerId: UInt? = null,

@@ -11,8 +11,12 @@ import playerHandlerViews from "../views/handlerViews/playerHandlerViews.js";
  * @param mainHeader main header of the page
  */
 function getPlayerDetails(mainContent, mainHeader) {
-    const url = `${constants.API_BASE_URL}${constants.PLAYER_ROUTE}?pid=${requestUtils.getParams()}&token=${constants.TOKEN}`;
-    handlerUtils.executeCommandWithResponse(url, response => handleGetPlayerDetailsResponse(response, mainContent, mainHeader));
+    const url =
+        `${constants.API_BASE_URL}${constants.PLAYER_ROUTE}?pid=${requestUtils.getParams()}&token=${constants.TOKEN}`;
+    handlerUtils.executeCommandWithResponse(
+        url,
+            response => handleGetPlayerDetailsResponse(response, mainContent, mainHeader)
+    );
 }
 
 /**
@@ -26,7 +30,7 @@ function handleGetPlayerDetailsResponse(response, mainContent, mainHeader) {
     response.json().then(player => {
         const playerDetailsView = playerHandlerViews.createPlayerDetailsView(player);
         mainContent.replaceChildren(playerDetailsView);
-        mainHeader.replaceChildren(menu.get("home"), menu.get("sessionSearch"));
+        mainHeader.replaceChildren(menu.get("sessionSearch"), menu.get("home"),  menu.get("gameSearch"));
     });
 }
 

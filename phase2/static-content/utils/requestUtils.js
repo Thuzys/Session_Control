@@ -7,6 +7,7 @@ function getQuery() {
     const retMap = new Map();
     const list = window.location.hash
         .replace("#", "")
+        .replace("+", " ")
         .split("?")[1]
         .split("&")
     list.forEach(pair => {

@@ -53,6 +53,9 @@ function createPagination(query, hash, hasNext) {
             query.set("offset", query.get("offset") - constants.LIMIT)
             window.location.hash = `${hash}?${handlerUtils.makeQueryString(query)}`
         }
+        else {
+            prevButton.disabled = true;
+        }
     })
 
     const nextButton = views.button({id: "next", type: "button", enabled: hasNext}, "Next")

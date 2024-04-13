@@ -61,7 +61,7 @@ interface SessionServices {
      * @return A collection of sessions that match the specified parameters.
      */
     fun getSessions(
-        gid: UInt,
+        gid: UInt? = null,
         date: LocalDateTime? = null,
         state: SessionState? = null,
         playerId: UInt? = null,

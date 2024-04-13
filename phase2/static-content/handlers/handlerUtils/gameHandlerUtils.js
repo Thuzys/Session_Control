@@ -6,25 +6,44 @@ import handlerViews from "../../views/handlerViews/handlerViews.js";
 
 function createSearchGamesView() {
     const header = handlerViews.createHeader("Search Games by developer and/or Genre(s): ")
-    const inputDev =
+    // const inputDev =
+    //     views.input({
+    //         id: "InputDev",
+    //         type: "text",
+    //         placeholder: "Insert Developer Name"
+    //     })
+    // const inputGenres =
+    //     views.input({
+    //         id: "InputGenres",
+    //         type: "text",
+    //         placeholder: "Insert Genre(s)"
+    //     })
+    // const searchButton = views.button({
+    //     id: "SearchGamesButton",
+    //     type: "submit",
+    //     class: "submit-button"
+    // }, "Search")
+    //
+    const form = views.form(
+        {},
         views.input({
             id: "InputDev",
             type: "text",
             placeholder: "Insert Developer Name"
-        })
-    const inputGenres =
+        }),
         views.input({
             id: "InputGenres",
             type: "text",
             placeholder: "Insert Genre(s)"
-        })
-    const searchButton = views.button({
-        id: "SearchGamesButton",
-        type: "submit",
-        class: "submit-button"
-    }, "Search")
-
-    return [header, inputDev, inputGenres, searchButton]
+        }),
+        views.button({
+            id: "SearchGamesButton",
+            type: "submit",
+            class: "submit-button"
+        },
+            "Search")
+    )
+    return [header, form]
 }
 
 /**

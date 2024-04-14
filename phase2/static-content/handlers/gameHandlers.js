@@ -24,7 +24,6 @@ function searchGames(mainContent, mainHeader) {
 }
 
 /**
-<<<<<<< HEAD
  * Handle search games submit
  *
  * @param e
@@ -38,7 +37,7 @@ function handleSearchGamesSubmit(e, selectedGenres) {
     const params = new URLSearchParams()
     if (inputDev.value)
         params.set("dev", inputDev.value)
-    if (selectedGenresView.children.length !== 0)
+    if (selectedGenresView.children && selectedGenresView.children.length > 0)
         params.set("genres", handlerUtils.childrenToString(selectedGenresView.children))
 
     params.set('offset', "0")
@@ -47,16 +46,13 @@ function handleSearchGamesSubmit(e, selectedGenres) {
 }
 
 /**
-=======
->>>>>>> 27cbd9c2c5b3855721d08d61973a3229dff47fae
  * Get games
  *
  * @param mainContent
  * @param mainHeader
  */
 function getGames(mainContent, mainHeader) {
-    // const query = handlerUtils.makeQueryString(requestUtils.getQuery())
-    const query = window.location.hash.split("?")[1]
+    const query = handlerUtils.makeQueryString(requestUtils.getQuery())
     const url = `${constants.API_BASE_URL}${constants.GAME_ROUTE}?${query}&token=${constants.TOKEN}`
 
     handlerUtils.executeCommandWithResponse(url, response => {
@@ -67,7 +63,6 @@ function getGames(mainContent, mainHeader) {
 }
 
 /**
-<<<<<<< HEAD
  * Handle get games response
  *
  * @param response
@@ -86,8 +81,6 @@ function handleGetGamesResponse(response, mainContent) {
 }
 
 /**
-=======
->>>>>>> 27cbd9c2c5b3855721d08d61973a3229dff47fae
  * Get game details
  *
  * @param mainContent

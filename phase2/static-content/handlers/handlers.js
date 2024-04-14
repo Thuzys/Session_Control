@@ -1,6 +1,15 @@
+// noinspection JSCheckFunctionSignatures
+
 import menu from "../navigation/menuLinks.js";
 import handlerViews from "../views/handlerViews/handlerViews.js";
+import handlerUtils from "./handlerUtils/handlerUtils.js";
 
+/**
+ * Get home page
+ *
+ * @param mainContent
+ * @param headerContent
+ */
 function getHome(mainContent, headerContent) {
     const [h1, form] = handlerViews.createHomeView();
     form.onsubmit = (e) => handleHomeSubmit(e);
@@ -8,6 +17,11 @@ function getHome(mainContent, headerContent) {
     mainContent.replaceChildren(h1, form);
 }
 
+/**
+ * Handle player details home submit.
+ *
+ * @param e
+ */
 function handleHomeSubmit(e) {
     e.preventDefault();
     const pid = document.getElementById("pid");
@@ -15,11 +29,11 @@ function handleHomeSubmit(e) {
         alert("Please enter a player id");
         return;
     }
-    window.location.hash = `#playerDetails/${pid.value}`;
+    handlerUtils.changeHash(`#/players/${pid.value}`);
 }
 
 const handlers = {
-    getHome
+    getHome,
 }
 
 export default handlers

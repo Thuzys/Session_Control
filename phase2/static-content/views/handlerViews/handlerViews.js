@@ -8,7 +8,8 @@ function createHeader(text) {
 
 function createHomeView() {
     const h1 = views.h1({}, "Home page");
-    const form = views.form({action: "#playerDetails", method: "get"},
+    const form =
+        views.form({action: "#playerDetails", method: "get"},
         views.input({type: "text", id: "pid", maxLength: 10}),
         views.button({type: "submit"}, "Player Details")
     );
@@ -43,7 +44,10 @@ function createPagination(query, hash, hasNext) {
     prevButton.addEventListener('click', () => {
         if (query.get("offset") > 0) {
             query.set("offset", query.get("offset") - constants.LIMIT)
-            window.location.hash = `${hash}?${handlerUtils.makeQueryString(query)}`
+            handlerUtils.changeHash(`${hash}?${handlerUtils.makeQueryString(query)}`)
+        }
+        else {
+            prevButton.disabled = true;
         }
     })
 
@@ -51,7 +55,7 @@ function createPagination(query, hash, hasNext) {
     nextButton.addEventListener('click', () => {
         if (hasNext) {
             query.set("offset", query.get("offset") + constants.LIMIT)
-            window.location.hash = `${hash}?${handlerUtils.makeQueryString(query)}`
+            handlerUtils.changeHash(`${hash}?${handlerUtils.makeQueryString(query)}`)
         }
         nextButton.disabled = true;
     })

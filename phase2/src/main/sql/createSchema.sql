@@ -38,4 +38,4 @@ create table SESSION (
 create table PLAYER_SESSION (
     pid int not null references PLAYER(pid),
     sid int not null references SESSION(sid)
-)
+);

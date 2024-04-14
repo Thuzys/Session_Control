@@ -39,7 +39,7 @@ class SessionManagement(
         }
 
     override fun getSessions(
-        gid: UInt,
+        gid: UInt?,
         date: LocalDateTime?,
         state: SessionState?,
         playerId: UInt?,

@@ -4,6 +4,11 @@ import requestUtils from "../../utils/requestUtils.js";
 import constants from "../../constants/constants.js";
 import genres from "../../handlers/handlerUtils/gameGenres.js";
 
+/**
+ * Create search games view
+ *
+ * @returns {any[]}
+ */
 function createSearchGamesView() {
     const genresValues = Object.values(genres)
 
@@ -48,9 +53,7 @@ function createSearchGamesView() {
         createGenresListener(selectedGenresView, inputGenres, genresValues)
     })
 
-    inputDev.addEventListener('input', () => toggleSearchButton(searchGamesButton, inputDev, selectedGenresView))
-    selectedGenresView.addEventListener('DOMNodeInserted', () => toggleSearchButton(searchGamesButton, inputDev, selectedGenresView))
-    selectedGenresView.addEventListener('DOMNodeRemoved', () => toggleSearchButton(searchGamesButton, inputDev, selectedGenresView))
+    updateGameSearchButton(searchGamesButton, inputDev, selectedGenresView)
 
     const form = views.form(
         {},
@@ -67,10 +70,38 @@ function createSearchGamesView() {
     return [header, form]
 }
 
+/**
+ * Toggle search button
+ *
+ * @param searchGamesButton
+ * @param inputDev
+ * @param selectedGenresView
+ */
 function toggleSearchButton(searchGamesButton, inputDev, selectedGenresView) {
     searchGamesButton.disabled = inputDev.value.trim() === "" && selectedGenresView.children.length === 0;
 }
 
+/**
+ * Update game search button
+ *
+ * @param searchGamesButton
+ * @param inputDev
+ * @param selectedGenresView
+ */
+function updateGameSearchButton(searchGamesButton, inputDev, selectedGenresView) {
+    const update = () => toggleSearchButton(searchGamesButton, inputDev, selectedGenresView)
+    inputDev.addEventListener('input', update)
+    selectedGenresView.addEventListener('DOMNodeInserted', update)
+    selectedGenresView.addEventListener('DOMNodeRemoved', update)
+}
+
+/**
+ * Create genres listener
+ *
+ * @param selectedGenresView
+ * @param inputGenres
+ * @param genresValues
+ */
 function createGenresListener(selectedGenresView, inputGenres, genresValues) {
     const selectedGenre = document.getElementById("InputGenres").value.trim()
     if (selectedGenre && !ulHasItem(selectedGenre, selectedGenresView.children) && genresValues.includes(selectedGenre)) {
@@ -90,6 +121,13 @@ function createGenresListener(selectedGenresView, inputGenres, genresValues) {
     }
 }
 
+/**
+ * Check if ul has item
+ *
+ * @param item
+ * @param children
+ * @returns {boolean}
+ */
 function ulHasItem(item, children) {
     return Array.from(children).some(child => {
         if(!child.childNodes || child.childNodes.length === 0) return false

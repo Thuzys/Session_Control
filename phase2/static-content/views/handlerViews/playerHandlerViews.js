@@ -1,6 +1,3 @@
-import views from "../viewsCreators.js";
-import handlerViews from "./handlerViews.js";
-
 function createPlayerDetailsView(player) {
     const h2 = views.h2({}, "Player Details");
     const playerDetailsView = views.ul(
@@ -9,8 +6,17 @@ function createPlayerDetailsView(player) {
         views.li("Pid: " + player.pid),
     );
     const backButtonView = handlerViews.createBackButtonView();
-    return views.div({}, h2, playerDetailsView, backButtonView);
+    const sessionsButtonView = handlerViews.sessionsButtonView("Sessions", "sessions?pid=" + player.pid + "&offset=0");
+    return views.div({},
+        h2,
+        playerDetailsView,
+        backButtonView,
+        sessionsButtonView,
+    );
 }
+import views from "../viewsCreators.js";
+
+import handlerViews from "./handlerViews.js";
 
 const playerHandlerViews = {
     createPlayerDetailsView

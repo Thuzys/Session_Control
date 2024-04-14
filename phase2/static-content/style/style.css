@@ -30,13 +30,13 @@ body {
     background-color: #414552;
 }
 
-a.hRef {
+a[hRef] {
     display: inline-block;
     color: #1571ce;
     text-decoration: none;
 }
 
-a.hRef:hover {
+a[hRef]:hover {
     color: rgb(121, 161, 224);
     transform: scale(1.1);
 }

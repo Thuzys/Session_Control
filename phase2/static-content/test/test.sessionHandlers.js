@@ -1,5 +1,8 @@
 import sessionHandlers from "../handlers/sessionHandlers.js";
 import testUtils from "./testUtils.js";
+import handlerUtils from "../handlers/handlerUtils/handlerUtils.js";
+import constants from "../constants/constants.js";
+import requestUtils from "../utils/requestUtils.js";
 
 function simulateSessionFormSubmission(mainContentChildren, gameId, playerId, date, state) {
     const e = new Event('submit');
@@ -75,4 +78,12 @@ describe('Test sessionHandlers', function() {
         simulateSessionFormSubmission(mainContentChildren, '1', '2', '2024-04-13T22_50', '');
         window.location.hash.should.equal('#sessions?gid=1&pid=2&date=2024-04-13T22_50&offset=0');
     });
+
+    it('getSessionDetails should make a request to the correct URL', function() {
+        handlerUtils.executeCommandWithResponse = (url) => {
+            url.should.equal(`${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}?sid=${requestUtils.getParams()}&token=${constants.TOKEN}`);
+        };
+        testUtils.setupTest(sessionHandlers.getSessionDetails);
+    });
+
 });

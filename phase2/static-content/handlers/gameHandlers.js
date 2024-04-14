@@ -1,6 +1,5 @@
 import gameHandlerViews from "../views/handlerViews/gameHandlerViews.js";
 import handlerUtils from "./handlerUtils/handlerUtils.js";
-import views from "../views/viewsCreators.js";
 import menu from "../navigation/menuLinks.js";
 import requestUtils from "../utils/requestUtils.js";
 import constants from "../constants/constants.js"
@@ -25,6 +24,7 @@ function searchGames(mainContent, mainHeader) {
 }
 
 /**
+<<<<<<< HEAD
  * Handle search games submit
  *
  * @param e
@@ -47,6 +47,8 @@ function handleSearchGamesSubmit(e, selectedGenres) {
 }
 
 /**
+=======
+>>>>>>> 27cbd9c2c5b3855721d08d61973a3229dff47fae
  * Get games
  *
  * @param mainContent
@@ -61,10 +63,11 @@ function getGames(mainContent, mainHeader) {
         handleGetGamesResponse(response, mainContent)
     })
 
-    mainHeader.replaceChildren(menu.get("home"), menu.get("gameSearch")) // Será que posso voltar para o gameSearch?
+    mainHeader.replaceChildren(menu.get("home"), menu.get("gameSearch"))
 }
 
 /**
+<<<<<<< HEAD
  * Handle get games response
  *
  * @param response
@@ -83,6 +86,8 @@ function handleGetGamesResponse(response, mainContent) {
 }
 
 /**
+=======
+>>>>>>> 27cbd9c2c5b3855721d08d61973a3229dff47fae
  * Get game details
  *
  * @param mainContent
@@ -96,7 +101,7 @@ function getGameDetails(mainContent, mainHeader){
         handleGetGameDetailsResponse(response, mainContent)
     })
 
-    mainHeader.replaceChildren(menu.get("home"), menu.get("sessionSearch"), menu.get("gameSearch")) // Será que posso voltar para o gameSearch
+    mainHeader.replaceChildren(menu.get("home"), menu.get("sessionSearch"), menu.get("gameSearch"))
 }
 
 /**

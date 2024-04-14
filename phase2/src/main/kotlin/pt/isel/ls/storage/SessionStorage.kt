@@ -64,10 +64,10 @@ class SessionStorage(envName: String) : SessionStorageInterface {
                 val selectSessionCMD =
                     "SELECT s.sid, s.capacity, s.gid, s.date\n" +
                         "FROM session s\n" +
-                        "         LEFT JOIN player_session ps ON ps.sid = s.sid\n" +
-                        "WHERE (s.gid = ?)\n" +
-                        "  OR (s.date = ?)\n" +
-                        "  OR (ps.pid = ?)\n" +
+                        "   LEFT JOIN player_session ps ON ps.sid = s.sid\n" +
+                        "WHERE (s.gid = ? OR ? = 0)\n" +
+                        "  AND (s.date = ? OR ? = 'null')\n" +
+                        "  AND (ps.pid = ? OR ? = 0)\n" +
                         "GROUP BY s.sid, s.capacity, s.gid, s.date\n" +
                         "HAVING (? = 'null') OR\n" +
                         "    (? = 'OPEN' AND s.capacity > count(ps.pid)) OR\n" +
@@ -76,7 +76,10 @@ class SessionStorage(envName: String) : SessionStorageInterface {
                 val stmt2 = connection.prepareStatement(selectSessionCMD)
                 var idx = 1
                 stmt2.setInt(idx++, gid.toInt())
+                stmt2.setInt(idx++, gid.toInt())
                 stmt2.setString(idx++, date.toString())
+                stmt2.setString(idx++, date.toString())
+                stmt2.setInt(idx++, playerId?.toInt() ?: 0)
                 stmt2.setInt(idx++, playerId?.toInt() ?: 0)
                 repeat(3) {
                     stmt2.setString(idx++, state.toString())

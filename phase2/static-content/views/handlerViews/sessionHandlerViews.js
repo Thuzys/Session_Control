@@ -39,7 +39,7 @@ function createSessionDetailsViews(session, playerList) {
         views.ul(
             views.li("Capacity: " + session.capacity),
             views.li(
-                ...handlerViews.hrefConstructor("#games", session.gid, "Game ID: ")
+                ...handlerViews.hrefConstructor("#games", session.gid, "Game ID: " + session.gid)
             ),
             views.li("Date: " + session.date),
             views.li("Players:"),
@@ -55,7 +55,7 @@ function createGetSessionsView(sessions) {
         views.h1({}, "Sessions Found:")
     );
     sessions.forEach(session => {
-        const sessionHref = handlerViews.hrefConstructor("#sessions", session.sid, "Session ID:")
+        const sessionHref = handlerViews.hrefConstructor("#sessions", session.sid, "Session ID: " + session.sid);
         div.appendChild(views.form({}, ...sessionHref))
     });
     const nextPrev = handlerViews.createPagination(query, "#sessions", sessions.length === constants.LIMIT);
@@ -67,7 +67,7 @@ export function createPlayerListView(session) {
     if (session.players) {
         session.players.forEach(player => {
             const playerLi = views.li(
-                ...handlerViews.hrefConstructor("#players", player.pid, "Player ID:")
+                ...handlerViews.hrefConstructor("#players", player.pid, "Player ID: " + player.pid),
             );
             playerList.appendChild(playerLi);
         });

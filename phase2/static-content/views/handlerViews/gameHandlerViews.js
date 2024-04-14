@@ -23,6 +23,7 @@ function createSearchGamesView() {
     const addGenresButton = views.button({
         id: "AddGenresButton",
         type: "button",
+        class: "submit-button",
     }, "Add")
 
     const genresList = views.datalist({
@@ -107,6 +108,7 @@ function createGenresListener(selectedGenresView, inputGenres, genresValues) {
 
         const removeButton = views.button({
             type: "button",
+            class: "submit-button",
         }, "X")
 
         removeButton.onclick = () => {
@@ -145,10 +147,7 @@ function createGetGameView(games) {
     games.forEach(game => {
             gameList.appendChild(
                 views.li(
-                    views.a({
-                            href: `#games/${game.gid}`},
-                        game.name
-                    )
+                    ...handlerViews.hrefConstructor("#games", game.gid, game.name)
                 )
             )
         }

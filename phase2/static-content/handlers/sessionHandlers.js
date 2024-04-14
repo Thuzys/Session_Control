@@ -16,9 +16,10 @@ function searchSessions(mainContent, mainHeader) {
     const h1 = handlerViews.createHeader("Search Sessions: ");
     const formContent = sessionHandlerViews.createSessionFormContentView();
     const form = views.form({}, ...formContent);
+    form.addEventListener('submit', (e) => handleSearchSessionsSubmit(e));
     mainContent.replaceChildren(h1, form);
     mainHeader.replaceChildren(menu.get("home"));
-    form.addEventListener('submit', (e) => handleSearchSessionsSubmit(e));
+
 }
 
 /**

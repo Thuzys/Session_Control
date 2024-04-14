@@ -27,7 +27,7 @@ function createSessionFormContentView() {
         ...dateLabelInput,
         ...stateLabelInputs,
         views.p(),
-        views.button({type: "submit"}, "Search")
+        views.button({type: "submit", class: "submit-button"}, "Search"),
     ];
 }
 

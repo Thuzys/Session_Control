@@ -22,6 +22,9 @@ Interface SessionStorageInterface {
     + readSession()
     + raedSessions()
     + updateAddPlayer()
+    + updateCapacityOrDate()
+    + updateRemovePlayer()
+    + deleteSession()
 }
 
 class GameStorage {
@@ -47,6 +50,9 @@ class SessionStorage {
     + readSession()
     + raedSessions()
     + updateAddPlayer()
+    + updateCapacityOrDate()
+    + updateRemovePlayer()
+    + deleteSession()
     - dataSource
 }
 

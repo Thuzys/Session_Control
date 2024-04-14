@@ -14,10 +14,13 @@ interface PlayerServices {
 }
 
 interface SessionServices {
-    +createSession()
-    +getSessions()
-    +getSessionDetails()
-    +addPlayer()
+    + createSession()
+    + getSessions()
+    + getSessionDetails()
+    + addPlayer()
+    + updateCapacityOrDate()
+    + removePlayer()
+    + deleteSession()
 }
 
 class GameManagement {
@@ -35,10 +38,13 @@ class PlayerManagement {
 }
 
 class SessionManagement {
-    +createSession()
-    +getSessions()
-    +getSessionDetails()
-    +addPlayer()
+    + createSession()
+    + getSessions()
+    + getSessionDetails()
+    + addPlayer()
+    + updateCapacityOrDate()
+    + removePlayer()
+    + deleteSession()
     -sessionDataMem: SessionStorageInterface
     -playerDataMem: PlayerStorageInterface
 }

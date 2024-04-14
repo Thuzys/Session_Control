@@ -36,31 +36,31 @@ The following diagram holds the Entity-Relationship model for the information ma
 
 ### DomainDiagram:
 
-<img src="\2324-2-LEIC42D-G08\resources\DomainDiagram.png">
+<img src="2324-2-LEIC42D-G08\resources\DomainDiagram.png">
 
 ---
 
 ### StorageDiagram:
 
-<img src="\2324-2-LEIC42D-G08\resources\StorageDiagram.png">
+<img src="2324-2-LEIC42D-G08\resources\StorageDiagram.png">
 
 ---
 
 ### ServicesDiagram:
 
-<img src="\2324-2-LEIC42D-G08\resources\ServicesDiagram.png">
+<img src="2324-2-LEIC42D-G08\resources\ServicesDiagram.png">
 
 ---
 
 ### WebApiDiagram:
 
-<img src="\2324-2-LEIC42D-G08\resources\WebApiDiagram.png">
+<img src="2324-2-LEIC42D-G08\resources\WebApiDiagram.png">
 
 ---
 
 ### PackageDiagram:
 
-<img src="../2324-2-LEIC42D-G08/resources/Diagram.png">
+<img src="2324-2-LEIC42D-G08\resources\Diagram.png">
 
 ---
 ### We highlight the following aspects:

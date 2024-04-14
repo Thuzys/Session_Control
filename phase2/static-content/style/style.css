@@ -1,5 +1,7 @@
 body {
     background-color: #656b77;
+    color: #ffffff;
+    font:  16px Arial, sans-serif;
 }
 
 .footer {
@@ -27,3 +29,69 @@ body {
 .navigation-bar:hover {
     background-color: #414552;
 }
+
+a.hRef {
+    display: inline-block;
+    color: #092e56;
+    text-decoration: none;
+}
+
+a.hRef:hover {
+    color: #1571ce;
+    transform: scale(1.1);
+}
+
+#mainContent {
+    padding: 20px;
+    background-color: #414552;
+    min-height: 100vh;
+}
+
+button {
+    background-color: #535865;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    transition-duration: 0.4s;
+}
+
+button:hover {
+    background-color: #414552;
+}
+
+button:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+}
+
+input {
+    height: 20px;
+}
+
+.submit-button {
+    height: 25px;
+    padding: 0 20px;
+    line-height: 25px;
+    margin-left: 10px;
+}
+
+ul {
+    list-style-type: none;
+    margin: 4px;
+    padding: 4px;
+    overflow: hidden;
+}
+
+li {
+    padding: 2px;
+    margin-bottom: 5px;
+}
+
+

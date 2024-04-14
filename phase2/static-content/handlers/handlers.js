@@ -29,7 +29,7 @@ function handleHomeSubmit(e) {
         alert("Please enter a player id");
         return;
     }
-    handlerUtils.changeHash(`#/players/${pid.value}`);
+    handlerUtils.changeHash(`#players/${pid.value}`);
 }
 
 const handlers = {

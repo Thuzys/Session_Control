@@ -7,7 +7,6 @@ describe('Test playerHandlerViews', function() {
             email: {email: "email"},
             pid: "pid"
         }
-        const query = "query"
 
         const playerDetailsView = playerHandlerViews.createPlayerDetailsView(player)
 

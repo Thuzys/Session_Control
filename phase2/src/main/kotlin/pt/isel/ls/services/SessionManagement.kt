@@ -54,7 +54,7 @@ class SessionManagement(
                 playerId = playerId,
                 offset = offset ?: DEFAULT_OFFSET,
                 limit = limit ?: DEFAULT_LIMIT,
-            ) ?: throw NoSuchElementException()
+            ) ?: throw NoSuchElementException("No sessions found")
         }
 
     override fun updateCapacityOrDate(

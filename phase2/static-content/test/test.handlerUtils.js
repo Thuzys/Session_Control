@@ -20,8 +20,4 @@ describe('Test handlerUtils', function() {
         handlerUtils.changeHash(hash)
         window.location.hash.should.equal(hash)
     });
-
-    it('executeCommandWithResponse should call the responseHandler if the response is OK', function () {
-        // TODO()
-    });
 });

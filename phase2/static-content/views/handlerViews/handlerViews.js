@@ -31,6 +31,14 @@ function hrefConstructor(hrefBase, id, textBase) {
     ]
 }
 
+function sessionsButtonView(textContent, query) {
+    const backButton = views.button({type: "button"}, textContent);
+    backButton.addEventListener('click', () => {
+        window.location.hash = query;
+    });
+    return backButton;
+}
+
 function createBackButtonView() {
     const backButton = views.button({type: "button"}, "Back");
     backButton.addEventListener('click', () => {
@@ -68,6 +76,7 @@ function createPagination(query, hash, hasNext) {
 }
 
 const handlerViews = {
+    sessionsButtonView,
     createHeader,
     createLabeledInput,
     hrefConstructor,

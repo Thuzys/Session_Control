@@ -27,6 +27,7 @@ describe('Test sessionHandlerViews', function() {
         const session = [{
             sid: "1"
         }]
+        window.location.hash = ""
         const sessionView = sessionHandlerViews.createGetSessionsView(session)
         sessionView.length.should.equal(2)
         sessionView[0].tagName.should.equal("DIV")

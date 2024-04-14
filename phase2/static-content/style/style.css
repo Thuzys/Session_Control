@@ -38,7 +38,6 @@ a.hRef {
 
 a.hRef:hover {
     color: #1571ce;
-    /*text-decoration: underline;*/
     transform: scale(1.1);
 }
 

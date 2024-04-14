@@ -36,31 +36,31 @@ The following diagram holds the Entity-Relationship model for the information ma
 
 ### DomainDiagram:
 
-<img src="../2324-2-LEIC42D-G08/resources/DomainDiagram.png">
+<img src="resources/DomainDiagram.png">
 
 ---
 
 ### StorageDiagram:
 
-<img src="../2324-2-LEIC42D-G08/resources/StorageDiagram.png">
+<img src="resources/StorageDiagram.png">
 
 ---
 
 ### ServicesDiagram:
 
-<img src="../2324-2-LEIC42D-G08/resources/ServicesDiagram.png">
+<img src="resources/ServicesDiagram.png">
 
 ---
 
 ### WebApiDiagram:
 
-<img src="../2324-2-LEIC42D-G08/resources/WebApiDiagram.png">
+<img src="resources/WebApiDiagram.png">
 
 ---
 
 ### PackageDiagram:
 
-<img src="../2324-2-LEIC42D-G08/resources/Diagram.png">
+<img src="resources/Diagram.png">
 
 ---
 ### We highlight the following aspects:
@@ -84,7 +84,7 @@ The following diagram holds the Entity-Relationship model for the information ma
 
 ## Physical Model
 
-The physical model of the database is available in [SQL script](../2324-2-LEIC42D-G08/phase2/src/main/sql/createSchema.sql).
+The physical model of the database is available in [SQL script](phase2/src/main/sql/createSchema.sql).
 
 ---
 
@@ -105,7 +105,7 @@ The physical model of the database is available in [SQL script](../2324-2-LEIC42
 
 ---
 ## Open-API Specification
-- [YAML file](../2324-2-LEIC42D-G08/documentation/SessionAppApi.yml)
+- [YAML file](documentation/SessionAppApi.yml)
 ---
 ### In our Open-API specification, we highlight the following aspects:
 

@@ -3,7 +3,7 @@ import handlers from "../handlers/handlers.js";
 
 describe('Test handlers', function() {
 
-    it('should alter the mainContend and headerContend correctly', function() {
+    it('should alter the mainContent and headerContent correctly', function() {
 
         const mainContent = document.createElement("div")
         const headerContent = document.createElement("div")

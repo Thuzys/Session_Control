@@ -33,7 +33,6 @@ describe('Test handlers', function() {
         mainHeaderChildren.length.should.equal(2)
         mainHeaderChildren[0].tagName.should.equal("A")
         mainHeaderChildren[1].tagName.should.equal("A")
-
     })
 
     it('form submission should set the correct window location hash', function() {

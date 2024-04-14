@@ -33,29 +33,29 @@ describe('Test handlerViews', function() {
       backButton.type.should.equal("button");
       backButton.textContent.should.equal("Back");
     })
-it('should create a sessionsButton', function() {
-      const sessionsButton = handlerViews.sessionsButtonView("text", "query");
+    it('should create a sessionsButton', function() {
+          const sessionsButton = handlerViews.sessionsButtonView("text", "query");
 
-      sessionsButton.tagName.should.equal("BUTTON");
-      sessionsButton.type.should.equal("button");
-      sessionsButton.textContent.should.equal("text");
+          sessionsButton.tagName.should.equal("BUTTON");
+          sessionsButton.type.should.equal("button");
+          sessionsButton.textContent.should.equal("text");
 
-    })
-it('should create a pagination', function() {
-      const pagination = handlerViews.createPagination(new URLSearchParams(), "hash", true);
+        })
+    it('should create a pagination', function() {
+          const pagination = handlerViews.createPagination(new URLSearchParams(), "hash", true);
 
-      pagination.tagName.should.equal("DIV");
-      const buttons = pagination.children;
-        buttons.length.should.equal(2);
-        buttons[0].tagName.should.equal("BUTTON");
-        buttons[0].id.should.equal("prev");
-        buttons[0].type.should.equal("button");
-        buttons[0].textContent.should.equal("Previous");
-        buttons[1].tagName.should.equal("BUTTON");
-        buttons[1].id.should.equal("next");
-        buttons[1].type.should.equal("button");
-        buttons[1].textContent.should.equal("Next");
-    })
+          pagination.tagName.should.equal("DIV");
+          const buttons = pagination.children;
+            buttons.length.should.equal(2);
+            buttons[0].tagName.should.equal("BUTTON");
+            buttons[0].id.should.equal("prev");
+            buttons[0].type.should.equal("button");
+            buttons[0].textContent.should.equal("Previous");
+            buttons[1].tagName.should.equal("BUTTON");
+            buttons[1].id.should.equal("next");
+            buttons[1].type.should.equal("button");
+            buttons[1].textContent.should.equal("Next");
+        })
     it('should create a homeView', function() {
         const homeView = handlerViews.createHomeView();
 

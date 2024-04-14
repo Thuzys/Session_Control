@@ -10,13 +10,13 @@ describe('Test handlers', function() {
 
         handlers.getHome(mainContent, headerContent)
 
-        const mainContendChildren = mainContent.children
+        const mainContentChildren = mainContent.children
 
-        mainContendChildren.length.should.equal(2)
-        mainContendChildren[0].tagName.should.equal("H1")
-        mainContendChildren[1].tagName.should.equal("FORM")
+        mainContentChildren.length.should.equal(2)
+        mainContentChildren[0].tagName.should.equal("H1")
+        mainContentChildren[1].tagName.should.equal("FORM")
 
-        mainContendChildren[1].onsubmit.should.not.equal(null)
+        mainContentChildren[1].onsubmit.should.not.equal(null)
 
         const mainHeaderChildren = headerContent.children
 

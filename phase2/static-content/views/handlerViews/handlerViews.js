@@ -11,7 +11,7 @@ function createHomeView() {
     const form =
         views.form({action: "#playerDetails", method: "get"},
         views.input({type: "text", id: "pid", maxLength: 10}),
-        views.button({type: "submit", class: "submit-button"}, "Player Details")
+        views.button({type: "submit"}, "Player Details")
     );
     return [h1, form];
 }
@@ -26,17 +26,9 @@ function createLabeledInput(labelText, inputType, inputId) {
 
 function hrefConstructor(hrefBase, id, textBase) {
     return [
-        views.a({href: `${hrefBase}/${id}`, class: "hRef"}, `${textBase} ${id}`),
+        views.a({href: `${hrefBase}/${id}`}, `${textBase} ${id}`),
         views.p()
     ]
-}
-
-function createBackButtonView() {
-    const backButton = views.button({type: "button"}, "Back");
-    backButton.addEventListener('click', () => {
-        window.history.back();
-    });
-    return backButton;
 }
 
 function sessionsButtonView(textContent, query) {
@@ -47,12 +39,20 @@ function sessionsButtonView(textContent, query) {
     return backButton;
 }
 
+function createBackButtonView() {
+    const backButton = views.button({type: "button"}, "Back");
+    backButton.addEventListener('click', () => {
+        window.history.back();
+    });
+    return backButton;
+}
+
 function createPagination(query, hash, hasNext) {
     const prevButton = views.button({id: "prev", type: "button"}, "Previous")
     prevButton.addEventListener('click', () => {
         if (query.get("offset") > 0) {
             query.set("offset", query.get("offset") - constants.LIMIT)
-            window.location.hash = `${hash}?${handlerUtils.makeQueryString(query)}`
+            handlerUtils.changeHash(`${hash}?${handlerUtils.makeQueryString(query)}`)
         }
         else {
             prevButton.disabled = true;
@@ -63,7 +63,7 @@ function createPagination(query, hash, hasNext) {
     nextButton.addEventListener('click', () => {
         if (hasNext) {
             query.set("offset", query.get("offset") + constants.LIMIT)
-            window.location.hash = `${hash}?${handlerUtils.makeQueryString(query)}`
+            handlerUtils.changeHash(`${hash}?${handlerUtils.makeQueryString(query)}`)
         }
         nextButton.disabled = true;
     })
@@ -76,13 +76,13 @@ function createPagination(query, hash, hasNext) {
 }
 
 const handlerViews = {
+    sessionsButtonView,
     createHeader,
     createLabeledInput,
     hrefConstructor,
     createBackButtonView,
     createPagination,
     createHomeView,
-    sessionsButtonView,
 }
 
 export default handlerViews;

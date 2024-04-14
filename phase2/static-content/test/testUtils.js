@@ -14,7 +14,7 @@ function setupTest(func) {
     const mainContent = document.createElement("div");
     const headerContent = document.createElement("div");
     func(mainContent, headerContent);
-    return mainContent.children;
+    return mainContent.children
 }
 
 const testUtils = {

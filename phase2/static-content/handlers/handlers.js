@@ -1,5 +1,8 @@
+// noinspection JSCheckFunctionSignatures
+
 import menu from "../navigation/menuLinks.js";
 import handlerViews from "../views/handlerViews/handlerViews.js";
+import handlerUtils from "./handlerUtils/handlerUtils.js";
 
 /**
  * Get home page
@@ -26,7 +29,7 @@ function handleHomeSubmit(e) {
         alert("Please enter a player id");
         return;
     }
-    window.location.hash = `#players/${pid.value}`;
+    handlerUtils.changeHash(`#players/${pid.value}`);
 }
 
 const handlers = {

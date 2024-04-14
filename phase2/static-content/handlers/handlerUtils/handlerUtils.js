@@ -2,16 +2,6 @@ function changeHash(hash) {
     window.location.hash = hash;
 }
 
-// const updateButtonState = (searchButton, inputDev, inputGenres) => {
-//     searchButton.disabled = !inputDev.value.trim() && !inputGenres.value.trim()
-// }
-
-// function updateGameSearchButton(searchButton, inputDev, inputGenres) {
-//     const update = () => updateButtonState(searchButton, inputDev, inputGenres)
-//     inputDev.addEventListener("input", update)
-//     inputGenres.addEventListener("input", update)
-// }
-
 function isResponseOK(response) {
     return response.status >= 200 && response.status < 399
 }
@@ -28,6 +18,17 @@ function executeCommandWithResponse(url, responseHandler) {
         })
 }
 
+function childrenToString(children) {
+    return Array.from(children)
+        .map(child => {
+            return Array.from(child.childNodes)
+                .filter(node => node.nodeType === Node.TEXT_NODE)
+                .map(node => node.data)
+                .join('');
+        })
+        .join(',');
+}
+
 function makeQueryString(query) {
     const queryString = new URLSearchParams();
     for (const [key, value] of query) {
@@ -37,6 +38,7 @@ function makeQueryString(query) {
 }
 
 const handlerUtils = {
+    childrenToString,
     changeHash,
     executeCommandWithResponse,
     makeQueryString,

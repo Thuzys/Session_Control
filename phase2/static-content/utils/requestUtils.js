@@ -4,6 +4,9 @@ function getParams() {
 }
 
 function getQuery() {
+    if (window.location.hash.length === 0) {
+        return new Map()
+    }
     const retMap = new Map();
     const list = window.location.hash
         .replace("#", "")

@@ -12,6 +12,7 @@ function executeCommandWithResponse(url, responseHandler) {
             if(isResponseOK(response)) {
                 responseHandler(response);
             } else {
+                window.history.back()
                 response.text().then(text => alert("Error fetching data: " + text));
             }
         })

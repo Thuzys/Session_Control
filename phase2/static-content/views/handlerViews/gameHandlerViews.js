@@ -40,9 +40,7 @@ function createSearchGamesView() {
         list: "GenresList"
     })
 
-    const selectedGenresView = views.ul({
-        id: "SelectedGenresView"
-    })
+    const selectedGenresView = views.ul()
 
     const searchGamesButton = views.button({
         id: "SearchGamesButton",
@@ -53,7 +51,7 @@ function createSearchGamesView() {
         createGenresListener(selectedGenresView, inputGenres, genresValues)
     })
 
-    updateGameSearchButton(searchGamesButton, inputDev, selectedGenresView)
+    //updateGameSearchButton(searchGamesButton, inputDev, selectedGenresView)
 
     const form = views.form(
         {},
@@ -178,7 +176,8 @@ function createGameDetailsView(game) {
         views.h2({}, `${game.name}`),
         views.p({}, `Developer: ${game.dev}`),
         views.p({}, `Genres: ${game.genres.join(",")}`),
-        handlerViews.createBackButtonView()
+        handlerViews.createBackButtonView(),
+        handlerViews.sessionsButtonView("Sessions", `sessions?gid=${game.gid}&offset=0`)
     )
     return [header, div]
 }

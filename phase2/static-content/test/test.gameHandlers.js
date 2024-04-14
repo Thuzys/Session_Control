@@ -6,7 +6,7 @@ describe('Test gameHandlers', function() {
         window.document.getElementById = function(id) {
             switch (id) {
                 case 'InputDev': return { value: dev };
-                case 'SelectedGenresView': return { children: genres };
+                case 'ul': return { children: genres };
                 default: return null;
             }
         };

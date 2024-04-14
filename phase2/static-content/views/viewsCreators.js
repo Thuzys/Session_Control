@@ -21,8 +21,8 @@ function option(attributes = {}) {
     return createElement("option", attributes);
 }
 
-function ul(attributes = {}, ...items) {
-    return createElement("ul", attributes, ...items.map(li))
+function ul(...items) {
+    return createElement("ul", {id: "ul"}, ...items.map(li))
 }
 
 function li(content) {

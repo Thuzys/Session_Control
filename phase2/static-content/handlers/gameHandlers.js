@@ -32,7 +32,7 @@ function searchGames(mainContent, mainHeader) {
 function handleSearchGamesSubmit(e, selectedGenres) {
     e.preventDefault()
     const inputDev = document.getElementById("InputDev")
-    const selectedGenresView = document.getElementById("SelectedGenresView")
+    const selectedGenresView = document.getElementById("ul")
 
     const params = new URLSearchParams()
     if (inputDev.value)

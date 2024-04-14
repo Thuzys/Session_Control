@@ -48,7 +48,7 @@ class SessionStorageStunt : SessionStorageInterface {
         state: SessionState?,
         playerId: UInt?,
         offset: UInt,
-        limit: UInt
+        limit: UInt,
     ): Collection<Session>? =
         hashSession.values.filter { session ->
             (gid == null || session.gid == gid) &&

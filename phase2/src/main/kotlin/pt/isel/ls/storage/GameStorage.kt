@@ -75,7 +75,7 @@ class GameStorage(envVarName: String) : GameStorageInterface {
                 val areGenresInGameStmt =
                     it.prepareStatement(
                         "SELECT name FROM GENRE JOIN GAME_GENRE ON GENRE.name = GAME_GENRE.genre " +
-                            "WHERE GAME_GENRE.gid = ? AND GAME_GENRE.genre = ?",
+                            "WHERE GAME_GENRE.gid = ? AND UPPER(GAME_GENRE.genre) = UPPER(?)",
                     )
 
                 var paramIdx = 1

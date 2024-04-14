@@ -6,8 +6,7 @@ import gameHandlers from "../handlers/gameHandlers.js";
 
 describe('router', function () {
 
-    it('should find getStudents', function () {
-
+    it('should add and find the routes', function () {
         router.addRouteHandler("players/home", handlers.getHome)
         router.addRouteHandler("gameSearch", gameHandlers.searchGames)
         router.addRouteHandler("games", gameHandlers.getGames)
@@ -32,6 +31,10 @@ describe('router', function () {
             const handler = router.getRouteHandler(testItem[0])
             handler.name.should.equal(testItem[1])
         })
-
+    })
+    it('should find notFoundRouteHandler', function () {
+        router.addDefaultNotFoundRouteHandler(handlers.getHome)
+        const handler = router.getRouteHandler("unknown")
+        handler.name.should.equal("getHome")
     })
 });

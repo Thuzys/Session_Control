@@ -98,12 +98,6 @@ The physical model of the database is available in [SQL script](phase2/src/main/
 # Software organization
 
 ---
-
-## Web page
-
-- TODO()
-
----
 ## Open-API Specification
 - [YAML file](documentation/SessionAppApi.yml)
 ---

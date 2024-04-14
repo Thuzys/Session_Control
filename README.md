@@ -36,7 +36,7 @@ The following diagram holds the Entity-Relationship model for the information ma
 
 ### DomainDiagram:
 
-<img src="../2324-2-LEIC42D-G08/resources/DomainDiagram.png">
+<img src="resources/DomainDiagram.png">
 
 ---
 

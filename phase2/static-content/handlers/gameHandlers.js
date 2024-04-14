@@ -1,8 +1,9 @@
-import gameHandlerUtils from "./handlerUtils/gameHandlerUtils.js";
+import gameHandlerViews from "../views/handlerViews/gameHandlerViews.js";
 import handlerUtils from "./handlerUtils/handlerUtils.js";
 import menu from "../navigation/menuLinks.js";
 import requestUtils from "../utils/requestUtils.js";
 import constants from "../constants/constants.js"
+import genres from "./handlerUtils/gameGenres.js"
 
 /**
  * Search games by developer and/or genre(s)
@@ -11,13 +12,37 @@ import constants from "../constants/constants.js"
  * @param mainHeader
  */
 function searchGames(mainContent, mainHeader) {
+    const [
+        header,
+        form,
+    ] = gameHandlerViews.createSearchGamesView()
 
-    const [header, form] = gameHandlerUtils.createSearchGamesView()
-
-    form.onsubmit = (e) => gameHandlerUtils.handleSearchGamesSubmit(e)
+    form.onsubmit = (e) => handleSearchGamesSubmit(e)
 
     mainContent.replaceChildren(header, form)
     mainHeader.replaceChildren(menu.get("home"))
+}
+
+/**
+ * Handle search games submit
+ *
+ * @param e
+ * @param selectedGenres
+ */
+function handleSearchGamesSubmit(e, selectedGenres) {
+    e.preventDefault()
+    const inputDev = document.getElementById("InputDev")
+    const selectedGenresView = document.getElementById("SelectedGenresView")
+
+    const params = new URLSearchParams()
+    if (inputDev.value)
+        params.set("dev", inputDev.value)
+    if (selectedGenresView.children && selectedGenresView.children.length > 0)
+        params.set("genres", handlerUtils.childrenToString(selectedGenresView.children))
+
+    params.set('offset', "0")
+
+    handlerUtils.changeHash(`games?${params}`)
 }
 
 /**
@@ -31,10 +56,28 @@ function getGames(mainContent, mainHeader) {
     const url = `${constants.API_BASE_URL}${constants.GAME_ROUTE}?${query}&token=${constants.TOKEN}`
 
     handlerUtils.executeCommandWithResponse(url, response => {
-        gameHandlerUtils.handleGetGamesResponse(response, mainContent)
+        handleGetGamesResponse(response, mainContent)
     })
 
-    mainHeader.replaceChildren(menu.get("home"), menu.get("gameSearch")) // Será que posso voltar para o gameSearch?
+    mainHeader.replaceChildren(menu.get("home"), menu.get("gameSearch"))
+}
+
+/**
+ * Handle get games response
+ *
+ * @param response
+ * @param mainContent
+ */
+function handleGetGamesResponse(response, mainContent) {
+    response.json().then(games => {
+        const [
+            header,
+            gameList,
+            pagination
+        ] = gameHandlerViews.createGetGameView(games)
+
+        mainContent.replaceChildren(header, gameList, pagination)
+    })
 }
 
 /**
@@ -48,10 +91,23 @@ function getGameDetails(mainContent, mainHeader){
     const url = `${constants.API_BASE_URL}${constants.GAME_ID_ROUTE}?gid=${gameId}&token=${constants.TOKEN}`
 
     handlerUtils.executeCommandWithResponse(url, response => {
-        gameHandlerUtils.handleGetGameDetailsResponse(response, mainContent)
+        handleGetGameDetailsResponse(response, mainContent)
     })
 
-    mainHeader.replaceChildren(menu.get("home"), menu.get("sessionSearch")) // ?? não deveria ir para as sessions do game especifico?
+    mainHeader.replaceChildren(menu.get("home"), menu.get("sessionSearch"), menu.get("gameSearch"))
+}
+
+/**
+ * Handle game details response
+ *
+ * @param response
+ * @param mainContent
+ */
+function handleGetGameDetailsResponse(response, mainContent) {
+    response.json().then(game => {
+        const [header, div] = gameHandlerViews.createGameDetailsView(game)
+        mainContent.replaceChildren(header, div)
+    })
 }
 
 const gameHandlers = {

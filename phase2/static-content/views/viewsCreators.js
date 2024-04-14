@@ -7,14 +7,22 @@ function createElement(tagName, attributes = {}, ...children) {
         if (typeof child === "string") {
             element.appendChild(document.createTextNode(child));
         } else if (child instanceof Node) {
-            element.appendChild(child);
+            element.appendChild(child)
         }
     }
     return element;
 }
 
-function ul(...items) {
-    return createElement("ul", {}, ...items.map(li))
+function datalist(attributes = {}, ...options) {
+    return createElement("datalist", attributes, ...options);
+}
+
+function option(attributes = {}) {
+    return createElement("option", attributes);
+}
+
+function ul(attributes = {}, ...items) {
+    return createElement("ul", attributes, ...items.map(li))
 }
 
 function li(content) {
@@ -70,6 +78,8 @@ function button(attributes = {}, textContent) {
 }
 
 const views = {
+    datalist,
+    option,
     ul,
     li,
     form,

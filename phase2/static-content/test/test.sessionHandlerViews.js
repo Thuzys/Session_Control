@@ -23,6 +23,7 @@ describe('Test sessionHandlerViews', function() {
         sessionFormContentView[16].tagName.should.equal("P")
         sessionFormContentView[17].tagName.should.equal("BUTTON")
     })
+
     it('should create a sessionView', function() {
         const session = [{
             sid: "1"
@@ -35,6 +36,7 @@ describe('Test sessionHandlerViews', function() {
         sessionView[1].children[0].tagName.should.equal("BUTTON")
         sessionView[1].children[1].tagName.should.equal("BUTTON")
     })
+
     it('should create a sessionDetailsView', function() {
         const session = {
             sid: "1",
@@ -50,6 +52,7 @@ describe('Test sessionHandlerViews', function() {
         children[1].tagName.should.equal("UL")
         children[2].tagName.should.equal("BUTTON")
     })
+
     it('should create a PlayerListView', function() {
         const session = {
             players: [1, 2, 3]
@@ -61,4 +64,18 @@ describe('Test sessionHandlerViews', function() {
         playerListView.children[1].tagName.should.equal("LI")
         playerListView.children[2].tagName.should.equal("LI")
     })
+
+    it('should create correct href for each session', function() {
+        const sessions = [
+            { sid: '1' },
+            { sid: '2' },
+            { sid: '3' }
+        ];
+        const [div, nextPrev] = sessionHandlerViews.createGetSessionsView(sessions);
+        const anchors = div.querySelectorAll('a');
+        for (let i = 0; i < sessions.length; i++) {
+            const href = anchors[i].getAttribute('href');
+            href.should.equal(`#sessions/${sessions[i].sid}`);
+        }
+    });
 })

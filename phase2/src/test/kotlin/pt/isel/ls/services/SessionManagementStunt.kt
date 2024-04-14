@@ -51,10 +51,10 @@ object SessionManagementStunt : SessionServices {
         state: SessionState?,
         playerId: UInt?,
         offset: UInt?,
-        limit: UInt?
+        limit: UInt?,
     ): Collection<Session> {
         return when {
-            gid == gid1  && state == SessionState.CLOSE ->
+            gid == gid1 && state == SessionState.CLOSE ->
                 listOf(
                     Session(sid1, 1u, gid1, date1, players),
                     Session(sid2, 2u, gid1, date1, players2),

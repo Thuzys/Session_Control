@@ -505,7 +505,7 @@ class SessionHandlerTest {
             val response = handler.getSessions(request)
             assertEquals(
                 expected =
-                "[{\"sid\":1,\"capacity\":1,\"gid\":1,\"date\":\"2024-03-10T12:30\"," +
+                    "[{\"sid\":1,\"capacity\":1,\"gid\":1,\"date\":\"2024-03-10T12:30\"," +
                         "\"players\":[{\"pid\":1,\"name\":\"test1\",\"email\":{\"email\":\"default@mail.com\"}," +
                         "\"token\":\"${SessionManagementStunt.playerToken}\"}]}," +
                         "{\"sid\":2,\"capacity\":2,\"gid\":1,\"date\":\"2024-03-10T12:30\"," +

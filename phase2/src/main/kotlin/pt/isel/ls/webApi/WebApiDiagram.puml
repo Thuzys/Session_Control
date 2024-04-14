@@ -8,10 +8,13 @@ Interface GameHandlerInterface {
 }
 
 Interface SessionHandlerInterface {
-    +createSession()
-    +getSession()
-    +getSessions()
-    +addPlayerToSession()
+    + createSession()
+    + getSession()
+    + getSessions()
+    + addPlayerToSession()
+    + deleteSession()
+    + removePlayerFromSession()
+    + updateCapacityOrDate()
 }
 
 Interface PlayerHandlerInterface {
@@ -31,6 +34,9 @@ class SessionHandler {
     +getSession()
     +getSessions()
     +addPlayerToSession()
+    +deleteSession()
+    +removePlayerFromSession()
+    +updateCapacityOrDate()
     - sessionManagement: SessionServices
 }
 

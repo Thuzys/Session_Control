@@ -7,21 +7,181 @@
 	},
 	"item": [
 		{
-			"name": "getGameWithDev",
-			"request": {
-				"method": "GET",
-				"header": []
-			},
-			"response": []
-		},
-		{
-			"name": "CreateANewSession",
+			"name": "CreateFirstPlayerTest",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"gid\": \"1\",\r\n    \"date\": \"2024-03-16T12:30\",\r\n    \"capacity\": \"2\"\r\n}",
+					"raw": "{\r\n    \"name\": \"presentation_test1\",\r\n    \"email\": \"good@mail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/players",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"players"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "e247758f-02b6-4037-bd85-fc245b84d5f2",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateSecondPlayerTest",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"presentation_test2\",\r\n    \"email\": \"good2@mail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/players"
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllGamesWihtRPG_inGenres",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/games?token=e247758f-02b6-4037-bd85-fc245b84d5f2&genres=RPG",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"games"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "e247758f-02b6-4037-bd85-fc245b84d5f2"
+						},
+						{
+							"key": "genres",
+							"value": "RPG"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "InvalidEmailCreatingAPlayer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"invalidEmailUser\",\r\n    \"email\": \"good@mail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/players"
+			},
+			"response": []
+		},
+		{
+			"name": "CreatingAGameWithRPGInGenres",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Test1\",\r\n    \"dev\": \"Dev1\",\r\n    \"genres\": \"RPG\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/games?token=e247758f-02b6-4037-bd85-fc245b84d5f2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"games"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "e247758f-02b6-4037-bd85-fc245b84d5f2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateAGameWithRPGAndActionOnGenres",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Test1\",\r\n    \"dev\": \"Dev1\",\r\n    \"genres\": \"RPG,Action\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/games?token=e247758f-02b6-4037-bd85-fc245b84d5f2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"games"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "e247758f-02b6-4037-bd85-fc245b84d5f2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreatingASessionWithInvalidDate",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"capacity\": 12,\r\n    \"gid\": 1,\r\n    \"date\": \"2019-15-24T14:15:22Z\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -42,106 +202,6 @@
 						{
 							"key": "token",
 							"value": "e247758f-02b6-4037-bd85-fc245b84d5f2"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GetASessionBySid",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/sessions/session?sid=1",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"sessions",
-						"session"
-					],
-					"query": [
-						{
-							"key": "sid",
-							"value": "1"
-						},
-						{
-							"key": "token",
-							"value": "e247758f-02b6-4037-bd85-fc245b84d5f2",
-							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GetSessionByGid",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/sessions?token=e247758f-02b6-4037-bd85-fc245b84d5f2&gid=1",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"sessions"
-					],
-					"query": [
-						{
-							"key": "state",
-							"value": "open",
-							"disabled": true
-						},
-						{
-							"key": "token",
-							"value": "e247758f-02b6-4037-bd85-fc245b84d5f2"
-						},
-						{
-							"key": "playerId",
-							"value": "1",
-							"disabled": true
-						},
-						{
-							"key": "gid",
-							"value": "1"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GetPlayerbyPid",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/players/player?token=e247758f-02b6-4037-bd85-fc245b84d5f2&pid=1",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"players",
-						"player"
-					],
-					"query": [
-						{
-							"key": "token",
-							"value": "e247758f-02b6-4037-bd85-fc245b84d5f2"
-						},
-						{
-							"key": "pid",
-							"value": "1"
 						}
 					]
 				}

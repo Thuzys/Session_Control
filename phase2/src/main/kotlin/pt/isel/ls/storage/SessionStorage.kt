@@ -5,6 +5,7 @@ import org.postgresql.ds.PGSimpleDataSource
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
+import java.sql.PreparedStatement
 import java.sql.Statement
 
 class SessionStorage(envName: String) : SessionStorageInterface {
@@ -99,13 +100,14 @@ class SessionStorage(envName: String) : SessionStorageInterface {
         newItem: Collection<Player>,
     ) = dataSource.connection.use { connection ->
         connection.executeCommand {
-            val insertPlayerCMD =
-                "INSERT INTO PLAYER_SESSION (pid, sid) " +
-                    "SELECT ?, ?" +
-                    "WHERE NOT EXISTS (" +
-                    "SELECT 1 FROM PLAYER_SESSION WHERE pid = ? AND sid = ?);"
+            val insertPlayerCMD = "INSERT INTO PLAYER_SESSION (pid, sid) VALUES (?, ?);"
+            val playersInSession = "SELECT pid FROM PLAYER_SESSION WHERE sid = ?;"
+            val stmt2 = connection.prepareStatement(playersInSession)
+            stmt2.setInt(1, sid.toInt())
+            val players = makePlayerList(stmt2)
             val stmt1 = connection.prepareStatement(insertPlayerCMD)
             newItem.forEach { player ->
+                if (players.contains(player.pid?.toInt())) return@forEach
                 player.pid?.let { it1 -> stmt1.setInt(1, it1.toInt()) }
                 stmt1.setInt(2, sid.toInt())
                 player.pid?.let { stmt1.setInt(3, it.toInt()) }
@@ -113,6 +115,15 @@ class SessionStorage(envName: String) : SessionStorageInterface {
                 stmt1.executeUpdate()
             }
         }
+    }
+
+    private fun makePlayerList(stmt2: PreparedStatement): MutableList<Int> {
+        val response = stmt2.executeQuery()
+        val players = emptyList<Int>().toMutableList()
+        while (response.next()) {
+            players.add(response.getInt(1))
+        }
+        return players
     }
 
     override fun updateCapacityOrDate(
@@ -141,9 +152,13 @@ class SessionStorage(envName: String) : SessionStorageInterface {
     override fun deleteSession(sid: UInt) {
         dataSource.connection.use { connection ->
             connection.executeCommand {
+                val deletePlayerSession = "DELETE FROM PLAYER_SESSION WHERE sid = ?;"
                 val deleteSessionCMD = "DELETE FROM SESSION WHERE sid = ?;"
                 val stmt1 = connection.prepareStatement(deleteSessionCMD)
+                val stmt2 = connection.prepareStatement(deletePlayerSession)
+                stmt2.setUInt(1, sid)
                 stmt1.setUInt(1, sid)
+                stmt2.executeUpdate()
                 stmt1.executeUpdate()
             }
         }

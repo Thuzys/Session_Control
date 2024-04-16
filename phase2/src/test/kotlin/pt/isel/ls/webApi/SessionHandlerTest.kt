@@ -173,7 +173,7 @@ class SessionHandlerTest {
                 Request(
                     Method.POST,
                     "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}",
-                ).body("{\"player\": \"$playerId\", \"session\": \"$sessionId\"}")
+                ).body("{\"pid\": \"$playerId\", \"sid\": \"$sessionId\"}")
             val response = handler.addPlayerToSession(request)
             assertEquals(Status.NOT_MODIFIED, response.status)
         }
@@ -188,7 +188,7 @@ class SessionHandlerTest {
                 Request(
                     Method.POST,
                     "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}",
-                ).body("{\"player\": \"$playerId\", \"session\": \"$sessionId\"}")
+                ).body("{\"pid\": \"$playerId\", \"sid\": \"$sessionId\"}")
             val response = handler.addPlayerToSession(request)
             assertEquals(Status.OK, response.status)
         }
@@ -452,7 +452,7 @@ class SessionHandlerTest {
             // ARRANGE
             val request =
                 Request(Method.DELETE, "$DUMMY_ROUTE?&token=${PlayerManagementStunt.playerToken}")
-                    .body("{\"player\": \"1\", \"session\": \"1\"}")
+                    .body("{\"pid\": \"1\", \"sid\": \"1\"}")
 
             // ACT
             val response = handler.removePlayerFromSession(request)
@@ -482,7 +482,7 @@ class SessionHandlerTest {
             // ARRANGE
             val request =
                 Request(Method.DELETE, "$DUMMY_ROUTE?&token=${PlayerManagementStunt.playerToken}")
-                    .body("{\"player\": \"3\", \"session\": \"9\"}")
+                    .body("{\"pid\": \"3\", \"sid\": \"9\"}")
 
             // ACT
             val response = handler.removePlayerFromSession(request)

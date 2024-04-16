@@ -18,7 +18,7 @@ create table GAME (
 create table GAME_GENRE (
     gid int references GAME(gid),
     genre varchar(80) references GENRE(name)
-    CONSTRAINT valid_genre CHECK (genre IN ('RPG', 'Adventure', 'Shooter', 'Turn-based Strategy', 'Action', 'Platformer', 'Puzzle', 'Simulation', 'Sports', 'Racing', 'Fighting', 'Sandbox', 'Stealth', 'Survival', 'Horror', 'Open world', 'Tactical RPG', 'Real-time Strategy', 'MMO', 'Roguelike', 'MOBA', 'Tower Defense', 'Battle Royale')),
+        CONSTRAINT valid_genre CHECK (genre IN ('RPG', 'Adventure', 'Shooter', 'Turn-based Strategy', 'Action', 'Platformer', 'Puzzle', 'Simulation', 'Sports', 'Racing', 'Fighting', 'Sandbox', 'Stealth', 'Survival', 'Horror', 'Open world', 'Tactical RPG', 'Real-time Strategy', 'MMO', 'Roguelike', 'MOBA', 'Tower Defense', 'Battle Royale'))
 );
 
 create table PLAYER (
@@ -36,6 +36,7 @@ create table SESSION (
 );
 
 create table PLAYER_SESSION (
-    pid int not null references PLAYER(pid),
-    sid int not null references SESSION(sid)
+    pid serial not null references PLAYER(pid),
+    sid serial not null references SESSION(sid),
+    primary key (pid, sid)
 );

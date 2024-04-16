@@ -84,8 +84,8 @@ class SessionHandler(
         unauthorizedAccess(request, playerManagement)
             ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it") }
         val body = readBody(request)
-        val player = body["player"]?.toUIntOrNull()
-        val session = body["session"]?.toUIntOrNull()
+        val player = body["pid"]?.toUIntOrNull()
+        val session = body["sid"]?.toUIntOrNull()
         return if (player == null || session == null) {
             makeResponse(
                 Status.BAD_REQUEST,
@@ -131,8 +131,8 @@ class SessionHandler(
         unauthorizedAccess(request, playerManagement)
             ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it") }
         val body = readBody(request)
-        val player = body["player"]?.toUIntOrNull()
-        val session = body["session"]?.toUIntOrNull()
+        val player = body["pid"]?.toUIntOrNull()
+        val session = body["sid"]?.toUIntOrNull()
         return if (player == null || session == null) {
             makeResponse(
                 Status.BAD_REQUEST,

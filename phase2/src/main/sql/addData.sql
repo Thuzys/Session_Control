@@ -1,6 +1,6 @@
 -- Insert values into GENRES table
 INSERT INTO GENRE (name)
-VALUES ('Action'), ('Adventure'), ('RPG'), ('Simulation'), ('Strategy'), ('Sports'), ('Puzzle');
+VALUES ('Action'), ('Adventure'), ('RPG'), ('Simulation'), ('Turn-based Strategy'), ('Sports'), ('Puzzle');
 
 -- Insert values into GAME table
 INSERT INTO GAME (name, developer)
@@ -8,7 +8,7 @@ VALUES ('Game 1', 'Developer A'), ('Game 2', 'Developer B'), ('Game 3', 'Develop
 
 -- Insert values into GAME_GENRES table
 INSERT INTO GAME_GENRE (gid, genre)
-VALUES (1, 'Action'), (1, 'Adventure'), (2, 'RPG'), (3, 'Simulation'), (4, 'Strategy'), (5, 'Sports');
+VALUES (1, 'Action'), (1, 'Adventure'), (2, 'RPG'), (3, 'Simulation'), (4, 'Turn-based Strategy'), (5, 'Sports');
 
 -- Insert values into PLAYER table
 INSERT INTO PLAYER (name, email, token)

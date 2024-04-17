@@ -23,14 +23,22 @@ internal inline fun <T> tryCatch(
     try {
         block()
     } catch (error: NoSuchElementException) {
-        throw ServicesError("$msg: ${error.message}")
+        throw ServicesError("$msg: ${treatResponse(error.message)}")
     } catch (domainError: IllegalArgumentException) {
-        throw ServicesError("$msg: ${domainError.message}")
+        throw ServicesError("$msg: ${treatResponse(domainError.message)}")
     } catch (domainError: IllegalStateException) {
-        throw ServicesError("$msg: ${domainError.message}")
+        throw ServicesError("$msg: ${treatResponse(domainError.message)}")
     } catch (storageError: SQLException) {
-        throw ServicesError("$msg: ${storageError.message}")
+        throw ServicesError("$msg: ${treatResponse(storageError.message)}")
     }
+
+private fun treatResponse(msg: String?): String {
+    return if (msg != null && msg.last() == '.') {
+        msg
+    } else {
+        msg?.let { "$it." } ?: "An error occurred."
+    }
+}
 
 /**
  * Determines the state of a session.

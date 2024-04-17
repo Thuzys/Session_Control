@@ -2,9 +2,10 @@ package pt.isel.ls.storage
 
 import kotlinx.datetime.LocalDateTime
 import org.postgresql.ds.PGSimpleDataSource
-import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
+import java.sql.PreparedStatement
+import java.sql.SQLException
 import java.sql.Statement
 
 class SessionStorage(envName: String) : SessionStorageInterface {
@@ -94,25 +95,34 @@ class SessionStorage(envName: String) : SessionStorageInterface {
             }
         }
 
-    override fun updateAddPlayer(
-        sid: UInt,
-        newItem: Collection<Player>,
-    ) = dataSource.connection.use { connection ->
-        connection.executeCommand {
-            val insertPlayerCMD =
-                "INSERT INTO PLAYER_SESSION (pid, sid) " +
-                    "SELECT ?, ?" +
-                    "WHERE NOT EXISTS (" +
-                    "SELECT 1 FROM PLAYER_SESSION WHERE pid = ? AND sid = ?);"
-            val stmt1 = connection.prepareStatement(insertPlayerCMD)
-            newItem.forEach { player ->
-                player.pid?.let { it1 -> stmt1.setInt(1, it1.toInt()) }
-                stmt1.setInt(2, sid.toInt())
-                player.pid?.let { stmt1.setInt(3, it.toInt()) }
-                stmt1.setInt(4, sid.toInt())
-                stmt1.executeUpdate()
-            }
+//    override fun updateAddPlayer(
+//        sid: UInt,
+//        newItem: Collection<Player>,
+//    ) = dataSource.connection.use { connection ->
+//        connection.executeCommand {
+//            val insertPlayerCMD =
+//                "INSERT INTO PLAYER_SESSION (pid, sid) " +
+//                    "SELECT ?, ?" +
+//                    "WHERE NOT EXISTS (" +
+//                    "SELECT 1 FROM PLAYER_SESSION WHERE pid = ? AND sid = ?);"
+//            val stmt1 = connection.prepareStatement(insertPlayerCMD)
+//            newItem.forEach { player ->
+//                player.pid?.let { it1 -> stmt1.setInt(1, it1.toInt()) }
+//                stmt1.setInt(2, sid.toInt())
+//                player.pid?.let { stmt1.setInt(3, it.toInt()) }
+//                stmt1.setInt(4, sid.toInt())
+//                stmt1.executeUpdate()
+//            }
+//        }
+//    }
+
+    private fun makePlayerList(stmt2: PreparedStatement): MutableList<Int> {
+        val response = stmt2.executeQuery()
+        val players = emptyList<Int>().toMutableList()
+        while (response.next()) {
+            players.add(response.getInt(1))
         }
+        return players
     }
 
     override fun updateCapacityOrDate(
@@ -141,10 +151,37 @@ class SessionStorage(envName: String) : SessionStorageInterface {
     override fun deleteSession(sid: UInt) {
         dataSource.connection.use { connection ->
             connection.executeCommand {
+                val deletePlayerSession = "DELETE FROM PLAYER_SESSION WHERE sid = ?;"
                 val deleteSessionCMD = "DELETE FROM SESSION WHERE sid = ?;"
                 val stmt1 = connection.prepareStatement(deleteSessionCMD)
+                val stmt2 = connection.prepareStatement(deletePlayerSession)
+                stmt2.setUInt(1, sid)
                 stmt1.setUInt(1, sid)
+                stmt2.executeUpdate()
                 stmt1.executeUpdate()
+            }
+        }
+    }
+
+    override fun updateAddPlayer(
+        sid: UInt,
+        pid: Collection<UInt>,
+    ): Boolean {
+        return dataSource.connection.use { connection ->
+            connection.executeCommand {
+                val insertCMD = "INSERT INTO PLAYER_SESSION (pid, sid) VALUES (?, ?);"
+                val stmt1 = connection.prepareStatement(insertCMD)
+                stmt1.setUInt(2, sid)
+                try {
+                    pid.forEach { player ->
+                        stmt1.setUInt(1, player)
+                        stmt1.executeUpdate()
+                    }
+                    true
+                } catch (e: SQLException) {
+                    rollback()
+                    false
+                }
             }
         }
     }

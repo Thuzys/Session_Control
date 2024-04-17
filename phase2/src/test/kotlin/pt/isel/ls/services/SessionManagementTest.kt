@@ -31,10 +31,10 @@ class SessionManagementTest {
     @Test
     fun `add a player to a session increments size of session players`() {
         actionSessionManagementTest { sessionManagement: SessionServices ->
-            val currentCollection = sessionManagement.getSessionDetails(1u)
+            val currentCollection = sessionManagement.getSessionDetails(2u)
             val currentSize = currentCollection.players.size
-            sessionManagement.addPlayer(2u, 1u)
-            val newCollection = sessionManagement.getSessionDetails(1u)
+            sessionManagement.addPlayer(2u, 2u)
+            val newCollection = sessionManagement.getSessionDetails(2u)
             assertTrue { newCollection.players.size == currentSize.inc() }
         }
     }

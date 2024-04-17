@@ -29,7 +29,7 @@ class UnauthorizedAccessTest {
         val result = unauthorizedAccess(request, PlayerManagementStunt)
 
         // Assert
-        assertEquals("token not provided.", result)
+        assertEquals("token not provided", result)
     }
 
     @Test
@@ -41,6 +41,6 @@ class UnauthorizedAccessTest {
         val result = unauthorizedAccess(request, PlayerManagementStunt)
 
         // Assert
-        assertEquals("invalid token.", result)
+        assertEquals("invalid token", result)
     }
 }

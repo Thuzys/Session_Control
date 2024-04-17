@@ -57,8 +57,8 @@ internal inline fun tryResponse(
                 makeResponse(
                     errorStatus,
                     """
-                    Error:$errorMsg.
-                    Cause:$it.
+                    Error:$errorMsg
+                    Cause:$it
                     """.trimIndent(),
                 )
             }
@@ -110,4 +110,4 @@ internal fun unauthorizedAccess(
     pManagement: PlayerServices,
 ): String? =
     request.query("token")
-        ?.let { return if (pManagement.isValidToken(it)) null else "invalid token." } ?: "token not provided."
+        ?.let { return if (pManagement.isValidToken(it)) null else "invalid token" } ?: "token not provided"

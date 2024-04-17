@@ -21,6 +21,28 @@ dependencies {
     testImplementation(kotlin("test"))
 }
 
+tasks.jar {
+    manifest {
+        attributes["Main-Class"] = "pt.isel.ls.AppKt"
+    }
+    val dependencies =
+        configurations
+            .runtimeClasspath
+            .get()
+            .map {
+                if (it.isDirectory) {
+                    it
+                } else {
+                    zipTree(it)
+                }
+            }
+    from(dependencies)
+//    from("static-content") {
+//        into("static-content")
+//    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
 tasks.test {
     useJUnitPlatform()
 }

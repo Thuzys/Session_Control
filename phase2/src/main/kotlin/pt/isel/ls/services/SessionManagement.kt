@@ -3,7 +3,6 @@ package pt.isel.ls.services
 import kotlinx.datetime.LocalDateTime
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
-import pt.isel.ls.domain.addPlayer
 import pt.isel.ls.storage.PlayerStorageInterface
 import pt.isel.ls.storage.SessionStorageInterface
 
@@ -18,10 +17,13 @@ class SessionManagement(
         player: UInt,
         session: UInt,
     ) = tryCatch("Unable to add player to session due") {
-        val playerToAdd = playerDataMem.read(pid = player)
-        val whereSession = sessionDataMem.readSession(sid = session)
-        val updatedSession = whereSession?.addPlayer(playerToAdd) ?: throw NoSuchElementException()
-        sessionDataMem.updateAddPlayer(sid = session, newItem = updatedSession.players)
+//        val playerToAdd = playerDataMem.read(pid = player)
+//        val whereSession = sessionDataMem.readSession(sid = session)
+//        val updatedSession = whereSession?.addPlayer(playerToAdd) ?: throw NoSuchElementException()
+//        sessionDataMem.updateAddPlayer(sid = session, newItem = updatedSession.players)
+        if (!sessionDataMem.updateAddPlayer(session, setOf(player))) {
+            throw IllegalArgumentException("Player already in session")
+        }
     }
 
     override fun getSessionDetails(sid: UInt): Session =

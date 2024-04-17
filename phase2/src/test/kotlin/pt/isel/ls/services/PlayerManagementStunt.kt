@@ -18,14 +18,14 @@ object PlayerManagementStunt : PlayerServices {
         if (name.isNotBlank() && email.isNotBlank()) {
             Pair(playerId, playerToken)
         } else {
-            throw ServicesError("Unable to create a new Player due to invalid name or email")
+            throw ServicesError("Unable to create a new Player due to invalid name or email.")
         }
 
     override fun getPlayerDetails(pid: UInt): Player =
         if (pid == playerId) {
             Player(pid, playerName, playerEmail, playerToken)
         } else {
-            throw ServicesError("Unable to get the details of a Player due to nonexistent pid")
+            throw ServicesError("Unable to get the details of a Player due to nonexistent pid.")
         }
 
     override fun isValidToken(token: String): Boolean {

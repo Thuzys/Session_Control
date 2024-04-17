@@ -49,16 +49,16 @@ interface SessionStorageInterface {
         limit: UInt = 10u,
     ): Collection<Session>?
 
-    /**
-     * Updates a session by adding players to it.
-     *
-     * @param sid The unique identifier of the [Session] to be updated.
-     * @param newItem A collection of players to be added to the [Session].
-     */
-    fun updateAddPlayer(
-        sid: UInt,
-        newItem: Collection<Player>,
-    )
+//    /**
+//     * Updates a session by adding players to it.
+//     *
+//     * @param sid The unique identifier of the [Session] to be updated.
+//     * @param newItem A collection of players to be added to the [Session].
+//     */
+//    fun updateAddPlayer(
+//        sid: UInt,
+//        newItem: Collection<Player>,
+//    )
 
     /**
      * Updates a [Session] capacity, date or both.
@@ -91,6 +91,12 @@ interface SessionStorageInterface {
      */
     fun deleteSession(sid: UInt)
 
+    /**
+     * Updates a session by adding players to it.
+     * @param sid The unique identifier of the [Session] to be updated.
+     * @param pid A collection of pids to be added to the [Session].
+     * @return true if the update was successful, false otherwise.
+     */
     fun updateAddPlayer(
         sid: UInt,
         pid: Collection<UInt>,

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "b5ceb8bc-5d0a-43f9-8267-260ac218d977",
+		"_postman_id": "51847cc6-21bf-4fb1-a98a-13c0c2a43c5a",
 		"name": "LS_Application",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		"_exporter_id": "31366572"
@@ -395,7 +395,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/sessions/session?sid=2&token=e247758f-02b6-4037-bd85-fc245b84d5f2",
+					"raw": "http://localhost:8080/sessions/session?sid=3&token=e247758f-02b6-4037-bd85-fc245b84d5f2",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -408,7 +408,7 @@
 					"query": [
 						{
 							"key": "sid",
-							"value": "2"
+							"value": "3"
 						},
 						{
 							"key": "token",
@@ -480,108 +480,6 @@
 							"value": "e247758f-02b6-4037-bd85-fc245b84d5f2"
 						}
 					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "createSession",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "gid",
-							"value": "1",
-							"type": "text"
-						},
-						{
-							"key": "capacity",
-							"value": "2",
-							"type": "text"
-						},
-						{
-							"key": "date",
-							"value": "2024-03-10T12_30",
-							"type": "text"
-						}
-					]
-				},
-				"url": {
-					"raw": "http://localhost:8080/sessions?token=e247758f-02b6-4037-bd85-fc245b84d5f2",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"sessions"
-					],
-					"query": [
-						{
-							"key": "token",
-							"value": "e247758f-02b6-4037-bd85-fc245b84d5f2"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "addPlayerToSession",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"sid\": \"41\",\r\n    \"pid\": \"1\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/sessions/session?token=e247758f-02b6-4037-bd85-fc245b84d5f2",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"sessions",
-						"session"
-					],
-					"query": [
-						{
-							"key": "token",
-							"value": "e247758f-02b6-4037-bd85-fc245b84d5f2"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "getSession",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": ""
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "listSessions2by2",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": ""
 				}
 			},
 			"response": []

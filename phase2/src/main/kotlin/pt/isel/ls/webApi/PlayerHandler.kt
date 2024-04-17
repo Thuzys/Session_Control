@@ -23,7 +23,7 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
         } else {
             tryResponse(
                 errorStatus = Status.INTERNAL_SERVER_ERROR,
-                errorMsg = "Internal Server Error",
+                errorMsg = "Internal Server Error.",
             ) {
                 val (id, token) = playerManagement.createPlayer(name, email)
                 makeResponse(Status.CREATED, "Player created with id $id and token $token.")
@@ -35,11 +35,11 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
         unauthorizedAccess(
             request,
             playerManagement,
-        )?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it") }
+        )?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it.") }
         val pid = request.toPidOrNull() ?: return makeResponse(Status.BAD_REQUEST, "Bad Request, pid not found.")
         return tryResponse(
             errorStatus = Status.NOT_FOUND,
-            errorMsg = "Player not found",
+            errorMsg = "Player not found.",
         ) {
             val player = playerManagement.getPlayerDetails(pid)
             makeResponse(Status.FOUND, Json.encodeToString(player))

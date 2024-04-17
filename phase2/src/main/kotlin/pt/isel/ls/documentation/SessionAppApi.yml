@@ -290,8 +290,8 @@ paths:
           description: Bad Request, insufficient parameters.
         '401':
           description: Unauthorized, authentication token is missing or invalid.
-        '304':
-          description: Not Modified, player was already added to the session or an internal error occurred.
+        '500':
+          description: Internal Server Error, player was already added to the session or an internal error occurred.
     get:
       summary: Get session details
       description: Retrieve details of a session by session ID.

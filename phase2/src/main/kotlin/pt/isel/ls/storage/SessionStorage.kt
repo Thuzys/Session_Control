@@ -2,7 +2,6 @@ package pt.isel.ls.storage
 
 import kotlinx.datetime.LocalDateTime
 import org.postgresql.ds.PGSimpleDataSource
-import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import java.sql.PreparedStatement
@@ -65,16 +64,16 @@ class SessionStorage(envName: String) : SessionStorageInterface {
             connection.executeCommand {
                 val selectSessionCMD =
                     "SELECT s.sid, s.capacity, s.gid, s.date\n" +
-                            "FROM session s\n" +
-                            "    LEFT JOIN player_session ps ON ps.sid = s.sid\n" +
-                            "WHERE (s.gid = ? or ? = 0)\n" +
-                            "   AND (s.date = ? or ? = 'null')\n" +
-                            "   AND (ps.pid = ? or ? = 0)\n" +
-                            "GROUP BY s.sid, s.capacity, s.gid, s.date\n" +
-                            "HAVING (? = 'null') OR\n" +
-                            "       (? = 'OPEN' AND s.capacity > count(ps.pid)) OR\n" +
-                            "       (? = 'CLOSE' AND s.capacity = count(ps.pid))\n" +
-                            "OFFSET ? LIMIT ?;"
+                        "FROM session s\n" +
+                        "    LEFT JOIN player_session ps ON ps.sid = s.sid\n" +
+                        "WHERE (s.gid = ? or ? = 0)\n" +
+                        "   AND (s.date = ? or ? = 'null')\n" +
+                        "   AND (ps.pid = ? or ? = 0)\n" +
+                        "GROUP BY s.sid, s.capacity, s.gid, s.date\n" +
+                        "HAVING (? = 'null') OR\n" +
+                        "       (? = 'OPEN' AND s.capacity > count(ps.pid)) OR\n" +
+                        "       (? = 'CLOSE' AND s.capacity = count(ps.pid))\n" +
+                        "OFFSET ? LIMIT ?;"
                 val stmt2 = connection.prepareStatement(selectSessionCMD)
                 var idx = 1
                 repeat(2) {
@@ -96,26 +95,26 @@ class SessionStorage(envName: String) : SessionStorageInterface {
             }
         }
 
-    override fun updateAddPlayer(
-        sid: UInt,
-        newItem: Collection<Player>,
-    ) = dataSource.connection.use { connection ->
-        connection.executeCommand {
-            val insertPlayerCMD =
-                "INSERT INTO PLAYER_SESSION (pid, sid) " +
-                        "SELECT ?, ?" +
-                        "WHERE NOT EXISTS (" +
-                        "SELECT 1 FROM PLAYER_SESSION WHERE pid = ? AND sid = ?);"
-            val stmt1 = connection.prepareStatement(insertPlayerCMD)
-            newItem.forEach { player ->
-                player.pid?.let { it1 -> stmt1.setInt(1, it1.toInt()) }
-                stmt1.setInt(2, sid.toInt())
-                player.pid?.let { stmt1.setInt(3, it.toInt()) }
-                stmt1.setInt(4, sid.toInt())
-                stmt1.executeUpdate()
-            }
-        }
-    }
+//    override fun updateAddPlayer(
+//        sid: UInt,
+//        newItem: Collection<Player>,
+//    ) = dataSource.connection.use { connection ->
+//        connection.executeCommand {
+//            val insertPlayerCMD =
+//                "INSERT INTO PLAYER_SESSION (pid, sid) " +
+//                    "SELECT ?, ?" +
+//                    "WHERE NOT EXISTS (" +
+//                    "SELECT 1 FROM PLAYER_SESSION WHERE pid = ? AND sid = ?);"
+//            val stmt1 = connection.prepareStatement(insertPlayerCMD)
+//            newItem.forEach { player ->
+//                player.pid?.let { it1 -> stmt1.setInt(1, it1.toInt()) }
+//                stmt1.setInt(2, sid.toInt())
+//                player.pid?.let { stmt1.setInt(3, it.toInt()) }
+//                stmt1.setInt(4, sid.toInt())
+//                stmt1.executeUpdate()
+//            }
+//        }
+//    }
 
     private fun makePlayerList(stmt2: PreparedStatement): MutableList<Int> {
         val response = stmt2.executeQuery()
@@ -135,10 +134,10 @@ class SessionStorage(envName: String) : SessionStorageInterface {
             connection.executeCommand {
                 val updateCMD =
                     "UPDATE SESSION\n" +
-                            "SET\n" +
-                            "    capacity = CASE WHEN ? IS NOT NULL THEN ? ELSE capacity END,\n" +
-                            "    date = CASE WHEN ? IS NOT NULL THEN ? ELSE date END\n" +
-                            "WHERE sid = ?;"
+                        "SET\n" +
+                        "    capacity = CASE WHEN ? IS NOT NULL THEN ? ELSE capacity END,\n" +
+                        "    date = CASE WHEN ? IS NOT NULL THEN ? ELSE date END\n" +
+                        "WHERE sid = ?;"
                 val stmt1 = connection.prepareStatement(updateCMD)
                 var idx = 1
                 repeat(2) { stmt1.setInt(idx++, capacity?.toInt() ?: 0) }

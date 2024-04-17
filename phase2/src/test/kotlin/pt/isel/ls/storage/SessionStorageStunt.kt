@@ -57,16 +57,19 @@ class SessionStorageStunt : SessionStorageInterface {
                 (playerId == null || session.players.any { player -> player.pid == playerId })
         }.ifEmpty { null }
 
+//    override fun updateAddPlayer(
+//        sid: UInt,
+//        newItem: Collection<Player>,
+//    ) {
+//        hashSession[sid]?.let { session ->
+//            hashSession[sid] = session.copy(players = newItem)
+//        }
+//    }
+
     override fun updateAddPlayer(
         sid: UInt,
-        newItem: Collection<Player>,
-    ) {
-        hashSession[sid]?.let { session ->
-            hashSession[sid] = session.copy(players = newItem)
-        }
-    }
-
-    override fun updateAddPlayer(sid: UInt, pid: Collection<UInt>): Boolean {
+        pid: Collection<UInt>,
+    ): Boolean {
         hashSession[sid]?.let { session ->
             val players = session.players.toMutableList()
             pid.forEach { pid ->

@@ -36,7 +36,7 @@ class GameHandlerTest {
     fun `message of Bad Request creating a game due to missing parameters (name, developer and genres)`() {
         // ARRANGE
         val request = Request(Method.POST, "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}")
-        val expectedMessage = "Bad Request"
+        val expectedMessage = "Bad Request."
 
         // ACT
         val response =
@@ -68,7 +68,7 @@ class GameHandlerTest {
     fun `message of Bad Request getting the game details due to missing game id`() {
         // ARRANGE
         val request = Request(Method.GET, "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}")
-        val expectedMessage = "Bad Request"
+        val expectedMessage = "Bad Request."
 
         // ACT
         val response =
@@ -109,7 +109,7 @@ class GameHandlerTest {
                 method = Method.POST,
                 uri = "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}",
             ).body("{\"name\": \"name\", \"dev\": \"dev\", \"genres\": \"genre1,genre2,genre3\"")
-        val expectedMessage = "Game created with id 1"
+        val expectedMessage = "Game created with id 1."
 
         // ACT
         val response =
@@ -161,7 +161,7 @@ class GameHandlerTest {
     fun `message of Bad Request getting the game by dev and genres due to missing developer and genres`() {
         // ARRANGE
         val request = Request(Method.GET, "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}")
-        val expectedMessage = "Bad Request"
+        val expectedMessage = "Bad Request."
 
         // ACT
         val response =

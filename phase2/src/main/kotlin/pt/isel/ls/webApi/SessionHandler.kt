@@ -23,7 +23,7 @@ class SessionHandler(
 ) : SessionHandlerInterface {
     override fun createSession(request: Request): Response {
         unauthorizedAccess(request, playerManagement)
-            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it") }
+            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it.") }
         val body = readBody(request)
         val gid = body["gid"]?.toUIntOrNull()
         val date = dateVerification(body["date"])
@@ -43,7 +43,7 @@ class SessionHandler(
 
     override fun getSession(request: Request): Response {
         unauthorizedAccess(request, playerManagement)
-            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it") }
+            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it.") }
         val sid = request.query("sid")?.toUInt() ?: return makeResponse(Status.BAD_REQUEST, "Missing or invalid sid.")
         return tryResponse(Status.NOT_FOUND, "Session not found.") {
             val session = sessionManagement.getSessionDetails(sid)
@@ -53,7 +53,7 @@ class SessionHandler(
 
     override fun getSessions(request: Request): Response {
         unauthorizedAccess(request, playerManagement)
-            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it") }
+            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it.") }
         val gid = request.query("gid")?.toUIntOrNull()
         val date = dateVerification(request.query("date"))
         val state = request.query("state").toSessionState()
@@ -64,7 +64,7 @@ class SessionHandler(
             return makeResponse(
                 Status.BAD_REQUEST,
                 "Missing or invalid parameters. Please provide at" +
-                        " least one of the following: 'gid', 'date', 'state', 'pid', 'offset', 'limit'.",
+                    " least one of the following: 'gid', 'date', 'state', 'pid', 'offset', 'limit'.",
             )
         }
         return tryResponse(Status.INTERNAL_SERVER_ERROR, "Internal Server Error.") {
@@ -82,7 +82,7 @@ class SessionHandler(
 
     override fun addPlayerToSession(request: Request): Response {
         unauthorizedAccess(request, playerManagement)
-            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it") }
+            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it.") }
         val body = readBody(request)
         val player = body["pid"]?.toUIntOrNull()
         val session = body["sid"]?.toUIntOrNull()
@@ -101,7 +101,7 @@ class SessionHandler(
 
     override fun updateCapacityOrDate(request: Request): Response {
         unauthorizedAccess(request, playerManagement)
-            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it") }
+            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it.") }
         val body = readBody(request)
         val sid = body["sid"]?.toUIntOrNull()
         val capacity = body["capacity"]?.toUIntOrNull()
@@ -129,7 +129,7 @@ class SessionHandler(
 
     override fun removePlayerFromSession(request: Request): Response {
         unauthorizedAccess(request, playerManagement)
-            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it") }
+            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it.") }
         val body = readBody(request)
         val player = body["pid"]?.toUIntOrNull()
         val session = body["sid"]?.toUIntOrNull()
@@ -148,7 +148,7 @@ class SessionHandler(
 
     override fun deleteSession(request: Request): Response {
         unauthorizedAccess(request, playerManagement)
-            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it") }
+            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it.") }
 
         val body = readBody(request)
         val sid = body["sid"]?.toUIntOrNull()

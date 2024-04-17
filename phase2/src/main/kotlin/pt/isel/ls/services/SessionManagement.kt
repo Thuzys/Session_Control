@@ -3,7 +3,6 @@ package pt.isel.ls.services
 import kotlinx.datetime.LocalDateTime
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
-import pt.isel.ls.domain.addPlayer
 import pt.isel.ls.storage.PlayerStorageInterface
 import pt.isel.ls.storage.SessionStorageInterface
 

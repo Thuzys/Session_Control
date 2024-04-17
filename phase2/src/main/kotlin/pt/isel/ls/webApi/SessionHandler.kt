@@ -64,7 +64,7 @@ class SessionHandler(
             return makeResponse(
                 Status.BAD_REQUEST,
                 "Missing or invalid parameters. Please provide at" +
-                    " least one of the following: 'gid', 'date', 'state', 'pid', 'offset', 'limit'.",
+                        " least one of the following: 'gid', 'date', 'state', 'pid', 'offset', 'limit'.",
             )
         }
         return tryResponse(Status.INTERNAL_SERVER_ERROR, "Internal Server Error.") {
@@ -92,7 +92,7 @@ class SessionHandler(
                 "Invalid or Missing parameters. Please provide 'player' and 'session' as valid values.",
             )
         } else {
-            tryResponse(Status.NOT_MODIFIED, "Error adding Player $player to the Session $session.") {
+            tryResponse(Status.INTERNAL_SERVER_ERROR, "Error adding Player $player to the Session $session") {
                 sessionManagement.addPlayer(player, session)
                 return makeResponse(Status.OK, "Player $player added to Session $session successfully.")
             }

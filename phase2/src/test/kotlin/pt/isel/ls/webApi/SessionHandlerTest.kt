@@ -175,7 +175,7 @@ class SessionHandlerTest {
                     "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}",
                 ).body("{\"pid\": \"$playerId\", \"sid\": \"$sessionId\"}")
             val response = handler.addPlayerToSession(request)
-            assertEquals(Status.NOT_MODIFIED, response.status)
+            assertEquals(Status.INTERNAL_SERVER_ERROR, response.status)
         }
     }
 

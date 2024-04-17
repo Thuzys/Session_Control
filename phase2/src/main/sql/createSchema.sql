@@ -5,14 +5,24 @@ drop table if exists GAME;
 drop table if exists PLAYER;
 drop table if exists GENRE;
 
+create or replace function check_capacity(sid int)
+    returns boolean as $$
+declare
+    capacityNumber int;
+begin
+    select capacity into capacityNumber from session where session.sid = check_capacity.sid;
+    return (select count(*) from player_session where player_session.sid = check_capacity.sid) < capacityNumber;
+end;
+$$ language plpgsql;
+
 create table GENRE (
-    name varchar(80) primary key
+   name varchar(80) primary key
 );
 
 create table GAME (
-    gid serial primary key,
-    name varchar(80),
-    developer varchar(80)
+  gid serial primary key,
+  name varchar(80),
+  developer varchar(80)
 );
 
 create table GAME_GENRE (
@@ -40,3 +50,5 @@ create table PLAYER_SESSION (
     sid serial not null references SESSION(sid),
     primary key (pid, sid)
 );
+
+alter table player_session add constraint check_capacity check (check_capacity(sid));

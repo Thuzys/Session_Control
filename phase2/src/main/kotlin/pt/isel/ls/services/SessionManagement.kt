@@ -18,10 +18,13 @@ class SessionManagement(
         player: UInt,
         session: UInt,
     ) = tryCatch("Unable to add player to session due") {
-        val playerToAdd = playerDataMem.read(pid = player)
-        val whereSession = sessionDataMem.readSession(sid = session)
-        val updatedSession = whereSession?.addPlayer(playerToAdd) ?: throw NoSuchElementException()
-        sessionDataMem.updateAddPlayer(sid = session, newItem = updatedSession.players)
+//        val playerToAdd = playerDataMem.read(pid = player)
+//        val whereSession = sessionDataMem.readSession(sid = session)
+//        val updatedSession = whereSession?.addPlayer(playerToAdd) ?: throw NoSuchElementException()
+//        sessionDataMem.updateAddPlayer(sid = session, newItem = updatedSession.players)
+        if (!sessionDataMem.updateAddPlayer(session, setOf(player))) {
+            throw IllegalArgumentException("Player already in session")
+        }
     }
 
     override fun getSessionDetails(sid: UInt): Session =

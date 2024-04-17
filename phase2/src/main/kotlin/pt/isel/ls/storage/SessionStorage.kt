@@ -6,6 +6,7 @@ import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import java.sql.PreparedStatement
+import java.sql.SQLException
 import java.sql.Statement
 
 class SessionStorage(envName: String) : SessionStorageInterface {
@@ -64,16 +65,16 @@ class SessionStorage(envName: String) : SessionStorageInterface {
             connection.executeCommand {
                 val selectSessionCMD =
                     "SELECT s.sid, s.capacity, s.gid, s.date\n" +
-                        "FROM session s\n" +
-                        "    LEFT JOIN player_session ps ON ps.sid = s.sid\n" +
-                        "WHERE (s.gid = ? or ? = 0)\n" +
-                        "   AND (s.date = ? or ? = 'null')\n" +
-                        "   AND (ps.pid = ? or ? = 0)\n" +
-                        "GROUP BY s.sid, s.capacity, s.gid, s.date\n" +
-                        "HAVING (? = 'null') OR\n" +
-                        "       (? = 'OPEN' AND s.capacity > count(ps.pid)) OR\n" +
-                        "       (? = 'CLOSE' AND s.capacity = count(ps.pid))\n" +
-                        "OFFSET ? LIMIT ?;"
+                            "FROM session s\n" +
+                            "    LEFT JOIN player_session ps ON ps.sid = s.sid\n" +
+                            "WHERE (s.gid = ? or ? = 0)\n" +
+                            "   AND (s.date = ? or ? = 'null')\n" +
+                            "   AND (ps.pid = ? or ? = 0)\n" +
+                            "GROUP BY s.sid, s.capacity, s.gid, s.date\n" +
+                            "HAVING (? = 'null') OR\n" +
+                            "       (? = 'OPEN' AND s.capacity > count(ps.pid)) OR\n" +
+                            "       (? = 'CLOSE' AND s.capacity = count(ps.pid))\n" +
+                            "OFFSET ? LIMIT ?;"
                 val stmt2 = connection.prepareStatement(selectSessionCMD)
                 var idx = 1
                 repeat(2) {
@@ -100,14 +101,13 @@ class SessionStorage(envName: String) : SessionStorageInterface {
         newItem: Collection<Player>,
     ) = dataSource.connection.use { connection ->
         connection.executeCommand {
-            val insertPlayerCMD = "INSERT INTO PLAYER_SESSION (pid, sid) VALUES (?, ?);"
-            val playersInSession = "SELECT pid FROM PLAYER_SESSION WHERE sid = ?;"
-            val stmt2 = connection.prepareStatement(playersInSession)
-            stmt2.setInt(1, sid.toInt())
-            val players = makePlayerList(stmt2)
+            val insertPlayerCMD =
+                "INSERT INTO PLAYER_SESSION (pid, sid) " +
+                        "SELECT ?, ?" +
+                        "WHERE NOT EXISTS (" +
+                        "SELECT 1 FROM PLAYER_SESSION WHERE pid = ? AND sid = ?);"
             val stmt1 = connection.prepareStatement(insertPlayerCMD)
             newItem.forEach { player ->
-                if (players.contains(player.pid?.toInt())) return@forEach
                 player.pid?.let { it1 -> stmt1.setInt(1, it1.toInt()) }
                 stmt1.setInt(2, sid.toInt())
                 player.pid?.let { stmt1.setInt(3, it.toInt()) }
@@ -135,10 +135,10 @@ class SessionStorage(envName: String) : SessionStorageInterface {
             connection.executeCommand {
                 val updateCMD =
                     "UPDATE SESSION\n" +
-                        "SET\n" +
-                        "    capacity = CASE WHEN ? IS NOT NULL THEN ? ELSE capacity END,\n" +
-                        "    date = CASE WHEN ? IS NOT NULL THEN ? ELSE date END\n" +
-                        "WHERE sid = ?;"
+                            "SET\n" +
+                            "    capacity = CASE WHEN ? IS NOT NULL THEN ? ELSE capacity END,\n" +
+                            "    date = CASE WHEN ? IS NOT NULL THEN ? ELSE date END\n" +
+                            "WHERE sid = ?;"
                 val stmt1 = connection.prepareStatement(updateCMD)
                 var idx = 1
                 repeat(2) { stmt1.setInt(idx++, capacity?.toInt() ?: 0) }
@@ -160,6 +160,29 @@ class SessionStorage(envName: String) : SessionStorageInterface {
                 stmt1.setUInt(1, sid)
                 stmt2.executeUpdate()
                 stmt1.executeUpdate()
+            }
+        }
+    }
+
+    override fun updateAddPlayer(
+        sid: UInt,
+        pid: Collection<UInt>,
+    ): Boolean {
+        return dataSource.connection.use { connection ->
+            connection.executeCommand {
+                val insertCMD = "INSERT INTO PLAYER_SESSION (pid, sid) VALUES (?, ?);"
+                val stmt1 = connection.prepareStatement(insertCMD)
+                stmt1.setUInt(2, sid)
+                try {
+                    pid.forEach { player ->
+                        stmt1.setUInt(1, player)
+                        stmt1.executeUpdate()
+                    }
+                    true
+                } catch (e: SQLException) {
+                    rollback()
+                    false
+                }
             }
         }
     }

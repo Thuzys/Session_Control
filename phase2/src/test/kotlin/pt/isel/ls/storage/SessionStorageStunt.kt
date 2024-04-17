@@ -66,6 +66,24 @@ class SessionStorageStunt : SessionStorageInterface {
         }
     }
 
+    override fun updateAddPlayer(sid: UInt, pid: Collection<UInt>): Boolean {
+        hashSession[sid]?.let { session ->
+            val players = session.players.toMutableList()
+            pid.forEach { pid ->
+                if (players.any { player -> player.pid == pid }) {
+                    return false
+                }
+                players.add(Player(pid, "test$pid", defaultMail))
+            }
+            if (players.size > session.capacity.toInt()) {
+                return false
+            }
+            hashSession[sid] = session.copy(players = players)
+            return true
+        }
+        return false
+    }
+
     override fun updateCapacityOrDate(
         sid: UInt,
         capacity: UInt?,

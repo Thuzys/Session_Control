@@ -91,6 +91,11 @@ interface SessionStorageInterface {
      */
     fun deleteSession(sid: UInt)
 
+    fun updateAddPlayer(
+        sid: UInt,
+        pid: Collection<UInt>,
+    ): Boolean
+
 //    /**
 //     * Gets the sessions of a given player.
 //     *

@@ -1,0 +1,1 @@
+   O status code 404 (NOT FOUND) foi utilizado no nosso trabalho quando era feito um pedido à API para que a mesma retornasse na http response um recurso específico e esse recurso especificado não era encontrado com sucesso.

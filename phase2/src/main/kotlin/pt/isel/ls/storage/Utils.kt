@@ -21,8 +21,8 @@ import java.util.UUID
 internal fun getGamesFromDB(
     getGameStmt: PreparedStatement,
     getGenresStmt: PreparedStatement,
-    areGenresInGameStmt: PreparedStatement,
-    genres: Collection<String>?,
+    areGenresInGameStmt: PreparedStatement? = null,
+    genres: Collection<String>? = null,
 ): Collection<Game> =
     mutableListOf<Game>().apply {
         val rs = getGameStmt.executeQuery()
@@ -52,10 +52,12 @@ internal fun getGamesFromDB(
  * @return True if the genres are in the game, false otherwise.
  */
 private fun areGenresInGame(
-    areGenresInGameStmt: PreparedStatement,
+    areGenresInGameStmt: PreparedStatement?,
     gid: UInt,
     genres: Collection<String>,
 ): Boolean {
+    if (areGenresInGameStmt == null) return false
+
     areGenresInGameStmt.setUInt(1, gid)
 
     return genres.any { genre ->

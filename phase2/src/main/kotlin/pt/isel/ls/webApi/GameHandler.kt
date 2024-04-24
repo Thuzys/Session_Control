@@ -74,4 +74,24 @@ class GameHandler(
             }
         }
     }
+
+    override fun getGamesByPlayer(request: Request): Response {
+        unauthorizedAccess(
+            request,
+            playerServices,
+        )?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it.") }
+
+        val offset = request.query("offset")?.toUIntOrNull()
+        val limit = request.query("limit")?.toUIntOrNull()
+        val pid = request.query("pid")?.toUIntOrNull()
+
+        return if (pid == null) {
+            makeResponse(Status.BAD_REQUEST, "Bad Request.")
+        } else {
+            tryResponse(Status.NOT_FOUND, "Game not found.") {
+                val games = gameManagement.getGamesByPlayer(pid, offset, limit)
+                makeResponse(Status.FOUND, Json.encodeToString(games))
+            }
+        }
+    }
 }

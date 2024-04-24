@@ -48,6 +48,20 @@ interface GameStorageInterface {
     ): Collection<Game>
 
     /**
+     * Reads a game by its player.
+     *
+     * @param pid the player's id.
+     * @param offset the offset.
+     * @param limit the limit.
+     * @return the games.
+     */
+    fun readByPlayer(
+        pid: UInt,
+        offset: UInt,
+        limit: UInt,
+    ): Collection<Game>
+
+    /**
      * Updates a game.
      *
      * @param uInt the id of the game.

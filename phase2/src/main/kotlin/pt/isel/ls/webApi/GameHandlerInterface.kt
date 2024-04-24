@@ -38,4 +38,13 @@ interface GameHandlerInterface {
      * @return The HTTP response containing the result of the operation.
      */
     fun getGameByDevAndGenres(request: Request): Response
+
+    /**
+     * Retrieves games that a player has played in a session that has already started,
+     * even if the session is already finished.
+     *
+     * @param request The HTTP request containing the offset, the limit, the dev and the genres.
+     * @return The HTTP response containing the result of the operation.
+     */
+    fun getGamesByPlayer(request: Request): Response
 }

@@ -98,4 +98,40 @@ class GameManagementTest {
             assertFailsWith<ServicesError> { handler.getGameByDevAndGenres(gameDev, gameGenres) }
         }
     }
+
+    @Test
+    fun `get Games by player - Success`() {
+        executeGameManagementTest { handler ->
+            // ARRANGE
+            val expectedSize = 2
+
+            // ACT
+            val games = handler.getGamesByPlayer(1u)
+
+            // ASSERT
+            assertEquals(expectedSize, games.size)
+        }
+    }
+
+    @Test
+    fun `get Games by player with no results - Failure due to non existing player id`() {
+        executeGameManagementTest { handler ->
+            // ARRANGE
+            val invalidPid = 60u
+
+            // ACT & ASSERT
+            assertFailsWith<ServicesError> { handler.getGamesByPlayer(invalidPid) }
+        }
+    }
+
+    @Test
+    fun `get Games by player with no results - Failure due to player with no games`() {
+        executeGameManagementTest { handler ->
+            // ARRANGE
+            val invalidPid = 4u
+
+            // ACT & ASSERT
+            assertFailsWith<ServicesError> { handler.getGamesByPlayer(invalidPid) }
+        }
+    }
 }

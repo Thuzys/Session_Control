@@ -135,4 +135,15 @@ class RoutesKtTest {
                 "No matching handler found for $request",
             )
         }
+
+    @Test
+    fun `buildRoutes returns router with get GAME_PLAYER_ROUTE`() {
+        actionOfRoutesArrangement { handler: RoutingHttpHandler ->
+            val request = Request(Method.GET, GAME_PLAYER_ROUTE)
+            assertIs<RouterMatch.MatchingHandler>(
+                handler.match(request),
+                "No matching handler found for $request",
+            )
+        }
+    }
 }

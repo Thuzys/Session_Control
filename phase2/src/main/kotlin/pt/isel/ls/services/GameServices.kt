@@ -49,4 +49,18 @@ interface GameServices {
         offset: UInt? = null,
         limit: UInt? = null,
     ): Collection<Game>
+
+    /**
+     * Gets the games by player.
+     *
+     * @param pid The player's id.
+     * @param offset The offset.
+     * @param limit The limit.
+     * @return Collection of games.
+     */
+    fun getGamesByPlayer(
+        pid: UInt,
+        offset: UInt? = null,
+        limit: UInt? = null,
+    ): Collection<Game>
 }

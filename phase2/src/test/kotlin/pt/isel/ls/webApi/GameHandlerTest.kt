@@ -276,4 +276,72 @@ class GameHandlerTest {
         // ASSERT
         assertEquals(expectedMessage, response.bodyString())
     }
+
+    @Test
+    fun `game found by player successfully`() {
+        // ARRANGE
+        val request = Request(Method.GET, "$DUMMY_ROUTE?pid=1&token=${PlayerManagementStunt.playerToken}")
+        val expectedStatus = Status.FOUND
+
+        // ACT
+        val response =
+            executeGameHandlerTest { handler ->
+                handler.getGamesByPlayer(request)
+            }
+
+        // ASSERT
+        assertEquals(expectedStatus, response.status)
+    }
+
+    @Test
+    fun `message of game not found by player due to a player id that does not correspond to an existing Player`() {
+        // ARRANGE
+        val request = Request(Method.GET, "$DUMMY_ROUTE?pid=34&token=${PlayerManagementStunt.playerToken}")
+        val expectedMessage =
+            """
+            Error:Game not found.
+            Cause:Unable to find the game due to invalid player id.
+            """.trimIndent()
+
+        // ACT
+        val response =
+            executeGameHandlerTest { handler ->
+                handler.getGamesByPlayer(request)
+            }
+
+        // ASSERT
+        assertEquals(expectedMessage, response.bodyString())
+    }
+
+    @Test
+    fun `message of game found by player`() {
+        // ARRANGE
+        val request = Request(Method.GET, "$DUMMY_ROUTE?pid=1&token=${PlayerManagementStunt.playerToken}")
+        val expectedMessage = "[{\"gid\":1,\"name\":\"Test\",\"dev\":\"TestDev\",\"genres\":[\"TestGenre\"]}]"
+
+        // ACT
+        val response =
+            executeGameHandlerTest { handler ->
+                handler.getGamesByPlayer(request)
+            }
+
+        // ASSERT
+        assertEquals(expectedMessage, response.bodyString())
+    }
+
+    @Test
+    fun `game not found by player due to a player id that does not correspond to an existing Player`() {
+        // ARRANGE
+        val request = Request(Method.GET, "$DUMMY_ROUTE?pid=34&token=${PlayerManagementStunt.playerToken}")
+        val expectedStatus = Status.NOT_FOUND
+
+        // ACT
+        val response =
+            executeGameHandlerTest { handler ->
+                handler.getGamesByPlayer(request)
+            }
+
+        // ASSERT
+        assertEquals(expectedStatus, response.status)
+    }
 }

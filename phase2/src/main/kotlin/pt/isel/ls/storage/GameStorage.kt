@@ -96,6 +96,35 @@ class GameStorage(envVarName: String) : GameStorageInterface {
             }
         }
 
+    override fun readByPlayer(
+        pid: UInt,
+        offset: UInt,
+        limit: UInt,
+    ): Collection<Game> =
+        dataSource.connection.use {
+            it.executeCommand {
+                val getGamesStmt =
+                    it.prepareStatement(
+                        "SELECT GAME.gid, name, developer, pid" +
+                            " FROM GAME JOIN SESSION ON GAME.gid = SESSION.gid" +
+                            " JOIN player_session ON SESSION.sid = PLAYER_SESSION.sid" +
+                            " WHERE pid = ?" +
+                            " LIMIT ? OFFSET ?",
+                    )
+
+                val getGenresStmt =
+                    it.prepareStatement(
+                        "SELECT name FROM GENRE JOIN GAME_GENRE ON GENRE.name = GAME_GENRE.genre WHERE GAME_GENRE.gid = ?",
+                    )
+
+                getGamesStmt.setUInt(1, pid)
+                getGamesStmt.setUInt(2, limit)
+                getGamesStmt.setUInt(3, offset)
+
+                getGamesFromDB(getGamesStmt, getGenresStmt)
+            }
+        }
+
     override fun delete(uInt: UInt) {
         TODO("Not needed")
     }

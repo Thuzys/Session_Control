@@ -40,4 +40,15 @@ object GameManagementStunt : GameServices {
         } else {
             throw ServicesError("Unable to find the game due to invalid dev or genres.")
         }
+
+    override fun getGamesByPlayer(
+        pid: UInt,
+        offset: UInt?,
+        limit: UInt?,
+    ): Collection<Game> =
+        if (pid == gameId) {
+            listOf(Game(gameId, GAME_NAME, GAME_DEV, gameGenres))
+        } else {
+            throw ServicesError("Unable to find the game due to invalid player id.")
+        }
 }

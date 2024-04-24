@@ -1,0 +1,1 @@
+   No contexto do sistema de controlo de versões Git, adiferença entre os comandos push e commit é que o commando commit simplesmente confirma as alterações no stash, enquanto que o comando push coloca as alterações localizadas no stash para o local especificado.

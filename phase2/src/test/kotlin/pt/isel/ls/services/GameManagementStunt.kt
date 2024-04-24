@@ -40,4 +40,16 @@ object GameManagementStunt : GameServices {
         } else {
             throw ServicesError("Unable to find the game due to invalid dev or genres.")
         }
+
+    override fun getGamesInOpenSessions(
+        offset: UInt?,
+        limit: UInt?,
+    ): Collection<Game> {
+        if (offset == 0u && limit == 9u) {
+            throw NoSuchElementException("No games in open sessions")
+        } else {
+            return listOf(Game(gameId, GAME_NAME, GAME_DEV, gameGenres))
+        }
+
+    }
 }

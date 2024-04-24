@@ -276,4 +276,20 @@ class GameHandlerTest {
         // ASSERT
         assertEquals(expectedMessage, response.bodyString())
     }
+
+    @Test
+    fun `getting games in open sessions returns found status successfully`() {
+        // ARRANGE
+        val request = Request(Method.GET, "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}")
+        val expectedStatus = Status.FOUND
+
+        // ACT
+        val response =
+            executeGameHandlerTest { handler ->
+                handler.getGamesInOpenSessions(request)
+            }
+
+        // ASSERT
+        assertEquals(expectedStatus, response.status)
+    }
 }

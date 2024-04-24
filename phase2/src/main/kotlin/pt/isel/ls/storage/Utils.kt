@@ -44,6 +44,28 @@ internal fun getGamesFromDB(
     }
 
 /**
+ * makes a list of [Game] objects from a [PreparedStatement].
+ *
+ * @param getGamesStmt The [PreparedStatement] to make the list from.
+ * @return A list of [Game] objects.
+ */
+fun makeGamesList(getGamesStmt: PreparedStatement): Collection<Game> {
+    val games = mutableListOf<Game>()
+    val rs = getGamesStmt.executeQuery()
+    while (rs.next()) {
+        games.add(
+            Game(
+                gid = rs.getUInt("gid"),
+                name = rs.getString("name"),
+                dev = rs.getString("developer"),
+                genres = emptyList(),
+            ),
+        )
+    }
+    return games
+}
+
+/**
  * Checks if the genres are in the game.
  *
  * @param areGenresInGameStmt The [PreparedStatement] to check if the genres are in the game.

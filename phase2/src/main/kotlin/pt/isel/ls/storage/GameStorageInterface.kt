@@ -64,4 +64,16 @@ interface GameStorageInterface {
      * @param uInt the id of the game.
      */
     fun delete(uInt: UInt)
+
+    /**
+     * Reads games in open sessions.
+     *
+     * @param offset the offset.
+     * @param limit the limit.
+     * @return the games.
+     */
+    fun readInOpenSessions(
+        offset: UInt,
+        limit: UInt,
+    ): Collection<Game>
 }

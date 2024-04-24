@@ -96,6 +96,28 @@ class GameStorage(envVarName: String) : GameStorageInterface {
             }
         }
 
+    override fun readInOpenSessions(
+        offset: UInt,
+        limit: UInt,
+    ): Collection<Game> =
+        dataSource.connection.use {
+            it.executeCommand {
+                val getGamesStmt =
+                    it.prepareStatement(
+                        "SELECT g.gid, g.name, g.developer FROM GAME g JOIN SESSION s ON g.gid = s.gid\n" +
+                            "JOIN PLAYER_SESSION ps on s.sid = ps.sid\n" +
+                            "GROUP BY g.name, g.gid, g.developer, s.capacity\n" +
+                            "HAVING s.capacity > count(ps.pid) LIMIT ? OFFSET ?",
+                    )
+
+                getGamesStmt.setUInt(1, limit)
+                getGamesStmt.setUInt(2, offset)
+
+                makeGamesList(getGamesStmt)
+                    .ifEmpty { throw NoSuchElementException("No games in open sessions") }
+            }
+        }
+
     override fun delete(uInt: UInt) {
         TODO("Not needed")
     }

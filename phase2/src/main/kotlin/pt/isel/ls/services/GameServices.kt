@@ -49,4 +49,16 @@ interface GameServices {
         offset: UInt? = null,
         limit: UInt? = null,
     ): Collection<Game>
+
+    /**
+     * Gets the games in open sessions.
+     *
+     * @param offset The offset.
+     * @param limit The limit.
+     * @return Collection of games.
+     */
+    fun getGamesInOpenSessions(
+        offset: UInt?,
+        limit: UInt?,
+    ): Collection<Game>
 }

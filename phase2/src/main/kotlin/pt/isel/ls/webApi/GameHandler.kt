@@ -74,4 +74,19 @@ class GameHandler(
             }
         }
     }
+
+    override fun getGamesInOpenSessions(request: Request): Response {
+        unauthorizedAccess(
+            request,
+            playerServices,
+        )?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it.") }
+
+        val offset = request.query("offset")?.toUIntOrNull()
+        val limit = request.query("limit")?.toUIntOrNull()
+
+        return tryResponse(Status.NOT_FOUND, "Game not found.") {
+            val games = gameManagement.getGamesInOpenSessions(offset, limit)
+            makeResponse(Status.FOUND, Json.encodeToString(games))
+        }
+    }
 }

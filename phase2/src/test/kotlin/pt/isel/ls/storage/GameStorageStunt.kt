@@ -48,4 +48,15 @@ class GameStorageStunt : GameStorageInterface {
     override fun delete(uInt: UInt) {
         TODO("Not needed for tests")
     }
+
+    override fun readInOpenSessions(
+        offset: UInt,
+        limit: UInt,
+    ): Collection<Game> {
+        if (offset == 0u && limit == 9u) {
+            throw NoSuchElementException("No games in open sessions")
+        } else {
+            return listOf(game1) //didnt have time to do something more elaborated
+        }
+    }
 }

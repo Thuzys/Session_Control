@@ -38,4 +38,12 @@ interface GameHandlerInterface {
      * @return The HTTP response containing the result of the operation.
      */
     fun getGameByDevAndGenres(request: Request): Response
+
+    /**
+     * Retrieves games in open sessions.
+     *
+     * @param request The HTTP request containing the offset and the limit.
+     * @return The HTTP response containing the result of the operation.
+     */
+    fun getGamesInOpenSessions(request: Request): Response
 }

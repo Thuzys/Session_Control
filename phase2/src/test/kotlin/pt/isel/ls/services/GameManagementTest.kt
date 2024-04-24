@@ -98,4 +98,25 @@ class GameManagementTest {
             assertFailsWith<ServicesError> { handler.getGameByDevAndGenres(gameDev, gameGenres) }
         }
     }
+
+    @Test
+    fun `get games in open sessions - Success`() {
+        executeGameManagementTest { handler ->
+            // ARRANGE
+            val expectedSize = 1
+
+            // ACT
+            val games = handler.getGamesInOpenSessions(0u, 10u)
+
+            // ASSERT
+            assertEquals(expectedSize, games.size)
+        }
+    }
+
+    @Test
+    fun `get games in open sessions with no results - Failure due to no games in open sessions`() {
+        executeGameManagementTest { handler ->
+            assertFailsWith<ServicesError> { handler.getGamesInOpenSessions(0u, 9u) }
+        }
+    }
 }

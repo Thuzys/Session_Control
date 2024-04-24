@@ -36,4 +36,15 @@ class GameManagement(private val storage: GameStorageInterface) : GameServices {
                 genres,
             )
         }
+
+    override fun getGamesInOpenSessions(
+        offset: UInt?,
+        limit: UInt?,
+    ): Collection<Game> =
+        tryCatch("Unable to find the game due") {
+            storage.readInOpenSessions(
+                offset ?: DEFAULT_OFFSET,
+                limit ?: DEFAULT_LIMIT,
+            )
+        }
 }

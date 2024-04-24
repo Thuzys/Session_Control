@@ -61,10 +61,11 @@ class GameStorage(envVarName: String) : GameStorageInterface {
         limit: UInt,
         dev: String?,
         genres: Collection<String>?,
+        pid: UInt?,
     ): Collection<Game> =
         dataSource.connection.use {
             it.executeCommand {
-                val getGameStr = buildGameGetterString(dev)
+                val getGameStr = buildGameGetterString(dev, pid)
                 val getGamesStmt = it.prepareStatement("$getGameStr LIMIT ? OFFSET ?")
 
                 val getGenresStmt =
@@ -79,6 +80,7 @@ class GameStorage(envVarName: String) : GameStorageInterface {
                     )
 
                 var paramIdx = 1
+                pid?.let { p -> getGamesStmt.setUInt(paramIdx++, p) }
                 dev?.let { d -> getGamesStmt.setString(paramIdx++, d) }
                 getGamesStmt.setUInt(paramIdx++, limit)
                 getGamesStmt.setUInt(paramIdx, offset)

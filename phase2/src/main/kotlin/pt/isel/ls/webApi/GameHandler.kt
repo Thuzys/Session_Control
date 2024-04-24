@@ -63,13 +63,14 @@ class GameHandler(
         val offset = request.query("offset")?.toUIntOrNull()
         val limit = request.query("limit")?.toUIntOrNull()
         val dev = request.query("dev")
+        val pid = request.toPidOrNull()
         val genres = request.query("genres") ?.let { processGenres(it) }
 
-        return if (dev == null && genres == null) {
+        return if (dev == null && genres == null && pid == null) {
             makeResponse(Status.BAD_REQUEST, "Bad Request.")
         } else {
             tryResponse(Status.NOT_FOUND, "Game not found.") {
-                val games = gameManagement.getGameByDevAndGenres(dev, genres, offset, limit)
+                val games = gameManagement.getGameByDevAndGenres(dev, genres, pid, offset, limit)
                 makeResponse(Status.FOUND, Json.encodeToString(games))
             }
         }

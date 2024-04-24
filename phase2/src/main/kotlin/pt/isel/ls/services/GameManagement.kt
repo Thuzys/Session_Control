@@ -25,8 +25,9 @@ class GameManagement(private val storage: GameStorageInterface) : GameServices {
     override fun getGameByDevAndGenres(
         dev: String?,
         genres: Collection<String>?,
+        pid: UInt?,
         offset: UInt?,
-        limit: UInt?,
+        limit: UInt?
     ): Collection<Game> =
         tryCatch("Unable to find the game due") {
             storage.readBy(
@@ -34,6 +35,7 @@ class GameManagement(private val storage: GameStorageInterface) : GameServices {
                 limit ?: DEFAULT_LIMIT,
                 dev,
                 genres,
+                pid,
             )
         }
 }

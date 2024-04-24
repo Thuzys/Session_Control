@@ -98,4 +98,29 @@ class GameManagementTest {
             assertFailsWith<ServicesError> { handler.getGameByDevAndGenres(gameDev, gameGenres) }
         }
     }
+
+    @Test
+    fun `get games by pid`() {
+        executeGameManagementTest { handler ->
+            // ARRANGE
+            val expectedSize = 1
+
+            // ACT
+            val games = handler.getGameByDevAndGenres(pid = 1u)
+
+            // ASSERT
+            assertEquals(expectedSize, games.size)
+        }
+    }
+
+    @Test
+    fun `get games with nonexistent pid`() {
+        executeGameManagementTest { handler ->
+            // ARRANGE
+            val pid = 2u
+
+            // ACT & ASSERT
+            assertFailsWith<ServicesError> { handler.getGameByDevAndGenres(pid = pid) }
+        }
+    }
 }

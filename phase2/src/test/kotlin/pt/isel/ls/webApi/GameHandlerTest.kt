@@ -276,4 +276,20 @@ class GameHandlerTest {
         // ASSERT
         assertEquals(expectedMessage, response.bodyString())
     }
+
+    @Test
+    fun `good request getting the game details`() {
+        // ARRANGE
+        val request = Request(Method.GET, "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}&pid=1")
+        val expectedStatus = Status.FOUND
+
+        // ACT
+        val response =
+            executeGameHandlerTest { handler ->
+                handler.getGameByDevAndGenres(request)
+            }
+
+        // ASSERT
+        assertEquals(expectedStatus, response.status)
+    }
 }

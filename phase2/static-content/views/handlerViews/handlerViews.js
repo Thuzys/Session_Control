@@ -75,6 +75,14 @@ function createPagination(query, hash, hasNext) {
     )
 }
 
+function gamesButtonView(textContent, query) {
+    const backButton = views.button({type: "button"}, textContent);
+    backButton.addEventListener('click', () => {
+        window.location.hash = query;
+    });
+    return backButton;
+}
+
 const handlerViews = {
     sessionsButtonView,
     createHeader,
@@ -83,6 +91,7 @@ const handlerViews = {
     createBackButtonView,
     createPagination,
     createHomeView,
+    gamesButtonView,
 }
 
 export default handlerViews;

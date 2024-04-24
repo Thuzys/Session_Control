@@ -7,11 +7,13 @@ function createPlayerDetailsView(player) {
     );
     const backButtonView = handlerViews.createBackButtonView();
     const sessionsButtonView = handlerViews.sessionsButtonView("Sessions", "sessions?pid=" + player.pid + "&offset=0");
+    const gamesButtonView = handlerViews.gamesButtonView("Games", "games?pid=" + player.pid + "&offset=0");
     return views.div({},
         h2,
         playerDetailsView,
         backButtonView,
         sessionsButtonView,
+        gamesButtonView,
     );
 }
 import views from "../viewsCreators.js";

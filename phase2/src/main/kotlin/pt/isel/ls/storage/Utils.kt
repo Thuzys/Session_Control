@@ -227,8 +227,22 @@ private fun getGameId(addGameStmt: PreparedStatement): UInt {
  * @param dev The developer to get the games from.
  * @return The string to get games from the database.
  */
-internal fun buildGameGetterString(dev: String?): String {
-    var getGameStr = "SELECT gid, name, developer from GAME"
+internal fun buildGameGetterString(dev: String?, pid: UInt?): String {
+    var getGameStr = "SELECT GAME.gid, name, developer from GAME"
+    pid?.let {
+        getGameStr += """
+                JOIN (
+        SELECT session.gid
+        from
+            SESSION JOIN PLAYER_SESSION
+                on session.sid = player_session.sid
+        where player_session.pid = ?
+        and session.date > now()
+        ) as player_games
+        on game.gid = player_games.gid
+        GROUP BY game.gid
+        """.trimIndent()
+    }
     dev?.let { getGameStr += " WHERE developer = ?" }
     return getGameStr
 }

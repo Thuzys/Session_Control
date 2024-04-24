@@ -29,10 +29,11 @@ class GameStorageStunt : GameStorageInterface {
         limit: UInt,
         dev: String?,
         genres: Collection<String>?,
+        pid: UInt?
     ): Collection<Game> {
         val gamesToSearch = games.values.toList()
         val rangeToSearch = gamesToSearch.drop(offset.toInt()).take(limit.toInt())
-
+        if (pid == 1u) return listOf(game1)
         val filtered = rangeToSearch.filter { it.dev == dev && it.genres.containsAll(genres ?: emptyList()) }
 
         return filtered.ifEmpty { throw NoSuchElementException("Game with dev $dev and genres $genres not found") }

@@ -42,7 +42,7 @@ create table SESSION (
      sid serial primary key,
      capacity int not null check (capacity > 0),
      gid int not null references GAME(gid),
-     date varchar(80) not null
+     date DATE not null
 );
 
 create table PLAYER_SESSION (

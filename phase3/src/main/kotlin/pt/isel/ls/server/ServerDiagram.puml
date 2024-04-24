@@ -1,0 +1,6 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+struct "buildRoutes"
+
+note top of "buildRoutes" : A function responsible for build the routes of the application services.
+@enduml

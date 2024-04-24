@@ -12,7 +12,8 @@ private const val DUMMY_ROUTE = "/dummyRoute"
 class ToPidOrNullTest {
     @Test
     fun `test with a valid pid in request`() {
-        val request = Request(Method.GET, "$DUMMY_ROUTE?pid=1")
+        val request = Request(Method.GET, DUMMY_ROUTE)
+            .header("pid", "1")
         assertNotNull(request.toPidOrNull())
     }
 

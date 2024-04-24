@@ -1,0 +1,63 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+Interface GameStorageInterface {
+    + create()
+    + read()
+    + raedBy()
+    + update()
+    + delete()
+}
+
+Interface PlayerStorageInterface {
+    + create()
+    + read()
+    + raedBy()
+    + update()
+    + delete()
+}
+
+Interface SessionStorageInterface {
+    + createSession()
+    + readSession()
+    + raedSessions()
+    + updateAddPlayer()
+    + updateCapacityOrDate()
+    + updateRemovePlayer()
+    + deleteSession()
+}
+
+class GameStorage {
+    + create()
+    + read()
+    + raedBy()
+    + update()
+    + delete()
+    - dataSource
+}
+
+class PlayerStorage {
+    + create()
+    + read()
+    + raedBy()
+    + update()
+    + delete()
+    - dataSource
+}
+
+class SessionStorage {
+    + createSession()
+    + readSession()
+    + raedSessions()
+    + updateAddPlayer()
+    + updateCapacityOrDate()
+    + updateRemovePlayer()
+    + deleteSession()
+    - dataSource
+}
+
+GameStorageInterface <|-- GameStorage
+PlayerStorageInterface <|-- PlayerStorage
+SessionStorageInterface <|-- SessionStorage
+
+@enduml

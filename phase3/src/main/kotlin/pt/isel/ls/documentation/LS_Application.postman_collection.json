@@ -1,0 +1,488 @@
+{
+	"info": {
+		"_postman_id": "51847cc6-21bf-4fb1-a98a-13c0c2a43c5a",
+		"name": "LS_Application",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "31366572"
+	},
+	"item": [
+		{
+			"name": "CreateFirstPlayerTest",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"presentation_test1\",\r\n    \"email\": \"good@mail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/players",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"players"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "e247758f-02b6-4037-bd85-fc245b84d5f2",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateSecondPlayerTest",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"presentation_test2\",\r\n    \"email\": \"good2@mail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/players"
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllGamesWihtRPG_inGenres",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/games?token=e247758f-02b6-4037-bd85-fc245b84d5f2&genres=RPG",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"games"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "e247758f-02b6-4037-bd85-fc245b84d5f2"
+						},
+						{
+							"key": "genres",
+							"value": "RPG"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "InvalidEmailCreatingAPlayer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"invalidEmailUser\",\r\n    \"email\": \"good@mail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/players"
+			},
+			"response": []
+		},
+		{
+			"name": "CreatingAGameWithRPGInGenres",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Test1\",\r\n    \"dev\": \"Dev1\",\r\n    \"genres\": \"RPG\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/games?token=e247758f-02b6-4037-bd85-fc245b84d5f2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"games"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "e247758f-02b6-4037-bd85-fc245b84d5f2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateAGameWithRPGAndActionOnGenres",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Test1\",\r\n    \"dev\": \"Dev1\",\r\n    \"genres\": \"RPG,Action\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/games?token=e247758f-02b6-4037-bd85-fc245b84d5f2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"games"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "e247758f-02b6-4037-bd85-fc245b84d5f2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreatingASessionWithInvalidDate",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"capacity\": 12,\r\n    \"gid\": 1,\r\n    \"date\": \"2019-15-24T14:15:22Z\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/sessions?token=e247758f-02b6-4037-bd85-fc245b84d5f2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sessions"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "e247758f-02b6-4037-bd85-fc245b84d5f2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createSession",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"gid\": \"1\",\r\n    \"capacity\": \"2\",\r\n    \"date\": \"2024-03-10T12_30\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/sessions?token=e247758f-02b6-4037-bd85-fc245b84d5f2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sessions"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "e247758f-02b6-4037-bd85-fc245b84d5f2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addPlayerToSession",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sid\": \"41\",\r\n    \"pid\": \"1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/sessions/session?token=e247758f-02b6-4037-bd85-fc245b84d5f2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sessions",
+						"session"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "e247758f-02b6-4037-bd85-fc245b84d5f2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getSession",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/sessions/session?token=e247758f-02b6-4037-bd85-fc245b84d5f2&sid=41",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sessions",
+						"session"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "e247758f-02b6-4037-bd85-fc245b84d5f2"
+						},
+						{
+							"key": "sid",
+							"value": "41"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "listSessions2by2",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/sessions/?token=e247758f-02b6-4037-bd85-fc245b84d5f2&limit=2&offset=0",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sessions",
+						""
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "e247758f-02b6-4037-bd85-fc245b84d5f2"
+						},
+						{
+							"key": "limit",
+							"value": "2"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a player from a session",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"pid\": \"1\",\r\n    \"sid\": \"3\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/sessions/delete/player?token=e247758f-02b6-4037-bd85-fc245b84d5f2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sessions",
+						"delete",
+						"player"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "e247758f-02b6-4037-bd85-fc245b84d5f2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Show the details of a session",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/sessions/session?sid=3&token=e247758f-02b6-4037-bd85-fc245b84d5f2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sessions",
+						"session"
+					],
+					"query": [
+						{
+							"key": "sid",
+							"value": "3"
+						},
+						{
+							"key": "token",
+							"value": "e247758f-02b6-4037-bd85-fc245b84d5f2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove a Session",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sid\": \"3\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/sessions/delete?token=e247758f-02b6-4037-bd85-fc245b84d5f2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sessions",
+						"delete"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "e247758f-02b6-4037-bd85-fc245b84d5f2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Try to show the details of the session",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/sessions/session?sid=3&token=e247758f-02b6-4037-bd85-fc245b84d5f2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sessions",
+						"session"
+					],
+					"query": [
+						{
+							"key": "sid",
+							"value": "3"
+						},
+						{
+							"key": "token",
+							"value": "e247758f-02b6-4037-bd85-fc245b84d5f2"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

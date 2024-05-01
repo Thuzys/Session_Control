@@ -6,8 +6,8 @@ function isResponseOK(response) {
     return response.status >= 200 && response.status < 399
 }
 
-function executeCommandWithResponse(url, responseHandler) {
-    fetch(url)
+function executeCommandWithResponse(fetcher, responseHandler) {
+    fetcher
         .then(response => {
             if(isResponseOK(response)) {
                 responseHandler(response);

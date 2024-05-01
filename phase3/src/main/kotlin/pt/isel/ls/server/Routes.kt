@@ -14,7 +14,6 @@ const val PLAYER_ID_ROUTE = "$PLAYER_ROUTE/{pid}"
 const val GAME_ID_ROUTE = "$GAME_ROUTE/{gid}"
 const val SESSION_ID_ROUTE = "$SESSION_ROUTE/{sid}"
 const val SESSION_PLAYER_ROUTE = "$SESSION_ID_ROUTE/{pid}"
-// const val SESSION_PLAYER_ID_ROUTE = "$SESSION_ID_ROUTE/player"
 
 /**
  * Builds the routes for the application services

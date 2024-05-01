@@ -3,7 +3,6 @@ package pt.isel.ls.utils
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.UriTemplate
-import org.http4k.routing.RequestWithRoute
 import org.http4k.routing.RoutedRequest
 import pt.isel.ls.webApi.toPidOrNull
 import kotlin.test.Test

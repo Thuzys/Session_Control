@@ -14,8 +14,9 @@ class UnauthorizedAccessTest {
     @Test
     fun `return null for an authorized request`() {
         // Arrange
-        val request = Request(Method.GET, DUMMY_ROUTE)
-            .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
+        val request =
+            Request(Method.GET, DUMMY_ROUTE)
+                .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
 
         // assert
         assertNull(unauthorizedAccess(request, PlayerManagementStunt))
@@ -36,8 +37,9 @@ class UnauthorizedAccessTest {
     @Test
     fun `return unauthorized message for an unauthorized request with invalid token`() {
         // Arrange
-        val request = Request(Method.GET, DUMMY_ROUTE)
-            .header("Authorization", "Bearer invalidToken")
+        val request =
+            Request(Method.GET, DUMMY_ROUTE)
+                .header("Authorization", "Bearer invalidToken")
 
         // Act
         val result = unauthorizedAccess(request, PlayerManagementStunt)

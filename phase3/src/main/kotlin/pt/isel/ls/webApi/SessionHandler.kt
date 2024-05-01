@@ -44,7 +44,7 @@ class SessionHandler(
     override fun getSession(request: Request): Response {
         unauthorizedAccess(request, playerManagement)
             ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it.") }
-        val sid = request.query("sid")?.toUInt() ?: return makeResponse(Status.BAD_REQUEST, "Missing or invalid sid.")
+        val sid = request.toSidOrNull() ?: return makeResponse(Status.BAD_REQUEST, "Missing or invalid sid.")
         return tryResponse(Status.NOT_FOUND, "Session not found.") {
             val session = sessionManagement.getSessionDetails(sid)
             makeResponse(Status.FOUND, Json.encodeToString(session))
@@ -83,9 +83,8 @@ class SessionHandler(
     override fun addPlayerToSession(request: Request): Response {
         unauthorizedAccess(request, playerManagement)
             ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it.") }
-        val body = readBody(request)
-        val player = body["pid"]?.toUIntOrNull()
-        val session = body["sid"]?.toUIntOrNull()
+        val player = request.toPidOrNull()
+        val session = request.toSidOrNull()
         return if (player == null || session == null) {
             makeResponse(
                 Status.BAD_REQUEST,
@@ -130,9 +129,8 @@ class SessionHandler(
     override fun removePlayerFromSession(request: Request): Response {
         unauthorizedAccess(request, playerManagement)
             ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it.") }
-        val body = readBody(request)
-        val player = body["pid"]?.toUIntOrNull()
-        val session = body["sid"]?.toUIntOrNull()
+        val player = request.toPidOrNull()
+        val session = request.toSidOrNull()
         return if (player == null || session == null) {
             makeResponse(
                 Status.BAD_REQUEST,
@@ -149,10 +147,7 @@ class SessionHandler(
     override fun deleteSession(request: Request): Response {
         unauthorizedAccess(request, playerManagement)
             ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it.") }
-
-        val body = readBody(request)
-        val sid = body["sid"]?.toUIntOrNull()
-
+        val sid = request.toSidOrNull()
         return if (sid == null) {
             makeResponse(Status.BAD_REQUEST, "Invalid or Missing Session Identifier.")
         } else {

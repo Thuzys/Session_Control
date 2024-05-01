@@ -4,6 +4,8 @@ import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
+import org.http4k.core.UriTemplate
+import org.http4k.routing.RoutedRequest
 import pt.isel.ls.services.GameManagementStunt
 import pt.isel.ls.services.PlayerManagementStunt
 import kotlin.test.Test
@@ -19,7 +21,9 @@ class GameHandlerTest {
     @Test
     fun `bad request creating a game due to missing parameters (name, developer and genres)`() {
         // ARRANGE
-        val request = Request(Method.POST, "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}")
+        val request =
+            Request(Method.POST, DUMMY_ROUTE)
+                .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
         val expectedStatus = Status.BAD_REQUEST
 
         // ACT
@@ -35,7 +39,9 @@ class GameHandlerTest {
     @Test
     fun `message of Bad Request creating a game due to missing parameters (name, developer and genres)`() {
         // ARRANGE
-        val request = Request(Method.POST, "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}")
+        val request =
+            Request(Method.POST, DUMMY_ROUTE)
+                .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
         val expectedMessage = "Bad Request."
 
         // ACT
@@ -51,7 +57,12 @@ class GameHandlerTest {
     @Test
     fun `bad request getting the game details due to missing game id`() {
         // ARRANGE
-        val request = Request(Method.GET, "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}")
+        val request =
+            RoutedRequest(
+                Request(Method.GET, "$DUMMY_ROUTE/INVALID"),
+                UriTemplate.from("$DUMMY_ROUTE/{gid}"),
+            )
+                .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
         val expectedStatus = Status.BAD_REQUEST
 
         // ACT
@@ -67,7 +78,12 @@ class GameHandlerTest {
     @Test
     fun `message of Bad Request getting the game details due to missing game id`() {
         // ARRANGE
-        val request = Request(Method.GET, "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}")
+        val request =
+            RoutedRequest(
+                Request(Method.GET, "$DUMMY_ROUTE/INVALID"),
+                UriTemplate.from("$DUMMY_ROUTE/{gid}"),
+            )
+                .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
         val expectedMessage = "Bad Request."
 
         // ACT
@@ -86,8 +102,9 @@ class GameHandlerTest {
         val request =
             Request(
                 method = Method.POST,
-                uri = "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}",
+                uri = DUMMY_ROUTE,
             ).body("{\"name\": \"name\", \"dev\": \"dev\", \"genres\": \"genre1,genre2,genre3\"")
+                .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
 
         val expectedStatus = Status.CREATED
 
@@ -107,8 +124,11 @@ class GameHandlerTest {
         val request =
             Request(
                 method = Method.POST,
-                uri = "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}",
-            ).body("{\"name\": \"name\", \"dev\": \"dev\", \"genres\": \"genre1,genre2,genre3\"")
+                uri = DUMMY_ROUTE,
+            )
+                .body("{\"name\": \"name\", \"dev\": \"dev\", \"genres\": \"genre1,genre2,genre3\"")
+                .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
+
         val expectedMessage = "Game created with id 1."
 
         // ACT
@@ -127,8 +147,10 @@ class GameHandlerTest {
         val request =
             Request(
                 method = Method.POST,
-                uri = "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}",
+                uri = DUMMY_ROUTE,
             ).body("{\"name\": \"\", \"dev\": \"dev\", \"genres\": \"genre1,genre2,genre3\"}")
+                .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
+
         val expectedStatus = Status.INTERNAL_SERVER_ERROR
 
         // ACT
@@ -144,7 +166,9 @@ class GameHandlerTest {
     @Test
     fun `bad request getting the game by dev and genres due to missing developer and genres`() {
         // ARRANGE
-        val request = Request(Method.GET, "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}")
+        val request =
+            Request(Method.GET, DUMMY_ROUTE)
+                .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
         val expectedStatus = Status.BAD_REQUEST
 
         // ACT
@@ -160,7 +184,9 @@ class GameHandlerTest {
     @Test
     fun `message of Bad Request getting the game by dev and genres due to missing developer and genres`() {
         // ARRANGE
-        val request = Request(Method.GET, "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}")
+        val request =
+            Request(Method.GET, DUMMY_ROUTE)
+                .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
         val expectedMessage = "Bad Request."
 
         // ACT
@@ -176,7 +202,9 @@ class GameHandlerTest {
     @Test
     fun `game found by dev and genres successfully`() {
         // ARRANGE
-        val request = Request(Method.GET, "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}&dev=TestDev&genres=TestGenre")
+        val request =
+            Request(Method.GET, "$DUMMY_ROUTE?dev=TestDev&genres=TestGenre")
+                .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
         val expectedStatus = Status.FOUND
 
         // ACT
@@ -192,7 +220,9 @@ class GameHandlerTest {
     @Test
     fun `message of game by dev and genres not found due to parameters that not correspond to an existing Game`() {
         // ARRANGE
-        val request = Request(Method.GET, "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}&dev=TestDev2&genres=TestGenre")
+        val request =
+            Request(Method.GET, "$DUMMY_ROUTE?dev=TestDev2&genres=TestGenre")
+                .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
         val expectedMessage =
             """
             Error:Game not found.
@@ -212,7 +242,9 @@ class GameHandlerTest {
     @Test
     fun `message of game by dev and genres found`() {
         // ARRANGE
-        val request = Request(Method.GET, "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}&dev=TestDev&genres=TestGenre")
+        val request =
+            Request(Method.GET, "$DUMMY_ROUTE?dev=TestDev&genres=TestGenre")
+                .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
         val expectedMessage = "[{\"gid\":1,\"name\":\"Test\",\"dev\":\"TestDev\",\"genres\":[\"TestGenre\"]}]"
 
         // ACT
@@ -228,7 +260,9 @@ class GameHandlerTest {
     @Test
     fun `game by dev and genres not found due to parameters that not correspond to an existing Game`() {
         // ARRANGE
-        val request = Request(Method.GET, "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}&dev=TestDev2&genres=TestGenre")
+        val request =
+            Request(Method.GET, "$DUMMY_ROUTE?dev=TestDev2&genres=TestGenre")
+                .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
         val expectedStatus = Status.NOT_FOUND
 
         // ACT
@@ -244,7 +278,12 @@ class GameHandlerTest {
     @Test
     fun `message of game not found due to a game id that does not correspond to an existing Game`() {
         // ARRANGE
-        val request = Request(Method.GET, "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}&gid=34")
+        val request =
+            RoutedRequest(
+                Request(Method.GET, "$DUMMY_ROUTE/34"),
+                UriTemplate.from("$DUMMY_ROUTE/{gid}"),
+            )
+                .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
         val expectedMessage =
             """
             Error:Game not found.
@@ -264,7 +303,12 @@ class GameHandlerTest {
     @Test
     fun `message of game found due to a game id that corresponds to an existing Game `() {
         // ARRANGE
-        val request = Request(Method.GET, "$DUMMY_ROUTE?token=${PlayerManagementStunt.playerToken}&gid=1")
+        val request =
+            RoutedRequest(
+                Request(Method.GET, "$DUMMY_ROUTE/1"),
+                UriTemplate.from("$DUMMY_ROUTE/{gid}"),
+            )
+                .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
         val expectedMessage = "{\"gid\":1,\"name\":\"Test\",\"dev\":\"TestDev\",\"genres\":[\"TestGenre\"]}"
 
         // ACT

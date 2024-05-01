@@ -42,7 +42,7 @@ class GameHandler(
             playerServices,
         )?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it.") }
 
-        val gid = request.query("gid")?.toUIntOrNull()
+        val gid = request.toGidOrNull()
 
         return if (gid == null) {
             makeResponse(Status.BAD_REQUEST, "Bad Request.")

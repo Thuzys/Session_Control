@@ -5,8 +5,11 @@ import kotlinx.datetime.toLocalDateTime
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
+import org.http4k.routing.path
 import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.services.PlayerServices
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 /**
  * Processes the genres string and returns a collection of genres.
@@ -14,7 +17,10 @@ import pt.isel.ls.services.PlayerServices
  * @param genres The string containing the genres.
  * @return The collection of genres.
  */
-fun processGenres(genres: String): Collection<String> = genres.split(",")
+fun processGenres(genres: String): Collection<String> =
+    URLDecoder
+        .decode(genres, StandardCharsets.UTF_8.toString())
+        .split(",")
 
 /**
  * Reads the body of a request and returns it as a map.
@@ -96,7 +102,21 @@ internal fun dateVerification(date: String?): LocalDateTime? {
  *
  * @return The player id ([UInt]) or null.
  */
-internal fun Request.toPidOrNull(): UInt? = query("pid")?.toUIntOrNull()
+internal fun Request.toPidOrNull(): UInt? = path("pid")?.toUIntOrNull()
+
+/**
+ * Get the sid of a query request, if incapable return null.
+ *
+ * @return The session id ([UInt]) or null.
+ */
+internal fun Request.toSidOrNull(): UInt? = path("sid")?.toUIntOrNull()
+
+/**
+ * Get the gid of a query request, if incapable return null.
+ *
+ * @return The game id ([UInt]) or null.
+ */
+internal fun Request.toGidOrNull(): UInt? = path("gid")?.toUIntOrNull()
 
 /**
  * Verifies if the request has a valid token.
@@ -109,5 +129,5 @@ internal fun unauthorizedAccess(
     request: Request,
     pManagement: PlayerServices,
 ): String? =
-    request.query("token")
+    request.header("authorization")?.removePrefix("Bearer ")
         ?.let { return if (pManagement.isValidToken(it)) null else "invalid token" } ?: "token not provided"

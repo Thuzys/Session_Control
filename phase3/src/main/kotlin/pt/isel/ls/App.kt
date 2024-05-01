@@ -5,7 +5,7 @@ import org.http4k.server.asServer
 
 private const val ENV_NAME = "JDBC_DATABASE_URL"
 
-fun main(args: Array<String>) {
+fun main() {
     val routes = routingHttpHandler(ENV_NAME)
 
     val server = routes.asServer(Jetty(8080)).start()

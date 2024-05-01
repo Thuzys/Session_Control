@@ -57,10 +57,10 @@ class SessionHandler(
         val gid = request.query("gid")?.toUIntOrNull()
         val date = dateVerification(request.query("date"))
         val state = request.query("state").toSessionState()
-        val playerId = request.query("pid")?.toUIntOrNull()
+        val pid = request.query("pid")?.toUIntOrNull()
         val offset = request.query("offset")?.toUIntOrNull()
         val limit = request.query("limit")?.toUIntOrNull()
-        if (gid == null && date == null && state == null && playerId == null && offset == null && limit == null) {
+        if (gid == null && date == null && state == null && pid == null && offset == null && limit == null) {
             return makeResponse(
                 Status.BAD_REQUEST,
                 "Missing or invalid parameters. Please provide at" +
@@ -68,7 +68,7 @@ class SessionHandler(
             )
         }
         return tryResponse(Status.INTERNAL_SERVER_ERROR, "Internal Server Error.") {
-            val sessions = sessionManagement.getSessions(gid, date, state, playerId, offset, limit)
+            val sessions = sessionManagement.getSessions(gid, date, state, pid, offset, limit)
             return if (sessions.isEmpty()) {
                 makeResponse(
                     Status.NOT_FOUND,

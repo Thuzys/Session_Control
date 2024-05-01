@@ -3,7 +3,7 @@ import handlerUtils from "./handlerUtils/handlerUtils.js";
 import menu from "../navigation/menuLinks.js";
 import requestUtils from "../utils/requestUtils.js";
 import constants from "../constants/constants.js"
-import genres from "./handlerUtils/gameGenres.js"
+import { fetcher } from "../utils/fetchUtils.js";
 
 /**
  * Search games by developer and/or genre(s)
@@ -53,11 +53,13 @@ function handleSearchGamesSubmit(e, selectedGenres) {
  */
 function getGames(mainContent, mainHeader) {
     const query = handlerUtils.makeQueryString(requestUtils.getQuery())
-    const url = `${constants.API_BASE_URL}${constants.GAME_ROUTE}?${query}&token=${constants.TOKEN}`
+    const url = `${constants.API_BASE_URL}${constants.GAME_ROUTE}?${query}`
 
-    handlerUtils.executeCommandWithResponse(url, response => {
-        handleGetGamesResponse(response, mainContent)
-    })
+    fetcher
+        .get(url, constants.TOKEN)
+        .then(response =>
+            handleGetGamesResponse(response, mainContent)
+        );
 
     mainHeader.replaceChildren(menu.get("home"), menu.get("gameSearch"))
 }
@@ -65,19 +67,17 @@ function getGames(mainContent, mainHeader) {
 /**
  * Handle get games response
  *
- * @param response
+ * @param games
  * @param mainContent
  */
-function handleGetGamesResponse(response, mainContent) {
-    response.json().then(games => {
-        const [
-            header,
-            gameList,
-            pagination
-        ] = gameHandlerViews.createGetGameView(games)
+function handleGetGamesResponse(games, mainContent) {
+    const [
+        header,
+        gameList,
+        pagination
+    ] = gameHandlerViews.createGetGameView(games)
 
-        mainContent.replaceChildren(header, gameList, pagination)
-    })
+    mainContent.replaceChildren(header, gameList, pagination)
 }
 
 /**
@@ -88,11 +88,13 @@ function handleGetGamesResponse(response, mainContent) {
  */
 function getGameDetails(mainContent, mainHeader){
     const gameId = requestUtils.getParams()
-    const url = `${constants.API_BASE_URL}${constants.GAME_ID_ROUTE}?gid=${gameId}&token=${constants.TOKEN}`
+    const url = `${constants.API_BASE_URL}${constants.GAME_ID_ROUTE}${gameId}`
 
-    handlerUtils.executeCommandWithResponse(url, response => {
-        handleGetGameDetailsResponse(response, mainContent)
-    })
+    fetcher
+        .get(url, constants.TOKEN)
+        .then(response =>
+            handleGetGameDetailsResponse(response, mainContent)
+        );
 
     mainHeader.replaceChildren(menu.get("home"), menu.get("sessionSearch"), menu.get("gameSearch"))
 }
@@ -100,14 +102,12 @@ function getGameDetails(mainContent, mainHeader){
 /**
  * Handle game details response
  *
- * @param response
+ * @param game
  * @param mainContent
  */
-function handleGetGameDetailsResponse(response, mainContent) {
-    response.json().then(game => {
-        const [header, div] = gameHandlerViews.createGameDetailsView(game)
-        mainContent.replaceChildren(header, div)
-    })
+function handleGetGameDetailsResponse(game, mainContent) {
+    const [header, div] = gameHandlerViews.createGameDetailsView(game)
+    mainContent.replaceChildren(header, div)
 }
 
 const gameHandlers = {

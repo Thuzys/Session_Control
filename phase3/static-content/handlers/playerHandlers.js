@@ -16,8 +16,7 @@ function getPlayerDetails(mainContent, mainHeader) {
         .get(url, constants.TOKEN)
         .then(
             response =>
-                handleGetPlayerDetailsResponse(response, mainContent, mainHeader
-                )
+                handleGetPlayerDetailsResponse(response, mainContent, mainHeader)
         );
 }
 

@@ -43,7 +43,7 @@ function handleSearchSessionsSubmit(e) {
     if (close) params.set('state', 'close');
     params.set('offset', "0");
 
-    window.location.hash = `#sessions?${params}`;
+    handlerUtils.changeHash(`#sessions?${params}`);
 }
 
 /**
@@ -61,7 +61,6 @@ function getSessions(mainContent, mainHeader) {
             response =>
                 handleGetSessionsResponse(response, mainContent, mainHeader)
         )
-    // handlerUtils.executeCommandWithResponse(url, response => handleGetSessionsResponse(response, mainContent, mainHeader));
 }
 
 /**
@@ -74,7 +73,7 @@ function getSessions(mainContent, mainHeader) {
 function handleGetSessionsResponse(sessions, mainContent, mainHeader) {
     if (sessions.length === 0) {
         query.set("offset", 0)
-        window.location.hash = `#sessions?${handlerUtils.makeQueryString(query)}`
+        handlerUtils.changeHash(`#sessions?${handlerUtils.makeQueryString(query)}`)
         alert("No sessions found.")
     }
     const [sessionsView, nextPrevView] = sessionHandlerViews.createGetSessionsView(sessions);
@@ -95,7 +94,6 @@ function getSessionDetails(mainContent, mainHeader) {
             response =>
                 handleGetSessionDetailsResponse(response, mainContent, mainHeader)
         )
-    // handlerUtils.executeCommandWithResponse(url, response => handleGetSessionDetailsResponse(response, mainContent, mainHeader));
 }
 
 /**

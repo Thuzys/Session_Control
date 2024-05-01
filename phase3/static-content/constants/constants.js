@@ -6,7 +6,7 @@ const PLAYER_ID_ROUTE = PLAYER_ROUTE + "/"
 const SESSION_ROUTE = "sessions"
 const SESSION_ID_ROUTE = SESSION_ROUTE + "/"
 const GAME_ROUTE = "games"
-const GAME_ID_ROUTE = `${GAME_ROUTE}/game`
+const GAME_ID_ROUTE = GAME_ROUTE + "/"
 
 const constants = {
     API_BASE_URL,

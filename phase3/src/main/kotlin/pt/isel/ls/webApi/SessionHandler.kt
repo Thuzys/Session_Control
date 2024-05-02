@@ -17,7 +17,7 @@ import pt.isel.ls.services.SessionServices
  *
  * Each method corresponds to a specific HTTP request and returns an HTTP response.
  */
-class SessionHandler(
+class  SessionHandler(
     private val sessionManagement: SessionServices,
     private val playerManagement: PlayerServices,
 ) : SessionHandlerInterface {

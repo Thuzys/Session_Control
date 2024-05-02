@@ -166,7 +166,7 @@ class PlayerHandlerTest {
             val response = handler.getPlayer(request)
             assertEquals(
                 expected =
-                    "{\"pid\":${PlayerManagementStunt.playerId},\"name\":\"Test\",\"email\":" +
+                    "{\"pid\":${PlayerManagementStunt.playerId},\"name\":\"Test\",\"userName\":\"Test\",\"email\":" +
                         "\"${PlayerManagementStunt.playerEmail.email}\",\"token\"" +
                         ":\"${PlayerManagementStunt.playerToken}\"}",
                 actual = response.bodyString(),

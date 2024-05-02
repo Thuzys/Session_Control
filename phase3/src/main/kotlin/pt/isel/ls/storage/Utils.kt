@@ -288,7 +288,7 @@ internal fun Connection.makeSession(sessionStmt: PreparedStatement): Collection<
     while (rs.next()) {
         val playerStmt =
             prepareStatement(
-                "SELECT PLAYER.pid, name, email, token FROM PLAYER " +
+                "SELECT PLAYER.pid, name, userName, email, token FROM PLAYER " +
                     "JOIN PLAYER_SESSION ON PLAYER.pid = PLAYER_SESSION.pid" +
                     " WHERE sid = ?;",
             )

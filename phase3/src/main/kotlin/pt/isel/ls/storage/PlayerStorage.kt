@@ -43,7 +43,7 @@ class PlayerStorage(envName: String) : PlayerStorageInterface {
     override fun read(pid: UInt): Player =
         dataSource.connection.use { connection ->
             connection.executeCommand {
-                val selectQuery = "SELECT pid, name, email, token FROM PLAYER WHERE pid = ?"
+                val selectQuery = "SELECT pid, name, username, email, token FROM PLAYER WHERE pid = ?"
                 val stmt = connection.prepareStatement(selectQuery)
                 stmt.setInt(1, pid.toInt())
                 val collection = makePlayers(stmt)
@@ -60,7 +60,7 @@ class PlayerStorage(envName: String) : PlayerStorageInterface {
         dataSource.connection.use { connection ->
             connection.executeCommand {
                 val selectQuery =
-                    "SELECT pid, name, email, token FROM PLAYER " +
+                    "SELECT pid, name, email, userName, token FROM PLAYER " +
                         "WHERE email = ? OR token = ? OFFSET ? LIMIT ?"
                 val stmt = connection.prepareStatement(selectQuery)
                 var idx = 1

@@ -19,7 +19,7 @@ function searchSessions(mainContent, mainHeader) {
     const form = views.form({}, ...formContent);
     form.addEventListener('submit', (e) => handleSearchSessionsSubmit(e));
     mainContent.replaceChildren(h1, form);
-    mainHeader.replaceChildren(menu.get("home"));
+    mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("gameSearch"));
 }
 
 /**
@@ -78,7 +78,10 @@ function handleGetSessionsResponse(sessions, mainContent, mainHeader) {
     }
     const [sessionsView, nextPrevView] = sessionHandlerViews.createGetSessionsView(sessions);
     mainContent.replaceChildren(sessionsView, nextPrevView);
-    mainHeader.replaceChildren(menu.get("home"), menu.get("sessionSearch"))
+    mainHeader.replaceChildren(
+        menu.get("playerSearch"), menu.get("home"),
+        menu.get("sessionSearch"), menu.get("gameSearch")
+    );
 }
 
 /**
@@ -107,7 +110,7 @@ function handleGetSessionDetailsResponse(session, mainContent, mainHeader) {
     const playerListView = sessionHandlerViews.createPlayerListView(session);
     const sessionDetailsView = sessionHandlerViews.createSessionDetailsViews(session, playerListView);
     mainContent.replaceChildren(sessionDetailsView);
-    mainHeader.replaceChildren(menu.get("home"));
+    mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("gameSearch"));
 }
 
 export default {

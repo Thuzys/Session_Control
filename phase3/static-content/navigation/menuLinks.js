@@ -5,10 +5,6 @@ menu.set(
     "home",
     views.a({href: "#players/home", class: "navigation-bar"}, "Home")
 )
-// menu.set(
-//     "playerDetails",
-//     views.a({href: "#playerDetails", class: "navigation-bar"}, "Player Details")
-// )
 menu.set(
     "gameSearch",
     views.a({href: "#gameSearch", class: "navigation-bar"}, "Search Game")
@@ -16,6 +12,11 @@ menu.set(
 menu.set(
     "sessionSearch",
     views.a({href: "#sessionSearch", class: "navigation-bar"}, "Search Session")
+)
+
+menu.set(
+    "playerSearch",
+    views.a({href: "#playerSearch", class: "navigation-bar"}, "Search Player")
 )
 
 export default menu

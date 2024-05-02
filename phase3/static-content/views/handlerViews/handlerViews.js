@@ -6,8 +6,8 @@ function createHeader(text) {
     return views.h1({}, text);
 }
 
-function createHomeView() {
-    const h1 = views.h1({}, "Home page");
+function createSearchPlayerView() {
+    const h1 = views.h1({}, "Search Player:");
     const form =
         views.form({action: "#playerDetails", method: "get"},
         views.input({type: "text", id: "pid", maxLength: 10}),
@@ -82,7 +82,7 @@ const handlerViews = {
     hrefConstructor,
     createBackButtonView,
     createPagination,
-    createHomeView,
+    createHomeView: createSearchPlayerView,
 }
 
 export default handlerViews;

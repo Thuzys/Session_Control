@@ -2,22 +2,6 @@ function changeHash(hash) {
     window.location.hash = hash;
 }
 
-function isResponseOK(response) {
-    return response.status >= 200 && response.status < 399
-}
-
-function executeCommandWithResponse(url, responseHandler) {
-    fetch(url)
-        .then(response => {
-            if(isResponseOK(response)) {
-                responseHandler(response);
-            } else {
-                window.history.back()
-                response.text().then(text => alert("Error fetching data: " + text));
-            }
-        })
-}
-
 function childrenToString(children) {
     return Array.from(children)
         .map(child => {
@@ -40,7 +24,6 @@ function makeQueryString(query) {
 const handlerUtils = {
     childrenToString,
     changeHash,
-    executeCommandWithResponse,
     makeQueryString,
 }
 

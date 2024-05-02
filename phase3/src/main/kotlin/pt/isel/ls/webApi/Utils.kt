@@ -8,6 +8,8 @@ import org.http4k.core.Status
 import org.http4k.routing.path
 import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.services.PlayerServices
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 /**
  * Processes the genres string and returns a collection of genres.
@@ -15,7 +17,10 @@ import pt.isel.ls.services.PlayerServices
  * @param genres The string containing the genres.
  * @return The collection of genres.
  */
-fun processGenres(genres: String): Collection<String> = genres.split(",")
+fun processGenres(genres: String): Collection<String> =
+    URLDecoder
+        .decode(genres, StandardCharsets.UTF_8.toString())
+        .split(",")
 
 /**
  * Reads the body of a request and returns it as a map.

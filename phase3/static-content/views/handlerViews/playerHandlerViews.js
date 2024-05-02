@@ -1,3 +1,4 @@
+import constants from "../../constants/constants.js";
 function createPlayerDetailsView(player) {
     const h2 = views.h2({}, "Player Details");
     const playerDetailsView = views.ul(
@@ -6,7 +7,12 @@ function createPlayerDetailsView(player) {
         views.li("Pid: " + player.pid),
     );
     const backButtonView = handlerViews.createBackButtonView();
-    const sessionsButtonView = handlerViews.sessionsButtonView("Sessions", "sessions?pid=" + player.pid + "&offset=0");
+    const sessionsButtonView =
+        handlerViews
+            .sessionsButtonView(
+                "Sessions",
+                `${constants.SESSION_ROUTE}?pid=` + player.pid + "&offset=0"
+            );
     return views.div({},
         h2,
         playerDetailsView,

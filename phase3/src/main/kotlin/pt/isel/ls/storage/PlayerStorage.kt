@@ -22,7 +22,7 @@ class PlayerStorage(envName: String) : PlayerStorageInterface {
     override fun create(newItem: Player): UInt =
         dataSource.connection.use { connection ->
             connection.executeCommand {
-                val insertQuery = "INSERT INTO PLAYER (name, email, token) VALUES (?, ?, ?)"
+                val insertQuery = "INSERT INTO PLAYER (name, email, token, username) VALUES (?, ?, ?, ?)"
                 val stm =
                     prepareStatement(
                         insertQuery,
@@ -31,6 +31,7 @@ class PlayerStorage(envName: String) : PlayerStorageInterface {
                 stm.setString(1, newItem.name)
                 stm.setString(2, newItem.email.email)
                 stm.setString(3, newItem.token.toString())
+                stm.setString(4, newItem.userName)
                 stm.executeUpdate()
                 val key = stm.generatedKeys
                 check(key.next()) { "No key returned" }

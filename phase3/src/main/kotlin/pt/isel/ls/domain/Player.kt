@@ -17,12 +17,14 @@ import java.util.UUID
 data class Player(
     val pid: UInt? = null,
     val name: String,
+    val userName: String = name,
     val email: Email,
     @Serializable(with = UUIDSerializer::class)
     val token: UUID = UUID.randomUUID(),
 ) {
     init {
         require(name.isNotBlank()) { "Name must not be blank." }
+        require(userName.isNotBlank()) { "UserName must not be blank." }
     }
 }
 
@@ -34,3 +36,16 @@ data class Player(
  * @return [Player] a new player.
  */
 infix fun String.associatedTo(email: Email) = Player(name = this, email = email)
+
+/**
+ * Creates a new player.
+ *
+ * @receiver the name of the player([String]).
+ * @param email the email (is unique to each player) to be associated to the player.
+ * @param userName the userName of the player.
+ * @return [Player] a new player.
+ */
+fun String.associatedTo(
+    email: Email,
+    userName: String,
+) = Player(name = this, email = email, userName = userName)

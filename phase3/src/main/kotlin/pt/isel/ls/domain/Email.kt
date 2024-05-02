@@ -8,9 +8,12 @@ import kotlinx.serialization.Serializable
  * @param email the [String] containing the email.
  * @throws IllegalArgumentException if the given email is not valid.
  */
+@JvmInline
 @Serializable
-data class Email(val email: String) {
+value class Email(val email: String) {
     init {
         require(validateEmail(email)) { "Invalid email pattern." }
     }
+
+    override fun toString(): String = email
 }

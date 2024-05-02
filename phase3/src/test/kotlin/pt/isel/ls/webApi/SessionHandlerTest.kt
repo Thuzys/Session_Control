@@ -181,7 +181,7 @@ class SessionHandlerTest {
                 expected =
                     "{\"sid\":1,\"capacity\":1,\"gid\":1,\"date\":\"2024-03-10T12:30\"," +
                         "\"players\":[{\"pid\":1,\"name\":\"test1\"," +
-                        "\"email\":{\"email\":\"default@mail.com\"},\"token\":\"${SessionManagementStunt.playerToken}\"}]}",
+                        "\"email\":\"default@mail.com\",\"token\":\"${SessionManagementStunt.playerToken}\"}]}",
                 actual = response.bodyString(),
             )
         }
@@ -301,13 +301,13 @@ class SessionHandlerTest {
             assertEquals(
                 expected =
                     "[{\"sid\":1,\"capacity\":1,\"gid\":1,\"date\":\"2024-03-10T12:30\"," +
-                        "\"players\":[{\"pid\":1,\"name\":\"test1\",\"email\":{\"email\":\"default@mail.com\"}," +
+                        "\"players\":[{\"pid\":1,\"name\":\"test1\",\"email\":\"default@mail.com\"," +
                         "\"token\":\"${SessionManagementStunt.playerToken}\"}]}," +
                         "{\"sid\":2,\"capacity\":2,\"gid\":1,\"date\":\"2024-03-10T12:30\"," +
                         "\"players\":[" +
-                        "{\"pid\":1,\"name\":\"test1\",\"email\":{\"email\":\"default@mail.com\"}," +
+                        "{\"pid\":1,\"name\":\"test1\",\"email\":\"default@mail.com\"," +
                         "\"token\":\"${SessionManagementStunt.playerToken}\"}," +
-                        "{\"pid\":2,\"name\":\"test2\",\"email\":{\"email\":\"default@mail.com\"}," +
+                        "{\"pid\":2,\"name\":\"test2\",\"email\":\"default@mail.com\"," +
                         "\"token\":\"${SessionManagementStunt.playerToken}\"}]}]",
                 actual = response.bodyString(),
             )
@@ -585,13 +585,13 @@ class SessionHandlerTest {
             assertEquals(
                 expected =
                     "[{\"sid\":1,\"capacity\":1,\"gid\":1,\"date\":\"2024-03-10T12:30\"," +
-                        "\"players\":[{\"pid\":1,\"name\":\"test1\",\"email\":{\"email\":\"default@mail.com\"}," +
+                        "\"players\":[{\"pid\":1,\"name\":\"test1\",\"email\":\"default@mail.com\"," +
                         "\"token\":\"${SessionManagementStunt.playerToken}\"}]}," +
                         "{\"sid\":2,\"capacity\":2,\"gid\":1,\"date\":\"2024-03-10T12:30\"," +
                         "\"players\":[" +
-                        "{\"pid\":1,\"name\":\"test1\",\"email\":{\"email\":\"default@mail.com\"}," +
+                        "{\"pid\":1,\"name\":\"test1\",\"email\":\"default@mail.com\"," +
                         "\"token\":\"${SessionManagementStunt.playerToken}\"}," +
-                        "{\"pid\":2,\"name\":\"test2\",\"email\":{\"email\":\"default@mail.com\"}," +
+                        "{\"pid\":2,\"name\":\"test2\",\"email\":\"default@mail.com\"," +
                         "\"token\":\"${SessionManagementStunt.playerToken}\"}]}]",
                 actual = response.bodyString(),
             )

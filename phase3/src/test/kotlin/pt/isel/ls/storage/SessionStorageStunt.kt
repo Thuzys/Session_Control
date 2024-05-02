@@ -10,8 +10,8 @@ import pt.isel.ls.services.getSessionState
 
 class SessionStorageStunt : SessionStorageInterface {
     private val defaultMail = Email("default@mail.com")
-    private val player1 = Player(1u, "test1", defaultMail)
-    private val player2 = Player(2u, "test2", defaultMail)
+    private val player1 = Player(1u, "test1", "test1", defaultMail)
+    private val player2 = Player(2u, "test2", "test2", defaultMail)
 
     private var sessionUuid: UInt = 4u
     private val date1 = LocalDateTime(2024, 3, 10, 12, 30)
@@ -76,7 +76,7 @@ class SessionStorageStunt : SessionStorageInterface {
                 if (players.any { player -> player.pid == pid }) {
                     return false
                 }
-                players.add(Player(pid, "test$pid", defaultMail))
+                players.add(Player(pid, "test$pid", "test$pid", defaultMail))
             }
             if (players.size > session.capacity.toInt()) {
                 return false

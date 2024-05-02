@@ -167,7 +167,7 @@ class PlayerHandlerTest {
             assertEquals(
                 expected =
                     "{\"pid\":${PlayerManagementStunt.playerId},\"name\":\"Test\",\"email\":" +
-                        "{\"email\":\"${PlayerManagementStunt.playerEmail.email}\"},\"token\"" +
+                        "\"${PlayerManagementStunt.playerEmail.email}\",\"token\"" +
                         ":\"${PlayerManagementStunt.playerToken}\"}",
                 actual = response.bodyString(),
             )

@@ -265,6 +265,7 @@ internal fun makePlayers(stmt: PreparedStatement): Collection<Player> {
             Player(
                 rs.getInt("pid").toUInt(),
                 rs.getString("name"),
+                rs.getString("username"),
                 Email(rs.getString("email")),
                 UUID.fromString(
                     rs.getString("token"),

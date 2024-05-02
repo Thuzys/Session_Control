@@ -17,6 +17,7 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
     override fun createPlayer(request: Request): Response {
         val body = readBody(request)
         val name = body["name"]
+        val userName = body["userName"]
         val email = body["email"]
         return if (name == null || email == null) {
             makeResponse(Status.BAD_REQUEST, "Bad Request, insufficient parameters.")
@@ -25,7 +26,7 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
                 errorStatus = Status.INTERNAL_SERVER_ERROR,
                 errorMsg = "Internal Server Error.",
             ) {
-                val (id, token) = playerManagement.createPlayer(name, email)
+                val (id, token) = playerManagement.createPlayer(name, email, userName)
                 makeResponse(Status.CREATED, "Player created with id $id and token $token.")
             }
         }

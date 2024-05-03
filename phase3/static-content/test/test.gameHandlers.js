@@ -26,7 +26,7 @@ describe('Test gameHandlers', function() {
         mainContentChildren[1].onsubmit.should.not.equal(null)
 
         const headerContentChildren = headerContent.children
-        headerContentChildren.length.should.equal(1)
+        headerContentChildren.length.should.equal(3)
         headerContentChildren[0].tagName.should.equal("A")
     });
 

@@ -2,7 +2,7 @@ import menu from "../navigation/menuLinks.js";
 
 describe('Test menuLinks', function() {
     it('should create a menu', function() {
-        menu.size.should.equal(3)
+        menu.size.should.equal(4)
         const home = menu.get("home")
         home.tagName.should.equal("A")
         home.href.split('#')[1].should.equal("players/home")

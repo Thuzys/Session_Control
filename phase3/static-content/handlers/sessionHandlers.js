@@ -113,19 +113,6 @@ function handleGetSessionDetailsResponse(session, mainContent, mainHeader) {
     mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("gameSearch"));
 }
 
-// function createSession(mainContent, mainHeader) {
-//     const url = `${constants.API_BASE_URL}${constants.SESSION_ROUTE}`;
-//     fetcher.post(
-//             url,
-//             constants.TOKEN
-//     )
-//         .then(
-//             response =>
-//                 handleCreateSessionResponse(response)
-//         )
-// }
-//
-
 export default {
     searchSessions,
     getSessions,

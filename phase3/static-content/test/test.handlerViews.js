@@ -61,7 +61,7 @@ describe('Test handlerViews', function() {
 
         homeView.length.should.equal(2);
         homeView[0].tagName.should.equal("H1");
-        homeView[0].textContent.should.equal("Home page");
+        homeView[0].textContent.should.equal("Search Player:");
         homeView[1].tagName.should.equal("FORM");
         homeView[1].action.should.contain("#playerDetails");
         homeView[1].method.should.equal("get");

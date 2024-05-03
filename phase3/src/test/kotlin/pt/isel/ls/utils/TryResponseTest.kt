@@ -3,6 +3,7 @@ package pt.isel.ls.utils
 import org.http4k.core.Response
 import org.http4k.core.Status
 import pt.isel.ls.domain.errors.ServicesError
+import pt.isel.ls.webApi.createJsonMessage
 import pt.isel.ls.webApi.tryResponse
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -42,10 +43,7 @@ class TryResponseTest {
                 throw ServicesError("an exception occurred.")
             }
         val expected =
-            """
-            Error:Hello World.
-            Cause:an exception occurred.
-            """.trimIndent()
+            createJsonMessage("Hello World.", "an exception occurred.")
         assertEquals(expected, response.bodyString())
     }
 

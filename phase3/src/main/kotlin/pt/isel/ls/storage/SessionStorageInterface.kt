@@ -46,7 +46,7 @@ interface SessionStorageInterface {
         state: SessionState? = null,
         playerId: UInt? = null,
         offset: UInt = 0u,
-        limit: UInt = 10u,
+        limit: UInt = 11u,
     ): Collection<Session>?
 
 //    /**

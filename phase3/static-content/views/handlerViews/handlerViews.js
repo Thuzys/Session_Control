@@ -49,23 +49,24 @@ function createBackButtonView() {
 
 function createPagination(query, hash, hasNext) {
     const prevButton = views.button({id: "prev", type: "button"}, "Previous")
+    if(query.get("offset") === 0) {
+        prevButton.disabled = true;
+    }
     prevButton.addEventListener('click', () => {
         if (query.get("offset") > 0) {
             query.set("offset", query.get("offset") - constants.LIMIT)
             handlerUtils.changeHash(`${hash}?${handlerUtils.makeQueryString(query)}`)
         }
-        else {
-            prevButton.disabled = true;
-        }
     })
-
-    const nextButton = views.button({id: "next", type: "button", enabled: hasNext}, "Next")
+    const nextButton = views.button({id: "next", type: "button"}, "Next")
+    if(!hasNext) {
+        nextButton.disabled = true;
+    }
     nextButton.addEventListener('click', () => {
         if (hasNext) {
             query.set("offset", query.get("offset") + constants.LIMIT)
             handlerUtils.changeHash(`${hash}?${handlerUtils.makeQueryString(query)}`)
         }
-        nextButton.disabled = true;
     })
 
     return views.div(

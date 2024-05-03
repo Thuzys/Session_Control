@@ -23,7 +23,7 @@ class SessionHandler(
 ) : SessionHandlerInterface {
     override fun createSession(request: Request): Response {
         unauthorizedAccess(request, playerManagement)
-            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it.") }
+            ?.let { return unauthorizedResponse(it) }
         val body = readBody(request)
         val gid = body["gid"]?.toUIntOrNull()
         val date = dateVerification(body["date"])
@@ -31,20 +31,20 @@ class SessionHandler(
         return if (gid == null || date == null || capacity == null) {
             makeResponse(
                 Status.BAD_REQUEST,
-                "Missing or invalid parameters. Please provide 'gid', 'date', and 'capacity' as valid values.",
+                invalidParamsRspCreateSession(gid, date, capacity),
             )
         } else {
             tryResponse(Status.BAD_REQUEST, "Unable to create session.") {
                 val sid = sessionManagement.createSession(gid, date, capacity)
-                makeResponse(Status.CREATED, "Session created with ID: $sid successfully.")
+                makeResponse(Status.CREATED, createJsonMessage("Session created with ID: $sid successfully."))
             }
         }
     }
 
     override fun getSession(request: Request): Response {
         unauthorizedAccess(request, playerManagement)
-            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it.") }
-        val sid = request.toSidOrNull() ?: return makeResponse(Status.BAD_REQUEST, "Missing or invalid sid.")
+            ?.let { return unauthorizedResponse(it) }
+        val sid = request.toSidOrNull() ?: return makeResponse(Status.BAD_REQUEST, createJsonMessage("Missing or invalid sid."))
         return tryResponse(Status.NOT_FOUND, "Session not found.") {
             val session = sessionManagement.getSessionDetails(sid)
             makeResponse(Status.FOUND, Json.encodeToString(session))
@@ -53,7 +53,7 @@ class SessionHandler(
 
     override fun getSessions(request: Request): Response {
         unauthorizedAccess(request, playerManagement)
-            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it.") }
+            ?.let { return unauthorizedResponse(it) }
         val gid = request.query("gid")?.toUIntOrNull()
         val date = dateVerification(request.query("date"))
         val state = request.query("state").toSessionState()
@@ -63,8 +63,10 @@ class SessionHandler(
         if (gid == null && date == null && state == null && pid == null && offset == null && limit == null) {
             return makeResponse(
                 Status.BAD_REQUEST,
-                "Missing or invalid parameters. Please provide at" +
-                    " least one of the following: 'gid', 'date', 'state', 'pid', 'offset', 'limit'.",
+                createJsonMessage(
+                    "Missing parameters. Please provide at" +
+                        " least one of the following: 'gid', 'date', 'state', 'pid', 'offset', 'limit'.",
+                ),
             )
         }
         return tryResponse(Status.NOT_FOUND, "Unable to retrieve sessions.") {
@@ -75,25 +77,30 @@ class SessionHandler(
 
     override fun addPlayerToSession(request: Request): Response {
         unauthorizedAccess(request, playerManagement)
-            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it.") }
+            ?.let { return unauthorizedResponse(it) }
         val player = request.toPidOrNull()
         val session = request.toSidOrNull()
         return if (player == null || session == null) {
             makeResponse(
                 Status.BAD_REQUEST,
-                "Invalid or Missing parameters. Please provide 'player' and 'session' as valid values.",
+                createJsonMessage(
+                    "Invalid or Missing parameters. Please provide 'player' and 'session' as valid values.",
+                ),
             )
         } else {
             tryResponse(Status.BAD_REQUEST, "Error adding Player $player to the Session $session") {
                 sessionManagement.addPlayer(player, session)
-                return makeResponse(Status.OK, "Player $player added to Session $session successfully.")
+                return makeResponse(
+                    Status.OK,
+                    createJsonMessage("Player $player added to Session $session successfully."),
+                )
             }
         }
     }
 
     override fun updateCapacityOrDate(request: Request): Response {
         unauthorizedAccess(request, playerManagement)
-            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it.") }
+            ?.let { return unauthorizedResponse(it) }
         val body = readBody(request)
         val sid = body["sid"]?.toUIntOrNull()
         val capacity = body["capacity"]?.toUIntOrNull()
@@ -102,51 +109,62 @@ class SessionHandler(
             (capacity == null && date == null) ->
                 makeResponse(
                     Status.BAD_REQUEST,
-                    "capacity and date not provided. Session not modified",
+                    createJsonMessage("capacity and date not provided. Session not modified"),
                 )
 
             (sid == null) ->
                 makeResponse(
                     Status.BAD_REQUEST,
-                    "Invalid or Missing parameters. Please provide sid",
+                    createJsonMessage("Invalid or Missing parameters. Please provide sid"),
                 )
 
             else ->
-                tryResponse(Status.NOT_MODIFIED, "Error updating session $sid. Check if $sid is valid") {
+                tryResponse(
+                    Status.NOT_MODIFIED,
+                    "Error updating session $sid. Check if $sid is valid",
+                ) {
                     sessionManagement.updateCapacityOrDate(sid, capacity, date)
-                    return makeResponse(Status.OK, "Session $sid updated successfully")
+                    return makeResponse(Status.OK, createJsonMessage("Session $sid updated successfully"))
                 }
         }
     }
 
     override fun removePlayerFromSession(request: Request): Response {
         unauthorizedAccess(request, playerManagement)
-            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it.") }
+            ?.let { return unauthorizedResponse(it) }
         val player = request.toPidOrNull()
         val session = request.toSidOrNull()
         return if (player == null || session == null) {
             makeResponse(
                 Status.BAD_REQUEST,
-                "Invalid or Missing parameters. Please provide 'player' and 'session' as valid values.",
+                createJsonMessage(
+                    "Invalid or Missing parameters. Please provide 'player' and 'session' as valid values.",
+                ),
             )
         } else {
-            tryResponse(Status.NOT_MODIFIED, "Error removing Player $player from the Session $session.") {
+            tryResponse(
+                Status.NOT_MODIFIED,
+                "Error removing Player $player from the Session $session.",
+            ) {
                 sessionManagement.removePlayer(player, session)
-                return makeResponse(Status.OK, "Player $player removed from Session $session successfully.")
+                return makeResponse(
+                    Status.OK,
+                    createJsonMessage("Player $player removed from Session $session successfully."),
+                )
             }
         }
     }
 
     override fun deleteSession(request: Request): Response {
         unauthorizedAccess(request, playerManagement)
-            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it.") }
+            ?.let { return unauthorizedResponse(it) }
         val sid = request.toSidOrNull()
         return if (sid == null) {
-            makeResponse(Status.BAD_REQUEST, "Invalid or Missing Session Identifier.")
+            makeResponse(Status.BAD_REQUEST, createJsonMessage("Invalid or Missing 'sid'."))
         } else {
             tryResponse(Status.NOT_MODIFIED, "Error deleting Session $sid.") {
                 sessionManagement.deleteSession(sid)
-                return makeResponse(Status.OK, "Session $sid deleted successfully.")
+                return makeResponse(Status.OK, createJsonMessage("Session $sid deleted successfully."))
             }
         }
     }

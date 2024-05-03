@@ -23,8 +23,8 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
             makeResponse(Status.BAD_REQUEST, "Bad Request, insufficient parameters.")
         } else {
             tryResponse(
-                errorStatus = Status.INTERNAL_SERVER_ERROR,
-                errorMsg = "Internal Server Error.",
+                errorStatus = Status.BAD_REQUEST,
+                errorMsg = "Unable to create player.",
             ) {
                 val (id, token) = playerManagement.createPlayer(name, email, userName)
                 makeResponse(Status.CREATED, "Player created with id $id and token $token.")

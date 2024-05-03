@@ -42,7 +42,7 @@ class GameHandlerTest {
         val request =
             Request(Method.POST, DUMMY_ROUTE)
                 .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
-        val expectedMessage = "Bad Request."
+        val expectedMessage = "Invalid arguments: name:null, dev:null, genres:null."
 
         // ACT
         val response =
@@ -151,7 +151,7 @@ class GameHandlerTest {
             ).body("{\"name\": \"\", \"dev\": \"dev\", \"genres\": \"genre1,genre2,genre3\"}")
                 .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
 
-        val expectedStatus = Status.INTERNAL_SERVER_ERROR
+        val expectedStatus = Status.BAD_REQUEST
 
         // ACT
         val response =

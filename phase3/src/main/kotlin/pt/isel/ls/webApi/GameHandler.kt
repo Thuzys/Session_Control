@@ -27,9 +27,9 @@ class GameHandler(
         val genres = body["genres"] ?.let { processGenres(it) }
 
         return if (name == null || dev == null || genres == null) {
-            makeResponse(Status.BAD_REQUEST, "Bad Request.")
+            makeResponse(Status.BAD_REQUEST, "Invalid arguments: name:$name, dev:$dev, genres:$genres.")
         } else {
-            tryResponse(Status.INTERNAL_SERVER_ERROR, "Internal Server Error.") {
+            tryResponse(Status.BAD_REQUEST, "Invalid arguments: name:$name, dev:$dev, genres:$genres.") {
                 val gid = gameManagement.createGame(name, dev, genres)
                 makeResponse(Status.CREATED, "Game created with id $gid.")
             }

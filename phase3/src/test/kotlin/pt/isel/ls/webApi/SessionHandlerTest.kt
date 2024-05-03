@@ -215,7 +215,7 @@ class SessionHandlerTest {
                 )
                     .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
             val response = handler.addPlayerToSession(request)
-            assertEquals(Status.INTERNAL_SERVER_ERROR, response.status)
+            assertEquals(Status.BAD_REQUEST, response.status)
         }
     }
 
@@ -263,26 +263,26 @@ class SessionHandlerTest {
     }
 
     @Test
-    fun `internal server error status getting sessions `() {
+    fun `bad request status getting sessions `() {
         val gid = "3"
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request =
                 Request(Method.GET, "$DUMMY_ROUTE?gid=$gid")
                     .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
             val response = handler.getSessions(request)
-            assertEquals(Status.INTERNAL_SERVER_ERROR, response.status)
+            assertEquals(Status.NOT_FOUND, response.status)
         }
     }
 
     @Test
-    fun `not found status getting sessions due to no sessions satisfy details provided`() {
+    fun `found status getting sessions heaving with no sessions satisfying the details provided`() {
         val gid = "400"
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request =
                 Request(Method.GET, "$DUMMY_ROUTE?gid=$gid")
                     .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
             val response = handler.getSessions(request)
-            assertEquals(Status.NOT_FOUND, response.status)
+            assertEquals(Status.FOUND, response.status)
         }
     }
 

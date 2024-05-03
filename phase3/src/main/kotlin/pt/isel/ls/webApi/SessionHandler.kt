@@ -34,7 +34,7 @@ class SessionHandler(
                 "Missing or invalid parameters. Please provide 'gid', 'date', and 'capacity' as valid values.",
             )
         } else {
-            tryResponse(Status.INTERNAL_SERVER_ERROR, "Internal server error.") {
+            tryResponse(Status.BAD_REQUEST, "Unable to create session.") {
                 val sid = sessionManagement.createSession(gid, date, capacity)
                 makeResponse(Status.CREATED, "Session created with ID: $sid successfully.")
             }
@@ -67,16 +67,9 @@ class SessionHandler(
                     " least one of the following: 'gid', 'date', 'state', 'pid', 'offset', 'limit'.",
             )
         }
-        return tryResponse(Status.INTERNAL_SERVER_ERROR, "Internal Server Error.") {
+        return tryResponse(Status.NOT_FOUND, "Unable to retrieve sessions.") {
             val sessions = sessionManagement.getSessions(gid, date, state, pid, offset, limit)
-            return if (sessions.isEmpty()) {
-                makeResponse(
-                    Status.NOT_FOUND,
-                    "No sessions found with the specified details.",
-                )
-            } else {
-                makeResponse(Status.FOUND, Json.encodeToString(sessions))
-            }
+            makeResponse(Status.FOUND, Json.encodeToString(sessions))
         }
     }
 
@@ -91,7 +84,7 @@ class SessionHandler(
                 "Invalid or Missing parameters. Please provide 'player' and 'session' as valid values.",
             )
         } else {
-            tryResponse(Status.INTERNAL_SERVER_ERROR, "Error adding Player $player to the Session $session") {
+            tryResponse(Status.BAD_REQUEST, "Error adding Player $player to the Session $session") {
                 sessionManagement.addPlayer(player, session)
                 return makeResponse(Status.OK, "Player $player added to Session $session successfully.")
             }

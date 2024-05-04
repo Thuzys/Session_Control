@@ -20,7 +20,7 @@ function searchGames(mainContent, mainHeader) {
     form.onsubmit = (e) => handleSearchGamesSubmit(e)
 
     mainContent.replaceChildren(header, form)
-    mainHeader.replaceChildren(menu.get("home"))
+    mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("sessionSearch"));
 }
 
 /**
@@ -61,7 +61,10 @@ function getGames(mainContent, mainHeader) {
             handleGetGamesResponse(response, mainContent)
         );
 
-    mainHeader.replaceChildren(menu.get("home"), menu.get("gameSearch"))
+    mainHeader.replaceChildren(
+        menu.get("playerSearch"), menu.get("home"),
+        menu.get("gameSearch"), menu.get("sessionSearch")
+    );
 }
 
 /**
@@ -96,7 +99,7 @@ function getGameDetails(mainContent, mainHeader){
             handleGetGameDetailsResponse(response, mainContent)
         );
 
-    mainHeader.replaceChildren(menu.get("home"), menu.get("sessionSearch"), menu.get("gameSearch"))
+    mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("sessionSearch"))
 }
 
 /**

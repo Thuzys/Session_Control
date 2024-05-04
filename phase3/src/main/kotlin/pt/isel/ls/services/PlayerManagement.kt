@@ -19,9 +19,14 @@ class PlayerManagement(private val mem: PlayerStorageInterface) : PlayerServices
     override fun createPlayer(
         name: String,
         email: String,
+        userName: String?,
     ): Pair<UInt, UUID> =
         tryCatch("Unable to create a new Player due") {
-            (name associatedTo Email(email)).let { mem.create(it) to it.token }
+            if (userName == null) {
+                (name associatedTo Email(email)).let { mem.create(it) to it.token }
+            } else {
+                name.associatedTo(Email(email), userName).let { mem.create(it) to it.token }
+            }
         }
 
     override fun getPlayerDetails(pid: UInt): Player =

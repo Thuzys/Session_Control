@@ -2,6 +2,9 @@ package pt.isel.ls.webApi
 
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
@@ -62,10 +65,7 @@ internal inline fun tryResponse(
             ?.let {
                 makeResponse(
                     errorStatus,
-                    """
-                    Error:$errorMsg
-                    Cause:$it
-                    """.trimIndent(),
+                    createJsonMessage(errorMsg, it),
                 )
             }
             ?: makeResponse(errorStatus, "$errorMsg.")
@@ -131,3 +131,61 @@ internal fun unauthorizedAccess(
 ): String? =
     request.header("authorization")?.removePrefix("Bearer ")
         ?.let { return if (pManagement.isValidToken(it)) null else "invalid token" } ?: "token not provided"
+
+/**
+ * Represents a message.
+ *
+ * @property msg The message.
+ * @property error The error message. Can be null if there isn´t any information associated.
+ */
+@Serializable
+data class Message(
+    val msg: String,
+    val error: String? = null,
+)
+
+/**
+ * Creates a JSON message.
+ *
+ * @param message The message to be converted to JSON.
+ */
+internal fun createJsonMessage(
+    message: String,
+    error: String? = null,
+): String {
+    val messageObject = Message(message, error)
+    return Json.encodeToString(messageObject)
+}
+
+/**
+ * Creates a JSON message with the invalid parameters.
+ *
+ * @param gid The game id.
+ * @param date The date.
+ * @param capacity The capacity.
+ */
+internal fun invalidParamsRspCreateSession(
+    gid: UInt?,
+    date: LocalDateTime?,
+    capacity: UInt?,
+): String {
+    val errorMsgs =
+        listOfNotNull(
+            if (gid == null) "'gid'" else null,
+            if (date == null) "'date'" else null,
+            if (capacity == null) "'capacity'" else null,
+        )
+    return if (errorMsgs.isNotEmpty()) {
+        val errorMsg = errorMsgs.joinToString(", ")
+        createJsonMessage("Missing or invalid $errorMsg. Please provide $errorMsg as valid values.")
+    } else {
+        createJsonMessage("Invalid request.")
+    }
+}
+
+/**
+ * Creates an unauthorized response.
+ *
+ * @param reason The reason for the unauthorized response.
+ */
+internal fun unauthorizedResponse(reason: String): Response = makeResponse(Status.UNAUTHORIZED, createJsonMessage("Unauthorized, $reason."))

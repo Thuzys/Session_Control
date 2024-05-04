@@ -14,6 +14,7 @@ object PlayerManagementStunt : PlayerServices {
     override fun createPlayer(
         name: String,
         email: String,
+        userName: String?,
     ): Pair<UInt, UUID> =
         if (name.isNotBlank() && email.isNotBlank()) {
             Pair(playerId, playerToken)
@@ -23,7 +24,7 @@ object PlayerManagementStunt : PlayerServices {
 
     override fun getPlayerDetails(pid: UInt): Player =
         if (pid == playerId) {
-            Player(pid, playerName, playerEmail, playerToken)
+            Player(pid, playerName, email = playerEmail, token = playerToken, userName = playerName)
         } else {
             throw ServicesError("Unable to get the details of a Player due to nonexistent pid.")
         }

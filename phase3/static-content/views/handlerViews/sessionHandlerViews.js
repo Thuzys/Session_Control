@@ -54,7 +54,7 @@ function createGetSessionsView(sessions) {
     const div = views.div({},
         views.h1({}, "Sessions Found:")
     );
-    sessions.forEach(session => {
+    sessions.slice(0, constants.ELEMENTS_PER_PAGE).forEach(session => {
         const sessionHref = handlerViews.hrefConstructor("#sessions", session.sid, "Session ID:")
         div.appendChild(views.form({}, ...sessionHref))
     });

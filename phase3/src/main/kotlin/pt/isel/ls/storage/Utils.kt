@@ -265,6 +265,7 @@ internal fun makePlayers(stmt: PreparedStatement): Collection<Player> {
             Player(
                 rs.getInt("pid").toUInt(),
                 rs.getString("name"),
+                rs.getString("username"),
                 Email(rs.getString("email")),
                 UUID.fromString(
                     rs.getString("token"),
@@ -287,7 +288,7 @@ internal fun Connection.makeSession(sessionStmt: PreparedStatement): Collection<
     while (rs.next()) {
         val playerStmt =
             prepareStatement(
-                "SELECT PLAYER.pid, name, email, token FROM PLAYER " +
+                "SELECT PLAYER.pid, name, userName, email, token FROM PLAYER " +
                     "JOIN PLAYER_SESSION ON PLAYER.pid = PLAYER_SESSION.pid" +
                     " WHERE sid = ?;",
             )

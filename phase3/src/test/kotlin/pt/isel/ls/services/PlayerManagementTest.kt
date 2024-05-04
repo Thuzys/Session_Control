@@ -15,9 +15,21 @@ class PlayerManagementTest {
             .let(code)
 
     @Test
+    fun `error creating a new player successfully due email already exists`() =
+        actionOfPlayerManagementTest { playerManagement: PlayerServices ->
+            assertFailsWith<ServicesError> { playerManagement.createPlayer("test2", "test@mail.com") }
+        }
+
+    @Test
+    fun `error creating a new player successfully due userName already exists`() =
+        actionOfPlayerManagementTest { playerManagement: PlayerServices ->
+            assertFailsWith<ServicesError> { playerManagement.createPlayer("test1", "newEmail@mail.com") }
+        }
+
+    @Test
     fun `creating a new player successfully`() =
         actionOfPlayerManagementTest { playerManagement: PlayerServices ->
-            assertEquals(3u, playerManagement.createPlayer("test2", "test@mail.com").first)
+            assertEquals(3u, playerManagement.createPlayer("test3", "newEmail@mail.com").first)
         }
 
     @Test

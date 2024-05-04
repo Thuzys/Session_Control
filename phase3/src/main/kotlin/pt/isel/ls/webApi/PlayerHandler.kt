@@ -17,16 +17,17 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
     override fun createPlayer(request: Request): Response {
         val body = readBody(request)
         val name = body["name"]
+        val userName = body["userName"]
         val email = body["email"]
         return if (name == null || email == null) {
-            makeResponse(Status.BAD_REQUEST, "Bad Request, insufficient parameters.")
+            makeResponse(Status.BAD_REQUEST, createJsonMessage("Bad Request, insufficient parameters."))
         } else {
             tryResponse(
-                errorStatus = Status.INTERNAL_SERVER_ERROR,
-                errorMsg = "Internal Server Error.",
+                errorStatus = Status.BAD_REQUEST,
+                errorMsg = "Unable to create player.",
             ) {
-                val (id, token) = playerManagement.createPlayer(name, email)
-                makeResponse(Status.CREATED, "Player created with id $id and token $token.")
+                val (id, token) = playerManagement.createPlayer(name, email, userName)
+                makeResponse(Status.CREATED, createJsonMessage("Player created with id $id and token $token."))
             }
         }
     }
@@ -35,8 +36,10 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
         unauthorizedAccess(
             request,
             playerManagement,
-        )?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it.") }
-        val pid = request.toPidOrNull() ?: return makeResponse(Status.BAD_REQUEST, "Bad Request, pid not found.")
+        )?.let { return makeResponse(Status.UNAUTHORIZED, createJsonMessage("Unauthorized, $it.")) }
+        val pid =
+            request.toPidOrNull()
+                ?: return makeResponse(Status.BAD_REQUEST, createJsonMessage("Bad Request, pid not found."))
         return tryResponse(
             errorStatus = Status.NOT_FOUND,
             errorMsg = "Player not found.",

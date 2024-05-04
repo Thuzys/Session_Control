@@ -9,7 +9,8 @@ window.addEventListener('load', loadHandler)
 window.addEventListener('hashchange', hashChangeHandler)
 
 function loadHandler(){
-    router.addRouteHandler("players/home", handlers.getHome)
+    router.addRouteHandler("players/home", playerHandlers.getHome)
+    router.addRouteHandler("playerSearch", playerHandlers.searchPlayer)
     router.addRouteHandler("gameSearch", gameHandlers.searchGames)
     router.addRouteHandler("games", gameHandlers.getGames)
     router.addRouteHandler("games/:gid", gameHandlers.getGameDetails)

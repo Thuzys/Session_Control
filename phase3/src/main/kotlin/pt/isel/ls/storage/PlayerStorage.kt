@@ -22,7 +22,7 @@ class PlayerStorage(envName: String) : PlayerStorageInterface {
     override fun create(newItem: Player): UInt =
         dataSource.connection.use { connection ->
             connection.executeCommand {
-                val insertQuery = "INSERT INTO PLAYER (name, email, token) VALUES (?, ?, ?)"
+                val insertQuery = "INSERT INTO PLAYER (name, email, token, username) VALUES (?, ?, ?, ?)"
                 val stm =
                     prepareStatement(
                         insertQuery,
@@ -31,6 +31,7 @@ class PlayerStorage(envName: String) : PlayerStorageInterface {
                 stm.setString(1, newItem.name)
                 stm.setString(2, newItem.email.email)
                 stm.setString(3, newItem.token.toString())
+                stm.setString(4, newItem.userName)
                 stm.executeUpdate()
                 val key = stm.generatedKeys
                 check(key.next()) { "No key returned" }
@@ -42,7 +43,7 @@ class PlayerStorage(envName: String) : PlayerStorageInterface {
     override fun read(pid: UInt): Player =
         dataSource.connection.use { connection ->
             connection.executeCommand {
-                val selectQuery = "SELECT pid, name, email, token FROM PLAYER WHERE pid = ?"
+                val selectQuery = "SELECT pid, name, username, email, token FROM PLAYER WHERE pid = ?"
                 val stmt = connection.prepareStatement(selectQuery)
                 stmt.setInt(1, pid.toInt())
                 val collection = makePlayers(stmt)
@@ -59,7 +60,7 @@ class PlayerStorage(envName: String) : PlayerStorageInterface {
         dataSource.connection.use { connection ->
             connection.executeCommand {
                 val selectQuery =
-                    "SELECT pid, name, email, token FROM PLAYER " +
+                    "SELECT pid, name, email, userName, token FROM PLAYER " +
                         "WHERE email = ? OR token = ? OFFSET ? LIMIT ?"
                 val stmt = connection.prepareStatement(selectQuery)
                 var idx = 1

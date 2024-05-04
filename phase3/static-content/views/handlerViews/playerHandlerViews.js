@@ -1,10 +1,9 @@
 import constants from "../../constants/constants.js";
-function createPlayerDetailsView(player) {
+function createPlayerDetailsView(player, backButton = true) {
     const h2 = views.h2({}, "Player Details");
     const playerDetailsView = views.ul(
-        views.li("Name: " + player.name),
-        views.li("Email: " + player.email.email),
-        views.li("Pid: " + player.pid),
+        views.li("UserName: " + player.userName),
+        views.li("Email: " + player.email),
     );
     const backButtonView = handlerViews.createBackButtonView();
     const sessionsButtonView =
@@ -13,12 +12,16 @@ function createPlayerDetailsView(player) {
                 "Sessions",
                 `${constants.SESSION_ROUTE}?pid=` + player.pid + "&offset=0"
             );
-    return views.div({},
+    const div  = views.div({},
         h2,
+        views.h3({}, player.name),
         playerDetailsView,
-        backButtonView,
         sessionsButtonView,
     );
+    if (backButton) {
+        div.appendChild(backButtonView);
+    }
+    return div;
 }
 import views from "../viewsCreators.js";
 

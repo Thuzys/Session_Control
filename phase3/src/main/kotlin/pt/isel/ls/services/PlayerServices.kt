@@ -23,6 +23,7 @@ interface PlayerServices {
     fun createPlayer(
         name: String,
         email: String,
+        userName: String? = null,
     ): Pair<UInt, UUID>
 
     /**

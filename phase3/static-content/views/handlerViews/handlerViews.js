@@ -6,8 +6,8 @@ function createHeader(text) {
     return views.h1({}, text);
 }
 
-function createHomeView() {
-    const h1 = views.h1({}, "Home page");
+function createSearchPlayerView() {
+    const h1 = views.h1({}, "Search Player:");
     const form =
         views.form({action: "#playerDetails", method: "get"},
         views.input({type: "text", id: "pid", maxLength: 10}),
@@ -49,23 +49,24 @@ function createBackButtonView() {
 
 function createPagination(query, hash, hasNext) {
     const prevButton = views.button({id: "prev", type: "button"}, "Previous")
+    if(query.get("offset") === 0) {
+        prevButton.disabled = true;
+    }
     prevButton.addEventListener('click', () => {
         if (query.get("offset") > 0) {
             query.set("offset", query.get("offset") - constants.LIMIT)
             handlerUtils.changeHash(`${hash}?${handlerUtils.makeQueryString(query)}`)
         }
-        else {
-            prevButton.disabled = true;
-        }
     })
-
-    const nextButton = views.button({id: "next", type: "button", enabled: hasNext}, "Next")
+    const nextButton = views.button({id: "next", type: "button"}, "Next")
+    if(!hasNext) {
+        nextButton.disabled = true;
+    }
     nextButton.addEventListener('click', () => {
         if (hasNext) {
             query.set("offset", query.get("offset") + constants.LIMIT)
             handlerUtils.changeHash(`${hash}?${handlerUtils.makeQueryString(query)}`)
         }
-        nextButton.disabled = true;
     })
 
     return views.div(
@@ -82,7 +83,7 @@ const handlerViews = {
     hrefConstructor,
     createBackButtonView,
     createPagination,
-    createHomeView,
+    createHomeView: createSearchPlayerView,
 }
 
 export default handlerViews;

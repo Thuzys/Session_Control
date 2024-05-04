@@ -34,6 +34,7 @@ create table GAME_GENRE (
 create table PLAYER (
     pid serial primary key,
     name varchar(80),
+    username varchar(40) unique not null,
     email varchar(40) check (position('@' in email) > 0) unique,
     token varchar(40)
 );

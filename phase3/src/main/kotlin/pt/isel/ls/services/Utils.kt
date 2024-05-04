@@ -6,7 +6,7 @@ import pt.isel.ls.domain.errors.ServicesError
 import java.sql.SQLException
 
 const val DEFAULT_OFFSET = 0u
-const val DEFAULT_LIMIT = 10u
+const val DEFAULT_LIMIT = 11u
 
 /**
  * Tries to execute a block of code and catches any exception that may occur.

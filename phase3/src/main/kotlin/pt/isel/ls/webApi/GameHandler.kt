@@ -19,7 +19,7 @@ class GameHandler(
         unauthorizedAccess(
             request,
             playerServices,
-        )?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it.") }
+        )?.let { return unauthorizedResponse(it) }
 
         val body = readBody(request)
         val name = body["name"]
@@ -27,11 +27,17 @@ class GameHandler(
         val genres = body["genres"] ?.let { processGenres(it) }
 
         return if (name == null || dev == null || genres == null) {
-            makeResponse(Status.BAD_REQUEST, "Bad Request.")
+            makeResponse(
+                Status.BAD_REQUEST,
+                createJsonMessage("Invalid arguments: name:$name, dev:$dev, genres:$genres."),
+            )
         } else {
-            tryResponse(Status.INTERNAL_SERVER_ERROR, "Internal Server Error.") {
+            tryResponse(
+                Status.BAD_REQUEST,
+                "Invalid arguments: name:$name, dev:$dev, genres:$genres.",
+            ) {
                 val gid = gameManagement.createGame(name, dev, genres)
-                makeResponse(Status.CREATED, "Game created with id $gid.")
+                makeResponse(Status.CREATED, createJsonMessage("Game created with id $gid."))
             }
         }
     }
@@ -40,12 +46,12 @@ class GameHandler(
         unauthorizedAccess(
             request,
             playerServices,
-        )?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it.") }
+        )?.let { return unauthorizedResponse(it) }
 
         val gid = request.toGidOrNull()
 
         return if (gid == null) {
-            makeResponse(Status.BAD_REQUEST, "Bad Request.")
+            makeResponse(Status.BAD_REQUEST, createJsonMessage("Bad Request."))
         } else {
             tryResponse(Status.NOT_FOUND, "Game not found.") {
                 val game = gameManagement.getGameDetails(gid)
@@ -58,7 +64,7 @@ class GameHandler(
         unauthorizedAccess(
             request,
             playerServices,
-        )?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it.") }
+        )?.let { return unauthorizedResponse(it) }
 
         val offset = request.query("offset")?.toUIntOrNull()
         val limit = request.query("limit")?.toUIntOrNull()
@@ -66,7 +72,7 @@ class GameHandler(
         val genres = request.query("genres") ?.let { processGenres(it) }
 
         return if (dev == null && genres == null) {
-            makeResponse(Status.BAD_REQUEST, "Bad Request.")
+            makeResponse(Status.BAD_REQUEST, createJsonMessage("Bad Request."))
         } else {
             tryResponse(Status.NOT_FOUND, "Game not found.") {
                 val games = gameManagement.getGameByDevAndGenres(dev, genres, offset, limit)

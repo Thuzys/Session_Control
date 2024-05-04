@@ -42,7 +42,7 @@ class GameHandlerTest {
         val request =
             Request(Method.POST, DUMMY_ROUTE)
                 .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
-        val expectedMessage = "Bad Request."
+        val expectedMessage = createJsonMessage("Invalid arguments: name:null, dev:null, genres:null.")
 
         // ACT
         val response =
@@ -84,7 +84,7 @@ class GameHandlerTest {
                 UriTemplate.from("$DUMMY_ROUTE/{gid}"),
             )
                 .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
-        val expectedMessage = "Bad Request."
+        val expectedMessage = createJsonMessage("Bad Request.")
 
         // ACT
         val response =
@@ -129,7 +129,7 @@ class GameHandlerTest {
                 .body("{\"name\": \"name\", \"dev\": \"dev\", \"genres\": \"genre1,genre2,genre3\"")
                 .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
 
-        val expectedMessage = "Game created with id 1."
+        val expectedMessage = createJsonMessage("Game created with id 1.")
 
         // ACT
         val response =
@@ -151,7 +151,7 @@ class GameHandlerTest {
             ).body("{\"name\": \"\", \"dev\": \"dev\", \"genres\": \"genre1,genre2,genre3\"}")
                 .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
 
-        val expectedStatus = Status.INTERNAL_SERVER_ERROR
+        val expectedStatus = Status.BAD_REQUEST
 
         // ACT
         val response =
@@ -187,7 +187,7 @@ class GameHandlerTest {
         val request =
             Request(Method.GET, DUMMY_ROUTE)
                 .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
-        val expectedMessage = "Bad Request."
+        val expectedMessage = createJsonMessage("Bad Request.")
 
         // ACT
         val response =
@@ -224,10 +224,10 @@ class GameHandlerTest {
             Request(Method.GET, "$DUMMY_ROUTE?dev=TestDev2&genres=TestGenre")
                 .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
         val expectedMessage =
-            """
-            Error:Game not found.
-            Cause:Unable to find the game due to invalid dev or genres.
-            """.trimIndent()
+            createJsonMessage(
+                "Game not found.",
+                "Unable to find the game due to invalid dev or genres.",
+            )
 
         // ACT
         val response =
@@ -285,10 +285,10 @@ class GameHandlerTest {
             )
                 .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
         val expectedMessage =
-            """
-            Error:Game not found.
-            Cause:Unable to find the game due to invalid game id.
-            """.trimIndent()
+            createJsonMessage(
+                message = "Game not found.",
+                error = "Unable to find the game due to invalid game id.",
+            )
 
         // ACT
         val response =

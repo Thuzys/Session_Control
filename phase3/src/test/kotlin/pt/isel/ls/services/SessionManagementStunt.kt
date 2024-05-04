@@ -17,8 +17,8 @@ private val date1 = LocalDateTime(2024, 3, 10, 12, 30)
 
 object SessionManagementStunt : SessionServices {
     val playerToken: UUID = UUID.randomUUID()
-    private val player1 = Player(1u, "test1", defaultMail, playerToken)
-    private val player2 = Player(2u, "test2", defaultMail, playerToken)
+    private val player1 = Player(1u, "test1", "test1", defaultMail, playerToken)
+    private val player2 = Player(2u, "test2", "test2", defaultMail, playerToken)
     private val players: Collection<Player> = listOf(player1)
     private val players2: Collection<Player> = listOf(player1, player2)
 

@@ -31,7 +31,7 @@ class PlayerHandlerTest {
         actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
             val request = Request(Method.POST, DUMMY_ROUTE)
             val response = handler.createPlayer(request)
-            assertEquals("Bad Request, insufficient parameters.", response.bodyString())
+            assertEquals(createJsonMessage("Bad Request, insufficient parameters."), response.bodyString())
         }
 
     @Test
@@ -57,7 +57,7 @@ class PlayerHandlerTest {
                     UriTemplate.from("$DUMMY_ROUTE/{pid}"),
                 )
             val response = handler.getPlayer(request)
-            assertEquals("Bad Request, pid not found.", response.bodyString())
+            assertEquals(createJsonMessage("Bad Request, pid not found."), response.bodyString())
         }
 
     @Test
@@ -75,8 +75,10 @@ class PlayerHandlerTest {
             val response = handler.createPlayer(request)
             assertEquals(
                 expected =
-                    "Player created with id ${PlayerManagementStunt.playerId} " +
-                        "and token ${PlayerManagementStunt.playerToken}.",
+                    createJsonMessage(
+                        "Player created with id ${PlayerManagementStunt.playerId} " +
+                            "and token ${PlayerManagementStunt.playerToken}.",
+                    ),
                 actual = response.bodyString(),
             )
         }
@@ -97,14 +99,11 @@ class PlayerHandlerTest {
             val request = Request(Method.POST, DUMMY_ROUTE).body("{\"name\": \"name\", \"email\": \" \"}")
             val response = handler.createPlayer(request)
             val expected =
-                """
-                Error:Unable to create player.
-                Cause:Unable to create a new Player due to invalid name or email.
-                """.trimIndent()
-            assertEquals(
-                expected = expected,
-                actual = response.bodyString(),
-            )
+                createJsonMessage(
+                    message = "Unable to create player.",
+                    error = "Unable to create a new Player due to invalid name or email.",
+                )
+            assertEquals(expected, response.bodyString())
         }
 
     @Test
@@ -131,14 +130,11 @@ class PlayerHandlerTest {
                 )
             val response = handler.getPlayer(request)
             val expected =
-                """
-                Error:Player not found.
-                Cause:Unable to get the details of a Player due to nonexistent pid.
-                """.trimIndent()
-            assertEquals(
-                expected = expected,
-                actual = response.bodyString(),
-            )
+                createJsonMessage(
+                    message = "Player not found.",
+                    error = "Unable to get the details of a Player due to nonexistent pid.",
+                )
+            assertEquals(expected, response.bodyString())
         }
 
     @Test
@@ -191,7 +187,7 @@ class PlayerHandlerTest {
                     UriTemplate.from("$DUMMY_ROUTE/{pid}"),
                 )
             val response = handler.getPlayer(request)
-            assertEquals("Unauthorized, invalid token.", response.bodyString())
+            assertEquals(createJsonMessage("Unauthorized, invalid token."), response.bodyString())
         }
 
     @Test
@@ -199,6 +195,6 @@ class PlayerHandlerTest {
         actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
             val request = Request(Method.GET, "$DUMMY_ROUTE?pid=${PlayerManagementStunt.playerId}")
             val response = handler.getPlayer(request)
-            assertEquals("Unauthorized, token not provided.", response.bodyString())
+            assertEquals(createJsonMessage("Unauthorized, token not provided."), response.bodyString())
         }
 }

@@ -19,9 +19,4 @@ menu.set(
     views.a({href: "#playerSearch", class: "navigation-bar"}, "Search Player")
 )
 
-menu.set(
-    "createGame",
-    views.a({href: "#createGame", class: "navigation-bar"}, "Create Game")
-)
-
 export default menu

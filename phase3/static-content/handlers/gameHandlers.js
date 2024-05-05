@@ -68,7 +68,7 @@ function searchGames(mainContent, mainHeader) {
     form.onsubmit = (e) => handleSearchGamesSubmit(e)
 
     mainContent.replaceChildren(header, form)
-    mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("createGame"), menu.get("sessionSearch"))
+    mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("sessionSearch"))
 }
 
 /**

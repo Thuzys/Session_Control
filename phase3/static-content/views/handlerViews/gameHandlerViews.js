@@ -3,6 +3,7 @@ import views from "../viewsCreators.js";
 import requestUtils from "../../utils/requestUtils.js";
 import constants from "../../constants/constants.js";
 import genres from "../../handlers/handlerUtils/gameGenres.js";
+import handlerUtils from "../../handlers/handlerUtils/handlerUtils.js";
 
 const genresValues = Object.values(genres)
 
@@ -73,6 +74,15 @@ function createSearchGamesView() {
         type: "submit",
     }, "Search")
 
+    const createGameButton = views.button({
+        id: "CreateGameButton",
+        type: "button",
+    }, "Create Game")
+
+    createGameButton.onclick = () => {
+        handlerUtils.changeHash("createGame")
+    }
+
     const [
         addGenresButton,
         genresList,
@@ -93,7 +103,8 @@ function createSearchGamesView() {
         addGenresButton,
         selectedGenresView,
         views.p(),
-        searchGamesButton
+        searchGamesButton,
+        createGameButton
     )
 
     return [header, form]

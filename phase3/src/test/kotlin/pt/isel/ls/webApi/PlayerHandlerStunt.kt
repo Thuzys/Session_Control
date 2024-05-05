@@ -11,4 +11,8 @@ object PlayerHandlerStunt : PlayerHandlerInterface {
     override fun getPlayer(request: Request): Response {
         TODO("not needed for the test")
     }
+
+    override fun getPlayerBy(request: Request): Response {
+        TODO("Not yet implemented")
+    }
 }

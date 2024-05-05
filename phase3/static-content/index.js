@@ -1,5 +1,4 @@
 import router from "./router/router.js";
-import handlers from "./handlers/handlers.js";
 import requestUtils from "./utils/requestUtils.js";
 import playerHandlers from "./handlers/playerHandlers.js";
 import sessionHandlers from "./handlers/sessionHandlers.js";
@@ -11,10 +10,11 @@ window.addEventListener('hashchange', hashChangeHandler)
 function loadHandler(){
     router.addRouteHandler("players/home", playerHandlers.getHome)
     router.addRouteHandler("playerSearch", playerHandlers.searchPlayer)
+    router.addRouteHandler("players", playerHandlers.getPlayerDetails)
     router.addRouteHandler("gameSearch", gameHandlers.searchGames)
     router.addRouteHandler("games", gameHandlers.getGames)
     router.addRouteHandler("games/:gid", gameHandlers.getGameDetails)
-    router.addRouteHandler("players/:pid", playerHandlers.getPlayerDetails)
+    router.addRouteHandler("players/:pid", playerHandlers.getPlayerDetailsByPid)
     router.addRouteHandler("sessionSearch", sessionHandlers.searchSessions)
     router.addRouteHandler("sessions", sessionHandlers.getSessions)
     router.addRouteHandler("sessions/:sid", sessionHandlers.getSessionDetails)

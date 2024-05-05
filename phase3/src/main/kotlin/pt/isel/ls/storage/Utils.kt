@@ -1,11 +1,13 @@
 package pt.isel.ls.storage
 
-import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.toLocalDate
 import pt.isel.ls.domain.Email
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import java.sql.Connection
+import java.sql.Date
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.SQLException
@@ -112,6 +114,18 @@ private fun processGenres(
     }
     return genres
 }
+
+/**
+ * Converts a [LocalDate] to a [Date].
+ *
+ * @return The [Date] object or null if the conversion fails.
+ */
+fun LocalDate?.toDateOrNull() =
+    try {
+        Date.valueOf(toString())
+    } catch (e: IllegalArgumentException) {
+        null
+    }
 
 /**
  * Adds a game to the database.
@@ -298,7 +312,7 @@ internal fun Connection.makeSession(sessionStmt: PreparedStatement): Collection<
                 rs.getInt("sid").toUInt(),
                 rs.getInt("capacity").toUInt(),
                 rs.getInt("gid").toUInt(),
-                rs.getString("date").toLocalDateTime(),
+                rs.getString("date").toLocalDate(),
                 makePlayers(playerStmt),
             ),
         )

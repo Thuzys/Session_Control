@@ -1,6 +1,6 @@
 package pt.isel.ls.domain
 
-import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 
 /**
@@ -18,7 +18,7 @@ data class Session(
     val sid: UInt? = null,
     val capacity: UInt,
     val gid: UInt,
-    val date: LocalDateTime,
+    val date: LocalDate,
     val players: Collection<Player> = listOf(),
 ) {
     init {

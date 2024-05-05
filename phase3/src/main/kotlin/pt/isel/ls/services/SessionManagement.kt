@@ -1,9 +1,8 @@
 package pt.isel.ls.services
 
-import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalDate
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
-import pt.isel.ls.storage.PlayerStorageInterface
 import pt.isel.ls.storage.SessionStorageInterface
 
 /**
@@ -11,7 +10,7 @@ import pt.isel.ls.storage.SessionStorageInterface
  */
 class SessionManagement(
     private val sessionDataMem: SessionStorageInterface,
-    private val playerDataMem: PlayerStorageInterface,
+//    private val playerDataMem: PlayerStorageInterface,
 ) : SessionServices {
     override fun addPlayer(
         player: UInt,
@@ -33,7 +32,7 @@ class SessionManagement(
 
     override fun createSession(
         gid: UInt,
-        date: LocalDateTime,
+        date: LocalDate,
         capacity: UInt,
     ): UInt =
         tryCatch("Unable to create a new session due") {
@@ -42,7 +41,7 @@ class SessionManagement(
 
     override fun getSessions(
         gid: UInt?,
-        date: LocalDateTime?,
+        date: LocalDate?,
         state: SessionState?,
         playerId: UInt?,
         offset: UInt?,
@@ -53,7 +52,7 @@ class SessionManagement(
                 gid = gid,
                 date = date,
                 state = state,
-                playerId = playerId,
+                pid = playerId,
                 offset = offset ?: DEFAULT_OFFSET,
                 limit = limit ?: DEFAULT_LIMIT,
             ) ?: throw NoSuchElementException("No sessions found")
@@ -62,7 +61,7 @@ class SessionManagement(
     override fun updateCapacityOrDate(
         sid: UInt,
         capacity: UInt?,
-        date: LocalDateTime?,
+        date: LocalDate?,
     ) = tryCatch("Unable to update session $sid due") {
         sessionDataMem.updateCapacityOrDate(
             sid = sid,

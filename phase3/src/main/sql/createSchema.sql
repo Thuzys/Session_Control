@@ -5,6 +5,11 @@ drop table if exists GAME;
 drop table if exists PLAYER;
 drop table if exists GENRE;
 
+-- create or replace function getSessionsBy(userName varchar(40), gameName varchar(80), date Date, state varchar(10))
+-- TODO();
+--
+
+
 create or replace function check_capacity(sid int)
     returns boolean as $$
 declare
@@ -22,7 +27,8 @@ create table GENRE (
 create table GAME (
   gid serial primary key,
   name varchar(80),
-  developer varchar(80)
+  developer varchar(80),
+  unique (name, developer)
 );
 
 create table GAME_GENRE (
@@ -43,7 +49,7 @@ create table SESSION (
      sid serial primary key,
      capacity int not null check (capacity > 0),
      gid int not null references GAME(gid),
-     date varchar(80) not null
+     date DATE not null
 );
 
 create table PLAYER_SESSION (

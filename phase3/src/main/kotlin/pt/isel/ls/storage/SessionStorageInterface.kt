@@ -1,6 +1,6 @@
 package pt.isel.ls.storage
 
-import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalDate
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
@@ -35,16 +35,16 @@ interface SessionStorageInterface {
      * @param gid The unique identifier of the game for which sessions are to be retrieved.
      * @param date The date of the sessions to be retrieved. Defaults to null, meaning all dates.
      * @param state The [SessionState] of the sessions to be retrieved. Defaults to null, meaning all states.
-     * @param playerId The unique identifier of the player for whom sessions are to be retrieved. Defaults to null, meaning all players.
+     * @param pid The unique identifier of the player for whom sessions are to be retrieved. Defaults to null, meaning all players.
      * @param offset The offset to be applied to the collection. Defaults to 0.
      * @param limit The maximum number of sessions to be retrieved. Defaults to 10.
      * @return A collection of sessions matching the specified parameters, or null if no sessions are found.
      */
     fun readSessions(
         gid: UInt? = null,
-        date: LocalDateTime? = null,
+        date: LocalDate? = null,
         state: SessionState? = null,
-        playerId: UInt? = null,
+        pid: UInt? = null,
         offset: UInt = 0u,
         limit: UInt = 11u,
     ): Collection<Session>?
@@ -70,7 +70,7 @@ interface SessionStorageInterface {
     fun updateCapacityOrDate(
         sid: UInt,
         capacity: UInt? = null,
-        date: LocalDateTime? = null,
+        date: LocalDate? = null,
     )
 
     /**

@@ -54,6 +54,7 @@ class PlayerStorage(envName: String) : PlayerStorageInterface {
     override fun readBy(
         email: Email?,
         token: String?,
+        userName: String?,
         limit: UInt,
         offset: UInt,
     ): Collection<Player>? =
@@ -61,11 +62,13 @@ class PlayerStorage(envName: String) : PlayerStorageInterface {
             connection.executeCommand {
                 val selectQuery =
                     "SELECT pid, name, email, userName, token FROM PLAYER " +
-                        "WHERE email = ? OR token = ? OFFSET ? LIMIT ?"
+                        "WHERE email = ? OR token = ? or userName = ? " +
+                        "OFFSET ? LIMIT ?"
                 val stmt = connection.prepareStatement(selectQuery)
                 var idx = 1
                 stmt.setString(idx++, email?.email)
                 stmt.setString(idx++, token)
+                stmt.setString(idx++, userName)
                 stmt.setInt(idx++, offset.toInt())
                 stmt.setInt(idx, limit.toInt())
                 makePlayers(stmt).ifEmpty { null }

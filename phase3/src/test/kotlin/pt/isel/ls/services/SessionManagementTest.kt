@@ -1,22 +1,21 @@
 package pt.isel.ls.services
 
-import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalDate
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.errors.ServicesError
-import pt.isel.ls.storage.PlayerStorageStunt
 import pt.isel.ls.storage.SessionStorageStunt
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
-private val date1 = LocalDateTime(2024, 3, 10, 12, 30)
-private val date2 = LocalDateTime(1904, 3, 10, 12, 30)
+private val date1 = LocalDate(2024, 3, 10)
+private val date2 = LocalDate(1904, 3, 10)
 
 class SessionManagementTest {
     private fun actionSessionManagementTest(code: (session: SessionServices) -> Unit) =
         // arrangement
-        SessionManagement(SessionStorageStunt(), PlayerStorageStunt())
+        SessionManagement(SessionStorageStunt())
             .let(code)
 
     @Test
@@ -91,10 +90,10 @@ class SessionManagementTest {
     @Test
     fun `get Sessions by date returns successfully`() {
         actionSessionManagementTest { sessionManagement: SessionServices ->
-            val date = LocalDateTime(2024, 3, 10, 12, 30)
+            val date = LocalDate(2024, 3, 10)
             val sessions = sessionManagement.getSessions(1u, date)
             assertEquals(2, sessions.size)
-            assertTrue(sessions.all { session -> session.date == LocalDateTime(2024, 3, 10, 12, 30) })
+            assertTrue(sessions.all { session -> session.date == date })
         }
     }
 

@@ -42,4 +42,13 @@ interface PlayerServices {
      * @return true if the token is valid, false otherwise.
      */
     fun isValidToken(token: String): Boolean
+
+    /**
+     * Returns the details of a player.
+     *
+     * @param userName the username of each player.
+     * @return a [Player] containing all the information wanted or null if nothing is found.
+     * @throws ServicesError containing the message of the error.
+     */
+    fun getPlayerDetailsBy(userName: String): Player
 }

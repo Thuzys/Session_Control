@@ -1,6 +1,6 @@
 package pt.isel.ls.services
 
-import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalDate
 import pt.isel.ls.domain.Email
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
@@ -13,7 +13,7 @@ private val sid1 = 1u
 private val sid2 = 2u
 private val gid1 = 1u
 private val defaultMail = Email("default@mail.com")
-private val date1 = LocalDateTime(2024, 3, 10, 12, 30)
+private val date1 = LocalDate(2024, 3, 10)
 
 object SessionManagementStunt : SessionServices {
     val playerToken: UUID = UUID.randomUUID()
@@ -39,7 +39,7 @@ object SessionManagementStunt : SessionServices {
 
     override fun createSession(
         gid: UInt,
-        date: LocalDateTime,
+        date: LocalDate,
         capacity: UInt,
     ): UInt {
         return 1u
@@ -47,7 +47,7 @@ object SessionManagementStunt : SessionServices {
 
     override fun getSessions(
         gid: UInt?,
-        date: LocalDateTime?,
+        date: LocalDate?,
         state: SessionState?,
         playerId: UInt?,
         offset: UInt?,
@@ -73,7 +73,7 @@ object SessionManagementStunt : SessionServices {
     override fun updateCapacityOrDate(
         sid: UInt,
         capacity: UInt?,
-        date: LocalDateTime?,
+        date: LocalDate?,
     ) {
     }
 

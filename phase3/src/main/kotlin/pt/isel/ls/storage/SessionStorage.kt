@@ -1,6 +1,6 @@
 package pt.isel.ls.storage
 
-import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalDate
 import org.postgresql.ds.PGSimpleDataSource
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
@@ -23,7 +23,8 @@ class SessionStorage(envName: String) : SessionStorageInterface {
                 val stmt1 = connection.prepareStatement(insertSessionCMD, Statement.RETURN_GENERATED_KEYS)
                 stmt1.setInt(1, newItem.capacity.toInt())
                 stmt1.setInt(2, newItem.gid.toInt())
-                stmt1.setString(3, newItem.date.toString())
+                stmt1.setDate(3, java.sql.Date.valueOf(newItem.date.toString()))
+//                stmt1.setString(3, newItem.date.toString())
                 stmt1.executeUpdate()
                 val key = stmt1.generatedKeys
                 require(key.next()) { "No key returned" }
@@ -54,9 +55,9 @@ class SessionStorage(envName: String) : SessionStorageInterface {
 
     override fun readSessions(
         gid: UInt?,
-        date: LocalDateTime?,
+        date: LocalDate?,
         state: SessionState?,
-        playerId: UInt?,
+        pid: UInt?,
         offset: UInt,
         limit: UInt,
     ): Collection<Session>? =
@@ -66,9 +67,9 @@ class SessionStorage(envName: String) : SessionStorageInterface {
                     "SELECT s.sid, s.capacity, s.gid, s.date\n" +
                         "FROM session s\n" +
                         "    LEFT JOIN player_session ps ON ps.sid = s.sid\n" +
-                        "WHERE (s.gid = ? or ? = 0)\n" +
-                        "   AND (s.date = ? or ? = 'null')\n" +
-                        "   AND (ps.pid = ? or ? = 0)\n" +
+                        "WHERE (s.gid = ? or ? is null)\n" +
+                        "   AND (s.date = ? or ? is null)\n" +
+                        "   AND (ps.pid = ? or ? is null)\n" +
                         "GROUP BY s.sid, s.capacity, s.gid, s.date\n" +
                         "HAVING (? = 'null') OR\n" +
                         "       (? = 'OPEN' AND s.capacity > count(ps.pid)) OR\n" +
@@ -77,13 +78,13 @@ class SessionStorage(envName: String) : SessionStorageInterface {
                 val stmt2 = connection.prepareStatement(selectSessionCMD)
                 var idx = 1
                 repeat(2) {
-                    stmt2.setInt(idx++, gid?.toInt() ?: 0)
+                    gid?.let { stmt2.setInt(idx++, it.toInt()) } ?: stmt2.setNull(idx++, java.sql.Types.INTEGER)
                 }
                 repeat(2) {
-                    stmt2.setString(idx++, date.toString())
+                    date.toDateOrNull()?.let { stmt2.setDate(idx++, it) } ?: stmt2.setNull(idx++, java.sql.Types.DATE)
                 }
                 repeat(2) {
-                    stmt2.setInt(idx++, playerId?.toInt() ?: 0)
+                    pid?.let { stmt2.setInt(idx++, it.toInt()) } ?: stmt2.setNull(idx++, java.sql.Types.INTEGER)
                 }
                 repeat(3) {
                     stmt2.setString(idx++, state.toString())
@@ -128,7 +129,7 @@ class SessionStorage(envName: String) : SessionStorageInterface {
     override fun updateCapacityOrDate(
         sid: UInt,
         capacity: UInt?,
-        date: LocalDateTime?,
+        date: LocalDate?,
     ) {
         dataSource.connection.use { connection ->
             connection.executeCommand {

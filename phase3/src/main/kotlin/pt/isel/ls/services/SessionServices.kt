@@ -1,6 +1,6 @@
 package pt.isel.ls.services
 
-import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalDate
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.errors.ServicesError
@@ -47,7 +47,7 @@ interface SessionServices {
      */
     fun createSession(
         gid: UInt,
-        date: LocalDateTime,
+        date: LocalDate,
         capacity: UInt,
     ): UInt
 
@@ -62,7 +62,7 @@ interface SessionServices {
      */
     fun getSessions(
         gid: UInt? = null,
-        date: LocalDateTime? = null,
+        date: LocalDate? = null,
         state: SessionState? = null,
         playerId: UInt? = null,
         offset: UInt? = DEFAULT_OFFSET,
@@ -85,7 +85,7 @@ interface SessionServices {
     fun updateCapacityOrDate(
         sid: UInt,
         capacity: UInt? = null,
-        date: LocalDateTime? = null,
+        date: LocalDate? = null,
     )
 
     /**

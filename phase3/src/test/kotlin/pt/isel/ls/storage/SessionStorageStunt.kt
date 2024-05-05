@@ -1,6 +1,6 @@
 package pt.isel.ls.storage
 
-import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalDate
 import pt.isel.ls.domain.Email
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Player
@@ -14,7 +14,7 @@ class SessionStorageStunt : SessionStorageInterface {
     private val player2 = Player(2u, "test2", "test2", defaultMail)
 
     private var sessionUuid: UInt = 4u
-    private val date1 = LocalDateTime(2024, 3, 10, 12, 30)
+    private val date1 = LocalDate(2024, 3, 10)
     private val players: Collection<Player> = listOf(player1)
     private val players2: Collection<Player> = listOf(player1, player2)
     private val session1 = Session(1u, 2u, 1u, date1, players2)
@@ -44,9 +44,9 @@ class SessionStorageStunt : SessionStorageInterface {
 
     override fun readSessions(
         gid: UInt?,
-        date: LocalDateTime?,
+        date: LocalDate?,
         state: SessionState?,
-        playerId: UInt?,
+        pid: UInt?,
         offset: UInt,
         limit: UInt,
     ): Collection<Session>? =
@@ -54,7 +54,7 @@ class SessionStorageStunt : SessionStorageInterface {
             (gid == null || session.gid == gid) &&
                 (date == null || session.date == date) &&
                 (state == null || getSessionState(session) == state) &&
-                (playerId == null || session.players.any { player -> player.pid == playerId })
+                (pid == null || session.players.any { player -> player.pid == pid })
         }.ifEmpty { null }
 
 //    override fun updateAddPlayer(
@@ -90,7 +90,7 @@ class SessionStorageStunt : SessionStorageInterface {
     override fun updateCapacityOrDate(
         sid: UInt,
         capacity: UInt?,
-        date: LocalDateTime?,
+        date: LocalDate?,
     ) {
         val sessionToUpdate = hashSession[sid]
         sessionToUpdate?.let { session ->

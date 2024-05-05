@@ -4,15 +4,63 @@ import requestUtils from "../../utils/requestUtils.js";
 import constants from "../../constants/constants.js";
 import genres from "../../handlers/handlerUtils/gameGenres.js";
 
+const genresValues = Object.values(genres)
+
+/**
+ * Create create game view
+ *
+ * @returns {any[]}
+ */
+function createCreateGameView() {
+    const header = handlerViews.createHeader("Create Game: ")
+
+    const [
+        addGenresButton,
+        genresList,
+        inputGenres,
+        selectedGenresView
+    ] = createGenresView()
+
+    const form = views.form(
+        {},
+        views.input({
+            id: "InputName",
+            type: "text",
+            placeholder: "Insert Game Name"
+        }),
+        views.p(),
+        views.input({
+            id: "InputDev",
+            type: "text",
+            placeholder: "Insert Developer Name"
+        }),
+        views.p(),
+        genresList,
+        inputGenres,
+        addGenresButton,
+        selectedGenresView,
+        views.p(),
+        views.button({
+            type: "submit",
+        }, "Create")
+    )
+
+    return [header, form]
+}
+
 /**
  * Create search games view
  *
  * @returns {any[]}
  */
 function createSearchGamesView() {
-    const genresValues = Object.values(genres)
+    const header = handlerViews.createHeader("Search Games by developer and/or genre(s): ")
 
-    const header = handlerViews.createHeader("Search Games by developer and/or Genre(s): ")
+    const inputName = views.input({
+        id: "InputName",
+        type: "text",
+        placeholder: "Insert Game Name"
+    })
 
     const inputDev = views.input({
         id: "InputDev",
@@ -20,6 +68,38 @@ function createSearchGamesView() {
         placeholder: "Insert Developer Name"
     })
 
+    const searchGamesButton = views.button({
+        id: "SearchGamesButton",
+        type: "submit",
+    }, "Search")
+
+    const [
+        addGenresButton,
+        genresList,
+        inputGenres,
+        selectedGenresView
+    ] = createGenresView()
+
+    // updateGameSearchButton(searchGamesButton, inputDev, selectedGenresView)
+
+    const form = views.form(
+        {},
+        inputName,
+        views.p(),
+        inputDev,
+        views.p(),
+        genresList,
+        inputGenres,
+        addGenresButton,
+        selectedGenresView,
+        views.p(),
+        searchGamesButton
+    )
+
+    return [header, form]
+}
+
+function createGenresView() {
     const addGenresButton = views.button({
         id: "AddGenresButton",
         type: "button",
@@ -42,30 +122,11 @@ function createSearchGamesView() {
 
     const selectedGenresView = views.ul()
 
-    const searchGamesButton = views.button({
-        id: "SearchGamesButton",
-        type: "submit",
-    }, "Search")
-
     addGenresButton.addEventListener("click", () => {
         createGenresListener(selectedGenresView, inputGenres, genresValues)
     })
 
-    //updateGameSearchButton(searchGamesButton, inputDev, selectedGenresView)
-
-    const form = views.form(
-        {},
-        inputDev,
-        views.p(),
-        genresList,
-        inputGenres,
-        addGenresButton,
-        selectedGenresView,
-        views.p(),
-        searchGamesButton
-    )
-
-    return [header, form]
+    return [addGenresButton, genresList, inputGenres, selectedGenresView]
 }
 
 /**
@@ -185,7 +246,8 @@ function createGameDetailsView(game) {
 const gameHandlerViews = {
     createSearchGamesView,
     createGetGameView,
-    createGameDetailsView
+    createGameDetailsView,
+    createCreateGameView
 }
 
 export default gameHandlerViews

@@ -1,8 +1,9 @@
 import constants from "../../constants/constants.js";
+
 function createPlayerDetailsView(player, backButton = true) {
     const h2 = views.h2({}, "Player Details");
     const playerDetailsView = views.ul(
-        views.li("UserName: " + player.userName),
+        views.li("Username: " + player.userName),
         views.li("Email: " + player.email),
     );
     const backButtonView = handlerViews.createBackButtonView();

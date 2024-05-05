@@ -20,7 +20,7 @@ class GameHandler(
             request,
             playerServices,
         )?.let { return unauthorizedResponse(it) }
-
+        println(request.bodyString())
         val body = readBody(request)
         val name = body["name"]
         val dev = body["dev"]
@@ -60,7 +60,7 @@ class GameHandler(
         }
     }
 
-    override fun getGameByDevAndGenres(request: Request): Response {
+    override fun getGames(request: Request): Response {
         unauthorizedAccess(
             request,
             playerServices,
@@ -70,12 +70,18 @@ class GameHandler(
         val limit = request.query("limit")?.toUIntOrNull()
         val dev = request.query("dev")
         val genres = request.query("genres") ?.let { processGenres(it) }
+        val name = request.query("name")
 
-        return if (dev == null && genres == null) {
-            makeResponse(Status.BAD_REQUEST, createJsonMessage("Bad Request."))
+        return if (dev == null && genres == null && name == null) {
+            makeResponse(
+                Status.BAD_REQUEST,
+                createJsonMessage(
+                    "Invalid arguments: either dev, genres or name must be provided.",
+                ),
+            )
         } else {
             tryResponse(Status.NOT_FOUND, "Game not found.") {
-                val games = gameManagement.getGameByDevAndGenres(dev, genres, offset, limit)
+                val games = gameManagement.getGames(dev, genres, name, offset, limit)
                 makeResponse(Status.FOUND, Json.encodeToString(games))
             }
         }

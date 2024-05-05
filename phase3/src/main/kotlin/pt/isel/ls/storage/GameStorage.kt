@@ -61,10 +61,11 @@ class GameStorage(envVarName: String) : GameStorageInterface {
         limit: UInt,
         dev: String?,
         genres: Collection<String>?,
+        name: String?,
     ): Collection<Game> =
         dataSource.connection.use {
             it.executeCommand {
-                val getGameStr = buildGameGetterString(dev)
+                val getGameStr = buildGameGetterString(dev, name)
                 val getGamesStmt = it.prepareStatement("$getGameStr LIMIT ? OFFSET ?")
 
                 val getGenresStmt =
@@ -80,18 +81,13 @@ class GameStorage(envVarName: String) : GameStorageInterface {
 
                 var paramIdx = 1
                 dev?.let { d -> getGamesStmt.setString(paramIdx++, d) }
+                name?.let { n -> getGamesStmt.setString(paramIdx++, n) }
                 getGamesStmt.setUInt(paramIdx++, limit)
                 getGamesStmt.setUInt(paramIdx, offset)
 
                 getGamesFromDB(getGamesStmt, getGenresStmt, areGenresInGameStmt, genres)
                     .ifEmpty {
-                        val errorMsg =
-                            when {
-                                dev != null && genres == null -> "dev $dev"
-                                genres != null && dev == null -> "genres $genres"
-                                else -> "dev $dev and genres $genres"
-                            }
-                        throw NoSuchElementException("Game with $errorMsg not found")
+                        throw NoSuchElementException("No games found because of the given parameters")
                     }
             }
         }

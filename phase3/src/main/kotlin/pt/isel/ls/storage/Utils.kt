@@ -24,14 +24,14 @@ internal fun getGamesFromDB(
     areGenresInGameStmt: PreparedStatement,
     genres: Collection<String>?,
 ): Collection<Game> =
-    mutableListOf<Game>().apply {
+    mutableListOf<Game>().also {
         val rs = getGameStmt.executeQuery()
 
         while (rs.next()) {
             val gid = rs.getUInt("gid")
 
             if (genres == null || areGenresInGame(areGenresInGameStmt, gid, genres)) {
-                add(
+                it.add(
                     Game(
                         gid = gid,
                         name = rs.getString("name"),
@@ -79,16 +79,15 @@ internal fun getGameFromDB(
     gid: UInt,
 ): Game? {
     val rs = getGameStmt.executeQuery()
-    return when {
-        rs.next() -> {
-            Game(
-                gid = rs.getUInt("gid"),
-                name = rs.getString("name"),
-                dev = rs.getString("developer"),
-                genres = processGenres(getGenresStmt, gid),
-            )
-        }
-        else -> null
+    return if (rs.next()) {
+        Game(
+            gid = rs.getUInt("gid"),
+            name = rs.getString("name"),
+            dev = rs.getString("developer"),
+            genres = processGenres(getGenresStmt, gid),
+        )
+    } else {
+        null
     }
 }
 
@@ -102,16 +101,14 @@ internal fun getGameFromDB(
 private fun processGenres(
     getGenresStmt: PreparedStatement,
     gid: UInt,
-): Collection<String> {
-    val genres = mutableSetOf<String>()
-
-    getGenresStmt.setUInt(1, gid)
-    val genresRS = getGenresStmt.executeQuery()
-    while (genresRS.next()) {
-        genres.add(genresRS.getString("name"))
+): Collection<String> =
+    mutableSetOf<String>().apply {
+        getGenresStmt.setUInt(1, gid)
+        val genresRS = getGenresStmt.executeQuery()
+        while (genresRS.next()) {
+            add(genresRS.getString("name"))
+        }
     }
-    return genres
-}
 
 /**
  * Adds a game to the database.
@@ -128,35 +125,14 @@ internal fun addGameToDB(
     relateGameToGenreStmt: PreparedStatement,
     addGenreStmt: PreparedStatement,
 ): UInt {
-    setGameName(addGameStmt, newItem.name)
-    setGameDev(addGameStmt, newItem.dev)
+    addGameStmt.setString(1, newItem.name)
+    addGameStmt.setString(2, newItem.dev)
     addGameStmt.executeUpdate()
+
     val gid = getGameId(addGameStmt)
     setGameGenres(gid, newItem.genres, relateGameToGenreStmt, addGenreStmt)
     return gid
 }
-
-/**
- * Sets the game name in the prepared statement.
- *
- * @param addGameStmt The [PreparedStatement] to set the game name.
- * @param name The name to be set.
- */
-private fun setGameName(
-    addGameStmt: PreparedStatement,
-    name: String,
-) = addGameStmt.setString(1, name)
-
-/**
- * Sets the game developer in the prepared statement.
- *
- * @param addGameStmt The [PreparedStatement] to set the game developer.
- * @param dev The developer to be set.
- */
-private fun setGameDev(
-    addGameStmt: PreparedStatement,
-    dev: String,
-) = addGameStmt.setString(2, dev)
 
 /**
  * Sets the game genres in the database.
@@ -227,10 +203,14 @@ private fun getGameId(addGameStmt: PreparedStatement): UInt {
  * @param dev The developer to get the games from.
  * @return The string to get games from the database.
  */
-internal fun buildGameGetterString(dev: String?): String {
-    var getGameStr = "SELECT gid, name, developer from GAME"
-    dev?.let { getGameStr += " WHERE developer = ?" }
-    return getGameStr
+internal fun buildGameGetterString(
+    dev: String?,
+    name: String?,
+): String {
+    val baseQuery = StringBuilder("SELECT gid, name, developer FROM GAME WHERE 1=1")
+    dev?.let { baseQuery.append(" AND developer = ?") }
+    name?.let { baseQuery.append(" AND name ILIKE '%' || ? || '%'") }
+    return baseQuery.toString()
 }
 
 /**

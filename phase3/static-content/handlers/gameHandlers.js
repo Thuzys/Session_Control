@@ -6,6 +6,54 @@ import constants from "../constants/constants.js"
 import { fetcher } from "../utils/fetchUtils.js";
 
 /**
+ * Create game
+ *
+ * @param mainContent
+ * @param mainHeader
+ */
+function createGame(mainContent, mainHeader) {
+    const [
+        header,
+        form
+    ] = gameHandlerViews.createCreateGameView()
+
+    form.onsubmit = (e) => handleCreateGameSubmit(e)
+
+    mainContent.replaceChildren(header, form)
+    mainHeader.replaceChildren(menu.get("home"), menu.get("gameSearch"))
+}
+
+/**
+ * Handle create game submit
+ *
+ * @param e event that triggered submit
+ */
+function handleCreateGameSubmit(e) {
+    e.preventDefault()
+    const inputName = document.getElementById("InputName")
+    const inputDev = document.getElementById("InputDev")
+    const selectedGenresView = document.getElementById("ul")
+
+    const genres = handlerUtils.childrenToString(selectedGenresView.children)
+
+    const game = {
+        name: inputName.value,
+        dev: inputDev.value,
+        genres: genres
+    }
+
+    const url = `${constants.API_BASE_URL}${constants.GAME_ROUTE}`
+
+    fetcher
+        .post(url, game, constants.TOKEN)
+        .then(response => handleCreateGameResponse(response))
+}
+
+function handleCreateGameResponse(response) {
+    alert(response.msg)
+}
+
+/**
  * Search games by developer and/or genre(s)
  *
  * @param mainContent
@@ -20,7 +68,7 @@ function searchGames(mainContent, mainHeader) {
     form.onsubmit = (e) => handleSearchGamesSubmit(e)
 
     mainContent.replaceChildren(header, form)
-    mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("sessionSearch"));
+    mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("createGame"), menu.get("sessionSearch"))
 }
 
 /**
@@ -31,10 +79,13 @@ function searchGames(mainContent, mainHeader) {
  */
 function handleSearchGamesSubmit(e, selectedGenres) {
     e.preventDefault()
+    const inputName = document.getElementById("InputName")
     const inputDev = document.getElementById("InputDev")
     const selectedGenresView = document.getElementById("ul")
 
     const params = new URLSearchParams()
+    if (inputName.value)
+        params.set("name", inputName.value)
     if (inputDev.value)
         params.set("dev", inputDev.value)
     if (selectedGenresView.children && selectedGenresView.children.length > 0)
@@ -114,6 +165,7 @@ function handleGetGameDetailsResponse(game, mainContent) {
 }
 
 const gameHandlers = {
+    createGame,
     searchGames,
     getGames,
     getGameDetails,

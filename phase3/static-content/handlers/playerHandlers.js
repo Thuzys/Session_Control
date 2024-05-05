@@ -5,6 +5,7 @@ import playerHandlerViews from "../views/handlerViews/playerHandlerViews.js";
 import {fetcher} from "../utils/fetchUtils.js";
 import handlerViews from "../views/handlerViews/handlerViews.js";
 import handlerUtils from "./handlerUtils/handlerUtils.js";
+import views from "../views/viewsCreators.js";
 
 /**
  * Get player details
@@ -43,6 +44,8 @@ function handleGetPlayerDetailsResponse(player, mainContent, mainHeader, isSearc
     if (isSearch) {
         mainHeader.replaceChildren(menu.get("sessionSearch"), menu.get("home"), menu.get("gameSearch"));
     } else {
+        const createSessionButton = views.a({href: `#gameSearch`}, "Choose a game to create a session");
+        mainContent.appendChild(createSessionButton);
         mainHeader.replaceChildren(menu.get("sessionSearch"), menu.get("gameSearch"), menu.get("playerSearch"));
     }
 }

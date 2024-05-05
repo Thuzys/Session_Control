@@ -18,6 +18,9 @@ function searchSessions(mainContent, mainHeader) {
     const formContent = sessionHandlerViews.createSessionFormContentView();
     const form = views.form({}, ...formContent);
     form.addEventListener('submit', (e) => handleSearchSessionsSubmit(e));
+
+
+
     mainContent.replaceChildren(h1, form);
     mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("gameSearch"));
 }
@@ -44,6 +47,26 @@ function handleSearchSessionsSubmit(e) {
     params.set('offset', "0");
 
     handlerUtils.changeHash(`#sessions?${params}`);
+}
+
+/**
+ * Handle create session form submit event
+ * @param e event that triggered submit
+ * @param gid
+ */
+function handleCreateSessionSubmit(e, gid) {
+    e.preventDefault();
+    const capacity = document.getElementById('capacity').value;
+    const date = document.getElementById('dateCreate').value;
+    const url = `${constants.API_BASE_URL}${constants.SESSION_ROUTE}`;
+    const body = {
+        gid: gid.toString(),
+        capacity: capacity,
+        date: date
+    };
+    fetcher
+        .post(url, body, constants.TOKEN)
+        .then(response => handleCreateSessionResponse(response))
 }
 
 /**
@@ -113,8 +136,25 @@ function handleGetSessionDetailsResponse(session, mainContent, mainHeader) {
     mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("gameSearch"));
 }
 
+function handleCreateSessionResponse(response) {
+    if (response) {
+        handlerUtils.changeHash("#sessions/" + response.id);
+    } else {
+        alert("Failed to create session.");
+    }
+}
+
+function createSession(mainContent, mainHeader, gid, gameName) {
+    const [h1CreateSession, formCreateSession] = sessionHandlerViews.createCreateSessionView(gameName);
+    formCreateSession.addEventListener('submit', (e) => handleCreateSessionSubmit(e, gid));
+
+    mainContent.replaceChildren(h1CreateSession, formCreateSession);
+    mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("gameSearch"), menu.get("sessionSearch"));
+}
+
 export default {
     searchSessions,
     getSessions,
     getSessionDetails,
+    createSession
 };

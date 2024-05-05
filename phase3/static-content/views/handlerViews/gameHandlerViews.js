@@ -3,6 +3,7 @@ import views from "../viewsCreators.js";
 import requestUtils from "../../utils/requestUtils.js";
 import constants from "../../constants/constants.js";
 import genres from "../../handlers/handlerUtils/gameGenres.js";
+import sessionHandlers from "../../handlers/sessionHandlers.js";
 
 /**
  * Create search games view
@@ -171,13 +172,35 @@ function createGetGameView(games) {
  */
 function createGameDetailsView(game) {
     const header = handlerViews.createHeader("Game Details: ")
+
+    const createSessionButton = views.button({type: "button"}, "Create Session");
+    createSessionButton.addEventListener('click', () => {
+        sessionHandlers.createSession(
+            document.getElementById("mainContent"),
+            document.getElementById("mainHeader"),
+            game.gid,
+            game.name
+        );
+    });
+
+
+    // const createSessionButton = handlerViews.hrefButtonView("Create Session", `#createSession`);
+    // createSessionButton.addEventListener('click', () => {
+    //     sessionHandlers.createSession(
+    //         document.getElementById("mainContent"),
+    //         document.getElementById("mainHeader"),
+    //         game.gid,
+    //         game.name
+    //     );
+    // });
     const div = views.div(
         {},
         views.h2({}, `${game.name}`),
         views.p({}, `Developer: ${game.dev}`),
         views.p({}, `Genres: ${game.genres.join(",")}`),
         handlerViews.createBackButtonView(),
-        handlerViews.sessionsButtonView("Sessions", `sessions?gid=${game.gid}&offset=0`)
+        handlerViews.hrefButtonView("Sessions", `sessions?gid=${game.gid}&offset=0`),
+        createSessionButton,
     )
     return [header, div]
 }

@@ -93,7 +93,7 @@ const views = {
     button,
     a,
     h2,
-    h3
+    h3,
 }
 
 export default views

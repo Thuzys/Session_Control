@@ -8,7 +8,7 @@ function createPlayerDetailsView(player, backButton = true) {
     const backButtonView = handlerViews.createBackButtonView();
     const sessionsButtonView =
         handlerViews
-            .sessionsButtonView(
+            .hrefButtonView(
                 "Sessions",
                 `${constants.SESSION_ROUTE}?pid=` + player.pid + "&offset=0"
             );

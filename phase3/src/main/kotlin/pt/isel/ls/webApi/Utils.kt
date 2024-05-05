@@ -65,7 +65,7 @@ internal inline fun tryResponse(
             ?.let {
                 makeResponse(
                     errorStatus,
-                    createJsonMessage(errorMsg, it),
+                    createJsonRspMessage(errorMsg, it),
                 )
             }
             ?: makeResponse(errorStatus, "$errorMsg.")
@@ -142,6 +142,7 @@ internal fun unauthorizedAccess(
 data class Message(
     val msg: String,
     val error: String? = null,
+    val id: UInt? = null,
 )
 
 /**
@@ -149,11 +150,12 @@ data class Message(
  *
  * @param message The message to be converted to JSON.
  */
-internal fun createJsonMessage(
+internal fun createJsonRspMessage(
     message: String,
     error: String? = null,
+    id: UInt? = null,
 ): String {
-    val messageObject = Message(message, error)
+    val messageObject = Message(message, error, id)
     return Json.encodeToString(messageObject)
 }
 
@@ -177,9 +179,9 @@ internal fun invalidParamsRspCreateSession(
         )
     return if (errorMsgs.isNotEmpty()) {
         val errorMsg = errorMsgs.joinToString(", ")
-        createJsonMessage("Missing or invalid $errorMsg. Please provide $errorMsg as valid values.")
+        createJsonRspMessage("Missing or invalid $errorMsg. Please provide $errorMsg as valid values.")
     } else {
-        createJsonMessage("Invalid request.")
+        createJsonRspMessage("Invalid request.")
     }
 }
 
@@ -188,4 +190,5 @@ internal fun invalidParamsRspCreateSession(
  *
  * @param reason The reason for the unauthorized response.
  */
-internal fun unauthorizedResponse(reason: String): Response = makeResponse(Status.UNAUTHORIZED, createJsonMessage("Unauthorized, $reason."))
+internal fun unauthorizedResponse(reason: String): Response =
+    makeResponse(Status.UNAUTHORIZED, createJsonRspMessage("Unauthorized, $reason."))

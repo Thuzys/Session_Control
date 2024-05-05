@@ -62,7 +62,7 @@ function createGetSessionsView(sessions) {
     return [div, nextPrev];
 }
 
-export function createPlayerListView(session) {
+function createPlayerListView(session) {
     const playerList = views.ul();
     if (session.players) {
         session.players.forEach(player => {
@@ -75,12 +75,29 @@ export function createPlayerListView(session) {
     return playerList;
 }
 
+function createCreateSessionView(gameName) {
+    const header = handlerViews.createHeader("Create Session: ");
+    const labelCapacity = views.input({type: "number", id: "capacity", placeholder: "Enter Capacity"})
+    const labelDate = views.input({type: "datetime-local", id: "dateCreate", placeholder: "Enter Date"});
+    const formContent = views.form(
+        {},
+        views.h3({}, gameName),
+        labelCapacity,
+        labelDate,
+        views.p(),
+        views.button({type: "submit", class: "submit-button"}, "Create")
+    );
+
+    return [header, formContent];
+}
+
 
 const sessionHandlerViews = {
     createSessionFormContentView,
     createSessionDetailsViews,
     createGetSessionsView,
-    createPlayerListView
+    createPlayerListView,
+    createCreateSessionView
 }
 
 export default sessionHandlerViews;

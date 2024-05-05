@@ -58,7 +58,13 @@ class SessionHandlerTest {
                     .body("{\"gid\": \"1\", \"date\": \"2024-03-16T12:30\", \"capacity\": \"10\"}")
                     .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
             val response = handler.createSession(request)
-            assertEquals(createJsonMessage("Session created with ID: 1 successfully."), response.bodyString())
+            assertEquals(
+                createJsonRspMessage(
+                    message = "Session created with ID: 1 successfully.",
+                    id = 1u,
+                ),
+                response.bodyString(),
+            )
         }
     }
 
@@ -333,7 +339,7 @@ class SessionHandlerTest {
                     "$DUMMY_ROUTE?token=${UUID.randomUUID()}",
                 ).body("{\"gid\": \"1\", \"date\": \"2024-03-16T12:30\", \"capacity\": \"10\"}")
             val response = handler.createSession(request)
-            assertEquals(createJsonMessage("Unauthorized, token not provided."), response.bodyString())
+            assertEquals(createJsonRspMessage("Unauthorized, token not provided."), response.bodyString())
         }
 
     @Test
@@ -341,7 +347,7 @@ class SessionHandlerTest {
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request = Request(Method.GET, DUMMY_ROUTE)
             val response = handler.createSession(request)
-            assertEquals(createJsonMessage("Unauthorized, token not provided."), response.bodyString())
+            assertEquals(createJsonRspMessage("Unauthorized, token not provided."), response.bodyString())
         }
 
     @Test
@@ -368,7 +374,7 @@ class SessionHandlerTest {
                     UriTemplate.from("$DUMMY_ROUTE/{sid}/{pid}"),
                 )
             val response = handler.createSession(request)
-            assertEquals(createJsonMessage("Unauthorized, invalid token."), response.bodyString())
+            assertEquals(createJsonRspMessage("Unauthorized, invalid token."), response.bodyString())
         }
 
     @Test
@@ -376,7 +382,7 @@ class SessionHandlerTest {
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request = Request(Method.GET, DUMMY_ROUTE)
             val response = handler.createSession(request)
-            assertEquals(createJsonMessage("Unauthorized, token not provided."), response.bodyString())
+            assertEquals(createJsonRspMessage("Unauthorized, token not provided."), response.bodyString())
         }
 
     @Test

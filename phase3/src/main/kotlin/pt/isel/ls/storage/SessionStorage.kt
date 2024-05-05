@@ -58,6 +58,7 @@ class SessionStorage(envName: String) : SessionStorageInterface {
         date: LocalDate?,
         state: SessionState?,
         pid: UInt?,
+        userName: String?,
         offset: UInt,
         limit: UInt,
     ): Collection<Session>? =
@@ -66,10 +67,14 @@ class SessionStorage(envName: String) : SessionStorageInterface {
                 val selectSessionCMD =
                     "SELECT s.sid, s.capacity, s.gid, s.date\n" +
                         "FROM session s\n" +
-                        "    LEFT JOIN player_session ps ON ps.sid = s.sid\n" +
+                        "    LEFT JOIN (\n" +
+                        "SELECT  ps.sid, ps.pid from player_session ps\n" +
+                        "   NATURAL JOIN player\n" +
+                        "WHERE username = ? or ? is null\n" +
+                        "AND ps.pid = ? or ? is null\n" +
+                        ") as ps ON ps.sid = s.sid\n" +
                         "WHERE (s.gid = ? or ? is null)\n" +
-                        "   AND (s.date = TO_DATE(?, 'YYYY-MM-DD') or ? is null)\n" +
-                        "   AND (ps.pid = ? or ? is null)\n" +
+                        "   AND (s.date = TO_DATE(?, 'YYYY-MM-DD'::char) or ? is null)\n" +
                         "GROUP BY s.sid, s.capacity, s.gid, s.date\n" +
                         "HAVING (? = 'null') OR\n" +
                         "       (? = 'OPEN' AND s.capacity > count(ps.pid)) OR\n" +
@@ -78,13 +83,16 @@ class SessionStorage(envName: String) : SessionStorageInterface {
                 val stmt2 = connection.prepareStatement(selectSessionCMD)
                 var idx = 1
                 repeat(2) {
-                    gid?.let { stmt2.setInt(idx++, it.toInt()) } ?: stmt2.setNull(idx++, java.sql.Types.INTEGER)
-                }
-                repeat(2) {
-                    date?.let { stmt2.setString(idx++, it.toString()) } ?: stmt2.setNull(idx++, java.sql.Types.DATE)
+                    userName?.let { stmt2.setString(idx++, it) } ?: stmt2.setNull(idx++, java.sql.Types.VARCHAR)
                 }
                 repeat(2) {
                     pid?.let { stmt2.setInt(idx++, it.toInt()) } ?: stmt2.setNull(idx++, java.sql.Types.INTEGER)
+                }
+                repeat(2) {
+                    gid?.let { stmt2.setInt(idx++, it.toInt()) } ?: stmt2.setNull(idx++, java.sql.Types.INTEGER)
+                }
+                repeat(2) {
+                    date?.let { stmt2.setString(idx++, it.toString()) } ?: stmt2.setNull(idx++, java.sql.Types.VARCHAR)
                 }
                 repeat(3) {
                     stmt2.setString(idx++, state.toString())

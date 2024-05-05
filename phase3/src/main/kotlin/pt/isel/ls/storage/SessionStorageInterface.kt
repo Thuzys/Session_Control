@@ -45,6 +45,7 @@ interface SessionStorageInterface {
         date: LocalDate? = null,
         state: SessionState? = null,
         pid: UInt? = null,
+        userName: String? = null,
         offset: UInt = 0u,
         limit: UInt = 11u,
     ): Collection<Session>?

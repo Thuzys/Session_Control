@@ -47,6 +47,7 @@ class SessionStorageStunt : SessionStorageInterface {
         date: LocalDate?,
         state: SessionState?,
         pid: UInt?,
+        userName: String?,
         offset: UInt,
         limit: UInt,
     ): Collection<Session>? =
@@ -54,7 +55,7 @@ class SessionStorageStunt : SessionStorageInterface {
             (gid == null || session.gid == gid) &&
                 (date == null || session.date == date) &&
                 (state == null || getSessionState(session) == state) &&
-                (pid == null || session.players.any { player -> player.pid == pid })
+                (pid == null || session.players.any { player -> player.pid == pid || player.userName == userName })
         }.ifEmpty { null }
 
 //    override fun updateAddPlayer(

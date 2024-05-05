@@ -49,7 +49,8 @@ object SessionManagementStunt : SessionServices {
         gid: UInt?,
         date: LocalDate?,
         state: SessionState?,
-        playerId: UInt?,
+        pid: UInt?,
+        userName: String?,
         offset: UInt?,
         limit: UInt?,
     ): Collection<Session> {

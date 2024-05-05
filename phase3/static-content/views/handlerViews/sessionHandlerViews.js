@@ -6,18 +6,18 @@ import constants from "../../constants/constants.js";
 function createStateInputs() {
     return [
         views.label({qualifiedName: "for", value: "textbox"}, "Enter State: "),
-        views.radioButton({name: "state", value: "open", checked: true}),
+        views.radioButton({name: "state", value: "open"}),
         views.radioButtonLabel("open", "Open"),
         views.radioButton({name: "state", value: "close"}),
         views.radioButtonLabel("close", "Close"),
-        views.radioButton({name: "state", value: "both"}),
+        views.radioButton({name: "state", value: "both", checked: true}),
         views.radioButtonLabel("both", "Both")
     ];
 }
 
 function createSessionFormContentView() {
     const gidLabelInput = handlerViews.createLabeledInput("Enter Game Id: ", "text", "gameId");
-    const pidLabelInput = handlerViews.createLabeledInput("Enter Player Id: ", "text", "playerId");
+    const pidLabelInput = handlerViews.createLabeledInput("Enter Player userName: ", "text", "playerId");
     const dateLabelInput = handlerViews.createLabeledInput("Enter Date: ", "date", "date");
     const stateLabelInputs = createStateInputs();
 

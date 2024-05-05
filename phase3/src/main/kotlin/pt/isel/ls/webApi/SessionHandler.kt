@@ -56,21 +56,23 @@ class SessionHandler(
             ?.let { return unauthorizedResponse(it) }
         val gid = request.query("gid")?.toUIntOrNull()
         val date = dateVerification(request.query("date"))
+        val userName = request.query("userName")
         val state = request.query("state").toSessionState()
         val pid = request.query("pid")?.toUIntOrNull()
         val offset = request.query("offset")?.toUIntOrNull()
         val limit = request.query("limit")?.toUIntOrNull()
-        if (gid == null && date == null && state == null && pid == null && offset == null && limit == null) {
+        val array = arrayOf(gid, date, state, pid, userName)
+        if (array.all { it == null }) {
             return makeResponse(
                 Status.BAD_REQUEST,
                 createJsonMessage(
                     "Missing parameters. Please provide at" +
-                        " least one of the following: 'gid', 'date', 'state', 'pid', 'offset', 'limit'.",
+                        " least one of the following: 'gid', 'date', 'state', 'pid', 'userName'.",
                 ),
             )
         }
         return tryResponse(Status.NOT_FOUND, "Unable to retrieve sessions.") {
-            val sessions = sessionManagement.getSessions(gid, date, state, pid, offset, limit)
+            val sessions = sessionManagement.getSessions(gid, date, state, pid, userName, offset, limit)
             makeResponse(Status.FOUND, Json.encodeToString(sessions))
         }
     }

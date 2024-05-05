@@ -57,14 +57,15 @@ interface SessionServices {
      * @param gid The identifier of the game for which sessions are being retrieved.
      * @param date The date and time of the sessions to retrieve (optional).
      * @param state The state of the sessions to retrieve (optional).
-     * @param playerId The identifier of the player to filter sessions by (optional).
+     * @param pid The identifier of the player to filter sessions by (optional).
      * @return A collection of sessions that match the specified parameters.
      */
     fun getSessions(
         gid: UInt? = null,
         date: LocalDate? = null,
         state: SessionState? = null,
-        playerId: UInt? = null,
+        pid: UInt? = null,
+        userName: String? = null,
         offset: UInt? = DEFAULT_OFFSET,
         limit: UInt? = DEFAULT_LIMIT,
     ): Collection<Session>

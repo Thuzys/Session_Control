@@ -43,7 +43,8 @@ class SessionManagement(
         gid: UInt?,
         date: LocalDate?,
         state: SessionState?,
-        playerId: UInt?,
+        pid: UInt?,
+        userName: String?,
         offset: UInt?,
         limit: UInt?,
     ): Collection<Session> =
@@ -52,7 +53,8 @@ class SessionManagement(
                 gid = gid,
                 date = date,
                 state = state,
-                pid = playerId,
+                pid = pid,
+                userName = userName,
                 offset = offset ?: DEFAULT_OFFSET,
                 limit = limit ?: DEFAULT_LIMIT,
             ) ?: throw NoSuchElementException("No sessions found")

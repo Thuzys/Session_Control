@@ -110,7 +110,7 @@ class SessionManagementTest {
     @Test
     fun `get Sessions by player ID successfully`() {
         actionSessionManagementTest { sessionManagement: SessionServices ->
-            val sessions = sessionManagement.getSessions(1u, playerId = 1u)
+            val sessions = sessionManagement.getSessions(1u, pid = 1u)
             assertEquals(2, sessions.size)
             assertTrue(sessions.all { session -> session.players.any { player -> player.pid == 1u } })
         }

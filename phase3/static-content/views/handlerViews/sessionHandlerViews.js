@@ -18,7 +18,7 @@ function createStateInputs() {
 function createSessionFormContentView() {
     const gidLabelInput = handlerViews.createLabeledInput("Enter Game Id: ", "text", "gameId");
     const pidLabelInput = handlerViews.createLabeledInput("Enter Player Id: ", "text", "playerId");
-    const dateLabelInput = handlerViews.createLabeledInput("Enter Date: ", "datetime-local", "date");
+    const dateLabelInput = handlerViews.createLabeledInput("Enter Date: ", "date", "date");
     const stateLabelInputs = createStateInputs();
 
     return [

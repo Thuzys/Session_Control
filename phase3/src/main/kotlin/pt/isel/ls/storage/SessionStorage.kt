@@ -68,7 +68,7 @@ class SessionStorage(envName: String) : SessionStorageInterface {
                         "FROM session s\n" +
                         "    LEFT JOIN player_session ps ON ps.sid = s.sid\n" +
                         "WHERE (s.gid = ? or ? is null)\n" +
-                        "   AND (s.date = ? or ? is null)\n" +
+                        "   AND (s.date = TO_DATE(?, 'YYYY-MM-DD') or ? is null)\n" +
                         "   AND (ps.pid = ? or ? is null)\n" +
                         "GROUP BY s.sid, s.capacity, s.gid, s.date\n" +
                         "HAVING (? = 'null') OR\n" +
@@ -81,7 +81,7 @@ class SessionStorage(envName: String) : SessionStorageInterface {
                     gid?.let { stmt2.setInt(idx++, it.toInt()) } ?: stmt2.setNull(idx++, java.sql.Types.INTEGER)
                 }
                 repeat(2) {
-                    date.toDateOrNull()?.let { stmt2.setDate(idx++, it) } ?: stmt2.setNull(idx++, java.sql.Types.DATE)
+                    date?.let { stmt2.setString(idx++, it.toString()) } ?: stmt2.setNull(idx++, java.sql.Types.DATE)
                 }
                 repeat(2) {
                     pid?.let { stmt2.setInt(idx++, it.toInt()) } ?: stmt2.setNull(idx++, java.sql.Types.INTEGER)

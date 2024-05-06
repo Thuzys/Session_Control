@@ -26,16 +26,24 @@ class SessionHandler(
             ?.let { return unauthorizedResponse(it) }
         val body = readBody(request)
         val gid = body["gid"]?.toUIntOrNull()
+        val gameName = body["gameName"]
+        val owner = body["owner"]?.toUIntOrNull()
         val date = dateVerification(body["date"])
+        val ownerName = body["ownerName"]
         val capacity = body["capacity"]?.toUIntOrNull()
-        return if (gid == null || date == null || capacity == null) {
+        val params = arrayOf(gid, date, capacity, owner, ownerName)
+        return if (params.any { it == null }) {
             makeResponse(
                 Status.BAD_REQUEST,
                 invalidParamsRspCreateSession(gid, date, capacity),
             )
         } else {
             tryResponse(Status.BAD_REQUEST, "Unable to create session.") {
-                val sid = sessionManagement.createSession(gid, date, capacity)
+                checkNotNull(date) { "Date is null" }
+                checkNotNull(capacity) { "Capacity is null" }
+                val sessionOwner = Pair(owner, ownerName)
+                val gameInfo = Pair(gid, gameName)
+                val sid = sessionManagement.createSession(gameInfo, date, capacity, sessionOwner)
                 makeResponse(Status.CREATED, createJsonMessage("Session created with ID: $sid successfully."))
             }
         }
@@ -44,9 +52,13 @@ class SessionHandler(
     override fun getSession(request: Request): Response {
         unauthorizedAccess(request, playerManagement)
             ?.let { return unauthorizedResponse(it) }
-        val sid = request.toSidOrNull() ?: return makeResponse(Status.BAD_REQUEST, createJsonMessage("Missing or invalid sid."))
+        val sid =
+            request.toSidOrNull()
+                ?: return makeResponse(Status.BAD_REQUEST, createJsonMessage("Missing or invalid sid."))
+        val limit = request.query("limit")?.toUIntOrNull()
+        val offset = request.query("offset")?.toUIntOrNull()
         return tryResponse(Status.NOT_FOUND, "Session not found.") {
-            val session = sessionManagement.getSessionDetails(sid)
+            val session = sessionManagement.getSessionDetails(sid, limit, offset)
             makeResponse(Status.FOUND, Json.encodeToString(session))
         }
     }
@@ -57,11 +69,12 @@ class SessionHandler(
         val gid = request.query("gid")?.toUIntOrNull()
         val date = dateVerification(request.query("date"))
         val userName = request.query("userName")
+        val gameName = request.query("gameName")
         val state = request.query("state").toSessionState()
         val pid = request.query("pid")?.toUIntOrNull()
         val offset = request.query("offset")?.toUIntOrNull()
         val limit = request.query("limit")?.toUIntOrNull()
-        val array = arrayOf(gid, date, state, pid, userName)
+        val array = arrayOf(gid, date, state, pid, userName, gameName)
         if (array.all { it == null }) {
             return makeResponse(
                 Status.BAD_REQUEST,
@@ -72,8 +85,10 @@ class SessionHandler(
             )
         }
         return tryResponse(Status.NOT_FOUND, "Unable to retrieve sessions.") {
-            val sessions = sessionManagement.getSessions(gid, date, state, pid, userName, offset, limit)
-            makeResponse(Status.FOUND, Json.encodeToString(sessions))
+            val gameInfo = Pair(gid, gameName)
+            val playerInfo = Pair(pid, userName)
+            val sessionsInfo = sessionManagement.getSessions(gameInfo, date, state, playerInfo, offset, limit)
+            makeResponse(Status.FOUND, Json.encodeToString(sessionsInfo))
         }
     }
 
@@ -170,25 +185,4 @@ class SessionHandler(
             }
         }
     }
-
-//    override fun getSessionsByPlayer(request: Request): Response {
-//        unauthorizedAccess(request, playerManagement)
-//            ?.let { return makeResponse(Status.UNAUTHORIZED, "Unauthorized, $it") }
-//        val pid = request.query("pid")?.toUIntOrNull()
-//        return if (pid == null) {
-//            makeResponse(Status.BAD_REQUEST, "Invalid or Missing Player Identifier.")
-//        } else {
-//            tryResponse(Status.INTERNAL_SERVER_ERROR, "Internal Server Error.") {
-//                val sessions = sessionManagement.getSessionsByPlayer(pid)
-//                return if (sessions.isEmpty()) {
-//                    makeResponse(
-//                        Status.NOT_FOUND,
-//                        "No sessions found for player with ID $pid.",
-//                    )
-//                } else {
-//                    makeResponse(Status.FOUND, Json.encodeToString(sessions))
-//                }
-//            }
-//        }
-//    }
 }

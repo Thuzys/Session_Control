@@ -49,7 +49,8 @@ create table SESSION (
      sid serial primary key,
      capacity int not null check (capacity > 0),
      gid int not null references GAME(gid),
-     date DATE not null
+     date DATE not null,
+     owner int not null references PLAYER(pid)
 );
 
 create table PLAYER_SESSION (

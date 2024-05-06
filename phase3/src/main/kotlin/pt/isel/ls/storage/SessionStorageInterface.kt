@@ -4,6 +4,9 @@ import kotlinx.datetime.LocalDate
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
+import pt.isel.ls.domain.info.GameInfoParam
+import pt.isel.ls.domain.info.PlayerInfoParam
+import pt.isel.ls.domain.info.SessionInfo
 
 /**
  * Represents the storage of the [Session].
@@ -24,42 +27,36 @@ interface SessionStorageInterface {
      * Reads the details of a [Session] from the storage.
      *
      * @param sid The unique identifier of the session to read.
+     * @param limit The maximum number of players to be retrieved.
+     * @param offset The offset to be applied to the collection of players.
      * @return A [Session] or null if nothing is found.
      */
-
-    fun readSession(sid: UInt): Session?
+    fun readSession(
+        sid: UInt,
+        limit: UInt = 11u,
+        offset: UInt = 0u,
+    ): Session?
 
     /**
      * Retrieves a collection of sessions based on the specified parameters.
      *
-     * @param gid The unique identifier of the game for which sessions are to be retrieved.
+     * @param gameInfo The [GameInfoParam] of the game for which sessions are to be retrieved.
+     * Defaults to null, meaning all games.
      * @param date The date of the sessions to be retrieved. Defaults to null, meaning all dates.
      * @param state The [SessionState] of the sessions to be retrieved. Defaults to null, meaning all states.
-     * @param pid The unique identifier of the player for whom sessions are to be retrieved. Defaults to null, meaning all players.
+     * @param playerInfo The [PlayerInfoParam] of the player to filter sessions by. Defaults to null, meaning all players.
      * @param offset The offset to be applied to the collection. Defaults to 0.
      * @param limit The maximum number of sessions to be retrieved. Defaults to 10.
      * @return A collection of sessions matching the specified parameters, or null if no sessions are found.
      */
     fun readSessions(
-        gid: UInt? = null,
+        gameInfo: GameInfoParam? = null,
         date: LocalDate? = null,
         state: SessionState? = null,
-        pid: UInt? = null,
-        userName: String? = null,
+        playerInfo: PlayerInfoParam? = null,
         offset: UInt = 0u,
         limit: UInt = 11u,
-    ): Collection<Session>?
-
-//    /**
-//     * Updates a session by adding players to it.
-//     *
-//     * @param sid The unique identifier of the [Session] to be updated.
-//     * @param newItem A collection of players to be added to the [Session].
-//     */
-//    fun updateAddPlayer(
-//        sid: UInt,
-//        newItem: Collection<Player>,
-//    )
+    ): Collection<SessionInfo>?
 
     /**
      * Updates a [Session] capacity, date or both.
@@ -102,12 +99,4 @@ interface SessionStorageInterface {
         sid: UInt,
         pid: Collection<UInt>,
     ): Boolean
-
-//    /**
-//     * Gets the sessions of a given player.
-//     *
-//     * @param pid The unique identifier of the player.
-//     * @return A collection of sessions containing the player.
-//     */
-//    fun getPlayerSessions(pid: UInt): Collection<Int>
 }

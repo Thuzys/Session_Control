@@ -5,6 +5,9 @@ import pt.isel.ls.domain.Email
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
+import pt.isel.ls.domain.info.GameInfo
+import pt.isel.ls.domain.info.PlayerInfo
+import pt.isel.ls.domain.info.SessionInfo
 import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.ResultSet
@@ -277,31 +280,108 @@ internal fun makePlayers(stmt: PreparedStatement): Collection<Player> {
 }
 
 /**
+ * Make a [Session] object from a [PreparedStatement].
+ * @param stmt The [PreparedStatement] to make the [Session] object from.
+ * @param l The limit of playersInfo.
+ * @param o The offset of playersInfo.
+ * @return A [Session] object.
+ * @throws SQLException if an exception occurs.
+ */
+internal fun Connection.makeSession(
+    stmt: PreparedStatement,
+    l: UInt,
+    o: UInt,
+): Session? {
+    val rs = stmt.executeQuery()
+    return if (rs.next()) {
+        val ownerPreparedStatement =
+            prepareStatement(
+                """
+                SELECT pid, userName FROM PLAYER
+                WHERE pid = ?;
+                """.trimIndent(),
+            )
+        ownerPreparedStatement.setInt(1, rs.getInt("owner"))
+        val owner = makePlayersInfo(ownerPreparedStatement).firstOrNull() ?: throw SQLException("Owner not found")
+        val playerStmt =
+            prepareStatement(
+                """
+                SELECT PLAYER.pid, userName FROM PLAYER
+                JOIN PLAYER_SESSION ON PLAYER.pid = PLAYER_SESSION.pid
+                WHERE sid = ?
+                LIMIT ? OFFSET ?;
+                """.trimIndent(),
+            )
+        playerStmt.setInt(1, rs.getInt("sid"))
+        playerStmt.setInt(2, l.toInt())
+        playerStmt.setInt(3, o.toInt())
+        Session(
+            rs.getInt("sid").toUInt(),
+            rs.getInt("capacity").toUInt(),
+            GameInfo(rs.getInt("gid").toUInt(), rs.getString("name")),
+            rs.getString("date").toLocalDate(),
+            owner,
+            makePlayersInfo(playerStmt),
+        )
+    } else {
+        null
+    }
+}
+
+internal fun makePlayersInfo(stmt: PreparedStatement): Collection<PlayerInfo> {
+    val rs = stmt.executeQuery()
+    val players = mutableListOf<PlayerInfo>()
+    while (rs.next()) {
+        players.add(
+            PlayerInfo(
+                rs.getInt("pid").toUInt(),
+                rs.getString("userName"),
+            ),
+        )
+    }
+    return players
+}
+
+/**
  * Makes a list of [Session] objects from a [PreparedStatement].
  *
  * @param sessionStmt The [PreparedStatement] to make the list from.
  * @return A list of [Session] objects.
  */
-internal fun Connection.makeSession(sessionStmt: PreparedStatement): Collection<Session> {
+internal fun makeSessionInfo(sessionStmt: PreparedStatement): Collection<SessionInfo> {
     val rs = sessionStmt.executeQuery()
-    val sessions = mutableListOf<Session>()
+    val sessions = mutableListOf<SessionInfo>()
     while (rs.next()) {
-        val playerStmt =
-            prepareStatement(
-                "SELECT PLAYER.pid, name, userName, email, token FROM PLAYER " +
-                    "JOIN PLAYER_SESSION ON PLAYER.pid = PLAYER_SESSION.pid" +
-                    " WHERE sid = ?;",
-            )
-        playerStmt.setInt(1, rs.getInt("sid"))
+//        val ownerPreparedStatement =
+//            prepareStatement(
+//                "SELECT PLAYER.pid, name, userName, email, token FROM PLAYER " +
+//                    " WHERE pid = ?;",
+//            )
+//        ownerPreparedStatement.setInt(1, rs.getInt("owner"))
+//        val owner = makePlayers(ownerPreparedStatement).first()
+//        val playerStmt =
+//            prepareStatement(
+//                "SELECT PLAYER.pid, name, userName, email, token FROM PLAYER " +
+//                    "JOIN PLAYER_SESSION ON PLAYER.pid = PLAYER_SESSION.pid" +
+//                    " WHERE sid = ?;",
+//            )
+//        playerStmt.setInt(1, rs.getInt("sid"))
         sessions.add(
-            Session(
+            SessionInfo(
                 rs.getInt("sid").toUInt(),
-                rs.getInt("capacity").toUInt(),
-                rs.getInt("gid").toUInt(),
+                rs.getInt("owner").toUInt(),
+                GameInfo(rs.getInt("gid").toUInt(), rs.getString("game_name")),
                 rs.getString("date").toLocalDate(),
-                makePlayers(playerStmt),
             ),
         )
+//            Session(
+//                rs.getInt("sid").toUInt(),
+//                rs.getInt("capacity").toUInt(),
+//                GameInfo(rs.getInt("gid").toUInt(), rs.getString("name")),
+//                rs.getString("date").toLocalDate(),
+//                owner,
+//                makePlayers(playerStmt),
+//            ),
     }
     return sessions
 }

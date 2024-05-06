@@ -1,26 +1,28 @@
 package pt.isel.ls.services
 
 import kotlinx.datetime.LocalDate
-import pt.isel.ls.domain.Email
-import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.errors.ServicesError
+import pt.isel.ls.domain.info.GameInfo
+import pt.isel.ls.domain.info.GameInfoParam
+import pt.isel.ls.domain.info.PlayerInfo
+import pt.isel.ls.domain.info.PlayerInfoParam
+import pt.isel.ls.domain.info.SessionInfo
 import java.util.UUID
 
 private val pid = 1u
 private val sid1 = 1u
 private val sid2 = 2u
 private val gid1 = 1u
-private val defaultMail = Email("default@mail.com")
 private val date1 = LocalDate(2024, 3, 10)
 
 object SessionManagementStunt : SessionServices {
     val playerToken: UUID = UUID.randomUUID()
-    private val player1 = Player(1u, "test1", "test1", defaultMail, playerToken)
-    private val player2 = Player(2u, "test2", "test2", defaultMail, playerToken)
-    private val players: Collection<Player> = listOf(player1)
-    private val players2: Collection<Player> = listOf(player1, player2)
+    private val player1 = PlayerInfo(1u, "test1")
+    private val player2 = PlayerInfo(2u, "test2")
+    private val players2: Collection<PlayerInfo> = listOf(player1, player2)
+    private val gameInfoVal = GameInfo(1u, "Game")
 
     override fun addPlayer(
         player: UInt,
@@ -28,45 +30,63 @@ object SessionManagementStunt : SessionServices {
     ) = if (player != pid || session != sid1) {
         throw ServicesError("Unable to add player")
     } else {
+        // do nothing
     }
 
-    override fun getSessionDetails(sid: UInt): Session =
+    override fun getSessionDetails(
+        sid: UInt,
+        limit: UInt?,
+        offset: UInt?,
+    ): Session =
         if (sid == sid1) {
-            Session(sid, 1u, 1u, date1, players)
+            Session(sid, 1u, gameInfoVal, date1, player1, players2)
         } else {
             throw ServicesError("Session not found")
         }
 
     override fun createSession(
-        gid: UInt,
+        gameInfo: GameInfoParam,
         date: LocalDate,
         capacity: UInt,
+        owner: PlayerInfoParam,
     ): UInt {
-        return 1u
+        val (ownerId, userName) = owner
+        val (gid, _) = gameInfo
+        return if (ownerId != null && userName != null && gid != null) {
+            sid1
+        } else {
+            throw ServicesError("Unable to create session")
+        }
     }
 
     override fun getSessions(
-        gid: UInt?,
+        gameInfo: GameInfoParam?,
         date: LocalDate?,
         state: SessionState?,
-        pid: UInt?,
-        userName: String?,
+        playerInfo: PlayerInfoParam?,
         offset: UInt?,
         limit: UInt?,
-    ): Collection<Session> {
+    ): Collection<SessionInfo> {
         return when {
-            gid == gid1 && state == SessionState.CLOSE ->
+            gameInfo?.first == gid1 && state == SessionState.CLOSE || gameInfo?.second == "Game" ->
                 listOf(
-                    Session(sid1, 1u, gid1, date1, players),
-                    Session(sid2, 2u, gid1, date1, players2),
+                    SessionInfo(sid1, 1u, gameInfoVal, date1),
+                    SessionInfo(sid2, 2u, gameInfoVal, date1),
                 )
-            gid == gid1 && state == SessionState.OPEN -> listOf(Session(sid2, 2u, gid1, date1, players2))
+            gameInfo?.first == gid1 && state == SessionState.OPEN || playerInfo?.second == "test1" ->
+                listOf(
+                    SessionInfo(sid2, 2u, gameInfoVal, date1),
+                )
             date == date1 && state == SessionState.OPEN ->
                 listOf(
-                    Session(sid1, 1u, gid1, date1, players),
-                    Session(sid2, 2u, gid1, date1, players2),
+                    SessionInfo(sid1, 1u, gameInfoVal, date1),
+                    SessionInfo(sid2, 2u, gameInfoVal, date1),
                 )
-            gid == 400u -> emptyList()
+            gameInfo?.first == 400u -> emptyList()
+            playerInfo?.first == 2u ->
+                listOf(
+                    SessionInfo(sid2, 2u, gameInfoVal, date1),
+                )
             else -> throw ServicesError("There are no Sessions that satisfy the given details")
         }
     }

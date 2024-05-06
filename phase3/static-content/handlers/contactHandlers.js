@@ -11,7 +11,7 @@ const cardData = [
         email: 'A50543@alunos.isel.pt',
         socials: [
             {name: 'gitHub', image: '/resources/gitHub.png', link: `https://github.com/Thuzys`},
-            {name: 'twitter', image: '/resources/twitter.jpg'},
+            {name: 'twitter', image: '/resources/linkedIn.png'},
         ]
     },
     {
@@ -22,7 +22,7 @@ const cardData = [
         email: 'A50978@alunos.isel.pt',
         socials: [
             {name: 'gitHub', image: '/resources/gitHub.png', link: `https://github.com/GuilhermeBelo2904`},
-            {name: 'twitter', image: '/resources/twitter.jpg'},
+            {name: 'LinkedIn', image: '/resources/linkedIn.png'},
         ]
     },
     {
@@ -33,7 +33,7 @@ const cardData = [
         email: 'brgm37@gmail.com',
         socials: [
             {name: 'gitHub', image: '/resources/gitHub.png', link: `https://github.com/Brgm37`},
-            {name: 'twitter', image: '/resources/twitter.jpg'},
+            {name: 'LinkedIn', image: '/resources/linkedIn.png', link: `https://www.linkedin.com/in/brian-melhorado-449794307`},
         ]
     },
     ];

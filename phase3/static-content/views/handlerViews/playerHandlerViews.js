@@ -17,10 +17,7 @@ function createPlayerDetailsView(player, backButton = true) {
         `${constants.SESSION_ROUTE}?pid=${player.pid}&offset=0`
     );
 
-    container.appendChild(header);
-    container.appendChild(nameHeader);
-    container.appendChild(detailsList);
-    container.appendChild(sessionsButton);
+    container.replaceChildren(header, nameHeader, detailsList, sessionsButton);
 
     if (backButton) {
         const backButtonView = handlerViews.createBackButtonView();

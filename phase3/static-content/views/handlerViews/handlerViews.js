@@ -56,7 +56,7 @@ function createPagination(query, hash, hasNext) {
     }
     prevButton.addEventListener('click', () => {
         if (query.get("offset") > 0) {
-            query.set("offset", query.get("offset") - constants.LIMIT);
+            query.set("offset", query.get("offset") - constants.ELEMENTS_PER_PAGE);
             handlerUtils.changeHash(`${hash}?${handlerUtils.makeQueryString(query)}`);
         }
     });
@@ -67,7 +67,7 @@ function createPagination(query, hash, hasNext) {
     }
     nextButton.addEventListener('click', () => {
         if (hasNext) {
-            query.set("offset", query.get("offset") + constants.LIMIT);
+            query.set("offset", query.get("offset") + constants.ELEMENTS_PER_PAGE);
             handlerUtils.changeHash(`${hash}?${handlerUtils.makeQueryString(query)}`);
         }
     });

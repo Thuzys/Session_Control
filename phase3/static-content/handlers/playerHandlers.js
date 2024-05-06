@@ -24,9 +24,11 @@ function getPlayerDetails(mainContent, mainHeader) {
 }
 
 function searchPlayer(mainContent, mainHeader) {
+    const container = views.div({class: "player-details-container"});
     const [h1, form] = handlerViews.createHomeView();
     form.onsubmit = (e) => handleHomeSubmit(e);
-    mainContent.replaceChildren(h1, form);
+    container.replaceChildren(h1, form);
+    mainContent.replaceChildren(container);
     mainHeader.replaceChildren(menu.get("sessionSearch"), menu.get("home"),  menu.get("gameSearch"));
 }
 
@@ -44,8 +46,8 @@ function handleGetPlayerDetailsResponse(player, mainContent, mainHeader, isSearc
     if (isSearch) {
         mainHeader.replaceChildren(menu.get("sessionSearch"), menu.get("home"), menu.get("gameSearch"));
     } else {
-        const createSessionButton = views.a({href: `#gameSearch`}, "Choose a game to create a session");
-        mainContent.appendChild(createSessionButton);
+        const createSessionHref = handlerViews.hrefButtonView("Choose a game to create a session", `#gameSearch`);
+        playerDetailsView.appendChild(createSessionHref);
         mainHeader.replaceChildren(menu.get("sessionSearch"), menu.get("gameSearch"), menu.get("playerSearch"));
     }
 }

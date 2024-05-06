@@ -14,14 +14,15 @@ import {fetcher} from "../utils/fetchUtils.js";
  * @param mainHeader main header of the page
  */
 function searchSessions(mainContent, mainHeader) {
+    const container = views.div({class: "player-details-container"});
     const h1 = handlerViews.createHeader("Search Sessions: ");
     const formContent = sessionHandlerViews.createSessionFormContentView();
     const form = views.form({}, ...formContent);
     form.addEventListener('submit', (e) => handleSearchSessionsSubmit(e));
 
 
-
-    mainContent.replaceChildren(h1, form);
+    container.replaceChildren(h1, form)
+    mainContent.replaceChildren(container);
     mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("gameSearch"));
 }
 
@@ -94,13 +95,15 @@ function getSessions(mainContent, mainHeader) {
  * @param mainHeader main header of the page
  */
 function handleGetSessionsResponse(sessions, mainContent, mainHeader) {
+    const container = views.div({class: "player-details-container"});
     if (sessions.length === 0) {
         query.set("offset", 0)
         handlerUtils.changeHash(`#sessions?${handlerUtils.makeQueryString(query)}`)
         alert("No sessions found.")
     }
     const [sessionsView, nextPrevView] = sessionHandlerViews.createGetSessionsView(sessions);
-    mainContent.replaceChildren(sessionsView, nextPrevView);
+    container.replaceChildren(sessionsView, nextPrevView);
+    mainContent.replaceChildren(container);
     mainHeader.replaceChildren(
         menu.get("playerSearch"), menu.get("home"),
         menu.get("sessionSearch"), menu.get("gameSearch")
@@ -130,9 +133,11 @@ function getSessionDetails(mainContent, mainHeader) {
  * @param mainHeader main header of the page
  */
 function handleGetSessionDetailsResponse(session, mainContent, mainHeader) {
+    const container = views.div({class: "player-details-container"});
     const playerListView = sessionHandlerViews.createPlayerListView(session);
     const sessionDetailsView = sessionHandlerViews.createSessionDetailsViews(session, playerListView);
-    mainContent.replaceChildren(sessionDetailsView);
+    container.replaceChildren(sessionDetailsView);
+    mainContent.replaceChildren(container);
     mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("gameSearch"));
 }
 
@@ -145,10 +150,12 @@ function handleCreateSessionResponse(response) {
 }
 
 function createSession(mainContent, mainHeader, gid, gameName) {
+    const container = views.div({class: "player-details-container"});
     const [h1CreateSession, formCreateSession] = sessionHandlerViews.createCreateSessionView(gameName);
     formCreateSession.addEventListener('submit', (e) => handleCreateSessionSubmit(e, gid));
 
-    mainContent.replaceChildren(h1CreateSession, formCreateSession);
+    container.replaceChildren(h1CreateSession, formCreateSession);
+    mainContent.replaceChildren(container);
     mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("gameSearch"), menu.get("sessionSearch"));
 }
 

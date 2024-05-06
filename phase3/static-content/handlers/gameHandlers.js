@@ -4,6 +4,7 @@ import menu from "../navigation/menuLinks.js";
 import requestUtils from "../utils/requestUtils.js";
 import constants from "../constants/constants.js"
 import { fetcher } from "../utils/fetchUtils.js";
+import views from "../views/viewsCreators.js";
 
 /**
  * Search games by developer and/or genre(s)
@@ -12,6 +13,7 @@ import { fetcher } from "../utils/fetchUtils.js";
  * @param mainHeader
  */
 function searchGames(mainContent, mainHeader) {
+    const container = views.div({class: "player-details-container"});
     const [
         header,
         form,
@@ -19,7 +21,8 @@ function searchGames(mainContent, mainHeader) {
 
     form.onsubmit = (e) => handleSearchGamesSubmit(e)
 
-    mainContent.replaceChildren(header, form)
+    container.replaceChildren(header, form)
+    mainContent.replaceChildren(container)
     mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("sessionSearch"));
 }
 
@@ -74,13 +77,14 @@ function getGames(mainContent, mainHeader) {
  * @param mainContent
  */
 function handleGetGamesResponse(games, mainContent) {
+    const container = views.div({class: "player-details-container"});
     const [
         header,
         gameList,
         pagination
     ] = gameHandlerViews.createGetGameView(games)
-
-    mainContent.replaceChildren(header, gameList, pagination)
+    container.replaceChildren(header, gameList, pagination)
+    mainContent.replaceChildren(container)
 }
 
 /**
@@ -109,8 +113,10 @@ function getGameDetails(mainContent, mainHeader){
  * @param mainContent
  */
 function handleGetGameDetailsResponse(game, mainContent) {
+    const container = views.div({class: "player-details-container"});
     const [header, div] = gameHandlerViews.createGameDetailsView(game)
-    mainContent.replaceChildren(header, div)
+    container.replaceChildren(header, div)
+    mainContent.replaceChildren(container)
 }
 
 const gameHandlers = {

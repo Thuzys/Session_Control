@@ -1,28 +1,32 @@
 import constants from "../../constants/constants.js";
 function createPlayerDetailsView(player, backButton = true) {
-    const h2 = views.h2({}, "Player Details");
-    const playerDetailsView = views.ul(
-        views.li("UserName: " + player.userName),
-        views.li("Email: " + player.email),
+    const headerText = backButton ? "Player Details:" : "Your Information:";
+    const container = views.div({class: "player-details-container"});
+
+    const header = views.h2({class: "player-details-header"}, headerText);
+
+    const detailsList = views.ul({class: "player-details-list"},
+        views.li( "UserName: " + player.userName),
+        views.li( "Email: " + player.email),
     );
-    const backButtonView = handlerViews.createBackButtonView();
-    const sessionsButtonView =
-        handlerViews
-            .sessionsButtonView(
-                "Sessions",
-                `${constants.SESSION_ROUTE}?pid=` + player.pid + "&offset=0"
-            );
-    const div  = views.div({},
-        h2,
-        views.h3({}, player.name),
-        playerDetailsView,
-        sessionsButtonView,
+
+    const nameHeader = views.h3({class: "player-name-header"}, player.name);
+
+    const sessionsButton = handlerViews.hrefButtonView(
+        "Sessions",
+        `${constants.SESSION_ROUTE}?pid=${player.pid}&offset=0`
     );
+
+    container.replaceChildren(header, nameHeader, detailsList, sessionsButton);
+
     if (backButton) {
-        div.appendChild(backButtonView);
+        const backButtonView = handlerViews.createBackButtonView();
+        container.appendChild(backButtonView);
     }
-    return div;
+
+    return container;
 }
+
 import views from "../viewsCreators.js";
 
 import handlerViews from "./handlerViews.js";

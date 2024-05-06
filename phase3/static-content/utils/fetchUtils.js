@@ -35,10 +35,11 @@ async function put(uri, body) {
  *
  * @param uri
  * @param body
+ * @param token
  * @returns {Promise<*>}
  */
-async function post(uri, body) {
-    return fetchInternal(uri, {method: "POST"}, body)
+async function post(uri, body, token = undefined) {
+    return fetchInternal(uri, {method: "POST"}, body, token)
 }
 
 /**

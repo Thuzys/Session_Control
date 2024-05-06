@@ -29,7 +29,7 @@ class GameHandler(
         return if (name == null || dev == null || genres == null) {
             makeResponse(
                 Status.BAD_REQUEST,
-                createJsonMessage("Invalid arguments: name:$name, dev:$dev, genres:$genres."),
+                createJsonRspMessage("Invalid arguments: name:$name, dev:$dev, genres:$genres."),
             )
         } else {
             tryResponse(
@@ -37,7 +37,13 @@ class GameHandler(
                 "Invalid arguments: name:$name, dev:$dev, genres:$genres.",
             ) {
                 val gid = gameManagement.createGame(name, dev, genres)
-                makeResponse(Status.CREATED, createJsonMessage("Game created with id $gid."))
+                makeResponse(
+                    Status.CREATED,
+                    createJsonRspMessage(
+                        message = "Game created with id $gid.",
+                        id = gid,
+                    ),
+                )
             }
         }
     }
@@ -51,7 +57,7 @@ class GameHandler(
         val gid = request.toGidOrNull()
 
         return if (gid == null) {
-            makeResponse(Status.BAD_REQUEST, createJsonMessage("Bad Request."))
+            makeResponse(Status.BAD_REQUEST, createJsonRspMessage("Bad Request."))
         } else {
             tryResponse(Status.NOT_FOUND, "Game not found.") {
                 val game = gameManagement.getGameDetails(gid)
@@ -72,7 +78,7 @@ class GameHandler(
         val genres = request.query("genres") ?.let { processGenres(it) }
 
         return if (dev == null && genres == null) {
-            makeResponse(Status.BAD_REQUEST, createJsonMessage("Bad Request."))
+            makeResponse(Status.BAD_REQUEST, createJsonRspMessage("Bad Request."))
         } else {
             tryResponse(Status.NOT_FOUND, "Game not found.") {
                 val games = gameManagement.getGameByDevAndGenres(dev, genres, offset, limit)

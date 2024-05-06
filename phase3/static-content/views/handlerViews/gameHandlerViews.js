@@ -3,6 +3,7 @@ import views from "../viewsCreators.js";
 import requestUtils from "../../utils/requestUtils.js";
 import constants from "../../constants/constants.js";
 import genres from "../../handlers/handlerUtils/gameGenres.js";
+import sessionHandlers from "../../handlers/sessionHandlers.js";
 
 /**
  * Create search games view
@@ -23,6 +24,7 @@ function createSearchGamesView() {
     const addGenresButton = views.button({
         id: "AddGenresButton",
         type: "button",
+        class: "submit-button",
     }, "Add")
 
     const genresList = views.datalist({
@@ -45,6 +47,7 @@ function createSearchGamesView() {
     const searchGamesButton = views.button({
         id: "SearchGamesButton",
         type: "submit",
+        class: "general-button",
     }, "Search")
 
     addGenresButton.addEventListener("click", () => {
@@ -107,6 +110,7 @@ function createGenresListener(selectedGenresView, inputGenres, genresValues) {
 
         const removeButton = views.button({
             type: "button",
+            class: "remove-button"
         }, "X")
 
         removeButton.onclick = () => {
@@ -171,13 +175,26 @@ function createGetGameView(games) {
  */
 function createGameDetailsView(game) {
     const header = handlerViews.createHeader("Game Details: ")
+
+    const createSessionButton = views.button({type: "button", class: "general-button"}, "Create Session");
+    createSessionButton.addEventListener('click', () => {
+        sessionHandlers.createSession(
+            document.getElementById("mainContent"),
+            document.getElementById("mainHeader"),
+            game.gid,
+            game.name
+        );
+    });
+
     const div = views.div(
         {},
         views.h2({}, `${game.name}`),
         views.p({}, `Developer: ${game.dev}`),
         views.p({}, `Genres: ${game.genres.join(",")}`),
         handlerViews.createBackButtonView(),
-        handlerViews.sessionsButtonView("Sessions", `sessions?gid=${game.gid}&offset=0`)
+        handlerViews.hrefButtonView("Sessions",
+            `${constants.SESSION_ROUTE}?gid=${game.gid}&offset=0`),
+        createSessionButton,
     )
     return [header, div]
 }

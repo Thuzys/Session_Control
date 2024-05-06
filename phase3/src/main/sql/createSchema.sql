@@ -5,11 +5,6 @@ drop table if exists GAME;
 drop table if exists PLAYER;
 drop table if exists GENRE;
 
--- create or replace function getSessionsBy(userName varchar(40), gameName varchar(80), date Date, state varchar(10))
--- TODO();
---
-
-
 create or replace function check_capacity(sid int)
     returns boolean as $$
 declare

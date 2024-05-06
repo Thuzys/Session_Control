@@ -24,60 +24,73 @@ function createLabeledInput(labelText, inputType, inputId) {
     ];
 }
 
-function hrefConstructor(hrefBase, id, textBase) {
-    return [
-        views.a({href: `${hrefBase}/${id}`}, `${textBase}`),
-        views.p()
-    ]
+function hrefConstructor(hrefBase, id, textBase, offset = undefined, limit = undefined) {
+    if (offset !== undefined) {
+        return [
+            views.a({href: `${hrefBase}/${id}?offset=${offset}`}, `${textBase}`),
+            views.p()
+        ]
+    } else {
+        return [
+            views.a({href: `${hrefBase}/${id}`}, `${textBase}`),
+            views.p()
+        ]
+    }
 }
 
-function sessionsButtonView(textContent, query) {
-    const backButton = views.button({type: "button"}, textContent);
+function hrefButtonView(textContent, query) {
+    const backButton = views.button({type: "button", class: "general-button"}, textContent);
     backButton.addEventListener('click', () => {
         window.location.hash = query;
     });
     return backButton;
 }
 
-function createBackButtonView() {
-    const backButton = views.button({type: "button"}, "Back");
+function createBackButtonView(hasHistory = undefined) {
+    const backButton = views.button({type: "button", class: "general-button"}, "Back");
     backButton.addEventListener('click', () => {
-        window.history.back();
+        if (hasHistory) {
+            handlerUtils.changeHash(hasHistory)
+        } else {
+            window.history.back();
+        }
     });
     return backButton;
 }
 
-function createPagination(query, hash, hasNext) {
-    const prevButton = views.button({id: "prev", type: "button"}, "Previous")
-    if(query.get("offset") === 0) {
+function createPagination(query, hash, hasNext, elementsPerPage = constants.ELEMENTS_PER_PAGE) {
+    const container = views.div({class: "pagination-container"});
+
+    const prevButton = views.button({id: "prev", type: "button"}, "<");
+    if (query.get("offset") === 0) {
         prevButton.disabled = true;
     }
     prevButton.addEventListener('click', () => {
         if (query.get("offset") > 0) {
-            query.set("offset", query.get("offset") - constants.LIMIT)
-            handlerUtils.changeHash(`${hash}?${handlerUtils.makeQueryString(query)}`)
+            query.set("offset", query.get("offset") - elementsPerPage);
+            handlerUtils.changeHash(`${hash}?${handlerUtils.makeQueryString(query)}`);
         }
-    })
-    const nextButton = views.button({id: "next", type: "button"}, "Next")
-    if(!hasNext) {
+    });
+
+    const nextButton = views.button({id: "next", type: "button"}, ">");
+    if (!hasNext) {
         nextButton.disabled = true;
     }
     nextButton.addEventListener('click', () => {
         if (hasNext) {
-            query.set("offset", query.get("offset") + constants.LIMIT)
-            handlerUtils.changeHash(`${hash}?${handlerUtils.makeQueryString(query)}`)
+            query.set("offset", query.get("offset") + elementsPerPage);
+            handlerUtils.changeHash(`${hash}?${handlerUtils.makeQueryString(query)}`);
         }
-    })
+    });
 
-    return views.div(
-        {},
-        prevButton,
-        nextButton,
-    )
+    container.appendChild(prevButton);
+    container.appendChild(nextButton);
+
+    return container;
 }
 
 const handlerViews = {
-    sessionsButtonView,
+    hrefButtonView,
     createHeader,
     createLabeledInput,
     hrefConstructor,

@@ -5,6 +5,7 @@ import playerHandlerViews from "../views/handlerViews/playerHandlerViews.js";
 import {fetcher} from "../utils/fetchUtils.js";
 import handlerViews from "../views/handlerViews/handlerViews.js";
 import handlerUtils from "./handlerUtils/handlerUtils.js";
+import views from "../views/viewsCreators.js";
 
 /**
  * Get player details by player id
@@ -41,9 +42,11 @@ function getPlayerDetails(mainContent, mainHeader) {
 }
 
 function searchPlayer(mainContent, mainHeader) {
+    const container = views.div({class: "player-details-container"});
     const [h1, form] = handlerViews.createSearchPlayerView();
     form.onsubmit = (e) => handlePlayerSearchSubmit(e);
-    mainContent.replaceChildren(h1, form);
+    container.replaceChildren(h1, form);
+    mainContent.replaceChildren(container);
     mainHeader.replaceChildren(menu.get("sessionSearch"), menu.get("home"),  menu.get("gameSearch"));
 }
 
@@ -61,7 +64,12 @@ function handleGetPlayerDetailsResponse(player, mainContent, mainHeader, isSearc
     if (isSearch) {
         mainHeader.replaceChildren(menu.get("sessionSearch"), menu.get("home"), menu.get("gameSearch"));
     } else {
-        mainHeader.replaceChildren(menu.get("sessionSearch"), menu.get("gameSearch"), menu.get("playerSearch"));
+        const createSessionHref = handlerViews.hrefButtonView("Choose a game to create a session", `#gameSearch`);
+        playerDetailsView.appendChild(createSessionHref);
+        mainHeader.replaceChildren(
+            menu.get("sessionSearch"), menu.get("gameSearch"),
+            menu.get("playerSearch"), menu.get("contacts")
+        );
     }
 }
 

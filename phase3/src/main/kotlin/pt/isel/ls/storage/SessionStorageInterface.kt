@@ -33,7 +33,7 @@ interface SessionStorageInterface {
      */
     fun readSession(
         sid: UInt,
-        limit: UInt = 11u,
+        limit: UInt = 3u,
         offset: UInt = 0u,
     ): Session?
 

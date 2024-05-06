@@ -16,6 +16,8 @@ private val sid1 = 1u
 private val sid2 = 2u
 private val gid1 = 1u
 private val date1 = LocalDate(2024, 3, 10)
+private val owner1 = PlayerInfo(1u, "test1")
+private val owner2 = PlayerInfo(2u, "test2")
 
 object SessionManagementStunt : SessionServices {
     val playerToken: UUID = UUID.randomUUID()
@@ -70,22 +72,22 @@ object SessionManagementStunt : SessionServices {
         return when {
             gameInfo?.first == gid1 && state == SessionState.CLOSE || gameInfo?.second == "Game" ->
                 listOf(
-                    SessionInfo(sid1, 1u, gameInfoVal, date1),
-                    SessionInfo(sid2, 2u, gameInfoVal, date1),
+                    SessionInfo(sid1, owner1, gameInfoVal, date1),
+                    SessionInfo(sid2, owner2, gameInfoVal, date1),
                 )
             gameInfo?.first == gid1 && state == SessionState.OPEN || playerInfo?.second == "test1" ->
                 listOf(
-                    SessionInfo(sid2, 2u, gameInfoVal, date1),
+                    SessionInfo(sid2, owner2, gameInfoVal, date1),
                 )
             date == date1 && state == SessionState.OPEN ->
                 listOf(
-                    SessionInfo(sid1, 1u, gameInfoVal, date1),
-                    SessionInfo(sid2, 2u, gameInfoVal, date1),
+                    SessionInfo(sid1, owner1, gameInfoVal, date1),
+                    SessionInfo(sid2, owner2, gameInfoVal, date1),
                 )
             gameInfo?.first == 400u -> emptyList()
             playerInfo?.first == 2u ->
                 listOf(
-                    SessionInfo(sid2, 2u, gameInfoVal, date1),
+                    SessionInfo(sid2, owner2, gameInfoVal, date1),
                 )
             else -> throw ServicesError("There are no Sessions that satisfy the given details")
         }

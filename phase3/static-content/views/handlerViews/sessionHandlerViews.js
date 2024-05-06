@@ -16,8 +16,8 @@ function createStateInputs() {
 }
 
 function createSessionFormContentView() {
-    const gidLabelInput = handlerViews.createLabeledInput("Enter Game Id: ", "text", "gameId");
-    const pidLabelInput = handlerViews.createLabeledInput("Enter Player userName: ", "text", "playerId");
+    const gidLabelInput = handlerViews.createLabeledInput("Enter Game name: ", "text", "gameName");
+    const pidLabelInput = handlerViews.createLabeledInput("Enter Player userName: ", "text", "userName");
     const dateLabelInput = handlerViews.createLabeledInput("Enter Date: ", "date", "date");
     const stateLabelInputs = createStateInputs();
 
@@ -33,15 +33,20 @@ function createSessionFormContentView() {
 
 function createSessionDetailsViews(session, playerList) {
     const backButton = handlerViews.createBackButtonView();
+
     return views.div(
         {},
-        views.h3({}, "Session ID: " + session.sid),
+        views.h3({}, "Session: " + session.gameInfo.name + " - " + session.owner.userName),
         views.ul(
-            views.li("Capacity: " + session.capacity),
             views.li(
-                ...handlerViews.hrefConstructor("#games", session.gid, "Game ID: ")
+                ...handlerViews.hrefConstructor(
+                    "#games",
+                    session.gameInfo.gid, `Game: ${session.gameInfo.name}`
+                )
             ),
             views.li("Date: " + session.date),
+            views.li("Owner: " + session.owner.userName),
+            views.li("Capacity: " + session.capacity),
             views.li("Players:"),
             playerList
         ),
@@ -55,7 +60,10 @@ function createGetSessionsView(sessions) {
         views.h1({}, "Sessions Found:")
     );
     sessions.slice(0, constants.ELEMENTS_PER_PAGE).forEach(session => {
-        const sessionHref = handlerViews.hrefConstructor("#sessions", session.sid, "Session ID:")
+        const sessionHref = handlerViews.hrefConstructor(
+            "#sessions",
+            session.sid, `Session: ${session.owner.userName} - ${session.date}`,
+        );
         div.appendChild(views.form({}, ...sessionHref))
     });
     const nextPrev = handlerViews.createPagination(query, "#sessions", sessions.length === constants.LIMIT);
@@ -67,7 +75,7 @@ export function createPlayerListView(session) {
     if (session.players) {
         session.players.forEach(player => {
             const playerLi = views.li(
-                ...handlerViews.hrefConstructor("#players", player.pid, "Player ID:")
+                ...handlerViews.hrefConstructor("#players", player.pid, player.userName)
             );
             playerList.appendChild(playerLi);
         });

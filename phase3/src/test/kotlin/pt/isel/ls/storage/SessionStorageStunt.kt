@@ -71,7 +71,7 @@ class SessionStorageStunt : SessionStorageInterface {
             .map { session ->
                 SessionInfo(
                     session.sid ?: 0u,
-                    session.owner.pid,
+                    session.owner,
                     session.gameInfo,
                     session.date,
                 )

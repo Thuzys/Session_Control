@@ -348,16 +348,17 @@ internal fun makePlayersInfo(stmt: PreparedStatement): Collection<PlayerInfo> {
  * @param sessionStmt The [PreparedStatement] to make the list from.
  * @return A list of [Session] objects.
  */
-internal fun makeSessionInfo(sessionStmt: PreparedStatement): Collection<SessionInfo> {
+internal fun Connection.makeSessionInfo(sessionStmt: PreparedStatement): Collection<SessionInfo> {
     val rs = sessionStmt.executeQuery()
     val sessions = mutableListOf<SessionInfo>()
     while (rs.next()) {
-//        val ownerPreparedStatement =
-//            prepareStatement(
-//                "SELECT PLAYER.pid, name, userName, email, token FROM PLAYER " +
-//                    " WHERE pid = ?;",
-//            )
-//        ownerPreparedStatement.setInt(1, rs.getInt("owner"))
+        val ownerPreparedStatement =
+            prepareStatement(
+                "SELECT PLAYER.pid, name, userName, email, token FROM PLAYER " +
+                    " WHERE pid = ?;",
+            )
+        ownerPreparedStatement.setInt(1, rs.getInt("owner"))
+        val owner = makePlayersInfo(ownerPreparedStatement).first()
 //        val owner = makePlayers(ownerPreparedStatement).first()
 //        val playerStmt =
 //            prepareStatement(
@@ -369,7 +370,7 @@ internal fun makeSessionInfo(sessionStmt: PreparedStatement): Collection<Session
         sessions.add(
             SessionInfo(
                 rs.getInt("sid").toUInt(),
-                rs.getInt("owner").toUInt(),
+                owner,
                 GameInfo(rs.getInt("gid").toUInt(), rs.getString("game_name")),
                 rs.getString("date").toLocalDate(),
             ),

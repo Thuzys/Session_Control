@@ -307,10 +307,10 @@ class SessionHandlerTest {
             val response = handler.getSessions(request)
             assertEquals(
                 expected =
-                    "[{\"sid\":1,\"owner\":1,\"gameInfo\":{\"gid\":1,\"name\":\"Game\"}," +
-                        "\"date\":\"2024-03-10\"},{\"sid\":2,\"owner\":2," +
-                        "\"gameInfo\":{\"gid\":1,\"name\":\"Game\"}," +
-                        "\"date\":\"2024-03-10\"}]",
+                    "[{\"sid\":1,\"owner\":{\"pid\":1,\"userName\":\"test1\"}," +
+                        "\"gameInfo\":{\"gid\":1,\"name\":\"Game\"},\"date\":\"2024-03-10\"}," +
+                        "{\"sid\":2,\"owner\":{\"pid\":2,\"userName\":\"test2\"}," +
+                        "\"gameInfo\":{\"gid\":1,\"name\":\"Game\"},\"date\":\"2024-03-10\"}]",
                 actual = response.bodyString(),
             )
         }
@@ -586,8 +586,9 @@ class SessionHandlerTest {
             val response = handler.getSessions(request)
             assertEquals(
                 expected =
-                    "[{\"sid\":1,\"owner\":1,\"gameInfo\":{\"gid\":1,\"name\":\"Game\"}," +
-                        "\"date\":\"2024-03-10\"},{\"sid\":2,\"owner\":2," +
+                    "[{\"sid\":1,\"owner\":{\"pid\":1,\"userName\":\"test1\"}," +
+                        "\"gameInfo\":{\"gid\":1,\"name\":\"Game\"},\"date\":\"2024-03-10\"}" +
+                        ",{\"sid\":2,\"owner\":{\"pid\":2,\"userName\":\"test2\"}," +
                         "\"gameInfo\":{\"gid\":1,\"name\":\"Game\"},\"date\":\"2024-03-10\"}]",
                 actual = response.bodyString(),
             )

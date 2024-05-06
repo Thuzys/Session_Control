@@ -29,14 +29,14 @@ function searchSessions(mainContent, mainHeader) {
  */
 function handleSearchSessionsSubmit(e) {
     e.preventDefault();
-    const { value: gid } = document.getElementById('gameId');
-    const { value: userName } = document.getElementById('playerId');
+    const { value: gid } = document.getElementById('gameName');
+    const { value: userName } = document.getElementById('userName');
     const { value: date } = document.getElementById('date');
     const { checked: open } = document.querySelector('input[name="state"][value="open"]');
     const { checked: close } = document.querySelector('input[name="state"][value="close"]');
 
     const params = new URLSearchParams();
-    if (gid) params.set('gid', gid);
+    if (gid) params.set('gameName', gid);
     if (userName) params.set('userName', userName);
     if (date) params.set('date', date.replace(':', '_'));
     if (open) params.set('state', 'open');

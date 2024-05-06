@@ -26,7 +26,7 @@ function createLabeledInput(labelText, inputType, inputId) {
 
 function hrefConstructor(hrefBase, id, textBase) {
     return [
-        views.a({href: `${hrefBase}/${id}`}, `${textBase} ${id}`),
+        views.a({href: `${hrefBase}/${id}`}, `${textBase}`),
         views.p()
     ]
 }

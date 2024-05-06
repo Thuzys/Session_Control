@@ -58,6 +58,7 @@ function createGetSessionsView(sessions) {
         const sessionHref = handlerViews.hrefConstructor("#sessions", session.sid, "Session ID:")
         div.appendChild(views.form({}, ...sessionHref))
     });
+    console.log(sessions.length)
     const nextPrev = handlerViews.createPagination(query, "#sessions", sessions.length === constants.LIMIT);
     return [div, nextPrev];
 }

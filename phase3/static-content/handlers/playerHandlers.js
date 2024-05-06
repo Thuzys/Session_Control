@@ -48,7 +48,7 @@ function handleGetPlayerDetailsResponse(player, mainContent, mainHeader, isSearc
     } else {
         const createSessionHref = handlerViews.hrefButtonView("Choose a game to create a session", `#gameSearch`);
         playerDetailsView.appendChild(createSessionHref);
-        mainHeader.replaceChildren(menu.get("sessionSearch"), menu.get("gameSearch"), menu.get("playerSearch"));
+        mainHeader.replaceChildren(menu.get("sessionSearch"), menu.get("gameSearch"), menu.get("playerSearch"), menu.get("contacts"));
     }
 }
 

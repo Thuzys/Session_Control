@@ -77,6 +77,10 @@ function button(attributes = {}, textContent) {
     return createElement("button", attributes, textContent);
 }
 
+function image(attributes) {
+    return createElement('img', attributes);
+}
+
 const views = {
     datalist,
     option,
@@ -94,6 +98,7 @@ const views = {
     a,
     h2,
     h3,
+    image
 }
 
 export default views

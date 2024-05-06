@@ -11,6 +11,8 @@ object PlayerManagementStunt : PlayerServices {
     val playerEmail = Email("test@email.com")
     val playerName = "Test"
 
+    private val player = Player(playerId, playerName, email = playerEmail, token = playerToken, userName = playerName)
+
     override fun createPlayer(
         name: String,
         email: String,
@@ -24,12 +26,20 @@ object PlayerManagementStunt : PlayerServices {
 
     override fun getPlayerDetails(pid: UInt): Player =
         if (pid == playerId) {
-            Player(pid, playerName, email = playerEmail, token = playerToken, userName = playerName)
+            player
         } else {
             throw ServicesError("Unable to get the details of a Player due to nonexistent pid.")
         }
 
     override fun isValidToken(token: String): Boolean {
         return token == playerToken.toString()
+    }
+
+    override fun getPlayerDetailsBy(userName: String): Player {
+        if (userName == playerName) {
+            return player
+        } else {
+            throw ServicesError("Unable to get the details of a Player due to nonexistent userName.")
+        }
     }
 }

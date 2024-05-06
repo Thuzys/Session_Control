@@ -40,7 +40,10 @@ class SessionHandlerTest {
                     Method.POST,
                     DUMMY_ROUTE,
                 )
-                    .body("{\"gid\": \"1\", \"date\": \"2024-03-16T12:30\", \"capacity\": \"10\"}")
+                    .body(
+                        "{\"gid\": \"1\",\"date\": \"2024-03-16\", " +
+                            "\"capacity\": \"10\", \"owner\": \"1\", \"ownerName\": \"test1\"}",
+                    )
                     .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
             val response = handler.createSession(request)
             assertEquals(Status.CREATED, response.status)
@@ -55,7 +58,10 @@ class SessionHandlerTest {
                     Method.POST,
                     DUMMY_ROUTE,
                 )
-                    .body("{\"gid\": \"1\", \"date\": \"2024-03-16T12:30\", \"capacity\": \"10\"}")
+                    .body(
+                        "{\"gid\": \"1\",\"date\": \"2024-03-16\", " +
+                            "\"capacity\": \"10\", \"owner\": \"1\", \"ownerName\": \"test1\"}",
+                    )
                     .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
             val response = handler.createSession(request)
             assertEquals(
@@ -106,7 +112,7 @@ class SessionHandlerTest {
                     Method.POST,
                     DUMMY_ROUTE,
                 )
-                    .body("{gid: 1, date: 2024-03-16T12:30:00}")
+                    .body("{gid: 1, date: 2024-03-16}")
                     .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
             val response = handler.createSession(request)
             assertEquals(Status.BAD_REQUEST, response.status)
@@ -185,9 +191,10 @@ class SessionHandlerTest {
             val response = handler.getSession(request)
             assertEquals(
                 expected =
-                    "{\"sid\":1,\"capacity\":1,\"gid\":1,\"date\":\"2024-03-10T12:30\"," +
-                        "\"players\":[{\"pid\":1,\"name\":\"test1\",\"userName\":\"test1\"," +
-                        "\"email\":\"default@mail.com\",\"token\":\"${SessionManagementStunt.playerToken}\"}]}",
+                    "{\"sid\":1,\"capacity\":1,\"gameInfo\":{\"gid\":1,\"name\":\"Game\"}," +
+                        "\"date\":\"2024-03-10\",\"owner\":{\"pid\":1,\"userName\":\"test1\"}," +
+                        "\"players\":[{\"pid\":1,\"userName\":\"test1\"}," +
+                        "{\"pid\":2,\"userName\":\"test2\"}]}",
                 actual = response.bodyString(),
             )
         }
@@ -306,15 +313,10 @@ class SessionHandlerTest {
             val response = handler.getSessions(request)
             assertEquals(
                 expected =
-                    "[{\"sid\":1,\"capacity\":1,\"gid\":1,\"date\":\"2024-03-10T12:30\"," +
-                        "\"players\":[{\"pid\":1,\"name\":\"test1\",\"userName\":\"test1\"," +
-                        "\"email\":\"default@mail.com\",\"token\":\"${SessionManagementStunt.playerToken}\"}]}," +
-                        "{\"sid\":2,\"capacity\":2,\"gid\":1,\"date\":\"2024-03-10T12:30\"," +
-                        "\"players\":[" +
-                        "{\"pid\":1,\"name\":\"test1\",\"userName\":\"test1\",\"email\":\"default@mail.com\"," +
-                        "\"token\":\"${SessionManagementStunt.playerToken}\"}," +
-                        "{\"pid\":2,\"name\":\"test2\",\"userName\":\"test2\",\"email\":\"default@mail.com\"," +
-                        "\"token\":\"${SessionManagementStunt.playerToken}\"}]}]",
+                    "[{\"sid\":1,\"owner\":{\"pid\":1,\"userName\":\"test1\"}," +
+                        "\"gameInfo\":{\"gid\":1,\"name\":\"Game\"},\"date\":\"2024-03-10\"}," +
+                        "{\"sid\":2,\"owner\":{\"pid\":2,\"userName\":\"test2\"}," +
+                        "\"gameInfo\":{\"gid\":1,\"name\":\"Game\"},\"date\":\"2024-03-10\"}]",
                 actual = response.bodyString(),
             )
         }
@@ -443,7 +445,7 @@ class SessionHandlerTest {
                     Method.POST,
                     DUMMY_ROUTE,
                 )
-                    .body("{\"sid\": \"1\", \"date\": \"2024-03-16T12:30\", \"capacity\": \"invalid_format\"}")
+                    .body("{\"sid\": \"1\", \"date\": \"2024-03-16\", \"capacity\": \"invalid_format\"}")
                     .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
             val response = handler.updateCapacityOrDate(request)
             assertEquals(Status.OK, response.status)
@@ -578,7 +580,7 @@ class SessionHandlerTest {
 
     @Test
     fun `getting sessions with date should change the underline to colon`() {
-        val date = "2024-03-10T12_30"
+        val date = "2024-03-10"
         val state = "open"
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request =
@@ -590,15 +592,10 @@ class SessionHandlerTest {
             val response = handler.getSessions(request)
             assertEquals(
                 expected =
-                    "[{\"sid\":1,\"capacity\":1,\"gid\":1,\"date\":\"2024-03-10T12:30\"," +
-                        "\"players\":[{\"pid\":1,\"name\":\"test1\",\"userName\":\"test1\"," +
-                        "\"email\":\"default@mail.com\",\"token\":\"${SessionManagementStunt.playerToken}\"}]}," +
-                        "{\"sid\":2,\"capacity\":2,\"gid\":1,\"date\":\"2024-03-10T12:30\"," +
-                        "\"players\":[" +
-                        "{\"pid\":1,\"name\":\"test1\",\"userName\":\"test1\",\"email\":\"default@mail.com\"," +
-                        "\"token\":\"${SessionManagementStunt.playerToken}\"}," +
-                        "{\"pid\":2,\"name\":\"test2\",\"userName\":\"test2\",\"email\":\"default@mail.com\"," +
-                        "\"token\":\"${SessionManagementStunt.playerToken}\"}]}]",
+                    "[{\"sid\":1,\"owner\":{\"pid\":1,\"userName\":\"test1\"}," +
+                        "\"gameInfo\":{\"gid\":1,\"name\":\"Game\"},\"date\":\"2024-03-10\"}" +
+                        ",{\"sid\":2,\"owner\":{\"pid\":2,\"userName\":\"test2\"}," +
+                        "\"gameInfo\":{\"gid\":1,\"name\":\"Game\"},\"date\":\"2024-03-10\"}]",
                 actual = response.bodyString(),
             )
         }

@@ -28,6 +28,7 @@ fun buildRoutes(
 ) = routes(
     PLAYER_ID_ROUTE bind Method.GET to playerHandler::getPlayer,
     PLAYER_ROUTE bind Method.POST to playerHandler::createPlayer,
+    PLAYER_ROUTE bind Method.GET to playerHandler::getPlayerBy,
     GAME_ID_ROUTE bind Method.GET to gameHandler::getGameDetails,
     GAME_ROUTE bind Method.POST to gameHandler::createGame,
     GAME_ROUTE bind Method.GET to gameHandler::getGameByDevAndGenres,

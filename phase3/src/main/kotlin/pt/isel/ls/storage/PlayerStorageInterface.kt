@@ -39,6 +39,7 @@ interface PlayerStorageInterface {
     fun readBy(
         email: Email? = null,
         token: String? = null,
+        userName: String? = null,
         limit: UInt = 11u,
         offset: UInt = 0u,
     ): Collection<Player>?

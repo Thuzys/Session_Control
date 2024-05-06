@@ -73,8 +73,9 @@ async function fetchInternal(uri, options = {}, body = undefined, token= undefin
                     window.history.back()
                     alert(`Error: ${response.status} ${response.statusText}\n${text}`)
                 })
+            } else {
+                return response.json()
             }
-            return response.json()
         })
 }
 

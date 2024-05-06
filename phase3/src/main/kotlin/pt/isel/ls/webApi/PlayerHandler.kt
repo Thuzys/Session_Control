@@ -54,4 +54,23 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
             makeResponse(Status.FOUND, Json.encodeToString(player))
         }
     }
+
+    override fun getPlayerBy(request: Request): Response {
+        unauthorizedAccess(
+            request,
+            playerManagement,
+        )?.let { return makeResponse(Status.UNAUTHORIZED, createJsonRspMessage("Unauthorized, $it.")) }
+        val userName = request.readQuery("userName")
+        return if (userName == null) {
+            makeResponse(Status.BAD_REQUEST, createJsonRspMessage("Bad Request, insufficient parameters."))
+        } else {
+            tryResponse(
+                errorStatus = Status.NOT_FOUND,
+                errorMsg = "Player not found.",
+            ) {
+                val player = playerManagement.getPlayerDetailsBy(userName)
+                makeResponse(Status.FOUND, Json.encodeToString(player))
+            }
+        }
+    }
 }

@@ -1,59 +1,73 @@
 package pt.isel.ls.services
 
-import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalDate
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
-import pt.isel.ls.storage.PlayerStorageInterface
+import pt.isel.ls.domain.info.GameInfo
+import pt.isel.ls.domain.info.GameInfoParam
+import pt.isel.ls.domain.info.PlayerInfo
+import pt.isel.ls.domain.info.PlayerInfoParam
+import pt.isel.ls.domain.info.SessionInfo
 import pt.isel.ls.storage.SessionStorageInterface
 
 /**
  * Represents the services related to the session in the application.
  */
-class SessionManagement(
-    private val sessionDataMem: SessionStorageInterface,
-    private val playerDataMem: PlayerStorageInterface,
-) : SessionServices {
+class SessionManagement(private val sessionDataMem: SessionStorageInterface) : SessionServices {
     override fun addPlayer(
         player: UInt,
         session: UInt,
     ) = tryCatch("Unable to add player to session due") {
-//        val playerToAdd = playerDataMem.read(pid = player)
-//        val whereSession = sessionDataMem.readSession(sid = session)
-//        val updatedSession = whereSession?.addPlayer(playerToAdd) ?: throw NoSuchElementException()
-//        sessionDataMem.updateAddPlayer(sid = session, newItem = updatedSession.players)
         if (!sessionDataMem.updateAddPlayer(session, setOf(player))) {
-            throw IllegalArgumentException("Player already in session")
+            throw IllegalArgumentException("Unable to add player to session.")
         }
     }
 
-    override fun getSessionDetails(sid: UInt): Session =
+    override fun getSessionDetails(
+        sid: UInt,
+        limit: UInt?,
+        offset: UInt?,
+    ): Session =
         tryCatch("Unable to get the details of a Session due") {
-            sessionDataMem.readSession(sid = sid) ?: throw NoSuchElementException()
+            sessionDataMem.readSession(
+                sid,
+                limit ?: DEFAULT_LIMIT,
+                offset ?: DEFAULT_OFFSET,
+            ) ?: throw NoSuchElementException()
         }
 
     override fun createSession(
-        gid: UInt,
-        date: LocalDateTime,
+        gameInfo: GameInfoParam,
+        date: LocalDate,
         capacity: UInt,
+        owner: PlayerInfoParam,
     ): UInt =
         tryCatch("Unable to create a new session due") {
-            sessionDataMem.createSession(Session(gid = gid, date = date, capacity = capacity))
+            requireNotNull(gameInfo.first) { "Game must be provided" }
+            val game =
+                gameInfo.first?.let { GameInfo(it, gameInfo.second) }
+                    ?: throw IllegalArgumentException("Game must be provided")
+            val (pid, userName) = owner
+            requireNotNull(pid) { "Owner pid must be provided" }
+            requireNotNull(userName) { "Owner userName must be provided" }
+            val ownerInfo = PlayerInfo(pid, userName)
+            sessionDataMem.createSession(Session(gameInfo = game, date = date, capacity = capacity, owner = ownerInfo))
         }
 
     override fun getSessions(
-        gid: UInt?,
-        date: LocalDateTime?,
+        gameInfo: GameInfoParam?,
+        date: LocalDate?,
         state: SessionState?,
-        playerId: UInt?,
+        playerInfo: PlayerInfoParam?,
         offset: UInt?,
         limit: UInt?,
-    ): Collection<Session> =
+    ): Collection<SessionInfo> =
         tryCatch("Unable to get the sessions due") {
             sessionDataMem.readSessions(
-                gid = gid,
+                gameInfo = gameInfo,
                 date = date,
                 state = state,
-                playerId = playerId,
+                playerInfo = playerInfo,
                 offset = offset ?: DEFAULT_OFFSET,
                 limit = limit ?: DEFAULT_LIMIT,
             ) ?: throw NoSuchElementException("No sessions found")
@@ -62,7 +76,7 @@ class SessionManagement(
     override fun updateCapacityOrDate(
         sid: UInt,
         capacity: UInt?,
-        date: LocalDateTime?,
+        date: LocalDate?,
     ) = tryCatch("Unable to update session $sid due") {
         sessionDataMem.updateCapacityOrDate(
             sid = sid,
@@ -75,11 +89,6 @@ class SessionManagement(
         tryCatch("Unable to delete the session due") {
             sessionDataMem.deleteSession(sid = sid)
         }
-
-//    override fun getSessionsByPlayer(pid: UInt): Collection<Int> =
-//        tryCatch("Unable to get the sessions by player due") {
-//            sessionDataMem.getPlayerSessions(pid)
-//        }
 
     override fun removePlayer(
         player: UInt,

@@ -1,0 +1,37 @@
+drop function get_sessions_by(int, varchar, varchar, int, varchar, varchar, int, int);
+
+create or replace function get_sessions_by(
+    pGid int, currDate varchar(10),
+    state varchar(10), pPid int,
+    pUserName varchar(50), gameName varchar(50),
+    l int, o int
+) returns table (
+    sid int, capacity int, game_name varchar(50),
+    date date, gid int, owner int
+) as $$
+begin
+    return query
+    select s.sid, s.capacity, s.game_name, s.date, s.gid, s.owner
+    from (
+        select s.sid, s.owner, s.capacity, g.name as game_name, s.date, s.gid from
+        session s natural join game g
+    ) as s
+        natural join (
+            select ps.pid from
+                player_session ps natural join player p
+            where
+                (Pusername is null or p.username = PuserName) and
+                (Ppid is null or ps.pid = Ppid)
+        ) as u
+    where
+        (Pgid is null or s.gid = Pgid) and
+        (currDate is null or s.date = to_date(currDate, 'YYYY-MM-DD')) and
+        (gameName is null or s.game_name = gameName)
+    group by s.sid, s.capacity, s.game_name, s.date, s.gid, s.owner
+    having (state is null) or
+        (state = 'OPEN' and count(u.pid) = s.capacity and now() <= s.date) or
+        (state = 'CLOSE' and count(u.pid) < s.capacity or now() > s.date)
+    limit l offset o;
+end
+$$ language plpgsql;
+

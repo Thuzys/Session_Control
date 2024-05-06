@@ -10,8 +10,8 @@ function createSearchPlayerView() {
     const h1 = views.h1({}, "Search Player:");
     const form =
         views.form({action: "#playerDetails", method: "get"},
-        views.input({type: "text", id: "pid", maxLength: 10}),
-        views.button({type: "submit", class: "submit-button",}, "Player Details")
+        views.input({type: "text", id: "pid", maxLength: 10, placeholder: "Player userName"}),
+        views.button({type: "submit"}, "Player Details")
     );
     return [h1, form];
 }
@@ -24,11 +24,18 @@ function createLabeledInput(labelText, inputType, inputId) {
     ];
 }
 
-function hrefConstructor(hrefBase, id, textBase) {
-    return [
-        views.a({href: `${hrefBase}/${id}`}, `${textBase} ${id}`),
-        views.p()
-    ]
+function hrefConstructor(hrefBase, id, textBase, offset = undefined, limit = undefined) {
+    if (offset !== undefined) {
+        return [
+            views.a({href: `${hrefBase}/${id}?offset=${offset}`}, `${textBase}`),
+            views.p()
+        ]
+    } else {
+        return [
+            views.a({href: `${hrefBase}/${id}`}, `${textBase}`),
+            views.p()
+        ]
+    }
 }
 
 function hrefButtonView(textContent, query) {
@@ -39,15 +46,19 @@ function hrefButtonView(textContent, query) {
     return backButton;
 }
 
-function createBackButtonView() {
+function createBackButtonView(hasHistory = undefined) {
     const backButton = views.button({type: "button", class: "general-button"}, "Back");
     backButton.addEventListener('click', () => {
-        window.history.back();
+        if (hasHistory) {
+            handlerUtils.changeHash(hasHistory)
+        } else {
+            window.history.back();
+        }
     });
     return backButton;
 }
 
-function createPagination(query, hash, hasNext) {
+function createPagination(query, hash, hasNext, elementsPerPage = constants.ELEMENTS_PER_PAGE) {
     const container = views.div({class: "pagination-container"});
 
     const prevButton = views.button({id: "prev", type: "button"}, "<");
@@ -56,7 +67,7 @@ function createPagination(query, hash, hasNext) {
     }
     prevButton.addEventListener('click', () => {
         if (query.get("offset") > 0) {
-            query.set("offset", query.get("offset") - constants.ELEMENTS_PER_PAGE);
+            query.set("offset", query.get("offset") - elementsPerPage);
             handlerUtils.changeHash(`${hash}?${handlerUtils.makeQueryString(query)}`);
         }
     });
@@ -67,7 +78,7 @@ function createPagination(query, hash, hasNext) {
     }
     nextButton.addEventListener('click', () => {
         if (hasNext) {
-            query.set("offset", query.get("offset") + constants.ELEMENTS_PER_PAGE);
+            query.set("offset", query.get("offset") + elementsPerPage);
             handlerUtils.changeHash(`${hash}?${handlerUtils.makeQueryString(query)}`);
         }
     });
@@ -85,7 +96,7 @@ const handlerViews = {
     hrefConstructor,
     createBackButtonView,
     createPagination,
-    createHomeView: createSearchPlayerView,
+    createSearchPlayerView,
 }
 
 export default handlerViews;

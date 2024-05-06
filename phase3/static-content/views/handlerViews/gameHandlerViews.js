@@ -192,7 +192,8 @@ function createGameDetailsView(game) {
         views.p({}, `Developer: ${game.dev}`),
         views.p({}, `Genres: ${game.genres.join(",")}`),
         handlerViews.createBackButtonView(),
-        handlerViews.hrefButtonView("Sessions", `sessions?gid=${game.gid}&offset=0`),
+        handlerViews.hrefButtonView("Sessions",
+            `${constants.SESSION_ROUTE}?gid=${game.gid}&offset=0`),
         createSessionButton,
     )
     return [header, div]

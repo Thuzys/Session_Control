@@ -1,6 +1,7 @@
 import views from "../viewsCreators.js";
 import handlerUtils from "../../handlers/handlerUtils/handlerUtils.js";
 import constants from "../../constants/constants.js";
+import {fetcher} from "../../utils/fetchUtils.js";
 
 function createHeader(text) {
     return views.h1({}, text);
@@ -58,6 +59,30 @@ function createBackButtonView(hasHistory = undefined) {
     return backButton;
 }
 
+function createDeleteSessionButtonView(session) {
+    const deleteSessionButton = views.button({type: "submit", class: "general-button"}, "Delete Session");
+    deleteSessionButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        fetcher.del(constants.API_BASE_URL + constants.SESSION_ID_ROUTE + session.sid, constants.TOKEN )
+            .then(() => {
+                handlerUtils.changeHash("#sessions?pid=" + constants.TEMPORARY_USER_ID + "&offset=0");
+            })
+    });
+    return deleteSessionButton;
+}
+
+function createLeaveSessionButtonView(session) {
+    const leaveSessionButton = views.button({type: "submit", class: "general-button"}, "Leave Session");
+    leaveSessionButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        fetcher.del(constants.API_BASE_URL + constants.SESSION_ID_ROUTE + session.sid + "/" + constants.TEMPORARY_USER_ID, constants.TOKEN)
+            .then(() => {
+                handlerUtils.changeHash("#sessions?pid=" + constants.TEMPORARY_USER_ID + "&offset=0");
+            })
+    });
+    return leaveSessionButton;
+}
+
 function createPagination(query, hash, hasNext, elementsPerPage = constants.ELEMENTS_PER_PAGE) {
     const container = views.div({class: "pagination-container"});
 
@@ -97,6 +122,8 @@ const handlerViews = {
     createBackButtonView,
     createPagination,
     createSearchPlayerView,
+    createDeleteSessionButtonView,
+    createLeaveSessionButtonView
 }
 
 export default handlerViews;

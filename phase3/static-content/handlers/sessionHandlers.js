@@ -6,6 +6,7 @@ import constants from "../constants/constants.js";
 import sessionHandlerViews from "../views/handlerViews/sessionHandlerViews.js";
 import handlerViews from "../views/handlerViews/handlerViews.js";
 import {fetcher} from "../utils/fetchUtils.js";
+import {isPlayerInSession, isPlayerOwner} from "./handlerUtils/sessionHandlersUtils.js";
 
 /**
  * Search sessions by game id, player id, date and state
@@ -14,15 +15,12 @@ import {fetcher} from "../utils/fetchUtils.js";
  * @param mainHeader main header of the page
  */
 function searchSessions(mainContent, mainHeader) {
-    const container = views.div({class: "player-details-container"});
     const h1 = handlerViews.createHeader("Search Sessions: ");
     const formContent = sessionHandlerViews.createSessionFormContentView();
     const form = views.form({}, ...formContent);
     form.addEventListener('submit', (e) => handleSearchSessionsSubmit(e));
 
-
-    container.replaceChildren(h1, form)
-    mainContent.replaceChildren(container);
+    mainContent.replaceChildren(views.div({class: "player-details-container"}, h1, form));
     mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("gameSearch"));
 }
 
@@ -33,20 +31,15 @@ function searchSessions(mainContent, mainHeader) {
  */
 function handleSearchSessionsSubmit(e) {
     e.preventDefault();
-    const { value: gid } = document.getElementById('gameName');
-    const { value: userName } = document.getElementById('userName');
-    const { value: date } = document.getElementById('date');
-    const { checked: open } = document.querySelector('input[name="state"][value="open"]');
-    const { checked: close } = document.querySelector('input[name="state"][value="close"]');
-
     const params = new URLSearchParams();
-    if (gid) params.set('gameName', gid);
-    if (userName) params.set('userName', userName);
-    if (date) params.set('date', date.replace(':', '_'));
-    if (open) params.set('state', 'open');
-    if (close) params.set('state', 'close');
+    ['gameName', 'userName', 'date'].forEach(id => {
+        const value = document.getElementById(id).value;
+        if (value) params.set(id, value.replace(':', '_'));
+    });
+    ['open', 'close'].forEach(state => {
+        if (document.querySelector(`input[name="state"][value="${state}"]`).checked) params.set('state', state);
+    });
     params.set('offset', "0");
-
     handlerUtils.changeHash(`#sessions?${params}`);
 }
 
@@ -95,14 +88,9 @@ function getSessions(mainContent, mainHeader) {
  * @param mainHeader main header of the page
  */
 function handleGetSessionsResponse(sessions, mainContent, mainHeader) {
-    const container = views.div({class: "player-details-container"});
     const [sessionsView, nextPrevView] = sessionHandlerViews.createGetSessionsView(sessions);
-    container.replaceChildren(sessionsView, nextPrevView);
-    mainContent.replaceChildren(container);
-    mainHeader.replaceChildren(
-        menu.get("playerSearch"), menu.get("home"),
-        menu.get("sessionSearch"), menu.get("gameSearch")
-    );
+    mainContent.replaceChildren(views.div({class: "player-details-container"}, sessionsView, nextPrevView));
+    mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("sessionSearch"), menu.get("gameSearch"));
 }
 
 /**
@@ -128,29 +116,23 @@ function getSessionDetails(mainContent, mainHeader) {
  * @param mainHeader main header of the page
  */
 function handleGetSessionDetailsResponse(session, mainContent, mainHeader) {
-    const container = views.div({class: "player-details-container"});
+    const isOwner =  isPlayerOwner(session);
+    const isInSession = isPlayerInSession(session);
+
     const playerListView = sessionHandlerViews.createPlayerListView(session);
-    const sessionDetailsView = sessionHandlerViews.createSessionDetailsViews(session, playerListView);
-    container.replaceChildren(sessionDetailsView);
-    mainContent.replaceChildren(container);
+    const sessionDetailsView = sessionHandlerViews.createSessionDetailsViews(session, playerListView, isOwner, isInSession);
+    mainContent.replaceChildren(views.div({class: "player-details-container"}, sessionDetailsView));
     mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("gameSearch"));
 }
 
 function handleCreateSessionResponse(response) {
-    if (response) {
-        handlerUtils.changeHash("#sessions/" + response.id);
-    } else {
-        alert("Failed to create session.");
-    }
+    response ? handlerUtils.changeHash("#sessions/" + response.id) : alert("Failed to create session.");
 }
 
 function createSession(mainContent, mainHeader, gid, gameName) {
-    const container = views.div({class: "player-details-container"});
     const [h1CreateSession, formCreateSession] = sessionHandlerViews.createCreateSessionView(gameName);
     formCreateSession.addEventListener('submit', (e) => handleCreateSessionSubmit(e, gid));
-
-    container.replaceChildren(h1CreateSession, formCreateSession);
-    mainContent.replaceChildren(container);
+    mainContent.replaceChildren(views.div({class: "player-details-container"}, h1CreateSession, formCreateSession));
     mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("gameSearch"), menu.get("sessionSearch"));
 }
 

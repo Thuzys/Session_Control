@@ -31,10 +31,12 @@ function createSessionFormContentView() {
     ];
 }
 
-function createSessionDetailsViews(session, playerList) {
+function createSessionDetailsViews(session, playerList, isOwner, isInSession) {
     const backButton = handlerViews.createBackButtonView();
+    const deleteSessionButton = handlerViews.createDeleteSessionButtonView(session);
+    const leaveSessionButton = handlerViews.createLeaveSessionButtonView(session);
 
-    return views.div(
+    const div = views.div(
         {},
         views.h3({}, "Session: " + session.gameInfo.name + " - " + session.owner.userName),
         views.ul(
@@ -52,6 +54,14 @@ function createSessionDetailsViews(session, playerList) {
         ),
         backButton
     );
+
+    if (isOwner) {
+        div.appendChild(deleteSessionButton);
+    } else if (isInSession){
+        div.appendChild(leaveSessionButton);
+    }
+
+    return div;
 }
 
 function createGetSessionsView(sessions) {
@@ -88,7 +98,7 @@ function createPlayerListView(session) {
     const nextPrev = handlerViews.createPagination(
         requestUtils.getQuery(),
         "#sessions/"+session.sid,
-        session.players !== undefined && session.players.length > constants.LIMIT_PLAYERS,
+        session.players !== undefined && session.players.length >= constants.LIMIT_PLAYERS,
         constants.ELEMENTS_PER_PAGE_PLAYERS
     );
     div.appendChild(nextPrev)

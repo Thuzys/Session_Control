@@ -13,10 +13,11 @@ async function get(uri, token = undefined) {
  * Deletes data from the server
  *
  * @param uri
+ * @param token
  * @returns {Promise<*>}
  */
-async function del(uri) {
-    return fetchInternal(uri, {method: "DELETE"})
+async function del(uri, token = undefined) {
+    return fetchInternal(uri, {method: "DELETE"}, undefined, token)
 }
 
 /**

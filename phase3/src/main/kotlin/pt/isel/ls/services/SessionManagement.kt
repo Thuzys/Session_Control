@@ -49,8 +49,7 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
                     ?: throw IllegalArgumentException("Game must be provided")
             val (pid, userName) = owner
             requireNotNull(pid) { "Owner pid must be provided" }
-            requireNotNull(userName) { "Owner userName must be provided" }
-            val ownerInfo = PlayerInfo(pid, userName)
+            val ownerInfo = PlayerInfo(pid, userName ?: "")
             sessionDataMem.createSession(Session(gameInfo = game, date = date, capacity = capacity, owner = ownerInfo))
         }
 

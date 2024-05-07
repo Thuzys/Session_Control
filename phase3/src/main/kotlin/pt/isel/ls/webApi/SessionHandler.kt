@@ -31,7 +31,7 @@ class SessionHandler(
         val date = dateVerification(body["date"])
         val ownerName = body["ownerName"]
         val capacity = body["capacity"]?.toUIntOrNull()
-        val params = arrayOf(gid, date, capacity, owner, ownerName)
+        val params = arrayOf(gid, date, capacity, owner)
         return if (params.any { it == null }) {
             makeResponse(
                 Status.BAD_REQUEST,

@@ -56,7 +56,8 @@ function handleCreateSessionSubmit(e, gid) {
     const body = {
         gid: gid.toString(),
         capacity: capacity,
-        date: date
+        date: date,
+        owner: constants.TEMPORARY_USER_ID.toString(),
     };
     fetcher
         .post(url, body, constants.TOKEN)
@@ -126,7 +127,7 @@ function handleGetSessionDetailsResponse(session, mainContent, mainHeader) {
 }
 
 function handleCreateSessionResponse(response) {
-    response ? handlerUtils.changeHash("#sessions/" + response.id) : alert("Failed to create session.");
+    response ? handlerUtils.changeHash("#sessions/" + response.id + "?offset=0") : alert("Failed to create session.");
 }
 
 function createSession(mainContent, mainHeader, gid, gameName) {

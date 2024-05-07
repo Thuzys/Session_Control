@@ -11,7 +11,9 @@ function addDefaultNotFoundRouteHandler(notFoundRH) {
 
 function getRouteHandler(path){
     const route = routes.find(r => r.path == path) || findRoute(path)
-    // const usePath = makeUsePath(path)
+    // const newUrl = new URL(window.location.href)
+    // newUrl.search = ""
+    // window.history.replaceState(null, null, newUrl.hash)
     // if (path !== usePath)
     //     window.location.replace(`#${usePath}`)
     return route ? route.handler : notFoundRouteHandler

@@ -125,7 +125,7 @@ class SessionHandler(
         unauthorizedAccess(request, playerManagement)
             ?.let { return unauthorizedResponse(it) }
         val body = readBody(request)
-        val sid = body["sid"]?.toUIntOrNull()
+        val sid = request.toSidOrNull()
         val capacity = body["capacity"]?.toUIntOrNull()
         val date = dateVerification(body["date"])
         return when {

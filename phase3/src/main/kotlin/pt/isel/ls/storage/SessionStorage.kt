@@ -111,12 +111,16 @@ class SessionStorage(envName: String) : SessionStorageInterface {
                     "UPDATE SESSION\n" +
                         "SET\n" +
                         "    capacity = CASE WHEN ? IS NOT NULL THEN ? ELSE capacity END,\n" +
-                        "    date = CASE WHEN ? IS NOT NULL THEN ? ELSE date END\n" +
+                        "    date = CASE WHEN ? IS NOT NULL THEN to_date(?, 'YYYY-MM-DD'::varchar) ELSE date END\n" +
                         "WHERE sid = ?;"
                 val stmt1 = connection.prepareStatement(updateCMD)
                 var idx = 1
-                repeat(2) { stmt1.setInt(idx++, capacity?.toInt() ?: 0) }
-                repeat(2) { stmt1.setString(idx++, date.toString()) }
+                repeat(2) {
+                    capacity?.let { stmt1.setInt(idx++, it.toInt()) } ?: stmt1.setNull(idx++, java.sql.Types.INTEGER)
+                }
+                repeat(2) {
+                    date?.let { stmt1.setString(idx++, it.toString()) } ?: stmt1.setNull(idx++, java.sql.Types.VARCHAR)
+                }
                 stmt1.setInt(idx, sid.toInt())
                 stmt1.executeUpdate()
             }

@@ -35,7 +35,7 @@ function createSessionDetailsViews(session, playerList, isOwner, isInSession) {
     const backButton = handlerViews.createBackButtonView();
     const deleteSessionButton = handlerViews.createDeleteSessionButtonView(session);
     const leaveSessionButton = handlerViews.createLeaveSessionButtonView(session);
-
+    const updateButton = handlerViews.createUpdateSessionButtonView(session);
     const div = views.div(
         {},
         views.h3({}, "Session: " + session.gameInfo.name + " - " + session.owner.userName),
@@ -57,6 +57,7 @@ function createSessionDetailsViews(session, playerList, isOwner, isInSession) {
 
     if (isOwner) {
         div.appendChild(deleteSessionButton);
+        div.appendChild(updateButton);
     } else if (isInSession){
         div.appendChild(leaveSessionButton);
     }
@@ -121,13 +122,29 @@ function createCreateSessionView(gameName) {
     return [header, formContent];
 }
 
+function createUpdateSessionForm(session) {
+    const header = handlerViews.createHeader("Update Session: ");
+    const labelCapacity = views.input({type: "number", id: "capacity", placeholder: "Enter Capacity", value: session.capacity})
+    const labelDate = views.input({type: "date", id: "dateChange", placeholder: "Enter Date", value: session.date});
+    const formContent = views.form(
+        {},
+        views.h3({}, session.gameInfo.name),
+        labelCapacity,
+        labelDate,
+        views.p(),
+        views.button({type: "submit", class: "submit-button"}, "Update")
+    );
+
+    return [header, formContent];
+}
 
 const sessionHandlerViews = {
     createSessionFormContentView,
     createSessionDetailsViews,
     createGetSessionsView,
     createPlayerListView,
-    createCreateSessionView
+    createCreateSessionView,
+    createUpdateSessionForm,
 }
 
 export default sessionHandlerViews;

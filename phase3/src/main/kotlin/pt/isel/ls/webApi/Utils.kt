@@ -68,7 +68,7 @@ internal inline fun tryResponse(
                     createJsonRspMessage(errorMsg, it),
                 )
             }
-            ?: makeResponse(errorStatus, "$errorMsg.")
+            ?: makeResponse(errorStatus, createJsonRspMessage("$errorMsg."))
     }
 
 /**

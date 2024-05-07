@@ -114,6 +114,16 @@ function createPagination(query, hash, hasNext, elementsPerPage = constants.ELEM
     return container;
 }
 
+function createUpdateSessionButtonView(session) {
+    const updateSessionButton = views.button({type: "submit", class: "general-button"}, "Update Session");
+    updateSessionButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        handlerUtils.changeHash("#updateSession?sid=" + session.sid)
+    });
+    return updateSessionButton;
+}
+
+
 const handlerViews = {
     hrefButtonView,
     createHeader,
@@ -123,7 +133,8 @@ const handlerViews = {
     createPagination,
     createSearchPlayerView,
     createDeleteSessionButtonView,
-    createLeaveSessionButtonView
+    createLeaveSessionButtonView,
+    createUpdateSessionButtonView
 }
 
 export default handlerViews;

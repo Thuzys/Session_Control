@@ -24,11 +24,12 @@ async function del(uri, token = undefined) {
  * Updates data on the server
  *
  * @param uri
+ * @param token
  * @param body
  * @returns {Promise<*>}
  */
-async function put(uri, body) {
-    return fetchInternal(uri, {method: "PUT"}, body)
+async function put(uri, token = undefined, body = undefined) {
+    return fetchInternal(uri, {method: "PUT"}, body, token)
 }
 
 /**

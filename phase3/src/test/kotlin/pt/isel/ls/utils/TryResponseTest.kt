@@ -53,6 +53,6 @@ class TryResponseTest {
             tryResponse(Status.INTERNAL_SERVER_ERROR, "Hello World") {
                 throw ServicesError(null)
             }
-        assertEquals("Hello World.", response.bodyString())
+        assertEquals("{\"msg\":\"Hello World.\"}", response.bodyString())
     }
 }

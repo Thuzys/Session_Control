@@ -136,9 +136,42 @@ function createSession(mainContent, mainHeader, gid, gameName) {
     mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("gameSearch"), menu.get("sessionSearch"));
 }
 
+function handleUpdateSessionSubmit(e) {
+    e.preventDefault();
+    const sid = requestUtils.getQuery().get('sid');
+    const capacity = document.getElementById('capacity').value;
+    const date = document.getElementById('dateChange').value;
+    const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${sid}`;
+    const body = {
+        capacity: capacity,
+        date: date
+    };
+    fetcher
+        .put(url, constants.TOKEN, body)
+        .then(_ => handlerUtils.changeHash("#sessions/" + sid + "?offset=0"))
+}
+
+function updateSession(mainContent, mainHeader) {
+    const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${requestUtils.getQuery().get('sid')}`;
+    fetcher
+        .get(url, constants.TOKEN)
+        .then( session => {
+            const [header, form] = sessionHandlerViews.createUpdateSessionForm(session);
+            form.addEventListener('submit', (e) => handleUpdateSessionSubmit(e));
+            mainContent.replaceChildren(views.div({class: "player-details-container"}, header, form));
+            mainHeader.replaceChildren(
+                menu.get("playerSearch"),
+                menu.get("home"),
+                menu.get("gameSearch"),
+                menu.get("sessionSearch")
+            );
+        });
+}
+
 export default {
     searchSessions,
     getSessions,
     getSessionDetails,
-    createSession
+    createSession,
+    updateSession,
 };

@@ -399,12 +399,12 @@ class SessionHandlerTest {
     fun `bad request updating a session by capacity or date due to invalid sid`() =
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request =
-                Request(
-                    Method.POST,
-                    DUMMY_ROUTE,
+                RoutedRequest(
+                    Request(Method.PUT, "$DUMMY_ROUTE/invalid")
+                        .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
+                        .body("{\"sid\": \"dummy\", \"date\": \"2024-03-16T12:30\", \"capacity\": \"10\"}"),
+                    UriTemplate.from("$DUMMY_ROUTE/{sid}"),
                 )
-                    .body("{\"sid\": \"dummy\", \"date\": \"2024-03-16T12:30\", \"capacity\": \"10\"}")
-                    .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
             val response = handler.updateCapacityOrDate(request)
             assertEquals(Status.BAD_REQUEST, response.status)
         }
@@ -413,12 +413,12 @@ class SessionHandlerTest {
     fun `bad request updating a session by capacity or date due to lack of sid`() =
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request =
-                Request(
-                    Method.POST,
-                    DUMMY_ROUTE,
+                RoutedRequest(
+                    Request(Method.PUT, "$DUMMY_ROUTE/invalid")
+                        .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
+                        .body("{\"date\":\"2024-03-16T12:30\",\"capacity\":\"10\"}"),
+                    UriTemplate.from("$DUMMY_ROUTE/{sid}"),
                 )
-                    .body("{\"date\": \"2024-03-16T12:30\", \"capacity\": \"10\"}")
-                    .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
             val response = handler.updateCapacityOrDate(request)
             assertEquals(Status.BAD_REQUEST, response.status)
         }
@@ -427,12 +427,12 @@ class SessionHandlerTest {
     fun `invalid date but valid sid and capacity returns OK status response`() =
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request =
-                Request(
-                    Method.POST,
-                    DUMMY_ROUTE,
+                RoutedRequest(
+                    Request(Method.PUT, "$DUMMY_ROUTE/1")
+                        .body("{\"date\":\"invalid_date_format\",\"capacity\":\"10\"}")
+                        .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
+                    UriTemplate.from("$DUMMY_ROUTE/{sid}"),
                 )
-                    .body("{\"sid\": \"1\", \"date\": \"invalid_date_format\", \"capacity\": \"10\"}")
-                    .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
             val response = handler.updateCapacityOrDate(request)
             assertEquals(Status.OK, response.status)
         }
@@ -441,12 +441,12 @@ class SessionHandlerTest {
     fun `invalid capacity but valid sid and date returns OK status response`() =
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request =
-                Request(
-                    Method.POST,
-                    DUMMY_ROUTE,
+                RoutedRequest(
+                    Request(Method.PUT, "$DUMMY_ROUTE/1")
+                        .body("\"date\":\"2024-03-16\",\"capacity\":\"invalid_format\"}")
+                        .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
+                    UriTemplate.from("$DUMMY_ROUTE/{sid}"),
                 )
-                    .body("{\"sid\": \"1\", \"date\": \"2024-03-16\", \"capacity\": \"invalid_format\"}")
-                    .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
             val response = handler.updateCapacityOrDate(request)
             assertEquals(Status.OK, response.status)
         }
@@ -455,12 +455,11 @@ class SessionHandlerTest {
     fun `bad request response when trying to update a session by capacity and date due to lack of capacity and date`() =
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request =
-                Request(
-                    Method.POST,
-                    DUMMY_ROUTE,
+                RoutedRequest(
+                    Request(Method.PUT, "$DUMMY_ROUTE/1")
+                        .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
+                    UriTemplate.from("$DUMMY_ROUTE/{sid}"),
                 )
-                    .body("{\"sid\": \"1\"}")
-                    .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
             val response = handler.updateCapacityOrDate(request)
             assertEquals(Status.BAD_REQUEST, response.status)
         }
@@ -469,12 +468,12 @@ class SessionHandlerTest {
     fun `OK response updating a session by capacity and date with valid parameters`() =
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request =
-                Request(
-                    Method.POST,
-                    DUMMY_ROUTE,
+                RoutedRequest(
+                    Request(Method.PUT, "$DUMMY_ROUTE/1")
+                        .body("{\"date\":\"2024-03-16\",\"capacity\":\"10\"}")
+                        .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
+                    UriTemplate.from("$DUMMY_ROUTE/{sid}"),
                 )
-                    .body("{\"sid\": \"1\", \"date\": \"2024-03-16T12:30\", \"capacity\": \"10\"}")
-                    .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
             val response = handler.updateCapacityOrDate(request)
             assertEquals(Status.OK, response.status)
         }
@@ -483,12 +482,12 @@ class SessionHandlerTest {
     fun `OK response updating a session by capacity only`() =
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request =
-                Request(
-                    Method.POST,
-                    DUMMY_ROUTE,
+                RoutedRequest(
+                    Request(Method.PUT, "$DUMMY_ROUTE/1")
+                        .body("{\"capacity\":\"10\"}")
+                        .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
+                    UriTemplate.from("$DUMMY_ROUTE/{sid}"),
                 )
-                    .body("{\"sid\": \"1\", \"capacity\": \"10\"}")
-                    .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
             val response = handler.updateCapacityOrDate(request)
             assertEquals(Status.OK, response.status)
         }

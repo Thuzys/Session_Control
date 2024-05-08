@@ -1,3 +1,5 @@
+import handlerViews from "../views/handlerViews/handlerViews.js";
+
 /**
  * Fetches data from the server
  *
@@ -71,7 +73,7 @@ async function fetchInternal(uri, options = {}, body = undefined, token= undefin
             if (!isResponseOK(response)) {
                 response.text().then(text => {
                     window.history.back()
-                    alert(`Error: ${response.status} ${response.statusText}\n${text}`)
+                    handlerViews.showAlert(`Error: ${response.status} ${response.statusText}\n${text}`)
                 })
             }
             return response.json()
@@ -92,5 +94,5 @@ export const fetcher = {
     get,
     del,
     put,
-    post
+    post,
 }

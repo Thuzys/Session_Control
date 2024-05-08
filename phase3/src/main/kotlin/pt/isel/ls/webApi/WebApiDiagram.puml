@@ -4,7 +4,7 @@
 Interface GameHandlerInterface {
     +createGame()
     +getGameDetails()
-    +getGameByDevAndGender()
+    +getGames()
 }
 
 Interface SessionHandlerInterface {
@@ -25,7 +25,7 @@ Interface PlayerHandlerInterface {
 class GameHandler {
     +createGame()
     +getGameDetails()
-    +getGameByDevAndGender()
+    +getGames()
     - gameManagement: GameServices
 }
 

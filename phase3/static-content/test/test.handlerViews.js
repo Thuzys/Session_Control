@@ -74,4 +74,20 @@ describe('Test handlerViews', function() {
         homeView[1].children[1].type.should.equal("submit");
         homeView[1].children[1].textContent.should.equal("Player Details");
     })
+
+    it('should create custom alert', function () {
+        handlerViews.showAlert("message");
+
+        const alertModal = document.getElementById("alertModal");
+        alertModal.style.display.should.equal("flex");
+        const alertMessage = document.getElementById("alertMessage");
+        alertMessage.textContent.should.equal("message");
+        const alertButtons = document.getElementsByClassName("alert-buttons");
+        alertButtons.length.should.equal(1);
+        const alertButton = document.getElementsByTagName("button");
+        alertButton.length.should.equal(1);
+        alertButton[0].textContent.should.equal("OK");
+        alertButton[0].click();
+        alertModal.style.display.should.equal("none");
+    });
 })

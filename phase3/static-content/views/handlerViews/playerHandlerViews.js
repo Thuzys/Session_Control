@@ -1,4 +1,6 @@
 import constants from "../../constants/constants.js";
+import views from "../viewsCreators.js";
+import handlerViews from "./handlerViews.js";
 
 function createPlayerDetailsView(player, backButton = true) {
     const h2 = views.h2({}, "Player Details");
@@ -24,9 +26,6 @@ function createPlayerDetailsView(player, backButton = true) {
     }
     return div;
 }
-import views from "../viewsCreators.js";
-
-import handlerViews from "./handlerViews.js";
 
 const playerHandlerViews = {
     createPlayerDetailsView

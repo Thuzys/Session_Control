@@ -4,7 +4,7 @@
 Interface GameStorageInterface {
     + create()
     + read()
-    + raedBy()
+    + readBy()
     + update()
     + delete()
 }
@@ -12,7 +12,7 @@ Interface GameStorageInterface {
 Interface PlayerStorageInterface {
     + create()
     + read()
-    + raedBy()
+    + readBy()
     + update()
     + delete()
 }
@@ -20,7 +20,7 @@ Interface PlayerStorageInterface {
 Interface SessionStorageInterface {
     + createSession()
     + readSession()
-    + raedSessions()
+    + readSessions()
     + updateAddPlayer()
     + updateCapacityOrDate()
     + updateRemovePlayer()
@@ -30,7 +30,7 @@ Interface SessionStorageInterface {
 class GameStorage {
     + create()
     + read()
-    + raedBy()
+    + readBy()
     + update()
     + delete()
     - dataSource
@@ -39,7 +39,7 @@ class GameStorage {
 class PlayerStorage {
     + create()
     + read()
-    + raedBy()
+    + readBy()
     + update()
     + delete()
     - dataSource
@@ -48,7 +48,7 @@ class PlayerStorage {
 class SessionStorage {
     + createSession()
     + readSession()
-    + raedSessions()
+    + readSessions()
     + updateAddPlayer()
     + updateCapacityOrDate()
     + updateRemovePlayer()

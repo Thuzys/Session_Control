@@ -7,7 +7,7 @@ menu.set(
 )
 menu.set(
     "gameSearch",
-    views.a({href: "#gameSearch", class: "navigation-bar"}, "Search Game")
+    views.a({href: "#gameSearch", class: "navigation-bar"}, "Games")
 )
 menu.set(
     "sessionSearch",

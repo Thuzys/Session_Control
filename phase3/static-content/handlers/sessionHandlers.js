@@ -113,6 +113,10 @@ function handleGetSessionDetailsResponse(session, mainContent, mainHeader) {
     mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("gameSearch"));
 }
 
+function addPlayerToSession(mainContent, mainHeader) {
+
+}
+
 export default {
     searchSessions,
     getSessions,

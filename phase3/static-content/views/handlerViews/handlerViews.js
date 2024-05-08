@@ -12,7 +12,7 @@ function createSearchPlayerView() {
     const form =
         views.form({action: "#playerDetails", method: "get"},
         views.input({type: "text", id: "pid", maxLength: 10, placeholder: "Player userName"}),
-        views.button({type: "submit"}, "Player Details")
+        views.button({type: "submit", class: "submit-button"}, "Player Details")
     );
     return [h1, form];
 }

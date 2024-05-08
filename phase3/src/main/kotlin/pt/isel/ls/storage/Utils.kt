@@ -232,7 +232,7 @@ private fun getGameId(addGameStmt: PreparedStatement): UInt {
  */
 internal fun buildGameGetterString(dev: String?): String {
     var getGameStr = "SELECT gid, name, developer from GAME"
-    dev?.let { getGameStr += " WHERE developer = ?" }
+    dev?.let { getGameStr += " WHERE compare_name(developer, ?)" }
     return getGameStr
 }
 

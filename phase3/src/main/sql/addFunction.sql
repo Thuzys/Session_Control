@@ -1,4 +1,13 @@
-drop function get_sessions_by(int, varchar, varchar, int, varchar, varchar, int, int);
+drop function if exists get_sessions_by(int, varchar, varchar, int, varchar, varchar, int, int);
+drop function if exists compare_name(varchar, varchar);
+
+create or replace function compare_name(
+    name1 varchar(50), name2 varchar(50)
+) returns boolean as $$
+begin
+    return name1 ILIKE '%' || name2 || '%';
+end
+$$ language plpgsql;
 
 create or replace function get_sessions_by(
     pGid int, currDate varchar(10),
@@ -20,7 +29,7 @@ begin
             select ps.pid from
                 player_session ps natural join player p
             where
-                (Pusername is null or p.username = PuserName) and
+                (Pusername is null or compare_name(p.username,PuserName)) and
                 (Ppid is null or ps.pid = Ppid)
         ) as u
     where

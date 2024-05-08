@@ -1,5 +1,9 @@
 import views from "../views/viewsCreators.js";
 
+/**
+ * Navigation bar links for the application menu
+ * @type {Map<String, any>}
+ */
 export const menu = new Map()
 menu.set(
     "home",

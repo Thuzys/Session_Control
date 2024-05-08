@@ -16,7 +16,7 @@ import {isPlayerInSession, isPlayerOwner} from "./handlerUtils/sessionHandlersUt
  */
 function searchSessions(mainContent, mainHeader) {
     const h1 = handlerViews.createHeader("Search Sessions: ");
-    const formContent = sessionHandlerViews.createSessionFormContentView();
+    const formContent = sessionHandlerViews.createSearchSessionView();
     const form = views.form({}, ...formContent);
     form.addEventListener('submit', (e) => handleSearchSessionsSubmit(e));
 
@@ -126,10 +126,21 @@ function handleGetSessionDetailsResponse(session, mainContent, mainHeader) {
     mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("gameSearch"));
 }
 
+/**
+ * Handle create session response from the server
+ * @param response response from the server
+ */
 function handleCreateSessionResponse(response) {
     response ? handlerUtils.changeHash("#sessions/" + response.id + "?offset=0") : alert("Failed to create session.");
 }
 
+/**
+ * Handle search sessions submit event
+ * @param mainContent main content of the page
+ * @param mainHeader main header of the page
+ * @param gid game id
+ * @param gameName game name to display
+ */
 function createSession(mainContent, mainHeader, gid, gameName) {
     const [h1CreateSession, formCreateSession] = sessionHandlerViews.createCreateSessionView(gameName);
     formCreateSession.addEventListener('submit', (e) => handleCreateSessionSubmit(e, gid));
@@ -137,6 +148,10 @@ function createSession(mainContent, mainHeader, gid, gameName) {
     mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("gameSearch"), menu.get("sessionSearch"));
 }
 
+/**
+ * Handle update session submit event
+ * @param e event that triggered submit
+ */
 function handleUpdateSessionSubmit(e) {
     e.preventDefault();
     const sid = requestUtils.getQuery().get('sid');
@@ -152,6 +167,11 @@ function handleUpdateSessionSubmit(e) {
         .then(_ => handlerUtils.changeHash("#sessions/" + sid + "?offset=0"))
 }
 
+/**
+ * Update session capacity or date
+ * @param mainContent main content of the page
+ * @param mainHeader main header of the page
+ */
 function updateSession(mainContent, mainHeader) {
     const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${requestUtils.getQuery().get('sid')}`;
     fetcher

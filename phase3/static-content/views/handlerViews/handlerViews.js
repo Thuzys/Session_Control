@@ -3,10 +3,19 @@ import handlerUtils from "../../handlers/handlerUtils/handlerUtils.js";
 import constants from "../../constants/constants.js";
 import {fetcher} from "../../utils/fetchUtils.js";
 
+/**
+ * Create h1 view with text
+ * @param text
+ * @returns {*}
+ */
 function createHeader(text) {
     return views.h1({}, text);
 }
 
+/**
+ * Create search player view
+ * @returns {*[]} search player view
+ */
 function createSearchPlayerView() {
     const h1 = views.h1({}, "Search Player:");
     const form =
@@ -17,6 +26,13 @@ function createSearchPlayerView() {
     return [h1, form];
 }
 
+/**
+ * Create labeled input
+ * @param labelText label text content
+ * @param inputType input type (text, password, etc.)
+ * @param inputId input id attribute value
+ * @returns {*[]} labeled input view
+ */
 function createLabeledInput(labelText, inputType, inputId) {
     return [
         views.label({qualifiedName: "for", value: inputId}, labelText),
@@ -25,6 +41,15 @@ function createLabeledInput(labelText, inputType, inputId) {
     ];
 }
 
+/**
+ * Create href view with text
+ * @param hrefBase base of the href
+ * @param id id of the href
+ * @param textBase text of the href
+ * @param offset offset parameter of the href (optional)
+ * @param limit limit parameter of the href (optional)
+ * @returns {*[]} href view
+ */
 function hrefConstructor(hrefBase, id, textBase, offset = undefined, limit = undefined) {
     if (offset !== undefined) {
         return [
@@ -39,6 +64,12 @@ function hrefConstructor(hrefBase, id, textBase, offset = undefined, limit = und
     }
 }
 
+/**
+ * Create href button view with text content and query
+ * @param textContent text content of the button
+ * @param query query change on click
+ * @returns {*} href button view
+ */
 function hrefButtonView(textContent, query) {
     const backButton = views.button({type: "button", class: "general-button"}, textContent);
     backButton.addEventListener('click', () => {
@@ -47,42 +78,49 @@ function hrefButtonView(textContent, query) {
     return backButton;
 }
 
-function createBackButtonView(hasHistory = undefined) {
+/**
+ * Create back button view
+ * @returns {*} back button view
+ */
+function createBackButtonView() {
     const backButton = views.button({type: "button", class: "general-button"}, "Back");
     backButton.addEventListener('click', () => {
-        if (hasHistory) {
-            handlerUtils.changeHash(hasHistory)
-        } else {
             window.history.back();
-        }
     });
     return backButton;
 }
 
-function createDeleteSessionButtonView(session) {
-    const deleteSessionButton = views.button({type: "submit", class: "general-button"}, "Delete Session");
-    deleteSessionButton.addEventListener('click', (e) => {
+/**
+ * Create delete or leave session button view
+ * @param session session to delete or leave
+ * @param isLeaveButton if true create leave button, else create delete button
+ * @returns {*} delete session button view
+ */
+function createDeleteOrLeaveSessionButtonView(session, isLeaveButton = false) {
+    const buttonText = isLeaveButton ? "Leave Session" : "Delete Session";
+    const button = views.button({type: "submit", class: "general-button"}, buttonText);
+    button.addEventListener('click', (e) => {
         e.preventDefault();
-        fetcher.del(constants.API_BASE_URL + constants.SESSION_ID_ROUTE + session.sid, constants.TOKEN )
+        let url = constants.API_BASE_URL + constants.SESSION_ID_ROUTE + session.sid;
+        if (isLeaveButton) {
+            url += "/" + constants.TEMPORARY_USER_ID;
+        }
+        fetcher.del(url, constants.TOKEN)
             .then(() => {
                 handlerUtils.changeHash("#sessions?pid=" + constants.TEMPORARY_USER_ID + "&offset=0");
             })
     });
-    return deleteSessionButton;
+    return button;
 }
 
-function createLeaveSessionButtonView(session) {
-    const leaveSessionButton = views.button({type: "submit", class: "general-button"}, "Leave Session");
-    leaveSessionButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        fetcher.del(constants.API_BASE_URL + constants.SESSION_ID_ROUTE + session.sid + "/" + constants.TEMPORARY_USER_ID, constants.TOKEN)
-            .then(() => {
-                handlerUtils.changeHash("#sessions?pid=" + constants.TEMPORARY_USER_ID + "&offset=0");
-            })
-    });
-    return leaveSessionButton;
-}
-
+/**
+ * Create pagination view
+ * @param query query
+ * @param hash hash to change
+ * @param hasNext if there is next page
+ * @param elementsPerPage elements per page
+ * @returns {*} pagination view
+ */
 function createPagination(query, hash, hasNext, elementsPerPage = constants.ELEMENTS_PER_PAGE) {
     const container = views.div({class: "pagination-container"});
 
@@ -114,6 +152,11 @@ function createPagination(query, hash, hasNext, elementsPerPage = constants.ELEM
     return container;
 }
 
+/**
+ * Create update session button view
+ * @param session session to update
+ * @returns {*} update session button view
+ */
 function createUpdateSessionButtonView(session) {
     const updateSessionButton = views.button({type: "submit", class: "general-button"}, "Update Session");
     updateSessionButton.addEventListener('click', (e) => {
@@ -132,8 +175,7 @@ const handlerViews = {
     createBackButtonView,
     createPagination,
     createSearchPlayerView,
-    createDeleteSessionButtonView,
-    createLeaveSessionButtonView,
+    createDeleteOrLeaveSessionButtonView,
     createUpdateSessionButtonView
 }
 

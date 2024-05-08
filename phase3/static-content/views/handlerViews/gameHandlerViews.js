@@ -8,7 +8,7 @@ import sessionHandlers from "../../handlers/sessionHandlers.js";
 /**
  * Create search games view
  *
- * @returns {any[]}
+ * @returns {any[]} search games view
  */
 function createSearchGamesView() {
     const genresValues = Object.values(genres)
@@ -74,9 +74,9 @@ function createSearchGamesView() {
 /**
  * Toggle search button
  *
- * @param searchGamesButton
- * @param inputDev
- * @param selectedGenresView
+ * @param searchGamesButton search games button
+ * @param inputDev input developer
+ * @param selectedGenresView selected genres view
  */
 function toggleSearchButton(searchGamesButton, inputDev, selectedGenresView) {
     searchGamesButton.disabled = inputDev.value.trim() === "" && selectedGenresView.children.length === 0;
@@ -85,9 +85,9 @@ function toggleSearchButton(searchGamesButton, inputDev, selectedGenresView) {
 /**
  * Update game search button
  *
- * @param searchGamesButton
- * @param inputDev
- * @param selectedGenresView
+ * @param searchGamesButton search games button
+ * @param inputDev input developer
+ * @param selectedGenresView selected genres view
  */
 function updateGameSearchButton(searchGamesButton, inputDev, selectedGenresView) {
     const update = () => toggleSearchButton(searchGamesButton, inputDev, selectedGenresView)
@@ -99,9 +99,9 @@ function updateGameSearchButton(searchGamesButton, inputDev, selectedGenresView)
 /**
  * Create genres listener
  *
- * @param selectedGenresView
- * @param inputGenres
- * @param genresValues
+ * @param selectedGenresView selected genres view
+ * @param inputGenres input genres
+ * @param genresValues genres values
  */
 function createGenresListener(selectedGenresView, inputGenres, genresValues) {
     const selectedGenre = document.getElementById("InputGenres").value.trim()
@@ -126,9 +126,9 @@ function createGenresListener(selectedGenresView, inputGenres, genresValues) {
 /**
  * Check if ul has item
  *
- * @param item
- * @param children
- * @returns {boolean}
+ * @param item item to check
+ * @param children ul children
+ * @returns {boolean} true if ul has item, false otherwise
  */
 function ulHasItem(item, children) {
     return Array.from(children).some(child => {
@@ -140,8 +140,8 @@ function ulHasItem(item, children) {
 /**
  * Create get game view
  *
- * @param games
- * @returns {any[]}
+ * @param games games to display
+ * @returns {any[]} game view
  */
 function createGetGameView(games) {
     const header = handlerViews.createHeader("Games: ")
@@ -170,8 +170,8 @@ function createGetGameView(games) {
 /**
  * Create game details view
  *
- * @param game
- * @returns {any[]}
+ * @param game game to display
+ * @returns {any[]} game details view
  */
 function createGameDetailsView(game) {
     const header = handlerViews.createHeader("Game Details: ")

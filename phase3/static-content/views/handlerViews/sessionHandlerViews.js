@@ -3,6 +3,10 @@ import requestUtils from "../../utils/requestUtils.js";
 import handlerViews from "./handlerViews.js";
 import constants from "../../constants/constants.js";
 
+/**
+ * Create state inputs view for session search
+ * @returns {*[]} state inputs view
+ */
 function createStateInputs() {
     return [
         views.label({qualifiedName: "for", value: "textbox"}, "Enter State: "),
@@ -15,7 +19,11 @@ function createStateInputs() {
     ];
 }
 
-function createSessionFormContentView() {
+/**
+ * Create search sessions view
+ * @returns {*[]} session form content view
+ */
+function createSearchSessionView() {
     const gidLabelInput = handlerViews.createLabeledInput("Enter Game name: ", "text", "gameName");
     const pidLabelInput = handlerViews.createLabeledInput("Enter Player username: ", "text", "userName");
     const dateLabelInput = handlerViews.createLabeledInput("Enter Date: ", "date", "date");
@@ -33,8 +41,8 @@ function createSessionFormContentView() {
 
 function createSessionDetailsViews(session, playerList, isOwner, isInSession) {
     const backButton = handlerViews.createBackButtonView();
-    const deleteSessionButton = handlerViews.createDeleteSessionButtonView(session);
-    const leaveSessionButton = handlerViews.createLeaveSessionButtonView(session);
+    const deleteSessionButton = handlerViews.createDeleteOrLeaveSessionButtonView(session);
+    const leaveSessionButton = handlerViews.createDeleteOrLeaveSessionButtonView(session, true);
     const updateButton = handlerViews.createUpdateSessionButtonView(session);
     const div = views.div(
         {},
@@ -139,7 +147,7 @@ function createUpdateSessionForm(session) {
 }
 
 const sessionHandlerViews = {
-    createSessionFormContentView,
+    createSearchSessionView,
     createSessionDetailsViews,
     createGetSessionsView,
     createPlayerListView,

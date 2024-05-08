@@ -7,10 +7,10 @@ import { fetcher } from "../utils/fetchUtils.js";
 import views from "../views/viewsCreators.js";
 
 /**
- * Search games by developer and/or genre(s)
+ * Search games by parameters: developer, genres and name
  *
- * @param mainContent
- * @param mainHeader
+ * @param mainContent main content of the page
+ * @param mainHeader main header of the page
  */
 function searchGames(mainContent, mainHeader) {
     const container = views.div({class: "player-details-container"});
@@ -29,8 +29,8 @@ function searchGames(mainContent, mainHeader) {
 /**
  * Handle search games submit
  *
- * @param e
- * @param selectedGenres
+ * @param e event that triggered submit
+ * @param selectedGenres selected genres
  */
 function handleSearchGamesSubmit(e, selectedGenres) {
     e.preventDefault()
@@ -51,8 +51,8 @@ function handleSearchGamesSubmit(e, selectedGenres) {
 /**
  * Get games
  *
- * @param mainContent
- * @param mainHeader
+ * @param mainContent main content of the page
+ * @param mainHeader main header of the page
  */
 function getGames(mainContent, mainHeader) {
     const query = handlerUtils.makeQueryString(requestUtils.getQuery())
@@ -73,8 +73,8 @@ function getGames(mainContent, mainHeader) {
 /**
  * Handle get games response
  *
- * @param games
- * @param mainContent
+ * @param games list of games in the response
+ * @param mainContent main content of the page
  */
 function handleGetGamesResponse(games, mainContent) {
     const container = views.div({class: "player-details-container"});
@@ -90,8 +90,8 @@ function handleGetGamesResponse(games, mainContent) {
 /**
  * Get game details
  *
- * @param mainContent
- * @param mainHeader
+ * @param mainContent main content of the page
+ * @param mainHeader main header of the page
  */
 function getGameDetails(mainContent, mainHeader){
     const gameId = requestUtils.getParams()
@@ -109,8 +109,8 @@ function getGameDetails(mainContent, mainHeader){
 /**
  * Handle game details response
  *
- * @param game
- * @param mainContent
+ * @param game game in the response
+ * @param mainContent main content of the page
  */
 function handleGetGameDetailsResponse(game, mainContent) {
     const container = views.div({class: "player-details-container"});

@@ -1,9 +1,9 @@
 /**
  * Fetches data from the server
  *
- * @param uri
- * @param token
- * @returns {Promise<*>}
+ * @param uri the uri to fetch data from
+ * @param token the token to use
+ * @returns {Promise<*>} the data fetched
  */
 async function get(uri, token = undefined) {
     return fetchInternal(uri, {}, undefined, token)
@@ -12,8 +12,8 @@ async function get(uri, token = undefined) {
 /**
  * Deletes data from the server
  *
- * @param uri
- * @param token
+ * @param uri the uri to delete data from
+ * @param token the token to use
  * @returns {Promise<*>}
  */
 async function del(uri, token = undefined) {
@@ -23,9 +23,9 @@ async function del(uri, token = undefined) {
 /**
  * Updates data on the server
  *
- * @param uri
- * @param token
- * @param body
+ * @param uri the uri to update data on
+ * @param token the token to use
+ * @param body the data to update
  * @returns {Promise<*>}
  */
 async function put(uri, token = undefined, body = undefined) {
@@ -35,9 +35,9 @@ async function put(uri, token = undefined, body = undefined) {
 /**
  * Posts data to the server
  *
- * @param uri
- * @param body
- * @param token
+ * @param uri the uri to post data to
+ * @param body the data to post
+ * @param token the token to use
  * @returns {Promise<*>}
  */
 async function post(uri, body, token = undefined) {
@@ -47,11 +47,11 @@ async function post(uri, body, token = undefined) {
 /**
  * Internal fetch function
  *
- * @param uri
- * @param options
- * @param body
- * @param token
- * @returns {Promise<any>}
+ * @param uri the uri to fetch data from
+ * @param options the options to use
+ * @param body the data to fetch
+ * @param token the token to use
+ * @returns {Promise<any>} the data fetched
  */
 async function fetchInternal(uri, options = {}, body = undefined, token= undefined) {
     if(body || token){
@@ -84,8 +84,8 @@ async function fetchInternal(uri, options = {}, body = undefined, token= undefin
 /**
  * Checks if the response is OK
  *
- * @param response
- * @returns {boolean}
+ * @param response the response to check
+ * @returns {boolean} true if the response is OK
  */
 function isResponseOK(response) {
     return response.status >= 200 && response.status < 399

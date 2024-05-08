@@ -26,8 +26,8 @@ function getPlayerDetailsByPid(mainContent, mainHeader) {
 /**
  * Get player details
  *
- * @param mainContent
- * @param mainHeader
+ * @param mainContent main content of the page
+ * @param mainHeader main header of the page
  */
 function getPlayerDetails(mainContent, mainHeader) {
     const route = constants.PLAYER_ID_ROUTE.substring(0, constants.PLAYER_ID_ROUTE.length - 1);
@@ -86,7 +86,7 @@ function getHome(mainContent, mainHeader) {
 /**
  * Handle player details home submit.
  *
- * @param e
+ * @param e event that triggered submit
  */
 function handlePlayerSearchSubmit(e) {
     e.preventDefault();

@@ -1,5 +1,10 @@
 import views from '../viewsCreators.js';
 
+/**
+ * Create card view with contact data
+ * @param cardData contact data
+ * @returns {*}
+ */
 function createCard(cardData) {
     const divCard = views.div({class: 'card'});
 
@@ -35,7 +40,11 @@ function createCard(cardData) {
     return divCard;
 }
 
-
+/**
+ * Create view with contacts
+ * @param contacts contacts data
+ * @returns {*}
+ */
 function createGetContactsView(contacts) {
     const div = views.div({class: 'contacts-container'})
     contacts.forEach(contact => {

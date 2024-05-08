@@ -2,6 +2,9 @@ import views from "../views/viewsCreators.js";
 import contactHandlerViews from "../views/handlerViews/contactHandlerViews.js";
 import menu from "../navigation/menuLinks.js";
 
+/**
+ * Container of the contact data
+ */
 const cardData = [
     {
         name: 'Arthur Oliveira',
@@ -40,8 +43,8 @@ const cardData = [
 
 /**
  * Get contacts
- * @param mainContent
- * @param mainHeader
+ * @param mainContent main content of the page
+ * @param mainHeader main header of the page
  */
 function getContacts(mainContent, mainHeader) {
     const container = views.div({class: "contacts-container"});

@@ -1,4 +1,13 @@
 import constants from "../../constants/constants.js";
+import handlerViews from "./handlerViews.js";
+import views from "../viewsCreators.js";
+
+/**
+ * Create player details view
+ * @param player player data
+ * @param backButton if true, create back button
+ * @returns {*} player details view
+ */
 function createPlayerDetailsView(player, backButton = true) {
     const headerText = backButton ? "Player Details:" : "Your Information:";
     const container = views.div({class: "player-details-container"});
@@ -27,9 +36,6 @@ function createPlayerDetailsView(player, backButton = true) {
     return container;
 }
 
-import views from "../viewsCreators.js";
-
-import handlerViews from "./handlerViews.js";
 
 const playerHandlerViews = {
     createPlayerDetailsView

@@ -17,7 +17,7 @@ function createStateInputs() {
 
 function createSessionFormContentView() {
     const gidLabelInput = handlerViews.createLabeledInput("Enter Game name: ", "text", "gameName");
-    const pidLabelInput = handlerViews.createLabeledInput("Enter Player userName: ", "text", "userName");
+    const pidLabelInput = handlerViews.createLabeledInput("Enter Player username: ", "text", "userName");
     const dateLabelInput = handlerViews.createLabeledInput("Enter Date: ", "date", "date");
     const stateLabelInputs = createStateInputs();
 
@@ -116,7 +116,7 @@ function createCreateSessionView(gameName) {
         labelCapacity,
         labelDate,
         views.p(),
-        views.button({type: "submit", class: "submit-button"}, "Create")
+        views.button({type: "submit", class: "general-button"}, "Create")
     );
 
     return [header, formContent];
@@ -132,7 +132,7 @@ function createUpdateSessionForm(session) {
         labelCapacity,
         labelDate,
         views.p(),
-        views.button({type: "submit", class: "submit-button"}, "Update")
+        views.button({type: "submit", class: "general-button"}, "Update")
     );
 
     return [header, formContent];

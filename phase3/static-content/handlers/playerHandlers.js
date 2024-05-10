@@ -43,7 +43,7 @@ function getPlayerDetails(mainContent, mainHeader) {
 
 function searchPlayer(mainContent, mainHeader) {
     const container = views.div({class: "player-details-container"});
-    const [h1, form] = handlerViews.createSearchPlayerView();
+    const [h1, form] = playerHandlerViews.createSearchPlayerView();
     form.onsubmit = (e) => handlePlayerSearchSubmit(e);
     container.replaceChildren(h1, form);
     mainContent.replaceChildren(container);
@@ -73,6 +73,12 @@ function handleGetPlayerDetailsResponse(player, mainContent, mainHeader, isSearc
     }
 }
 
+/**
+ * Get home page
+ *
+ * @param mainContent
+ * @param mainHeader
+ */
 function getHome(mainContent, mainHeader) {
     const url = `${constants.API_BASE_URL}${constants.PLAYER_ID_ROUTE}1`;
     fetcher

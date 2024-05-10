@@ -13,20 +13,6 @@ function createHeader(text) {
 }
 
 /**
- * Create search player view
- * @returns {*[]} search player view
- */
-function createSearchPlayerView() {
-    const h1 = views.h1({}, "Search Player:");
-    const form =
-        views.form({action: "#playerDetails", method: "get"},
-        views.input({type: "text", id: "pid", maxLength: 10, placeholder: "Player userName"}),
-        views.button({type: "submit", class: "submit-button"}, "Player Details")
-    );
-    return [h1, form];
-}
-
-/**
  * Create labeled input
  * @param labelText label text content
  * @param inputType input type (text, password, etc.)
@@ -152,21 +138,6 @@ function createPagination(query, hash, hasNext, elementsPerPage = constants.ELEM
     return container;
 }
 
-/**
- * Create update session button view
- * @param session session to update
- * @returns {*} update session button view
- */
-function createUpdateSessionButtonView(session) {
-    const updateSessionButton = views.button({type: "submit", class: "general-button"}, "Update Session");
-    updateSessionButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        handlerUtils.changeHash("#updateSession?sid=" + session.sid)
-    });
-    return updateSessionButton;
-}
-
-
 const handlerViews = {
     hrefButtonView,
     createHeader,
@@ -174,9 +145,7 @@ const handlerViews = {
     hrefConstructor,
     createBackButtonView,
     createPagination,
-    createSearchPlayerView,
     createDeleteOrLeaveSessionButtonView,
-    createUpdateSessionButtonView
 }
 
 export default handlerViews;

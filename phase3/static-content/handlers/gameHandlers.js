@@ -49,7 +49,7 @@ function handleSearchGamesSubmit(e, selectedGenres) {
 }
 
 /**
- * Get games
+ * Get games by query
  *
  * @param mainContent main content of the page
  * @param mainHeader main header of the page

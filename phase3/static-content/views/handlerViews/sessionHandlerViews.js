@@ -130,7 +130,7 @@ function createCreateSessionView(gameName) {
     return [header, formContent];
 }
 
-function createUpdateSessionForm(session) {
+function createUpdateSessionView(session) {
     const header = handlerViews.createHeader("Update Session: ");
     const labelCapacity = views.input({type: "number", id: "capacity", placeholder: "Enter Capacity", value: session.capacity})
     const labelDate = views.input({type: "date", id: "dateChange", placeholder: "Enter Date", value: session.date});
@@ -152,7 +152,7 @@ const sessionHandlerViews = {
     createGetSessionsView,
     createPlayerListView,
     createCreateSessionView,
-    createUpdateSessionForm,
+    createUpdateSessionView,
 }
 
 export default sessionHandlerViews;

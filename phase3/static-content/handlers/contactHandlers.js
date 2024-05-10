@@ -42,7 +42,7 @@ const cardData = [
     ];
 
 /**
- * Get contacts
+ * Handles the get contacts operation
  * @param mainContent main content of the page
  * @param mainHeader main header of the page
  */

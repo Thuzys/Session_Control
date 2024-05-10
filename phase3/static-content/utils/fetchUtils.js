@@ -45,7 +45,7 @@ async function post(uri, body, token = undefined) {
 }
 
 /**
- * Internal fetch function
+ * Internal fetch function to fetch data from the server
  *
  * @param uri the uri to fetch data from
  * @param options the options to use

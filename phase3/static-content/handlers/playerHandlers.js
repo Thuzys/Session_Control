@@ -74,7 +74,7 @@ function handleGetPlayerDetailsResponse(player, mainContent, mainHeader, isSearc
 }
 
 function getHome(mainContent, mainHeader) {
-    const url = `${constants.API_BASE_URL}${constants.PLAYER_ID_ROUTE}1`;
+    const url = `${constants.API_BASE_URL}${constants.PLAYER_ID_ROUTE}${constants.TEMPORARY_USER_ID}`;
     fetcher
         .get(url, constants.TOKEN)
         .then(

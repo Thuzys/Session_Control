@@ -19,6 +19,8 @@ function loadHandler(){
     router.addRouteHandler("players/:pid", playerHandlers.getPlayerDetailsByPid)
     router.addRouteHandler("sessionSearch", sessionHandlers.searchSessions)
     router.addRouteHandler("updateSession", sessionHandlers.updateSession)
+    router.addRouteHandler("joinSession", sessionHandlers.addPlayerToSession)
+    router.addRouteHandler("removePlayer", sessionHandlers.removePlayerFromSession)
     router.addRouteHandler("sessions", sessionHandlers.getSessions)
     router.addRouteHandler("sessions/:sid", sessionHandlers.getSessionDetails)
     router.addRouteHandler("contacts", contactHandlers.getContacts)

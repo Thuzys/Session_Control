@@ -2,6 +2,7 @@ import views from "../viewsCreators.js";
 import requestUtils from "../../utils/requestUtils.js";
 import handlerViews from "./handlerViews.js";
 import constants from "../../constants/constants.js";
+import handlerUtils from "../../handlers/handlerUtils/handlerUtils.js";
 
 /**
  * Create session form content view
@@ -92,6 +93,8 @@ function createSessionDetailsViews(session, playerList, isOwner, isInSession) {
     const deleteSessionButton = handlerViews.createDeleteSessionButtonView(session);
     const leaveSessionButton = handlerViews.createLeaveSessionButtonView(session);
     const updateButton = handlerViews.createUpdateSessionButtonView(session);
+    const joinSessionButton = createJoinSessionButtonView(session);
+
     const div = views.div(
         {},
         views.h3({}, "Session: " + session.gameInfo.name + " - " + session.owner.userName),
@@ -116,9 +119,22 @@ function createSessionDetailsViews(session, playerList, isOwner, isInSession) {
         div.appendChild(updateButton);
     } else if (isInSession){
         div.appendChild(leaveSessionButton);
+    } else {
+        div.appendChild(joinSessionButton);
     }
 
     return div;
+}
+
+function createJoinSessionButtonView() {
+    const joinSessionButton = views.button(
+        {type: "submit", class: "general-button"},
+        "Join Session"
+    );
+    joinSessionButton.addEventListener('click', () => {
+        handlerUtils.changeHash("#joinSession");
+    });
+    return joinSessionButton;
 }
 
 /**

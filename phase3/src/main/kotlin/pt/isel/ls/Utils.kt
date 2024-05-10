@@ -29,7 +29,7 @@ internal fun routingHttpHandler(envName: String): RoutingHttpHandler {
 
     val playerServices = PlayerManagement(playerStorage)
     val gameServices = GameManagement(gameStorage)
-    val sessionServices = SessionManagement(sessionStorage, playerStorage)
+    val sessionServices = SessionManagement(sessionStorage)
 
     val playerHandler = PlayerHandler(playerServices)
     val gameHandler = GameHandler(gameServices, playerServices)

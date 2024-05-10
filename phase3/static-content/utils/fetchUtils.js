@@ -15,21 +15,23 @@ async function get(uri, token = undefined) {
  * Deletes data from the server
  *
  * @param uri
+ * @param token
  * @returns {Promise<*>}
  */
-async function del(uri) {
-    return fetchInternal(uri, {method: "DELETE"})
+async function del(uri, token = undefined) {
+    return fetchInternal(uri, {method: "DELETE"}, undefined, token)
 }
 
 /**
  * Updates data on the server
  *
  * @param uri
+ * @param token
  * @param body
  * @returns {Promise<*>}
  */
-async function put(uri, body) {
-    return fetchInternal(uri, {method: "PUT"}, body)
+async function put(uri, token = undefined, body = undefined) {
+    return fetchInternal(uri, {method: "PUT"}, body, token)
 }
 
 /**
@@ -75,8 +77,9 @@ async function fetchInternal(uri, options = {}, body = undefined, token= undefin
                     window.history.back()
                     handlerViews.showAlert(`Error: ${response.status} ${response.statusText}\n${text}`)
                 })
+            } else {
+                return response.json()
             }
-            return response.json()
         })
 }
 

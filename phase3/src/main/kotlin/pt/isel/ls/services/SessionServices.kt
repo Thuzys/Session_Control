@@ -1,9 +1,12 @@
 package pt.isel.ls.services
 
-import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalDate
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.errors.ServicesError
+import pt.isel.ls.domain.info.GameInfoParam
+import pt.isel.ls.domain.info.PlayerInfoParam
+import pt.isel.ls.domain.info.SessionInfo
 
 /**
  * Represents the services related to the session in the application.
@@ -31,43 +34,54 @@ interface SessionServices {
      * Returns the details of a session.
      *
      * @param sid the identifier of each session.
+     * @param limit the maximum number of players to be retrieved.
+     * @param offset the offset to be applied to the collection of players.
      * @return a [Session] containing all the information wanted or null if nothing is found.
      * @throws ServicesError containing the message of the error.
      */
-    fun getSessionDetails(sid: UInt): Session
+    fun getSessionDetails(
+        sid: UInt,
+        limit: UInt? = null,
+        offset: UInt? = null,
+    ): Session
 
     /**
      * Creates a new session and stores it.
      *
-     * @param gid The identifier of the game for which the session is being created.
+     * @param gameInfo The identifier of the game for which the session is being created.
      * @param date The date and time of the session.
      * @param capacity The capacity of the session.
+     * @param owner The player that created the session.
      * @return The unique identifier of the new session.
      * @throws ServicesError containing the message of the error.
      */
     fun createSession(
-        gid: UInt,
-        date: LocalDateTime,
+        gameInfo: GameInfoParam,
+        date: LocalDate,
         capacity: UInt,
+        owner: PlayerInfoParam,
     ): UInt
 
     /**
      * Retrieves sessions based on the specified parameters.
      *
-     * @param gid The identifier of the game for which sessions are being retrieved.
-     * @param date The date and time of the sessions to retrieve (optional).
-     * @param state The state of the sessions to retrieve (optional).
-     * @param playerId The identifier of the player to filter sessions by (optional).
+     * @param gameInfo The identifier of the game for which sessions are to be retrieved.
+     * @param date The date of the sessions to be retrieved.
+     * @param state The state of the sessions to be retrieved.
+     * @param playerInfo The identifier of the player to filter sessions by.
+     * @param offset The offset to be applied to the collection.
+     * @param limit The maximum number of sessions to be retrieved.
+     *
      * @return A collection of sessions that match the specified parameters.
      */
     fun getSessions(
-        gid: UInt? = null,
-        date: LocalDateTime? = null,
+        gameInfo: GameInfoParam? = null,
+        date: LocalDate? = null,
         state: SessionState? = null,
-        playerId: UInt? = null,
+        playerInfo: PlayerInfoParam? = null,
         offset: UInt? = DEFAULT_OFFSET,
         limit: UInt? = DEFAULT_LIMIT,
-    ): Collection<Session>
+    ): Collection<SessionInfo>
 
     /**
      * Updates the capacity or date of a session.
@@ -85,7 +99,7 @@ interface SessionServices {
     fun updateCapacityOrDate(
         sid: UInt,
         capacity: UInt? = null,
-        date: LocalDateTime? = null,
+        date: LocalDate? = null,
     )
 
     /**

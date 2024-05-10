@@ -1,10 +1,12 @@
 package pt.isel.ls.storage
 
-import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalDate
 import org.postgresql.ds.PGSimpleDataSource
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
-import java.sql.PreparedStatement
+import pt.isel.ls.domain.info.GameInfoParam
+import pt.isel.ls.domain.info.PlayerInfoParam
+import pt.isel.ls.domain.info.SessionInfo
 import java.sql.SQLException
 import java.sql.Statement
 
@@ -19,11 +21,14 @@ class SessionStorage(envName: String) : SessionStorageInterface {
     override fun createSession(newItem: Session): UInt =
         dataSource.connection.use { connection ->
             connection.executeCommand {
-                val insertSessionCMD = "INSERT INTO SESSION (capacity, gid, date) VALUES (?,?,?);"
+                requireNotNull(newItem.owner.pid) { "Owner must have a pid" }
+                val insertSessionCMD = "INSERT INTO SESSION (capacity, gid, date, owner) VALUES (?,?,?,?);"
                 val stmt1 = connection.prepareStatement(insertSessionCMD, Statement.RETURN_GENERATED_KEYS)
-                stmt1.setInt(1, newItem.capacity.toInt())
-                stmt1.setInt(2, newItem.gid.toInt())
-                stmt1.setString(3, newItem.date.toString())
+                var idx = 1
+                stmt1.setInt(idx++, newItem.capacity.toInt())
+                stmt1.setInt(idx++, newItem.gameInfo.gid.toInt())
+                stmt1.setDate(idx++, java.sql.Date.valueOf(newItem.date.toString()))
+                stmt1.setInt(idx, newItem.owner.pid.toInt())
                 stmt1.executeUpdate()
                 val key = stmt1.generatedKeys
                 require(key.next()) { "No key returned" }
@@ -31,7 +36,7 @@ class SessionStorage(envName: String) : SessionStorageInterface {
                 val insertAssociation = "INSERT INTO PLAYER_SESSION (pid, sid) VALUES (?,?);"
                 val stmt2 = connection.prepareStatement(insertAssociation)
                 newItem.players.forEach { player ->
-                    player.pid?.let { it1 -> stmt2.setInt(1, it1.toInt()) }
+                    player.pid.let { it1 -> stmt2.setInt(1, it1.toInt()) }
                     stmt2.setInt(2, sid)
                     stmt2.executeUpdate()
                 }
@@ -39,96 +44,66 @@ class SessionStorage(envName: String) : SessionStorageInterface {
             }
         }
 
-    override fun readSession(sid: UInt): Session? =
+    override fun readSession(
+        sid: UInt,
+        limit: UInt,
+        offset: UInt,
+    ): Session? =
         dataSource.connection.use { connection ->
             connection.executeCommand {
                 sid.toInt().let { sid ->
-                    val selectSessionCMD = "SELECT sid, capacity, gid, date FROM SESSION WHERE sid = ?;"
+                    val selectSessionCMD =
+                        """
+                        SELECT s.capacity, s.sid, s.date, s.owner, g.name, g.gid 
+                        FROM session s
+                            JOIN game g ON s.gid = g.gid
+                        WHERE s.sid = ?;
+                        """.trimIndent()
                     val stmt1 = connection.prepareStatement(selectSessionCMD)
                     stmt1.setInt(1, sid)
-                    val collection = connection.makeSession(stmt1)
-                    collection.firstOrNull()
+                    connection.makeSession(stmt1, limit, offset)
                 }
             }
         }
 
     override fun readSessions(
-        gid: UInt?,
-        date: LocalDateTime?,
+        gameInfo: GameInfoParam?,
+        date: LocalDate?,
         state: SessionState?,
-        playerId: UInt?,
+        playerInfo: PlayerInfoParam?,
         offset: UInt,
         limit: UInt,
-    ): Collection<Session>? =
+    ): Collection<SessionInfo>? =
         dataSource.connection.use { connection ->
             connection.executeCommand {
                 val selectSessionCMD =
-                    "SELECT s.sid, s.capacity, s.gid, s.date\n" +
-                        "FROM session s\n" +
-                        "    LEFT JOIN player_session ps ON ps.sid = s.sid\n" +
-                        "WHERE (s.gid = ? or ? = 0)\n" +
-                        "   AND (s.date = ? or ? = 'null')\n" +
-                        "   AND (ps.pid = ? or ? = 0)\n" +
-                        "GROUP BY s.sid, s.capacity, s.gid, s.date\n" +
-                        "HAVING (? = 'null') OR\n" +
-                        "       (? = 'OPEN' AND s.capacity > count(ps.pid)) OR\n" +
-                        "       (? = 'CLOSE' AND s.capacity = count(ps.pid))\n" +
-                        "OFFSET ? LIMIT ?;"
+                    """
+                    SELECT * FROM get_sessions_by(
+                    ?, ?, ?, ?, 
+                    ?, ?, ?, ?
+                    );
+                    """.trimIndent()
                 val stmt2 = connection.prepareStatement(selectSessionCMD)
                 var idx = 1
-                repeat(2) {
-                    stmt2.setInt(idx++, gid?.toInt() ?: 0)
-                }
-                repeat(2) {
-                    stmt2.setString(idx++, date.toString())
-                }
-                repeat(2) {
-                    stmt2.setInt(idx++, playerId?.toInt() ?: 0)
-                }
-                repeat(3) {
-                    stmt2.setString(idx++, state.toString())
-                }
-                stmt2.setInt(idx++, offset.toInt())
-                stmt2.setInt(idx, limit.toInt())
-                val collection = connection.makeSession(stmt2)
+                val (gid, gameName) = gameInfo ?: Pair(null, null)
+                val (pid, userName) = playerInfo ?: Pair(null, null)
+                gid?.let { stmt2.setInt(idx++, it.toInt()) } ?: stmt2.setNull(idx++, java.sql.Types.INTEGER)
+                date?.let { stmt2.setString(idx++, it.toString()) } ?: stmt2.setNull(idx++, java.sql.Types.VARCHAR)
+                state?.let { stmt2.setString(idx++, it.toString()) } ?: stmt2.setNull(idx++, java.sql.Types.VARCHAR)
+                pid?.let { stmt2.setInt(idx++, it.toInt()) } ?: stmt2.setNull(idx++, java.sql.Types.INTEGER)
+                userName?.let { stmt2.setString(idx++, it) } ?: stmt2.setNull(idx++, java.sql.Types.VARCHAR)
+                gameName?.let { stmt2.setString(idx++, it) } ?: stmt2.setNull(idx++, java.sql.Types.VARCHAR)
+                limit.let { stmt2.setInt(idx++, it.toInt()) }
+                offset.let { stmt2.setInt(idx, it.toInt()) }
+                val collection = makeSessionInfo(stmt2)
                 collection.ifEmpty { null }
             }
         }
 
-//    override fun updateAddPlayer(
-//        sid: UInt,
-//        newItem: Collection<Player>,
-//    ) = dataSource.connection.use { connection ->
-//        connection.executeCommand {
-//            val insertPlayerCMD =
-//                "INSERT INTO PLAYER_SESSION (pid, sid) " +
-//                    "SELECT ?, ?" +
-//                    "WHERE NOT EXISTS (" +
-//                    "SELECT 1 FROM PLAYER_SESSION WHERE pid = ? AND sid = ?);"
-//            val stmt1 = connection.prepareStatement(insertPlayerCMD)
-//            newItem.forEach { player ->
-//                player.pid?.let { it1 -> stmt1.setInt(1, it1.toInt()) }
-//                stmt1.setInt(2, sid.toInt())
-//                player.pid?.let { stmt1.setInt(3, it.toInt()) }
-//                stmt1.setInt(4, sid.toInt())
-//                stmt1.executeUpdate()
-//            }
-//        }
-//    }
-
-    private fun makePlayerList(stmt2: PreparedStatement): MutableList<Int> {
-        val response = stmt2.executeQuery()
-        val players = emptyList<Int>().toMutableList()
-        while (response.next()) {
-            players.add(response.getInt(1))
-        }
-        return players
-    }
-
     override fun updateCapacityOrDate(
         sid: UInt,
         capacity: UInt?,
-        date: LocalDateTime?,
+        date: LocalDate?,
     ) {
         dataSource.connection.use { connection ->
             connection.executeCommand {
@@ -136,12 +111,16 @@ class SessionStorage(envName: String) : SessionStorageInterface {
                     "UPDATE SESSION\n" +
                         "SET\n" +
                         "    capacity = CASE WHEN ? IS NOT NULL THEN ? ELSE capacity END,\n" +
-                        "    date = CASE WHEN ? IS NOT NULL THEN ? ELSE date END\n" +
+                        "    date = CASE WHEN ? IS NOT NULL THEN to_date(?, 'YYYY-MM-DD'::varchar) ELSE date END\n" +
                         "WHERE sid = ?;"
                 val stmt1 = connection.prepareStatement(updateCMD)
                 var idx = 1
-                repeat(2) { stmt1.setInt(idx++, capacity?.toInt() ?: 0) }
-                repeat(2) { stmt1.setString(idx++, date.toString()) }
+                repeat(2) {
+                    capacity?.let { stmt1.setInt(idx++, it.toInt()) } ?: stmt1.setNull(idx++, java.sql.Types.INTEGER)
+                }
+                repeat(2) {
+                    date?.let { stmt1.setString(idx++, it.toString()) } ?: stmt1.setNull(idx++, java.sql.Types.VARCHAR)
+                }
                 stmt1.setInt(idx, sid.toInt())
                 stmt1.executeUpdate()
             }
@@ -185,21 +164,6 @@ class SessionStorage(envName: String) : SessionStorageInterface {
             }
         }
     }
-
-//    override fun getPlayerSessions(pid: UInt): Collection<Int> =
-//        dataSource.connection.use { connection ->
-//            connection.executeCommand {
-//                val selectSessionCMD = "SELECT sid FROM PLAYER_SESSION WHERE pid = ?;"
-//                val stmt1 = connection.prepareStatement(selectSessionCMD)
-//                stmt1.setInt(1, pid.toInt())
-//                val response= stmt1.executeQuery()
-//                val collection = emptyList<Int>().toMutableList()
-//                while (response.next()) {
-//                    collection.add(response.getInt(1))
-//                }
-//                collection
-//            }
-//        }
 
     override fun updateRemovePlayer(
         sid: UInt,

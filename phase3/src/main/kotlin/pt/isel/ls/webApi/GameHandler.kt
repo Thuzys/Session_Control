@@ -20,7 +20,7 @@ class GameHandler(
             request,
             playerServices,
         )?.let { return unauthorizedResponse(it) }
-        println(request.bodyString())
+
         val body = readBody(request)
         val name = body["name"]
         val dev = body["dev"]
@@ -29,7 +29,7 @@ class GameHandler(
         return if (name == null || dev == null || genres == null) {
             makeResponse(
                 Status.BAD_REQUEST,
-                createJsonMessage("Invalid arguments: name:$name, dev:$dev, genres:$genres."),
+                createJsonRspMessage("Invalid arguments: name:$name, dev:$dev, genres:$genres."),
             )
         } else {
             tryResponse(
@@ -37,7 +37,13 @@ class GameHandler(
                 "Invalid arguments: name:$name, dev:$dev, genres:$genres.",
             ) {
                 val gid = gameManagement.createGame(name, dev, genres)
-                makeResponse(Status.CREATED, createJsonMessage("Game created with id $gid."))
+                makeResponse(
+                    Status.CREATED,
+                    createJsonRspMessage(
+                        message = "Game created with id $gid.",
+                        id = gid,
+                    ),
+                )
             }
         }
     }
@@ -51,7 +57,7 @@ class GameHandler(
         val gid = request.toGidOrNull()
 
         return if (gid == null) {
-            makeResponse(Status.BAD_REQUEST, createJsonMessage("Bad Request."))
+            makeResponse(Status.BAD_REQUEST, createJsonRspMessage("Invalid arguments: gid must be provided."))
         } else {
             tryResponse(Status.NOT_FOUND, "Game not found.") {
                 val game = gameManagement.getGameDetails(gid)
@@ -75,7 +81,7 @@ class GameHandler(
         return if (dev == null && genres == null && name == null) {
             makeResponse(
                 Status.BAD_REQUEST,
-                createJsonMessage(
+                createJsonRspMessage(
                     "Invalid arguments: either dev, genres or name must be provided.",
                 ),
             )

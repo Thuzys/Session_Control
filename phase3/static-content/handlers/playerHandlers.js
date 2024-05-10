@@ -5,14 +5,15 @@ import playerHandlerViews from "../views/handlerViews/playerHandlerViews.js";
 import {fetcher} from "../utils/fetchUtils.js";
 import handlerViews from "../views/handlerViews/handlerViews.js";
 import handlerUtils from "./handlerUtils/handlerUtils.js";
+import views from "../views/viewsCreators.js";
 
 /**
- * Get player details
+ * Get player details by player id
  *
  * @param mainContent main content of the page
  * @param mainHeader main header of the page
  */
-function getPlayerDetails(mainContent, mainHeader) {
+function getPlayerDetailsByPid(mainContent, mainHeader) {
     const url = `${constants.API_BASE_URL}${constants.PLAYER_ID_ROUTE}${requestUtils.getParams()}`;
     fetcher
         .get(url, constants.TOKEN)
@@ -22,10 +23,30 @@ function getPlayerDetails(mainContent, mainHeader) {
         );
 }
 
+/**
+ * Get player details
+ *
+ * @param mainContent
+ * @param mainHeader
+ */
+function getPlayerDetails(mainContent, mainHeader) {
+    const route = constants.PLAYER_ID_ROUTE.substring(0, constants.PLAYER_ID_ROUTE.length - 1);
+    const url =
+        `${constants.API_BASE_URL}${route}?${handlerUtils.makeQueryString(requestUtils.getQuery())}`;
+    fetcher
+        .get(url, constants.TOKEN)
+        .then(
+            response =>
+                handleGetPlayerDetailsResponse(response, mainContent, mainHeader, true)
+        );
+}
+
 function searchPlayer(mainContent, mainHeader) {
-    const [h1, form] = handlerViews.createHomeView();
-    form.onsubmit = (e) => handleHomeSubmit(e);
-    mainContent.replaceChildren(h1, form);
+    const container = views.div({class: "player-details-container"});
+    const [h1, form] = playerHandlerViews.createSearchPlayerView();
+    form.onsubmit = (e) => handlePlayerSearchSubmit(e);
+    container.replaceChildren(h1, form);
+    mainContent.replaceChildren(container);
     mainHeader.replaceChildren(menu.get("sessionSearch"), menu.get("home"),  menu.get("gameSearch"));
 }
 
@@ -43,7 +64,12 @@ function handleGetPlayerDetailsResponse(player, mainContent, mainHeader, isSearc
     if (isSearch) {
         mainHeader.replaceChildren(menu.get("sessionSearch"), menu.get("home"), menu.get("gameSearch"));
     } else {
-        mainHeader.replaceChildren(menu.get("sessionSearch"), menu.get("gameSearch"), menu.get("playerSearch"));
+        const createSessionHref = handlerViews.hrefButtonView("Choose a game to create a session", `#gameSearch`);
+        playerDetailsView.appendChild(createSessionHref);
+        mainHeader.replaceChildren(
+            menu.get("sessionSearch"), menu.get("gameSearch"),
+            menu.get("playerSearch"), menu.get("contacts")
+        );
     }
 }
 
@@ -62,19 +88,20 @@ function getHome(mainContent, mainHeader) {
  *
  * @param e
  */
-function handleHomeSubmit(e) {
+function handlePlayerSearchSubmit(e) {
     e.preventDefault();
     const pid = document.getElementById("pid");
     if (pid.value === "") {
         alert("Please enter a player id");
         return;
     }
-    handlerUtils.changeHash(`#players/${pid.value}`);
+    handlerUtils.changeHash(`#players?userName=${pid.value}`);
 }
 
 
 export default {
     getPlayerDetails,
     searchPlayer,
-    getHome
+    getHome,
+    getPlayerDetailsByPid
 }

@@ -4,6 +4,7 @@ import requestUtils from "../../utils/requestUtils.js";
 import constants from "../../constants/constants.js";
 import genres from "../../handlers/handlerUtils/gameGenres.js";
 import handlerUtils from "../../handlers/handlerUtils/handlerUtils.js";
+import sessionHandlers from "../../handlers/sessionHandlers.js";
 
 const genresValues = Object.values(genres)
 
@@ -14,11 +15,13 @@ const genresValues = Object.values(genres)
  */
 function createCreateGameView() {
     const header = handlerViews.createHeader("Create Game: ")
-    const inputName = createInputNameView()
-    const inputDev = createInputDevView()
+
+    const inputName = handlerViews.createLabeledInput("InputName", "Insert Game Name")
+    const inputDev = handlerViews.createLabeledInput("InputDev", "Insert Developer Name")
     const submitButton = views.button({
         type: "submit",
         disabled: true,
+        class: "general-button"
     }, "Create")
 
     const toggleCreateGameButton = () => {
@@ -28,8 +31,11 @@ function createCreateGameView() {
         )
     }
 
-    inputName.addEventListener("input", toggleCreateGameButton)
-    inputDev.addEventListener("input", toggleCreateGameButton)
+    handlerViews.addToggleEventListeners(
+        toggleCreateGameButton,
+        inputName,
+        inputDev
+    )
 
     const [
         addGenresButton,
@@ -55,6 +61,7 @@ function createCreateGameView() {
     return [header, form]
 }
 
+
 /**
  * Create search games view
  *
@@ -62,18 +69,20 @@ function createCreateGameView() {
  */
 function createSearchGamesView() {
     const header = handlerViews.createHeader("Search Games: ")
-    const inputName = createInputNameView()
-    const inputDev = createInputDevView()
+    const inputName = handlerViews.createLabeledInput("InputName", "Insert Game Name")
+    const inputDev = handlerViews.createLabeledInput("InputDev", "Insert Developer Name")
     const searchGamesButton =
         views.button({
             id: "SearchGamesButton",
             type: "submit",
             disabled: true,
+            class: "general-button"
         }, "Search")
     const createGameButton =
         views.button({
             id: "CreateGameButton",
             type: "button",
+            class: "general-button",
         }, "Create Game")
 
     createGameButton.onclick = () => {
@@ -87,8 +96,11 @@ function createSearchGamesView() {
         )
     }
 
-    inputName.addEventListener("input", toggleSearchGamesButton)
-    inputDev.addEventListener("input", toggleSearchGamesButton)
+    handlerViews.addToggleEventListeners(
+        toggleSearchGamesButton,
+        inputName,
+        inputDev
+    )
 
     const [
         addGenresButton,
@@ -116,32 +128,6 @@ function createSearchGamesView() {
 }
 
 /**
- * Create input name view
- *
- * @returns {*}
- */
-function createInputNameView() {
-    return views.input({
-        id: "InputName",
-        type: "text",
-        placeholder: "Insert Game Name"
-    })
-}
-
-/**
- * Create input dev view
- *
- * @returns {*}
- */
-function createInputDevView() {
-    return views.input({
-        id: "InputDev",
-        type: "text",
-        placeholder: "Insert Developer Name"
-    })
-}
-
-/**
  * Create genres view
  *
  * @returns {*[]}
@@ -150,6 +136,7 @@ function createGenresView(toggleButton) {
     const addGenresButton = views.button({
         id: "AddGenresButton",
         type: "button",
+        class: "submit-button",
     }, "Add")
 
     const genresList = views.datalist({
@@ -186,11 +173,12 @@ function createGenresView(toggleButton) {
  */
 function createGenresListener(selectedGenresView, inputGenres, genresValues, toggleButton) {
     const selectedGenre = document.getElementById("InputGenres").value.trim()
-    if (selectedGenre && !ulHasItem(selectedGenre, selectedGenresView.children) && genresValues.includes(selectedGenre)) {
+    if (selectedGenre && !handlerViews.ulHasItem(selectedGenre, selectedGenresView.children) && genresValues.includes(selectedGenre)) {
         inputGenres.value = ""
 
         const removeButton = views.button({
             type: "button",
+            class: "remove-button"
         }, "X")
 
         removeButton.onclick = () => {
@@ -204,20 +192,6 @@ function createGenresListener(selectedGenresView, inputGenres, genresValues, tog
 
         toggleButton()
     }
-}
-
-/**
- * Check if ul has item
- *
- * @param item
- * @param children
- * @returns {boolean}
- */
-function ulHasItem(item, children) {
-    return Array.from(children).some(child => {
-        if(!child.childNodes || child.childNodes.length === 0) return false
-        return Array.from(child.childNodes).some(node => node.nodeType === Node.TEXT_NODE && node.data === item)
-    })
 }
 
 /**
@@ -258,13 +232,26 @@ function createGetGameView(games) {
  */
 function createGameDetailsView(game) {
     const header = handlerViews.createHeader("Game Details: ")
+
+    const createSessionButton = views.button({type: "button", class: "general-button"}, "Create Session");
+    createSessionButton.addEventListener('click', () => {
+        sessionHandlers.createSession(
+            document.getElementById("mainContent"),
+            document.getElementById("mainHeader"),
+            game.gid,
+            game.name
+        );
+    });
+
     const div = views.div(
         {},
         views.h2({}, `${game.name}`),
         views.p({}, `Developer: ${game.dev}`),
         views.p({}, `Genres: ${game.genres.join(",")}`),
         handlerViews.createBackButtonView(),
-        handlerViews.sessionsButtonView("Sessions", `sessions?gid=${game.gid}&offset=0`)
+        handlerViews.hrefButtonView("Sessions",
+            `${constants.SESSION_ROUTE}?gid=${game.gid}&offset=0`),
+        createSessionButton,
     )
     return [header, div]
 }

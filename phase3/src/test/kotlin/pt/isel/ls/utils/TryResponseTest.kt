@@ -3,7 +3,7 @@ package pt.isel.ls.utils
 import org.http4k.core.Response
 import org.http4k.core.Status
 import pt.isel.ls.domain.errors.ServicesError
-import pt.isel.ls.webApi.createJsonMessage
+import pt.isel.ls.webApi.createJsonRspMessage
 import pt.isel.ls.webApi.tryResponse
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -43,7 +43,7 @@ class TryResponseTest {
                 throw ServicesError("an exception occurred.")
             }
         val expected =
-            createJsonMessage("Hello World.", "an exception occurred.")
+            createJsonRspMessage("Hello World.", "an exception occurred.")
         assertEquals(expected, response.bodyString())
     }
 
@@ -53,6 +53,6 @@ class TryResponseTest {
             tryResponse(Status.INTERNAL_SERVER_ERROR, "Hello World") {
                 throw ServicesError(null)
             }
-        assertEquals("Hello World.", response.bodyString())
+        assertEquals("{\"msg\":\"Hello World.\"}", response.bodyString())
     }
 }

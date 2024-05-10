@@ -19,4 +19,9 @@ menu.set(
     views.a({href: "#playerSearch", class: "navigation-bar"}, "Search Player")
 )
 
+menu.set(
+    "contacts",
+    views.a({href: "#contacts", class: "navigation-bar"}, "Contacts")
+)
+
 export default menu

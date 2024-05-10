@@ -1,14 +1,16 @@
 package pt.isel.ls.domain
 
-import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
+import pt.isel.ls.domain.info.GameInfo
+import pt.isel.ls.domain.info.PlayerInfo
 
 /**
  * Represents a game session with specified capacity, game identifier, date, and UUID.
  *
  * @param sid The universally unique identifier (UUID) of the session.
  * @param capacity The maximum number of players allowed in the session.
- * @param gid The identifier of the game associated with the session.
+ * @param gameInfo The game being played in the session.
  * @param date The date and time of the session.
  * @param players Collection of players currently in the session.
  * @throws IllegalArgumentException If the capacity is zero.
@@ -17,22 +19,12 @@ import kotlinx.serialization.Serializable
 data class Session(
     val sid: UInt? = null,
     val capacity: UInt,
-    val gid: UInt,
-    val date: LocalDateTime,
-    val players: Collection<Player> = listOf(),
+    val gameInfo: GameInfo,
+    val date: LocalDate,
+    val owner: PlayerInfo,
+    val players: Collection<PlayerInfo> = listOf(),
 ) {
     init {
         require(capacity > 0u) { "Capacity must be greater than 0" }
     }
-}
-
-/**
- * Adds a player to the session.
- *
- * @param player The player to add.
- * @throws IllegalStateException if the session is already at maximum capacity.
- */
-fun Session.addPlayer(player: Player): Session {
-    check(players.size + 1 != capacity.toInt()) { "Session is already at maximum capacity" }
-    return this.copy(players = players + player)
 }

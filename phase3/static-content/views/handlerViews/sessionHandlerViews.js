@@ -7,7 +7,7 @@ import constants from "../../constants/constants.js";
  * Create state inputs view for session search
  * @returns {*[]} state inputs view
  */
-function createStateInputs() {
+function createStateInputsView() {
     return [
         views.label({qualifiedName: "for", value: "textbox"}, "Enter State: "),
         views.radioButton({name: "state", value: "open"}),
@@ -27,7 +27,7 @@ function createSearchSessionView() {
     const gidLabelInput = handlerViews.createLabeledInput("Enter Game name: ", "text", "gameName");
     const pidLabelInput = handlerViews.createLabeledInput("Enter Player username: ", "text", "userName");
     const dateLabelInput = handlerViews.createLabeledInput("Enter Date: ", "date", "date");
-    const stateLabelInputs = createStateInputs();
+    const stateLabelInputs = createStateInputsView();
 
     return [
         ...gidLabelInput,
@@ -39,11 +39,19 @@ function createSearchSessionView() {
     ];
 }
 
+/**
+ * Create session details view
+ * @param session session data
+ * @param playerList player list view
+ * @param isOwner if true, create delete session button
+ * @param isInSession if true, create leave session button
+ * @returns {HTMLDivElement}
+ */
 function createSessionDetailsViews(session, playerList, isOwner, isInSession) {
     const backButton = handlerViews.createBackButtonView();
     const deleteSessionButton = handlerViews.createDeleteOrLeaveSessionButtonView(session);
     const leaveSessionButton = handlerViews.createDeleteOrLeaveSessionButtonView(session, true);
-    const updateButton = handlerViews.createUpdateSessionButtonView(session);
+    const updateButton = handlerViews.hrefButtonView("Update", "#updateSession?sid=" + session.sid);
     const div = views.div(
         {},
         views.h3({}, "Session: " + session.gameInfo.name + " - " + session.owner.userName),
@@ -73,6 +81,11 @@ function createSessionDetailsViews(session, playerList, isOwner, isInSession) {
     return div;
 }
 
+/**
+ * Create get sessions view
+ * @param sessions sessions data
+ * @returns {(HTMLDivElement|*)[]} sessions view
+ */
 function createGetSessionsView(sessions) {
     const query = requestUtils.getQuery();
     const div = views.div({},
@@ -90,6 +103,11 @@ function createGetSessionsView(sessions) {
     return [div, nextPrev];
 }
 
+/**
+ * Create player list view
+ * @param session session data
+ * @returns {HTMLDivElement}
+ */
 function createPlayerListView(session) {
     const div = views.div();
     const playerList = views.ul();
@@ -114,6 +132,11 @@ function createPlayerListView(session) {
     return div;
 }
 
+/**
+ * Create the create session view
+ * @param gameName game name
+ * @returns {(HTMLHeadingElement|HTMLFormElement)[]}
+ */
 function createCreateSessionView(gameName) {
     const header = handlerViews.createHeader("Create Session: ");
     const labelCapacity = views.input({type: "number", id: "capacity", placeholder: "Enter Capacity"})
@@ -130,6 +153,11 @@ function createCreateSessionView(gameName) {
     return [header, formContent];
 }
 
+/**
+ * Create the update session view
+ * @param session session data
+ * @returns {(HTMLHeadingElement|HTMLFormElement)[]}
+ */
 function createUpdateSessionView(session) {
     const header = handlerViews.createHeader("Update Session: ");
     const labelCapacity = views.input({type: "number", id: "capacity", placeholder: "Enter Capacity", value: session.capacity})

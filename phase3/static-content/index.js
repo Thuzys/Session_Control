@@ -8,6 +8,9 @@ import contactHandlers from "./handlers/contactHandlers.js";
 window.addEventListener('load', loadHandler)
 window.addEventListener('hashchange', hashChangeHandler)
 
+/**
+ * Load handler routes
+  */
 function loadHandler(){
     router.addRouteHandler("players/home", playerHandlers.getHome)
     router.addRouteHandler("playerSearch", playerHandlers.searchPlayer)
@@ -26,6 +29,9 @@ function loadHandler(){
     hashChangeHandler()
 }
 
+/**
+ * Handle hash change event
+ */
 function hashChangeHandler(){
     const mainContent = document.getElementById("mainContent")
     const mainHeader = document.getElementById("mainHeader")

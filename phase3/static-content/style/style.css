@@ -80,6 +80,12 @@ input {
     cursor: pointer;
 }
 
+.submit-button:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+}
+
 
 .remove-button {
     background-color: red;

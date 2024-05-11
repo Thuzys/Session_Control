@@ -127,8 +127,8 @@ function handleGetSessionDetailsResponse(session, mainContent, mainHeader) {
 }
 
 function addPlayerToSession(mainContent, mainHeader) {
-    const sessionId = requestUtils.getParams();
-    const url = `${constants.API_BASE_URL}${constants.SESSION_PLAYER_ROUTE}${sessionId}/${constants.TEMPORARY_USER_ID}`;
+    const sessionId = requestUtils.getQuery().get('sid');
+    const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${sessionId}/${constants.TEMPORARY_USER_ID}`;
     fetcher.put(url, constants.TOKEN)
         .then(response =>
             handleAddPlayerToSessionResponse(response, sessionId)
@@ -141,7 +141,17 @@ function handleAddPlayerToSessionResponse(response, sessionId) {
 }
 
 function removePlayerFromSession(mainContent, mainHeader) {
+    const sessionId = requestUtils.getQuery().get('sid');
+    const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${sessionId}/${constants.TEMPORARY_USER_ID}`;
+    fetcher.del(url, constants.TOKEN)
+        .then(response =>
+            handleRemovePlayerFromSessionResponse(response, sessionId)
+        )
+}
 
+function handleRemovePlayerFromSessionResponse(response, sessionId) {
+    handlerViews.showAlert(response.msg)
+    handlerUtils.changeHash("#sessions/" + sessionId + "?offset=0");
 }
 
 function handleCreateSessionResponse(response) {

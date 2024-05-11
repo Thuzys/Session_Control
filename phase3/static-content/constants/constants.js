@@ -8,7 +8,6 @@ const PLAYER_ROUTE = "players"
 const PLAYER_ID_ROUTE = PLAYER_ROUTE + "/"
 const SESSION_ROUTE = "sessions"
 const SESSION_ID_ROUTE = SESSION_ROUTE + "/"
-const SESSION_PLAYER_ROUTE = SESSION_ID_ROUTE + "/"
 const GAME_ROUTE = "games"
 const GAME_ID_ROUTE = GAME_ROUTE + "/"
 const TEMPORARY_USER_ID = 2
@@ -21,7 +20,6 @@ const constants = {
     PLAYER_ID_ROUTE,
     SESSION_ROUTE,
     SESSION_ID_ROUTE,
-    SESSION_PLAYER_ROUTE,
     GAME_ROUTE,
     GAME_ID_ROUTE,
     ELEMENTS_PER_PAGE,

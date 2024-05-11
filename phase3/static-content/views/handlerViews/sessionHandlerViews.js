@@ -126,13 +126,13 @@ function createSessionDetailsViews(session, playerList, isOwner, isInSession) {
     return div;
 }
 
-function createJoinSessionButtonView() {
+function createJoinSessionButtonView(session) {
     const joinSessionButton = views.button(
         {type: "submit", class: "general-button"},
         "Join Session"
     );
     joinSessionButton.addEventListener('click', () => {
-        handlerUtils.changeHash("#joinSession");
+        handlerUtils.changeHash("#joinSession?sid=" + session.sid);
     });
     return joinSessionButton;
 }

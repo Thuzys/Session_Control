@@ -119,11 +119,7 @@ function createDeleteSessionButtonView(session) {
 function createLeaveSessionButtonView(session) {
     const leaveSessionButton = views.button({type: "submit", class: "general-button"}, "Leave Session");
     leaveSessionButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        fetcher.del(constants.API_BASE_URL + constants.SESSION_ID_ROUTE + session.sid + "/" + constants.TEMPORARY_USER_ID, constants.TOKEN)
-            .then(() => {
-                handlerUtils.changeHash("#sessions?pid=" + constants.TEMPORARY_USER_ID + "&offset=0");
-            })
+        handlerUtils.changeHash("#removePlayer?sid=" + session.sid)
     });
     return leaveSessionButton;
 }

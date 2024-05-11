@@ -55,7 +55,8 @@ function createSessionDetailsViews(session, playerList, isOwner, isInSession) {
         {},
         handlerViews.createHeader(session.owner.userName + "´s Session"),
         views.hr({class:"w3-opacity)"}),
-        views.ul(
+        views.div({class: "w3-margin-bottom"},
+        views.ul({class: "w3-ul w3-border w3-center w3-hover-shadow"},
             views.li(views.h3({class: "w3-wide blue-letters"}, "Game")),
             views.li(
                 ...handlerViews.hrefConstructor(
@@ -63,20 +64,16 @@ function createSessionDetailsViews(session, playerList, isOwner, isInSession) {
                     session.gameInfo.gid, `${session.gameInfo.name}`
                 )
             ),
-            views.li(views.p()),
             views.li(views.h3({class: "w3-wide blue-letters"}, "Date")),
             views.li(session.date),
-            views.li(views.p()),
             views.li(views.h3({class: "w3-wide blue-letters"}, "Owner")),
             views.li(session.owner.userName),
-            views.li(views.p()),
             views.li(views.h3({class: "w3-wide blue-letters"}, "Capacity")),
             views.li(session.capacity.toString()),
-            views.li(views.p()),
             views.li(views.h3({class: "w3-wide blue-letters"}, "Players")),
             playerList
         ),
-        views.p()
+        )
     );
 
     if (isOwner) {
@@ -101,7 +98,7 @@ function createGetSessionsView(sessions) {
         handlerViews.createHeader("Sessions Found: "),
         views.hr({class:"w3-opacity"})
     );
-    const sessionsElems = views.ul(true);
+    const sessionsElems = views.ul({class: "centered-list w3-ul w3-border w3-center w3-hover-shadow"});
     sessions
         .slice(0, constants.ELEMENTS_PER_PAGE)
         .forEach(session => {
@@ -126,7 +123,7 @@ function createGetSessionsView(sessions) {
  */
 function createPlayerListView(session) {
     const div = views.div({class: "pagination-players-min-height"})
-    const playerList = views.ul();
+    const playerList = views.ul({class:"pagination-players-min-height"});
     if (session.players) {
         session.players
             .slice(0, constants.ELEMENTS_PER_PAGE_PLAYERS)

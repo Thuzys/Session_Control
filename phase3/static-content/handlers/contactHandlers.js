@@ -8,7 +8,7 @@ const cardData = [
     {
         name: 'Arthur Oliveira',
         title: 'CEO & Founder',
-        university: 'ISEL university',
+        university: 'ISEL University',
         image: '/resources/Thuzys.jpg',
         email: 'A50543@alunos.isel.pt',
         socials: [
@@ -19,7 +19,7 @@ const cardData = [
     {
         name: 'Guilherme Belo',
         title: 'CEO & Founder',
-        university: 'ISEL university',
+        university: 'ISEL University',
         image: '/resources/Guilherme.jpg',
         email: 'A50978@alunos.isel.pt',
         socials: [
@@ -30,7 +30,7 @@ const cardData = [
     {
         name: 'Brian Melhorado',
         title: 'CEO & Founder',
-        university: 'ISEL university',
+        university: 'ISEL University',
         image: '/resources/Brian.jpg',
         email: 'brgm37@gmail.com',
         socials: [

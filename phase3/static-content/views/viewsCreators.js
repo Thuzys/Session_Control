@@ -41,11 +41,12 @@ function option(attributes = {}) {
 
 /**
  * Create ul element with the given items.
+ * @param attributes
  * @param items
  * @returns {HTMLUListElement}
  */
-function ul(...items) {
-    return createElement("ul", {id: "ul", class:"pagination-players-min-height centered-list"}, ...items.map(li))
+function ul(attributes = {},...items) {
+    return createElement("ul", addAttribute(attributes, "id", "ul" ), ...items.map(li))
 }
 
 /**
@@ -54,7 +55,7 @@ function ul(...items) {
  * @returns {HTMLLIElement}
  */
 function li(content) {
-    return createElement("li", {}, content);
+    return createElement("li", {id: "il"}, content);
 }
 
 /**
@@ -224,6 +225,17 @@ function hr(attributes = {}) {
     return createElement("hr", attributes);
 }
 
+/**
+ * Add an attribute to the given attributes object.
+ * @param attributes
+ * @param key
+ * @param value
+ * @returns {*}
+ */
+function addAttribute(attributes, key, value) {
+    return {...attributes, [key]: value};
+}
+
 const views = {
     datalist,
     option,
@@ -245,7 +257,7 @@ const views = {
     i,
     nav,
     h4,
-    hr
+    hr,
 }
 
 export default views

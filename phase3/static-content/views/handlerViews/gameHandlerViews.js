@@ -45,7 +45,7 @@ function createSearchGamesView() {
         list: "GenresList"
     })
 
-    const selectedGenresView = views.ul()
+    const selectedGenresView = views.ul({class: "w3-ul w3-border w3-center w3-hover-shadow"})
 
     const searchGamesButton = views.button({
         id: "SearchGamesButton",
@@ -114,18 +114,12 @@ function createGenresListener(selectedGenresView, inputGenres, genresValues) {
     if (selectedGenre && !ulHasItem(selectedGenre, selectedGenresView.children) && genresValues.includes(selectedGenre)) {
         inputGenres.value = ""
 
-        const removeButton = views.button({
-            type: "button",
-            class: "remove-button"
-        }, "X")
+        const p = views.p({class: "progress-bar-text"}, selectedGenre)
 
-        removeButton.onclick = () => {
-            selectedGenresView.removeChild(genreView)
+        p.onclick = () => {
+            selectedGenresView.removeChild(p)
         }
-
-        const genreView = views.div({}, selectedGenre)
-        genreView.appendChild(removeButton)
-        selectedGenresView.appendChild(genreView)
+        selectedGenresView.appendChild(p)
     }
 }
 
@@ -152,7 +146,7 @@ function ulHasItem(item, children) {
 function createGetGameView(games) {
     const header = handlerViews.createHeader("Games: ")
     const hr = views.hr({class:"w3-opacity"})
-    const gameList = views.ul()
+    const gameList = views.ul({class: "w3-ul w3-border w3-center w3-hover-shadow"})
     games.forEach(game => {
             gameList.appendChild(
                 views.li(
@@ -196,7 +190,7 @@ function createGameDetailsView(game) {
     const div = views.div(
         {},
         views.h2({class: "w3-wide blue-letters centered"}, game.name),
-        views.ul(
+        views.ul({class: "w3-ul w3-border w3-center w3-hover-shadow"},
             views.li(views.h4({class: "w3-wide blue-letters"}, "Developer")),
             views.li(game.dev),
             views.li(views.h4({class: "w3-wide blue-letters"}, "Genres")),

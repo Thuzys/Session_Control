@@ -15,10 +15,9 @@ function createPlayerDetailsView(player, backButton = true) {
 
     const header = handlerViews.createHeader(headerText);
 
-    const detailsList = views.ul({class: "player-details-list"},
+    const detailsList = views.ul({class: "w3-ul w3-border w3-center w3-hover-shadow"},
         views.li(views.h3({class: "w3-wide blue-letters"}, "Username")),
         views.li(player.userName),
-        views.li(views.p()),
         views.li(views.h3({class: "w3-wide blue-letters"}, "Email")),
         views.li(player.email),
     );
@@ -30,7 +29,7 @@ function createPlayerDetailsView(player, backButton = true) {
         `${constants.SESSION_ROUTE}?pid=${player.pid}&offset=0`
     );
 
-    container.replaceChildren(header, hr, nameHeader, detailsList, sessionsButton, views.p());
+    container.replaceChildren(header, hr, nameHeader, detailsList, views.p(), sessionsButton, views.p());
 
     if (backButton) {
         const backButtonView = handlerViews.createBackButtonView();

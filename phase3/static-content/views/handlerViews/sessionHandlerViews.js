@@ -6,7 +6,6 @@ import sessionHandlers from "../../handlers/sessionHandlers.js";
 
 /**
  * Create session form content view
- *
  * @returns {*[]}
  */
 function createSessionFormContentView() {
@@ -70,7 +69,6 @@ function createSessionFormContentView() {
 
 /**
  * Checks if search can be performed
- *
  * @param gidInputValue
  * @param pidInputValue
  * @param dateInputValue
@@ -83,7 +81,6 @@ function canSearchSessions(gidInputValue, pidInputValue, dateInputValue, stateIn
 
 /**
  * Create session details views
- *
  * @param session
  * @param playerList
  * @param isOwner
@@ -134,6 +131,11 @@ function createSessionDetailsViews(session, playerList, isOwner, isInSession) {
 }
 
 
+/**
+ * Create join session button view
+ * @param session
+ * @returns {HTMLButtonElement}
+ */
 function createJoinSessionButtonView(session) {
 
     const joinSessionButton = views.button(
@@ -233,7 +235,6 @@ function createCreateSessionView(gameName) {
 
 /**
  * Function to check if session can be updated
- *
  * @param labelCapacity
  * @param labelDate
  * @param session

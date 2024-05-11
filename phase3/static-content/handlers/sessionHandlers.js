@@ -115,6 +115,10 @@ function handleGetSessionDetailsResponse(session, mainContent) {
     mainContent.replaceChildren(views.div({class: "player-details-container"}, sessionDetailsView));
 }
 
+/**
+ * Add player to session
+ * @param sid
+ */
 function addPlayerToSession(sid) {
     const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${sid}/${constants.TEMPORARY_USER_ID}`;
     fetcher.put(url, constants.TOKEN)
@@ -123,6 +127,10 @@ function addPlayerToSession(sid) {
         )
 }
 
+/**
+ * Remove player from session
+ * @param sid
+ */
 function removePlayerFromSession(sid) {
     const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${sid}/${constants.TEMPORARY_USER_ID}`;
     fetcher.del(url, constants.TOKEN)
@@ -131,6 +139,10 @@ function removePlayerFromSession(sid) {
         )
 }
 
+/**
+ * Delete session by session id
+ * @param sid
+ */
 function deleteSession(sid) {
     const url = constants.API_BASE_URL + constants.SESSION_ID_ROUTE + sid;
     fetcher.del(url, constants.TOKEN)
@@ -141,6 +153,10 @@ function deleteSession(sid) {
         .catch(() => window.alert("Session could not be deleted"))
 }
 
+/**
+ * Handle create session response
+ * @param response
+ */
 function handleCreateSessionResponse(response) {
     handlerUtils.changeHash("#sessions/" + response.id + "?offset=0");
 }

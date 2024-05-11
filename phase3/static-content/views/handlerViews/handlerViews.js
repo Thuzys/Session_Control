@@ -17,7 +17,6 @@ function createRadioButton(labelText, name) {
 
 /**
  * Create labeled input
- *
  * @param id
  * @param placeholder
  * @returns {*}
@@ -28,7 +27,6 @@ function createLabeledInput(id, placeholder) {
 
 /**
  * Add toggle event listeners
- *
  * @param toggleFn
  * @param elements
  */
@@ -38,7 +36,6 @@ function addToggleEventListeners(toggleFn, ...elements) {
 
 /**
  * Create header
- *
  * @param text
  * @returns {*}
  */
@@ -155,18 +152,23 @@ function createPagination(query, hash, hasNext, elementsPerPage = constants.ELEM
     return container;
 }
 
+
+/**
+ * Create update session button view
+ * @param session
+ * @returns {HTMLButtonElement}
+ */
 function createUpdateSessionButtonView(session) {
     const updateSessionButton = views.button({type: "submit", class: "general-button"}, "Update Session");
     updateSessionButton.addEventListener('click', (e) => {
         e.preventDefault();
-        handlerUtils.changeHash("#updateSession?sid=" + session.sid)
+        handlerUtils.changeHash("#updateSession/" + session.sid)
     });
     return updateSessionButton;
 }
 
 /**
  * Show alert
- *
  * @param message
  */
 function showAlert(message) {
@@ -204,7 +206,6 @@ function showAlert(message) {
 
 /**
  * Check if ul has item
- *
  * @param item
  * @param children
  * @returns {boolean}
@@ -216,6 +217,11 @@ function ulHasItem(item, children) {
     })
 }
 
+/**
+ * Toggle button state
+ * @param button
+ * @param condition
+ */
 function toggleButtonState(button, condition) {
     button.disabled = condition
 }

@@ -23,7 +23,7 @@ describe('Test handlerViews', function() {
       href.length.should.equal(2);
       href[0].tagName.should.equal("A");
       href[0].href.should.contain("base/id");
-      href[0].textContent.should.equal("textBase id");
+      href[0].textContent.should.equal("textBase");
       href[1].tagName.should.equal("P");
     })
     it('should create a backButton', function() {
@@ -33,8 +33,8 @@ describe('Test handlerViews', function() {
       backButton.type.should.equal("button");
       backButton.textContent.should.equal("Back");
     })
-    it('should create a sessionsButton', function() {
-          const sessionsButton = handlerViews.sessionsButtonView("text", "query");
+    it('should create a href Button', function() {
+          const sessionsButton = handlerViews.hrefButtonView("text", "query");
 
           sessionsButton.tagName.should.equal("BUTTON");
           sessionsButton.type.should.equal("button");
@@ -42,7 +42,9 @@ describe('Test handlerViews', function() {
 
         })
     it('should create a pagination', function() {
-          const pagination = handlerViews.createPagination(new URLSearchParams(), "hash", true);
+          const query = new Map();
+          query.set("offset", 0)
+          const pagination = handlerViews.createPagination(query, "hash", true);
 
           pagination.tagName.should.equal("DIV");
           const buttons = pagination.children;
@@ -50,29 +52,11 @@ describe('Test handlerViews', function() {
             buttons[0].tagName.should.equal("BUTTON");
             buttons[0].id.should.equal("prev");
             buttons[0].type.should.equal("button");
-            buttons[0].textContent.should.equal("Previous");
+            buttons[0].textContent.should.equal("<");
             buttons[1].tagName.should.equal("BUTTON");
             buttons[1].id.should.equal("next");
             buttons[1].type.should.equal("button");
-            buttons[1].textContent.should.equal("Next");
-        })
-    it('should create a homeView', function() {
-        const homeView = handlerViews.createHomeView();
-
-        homeView.length.should.equal(2);
-        homeView[0].tagName.should.equal("H1");
-        homeView[0].textContent.should.equal("Search Player:");
-        homeView[1].tagName.should.equal("FORM");
-        homeView[1].action.should.contain("#playerDetails");
-        homeView[1].method.should.equal("get");
-        homeView[1].children.length.should.equal(2);
-        homeView[1].children[0].tagName.should.equal("INPUT");
-        homeView[1].children[0].type.should.equal("text");
-        homeView[1].children[0].id.should.equal("pid");
-        homeView[1].children[0].maxLength.should.equal(10);
-        homeView[1].children[1].tagName.should.equal("BUTTON");
-        homeView[1].children[1].type.should.equal("submit");
-        homeView[1].children[1].textContent.should.equal("Player Details");
+            buttons[1].textContent.should.equal(">");
     })
 
     it('should create custom alert', function () {

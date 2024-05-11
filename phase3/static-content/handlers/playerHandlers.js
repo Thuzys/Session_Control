@@ -37,6 +37,10 @@ function getPlayerDetails(mainContent) {
         );
 }
 
+/**
+ * Search player
+ * @param mainContent main content of the page
+ */
 function searchPlayer(mainContent) {
     const container = views.div({class: "player-details-container"});
     const [h1, form] = playerHandlerViews.createSearchPlayerView();

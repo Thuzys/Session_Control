@@ -43,7 +43,6 @@ function createPlayerDetailsView(player, backButton = true) {
 
 /**
  * Create search player view
- *
  * @returns {*[]}
  */
 function createSearchPlayerView() {

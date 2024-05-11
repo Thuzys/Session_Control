@@ -15,7 +15,7 @@ describe('Test playerHandlerViews', function() {
         const children = playerDetailsView.children
         children.length.should.equal(5)
         children[0].tagName.should.equal("H2")
-        children[0].textContent.should.equal("Player Details")
+        children[0].textContent.should.equal("Player Details:")
         children[1].tagName.should.equal("H3")
         children[1].textContent.should.equal("Player name")
         children[2].tagName.should.equal("UL")

@@ -1,5 +1,4 @@
 import requestUtils from "../utils/requestUtils.js";
-import menu from "../navigation/menuLinks.js";
 import constants from "../constants/constants.js";
 import playerHandlerViews from "../views/handlerViews/playerHandlerViews.js";
 import {fetcher} from "../utils/fetchUtils.js";
@@ -11,15 +10,14 @@ import views from "../views/viewsCreators.js";
  * Get player details by player id
  *
  * @param mainContent main content of the page
- * @param mainHeader main header of the page
  */
-function getPlayerDetailsByPid(mainContent, mainHeader) {
+function getPlayerDetailsByPid(mainContent) {
     const url = `${constants.API_BASE_URL}${constants.PLAYER_ID_ROUTE}${requestUtils.getParams()}`;
     fetcher
         .get(url, constants.TOKEN)
         .then(
             response =>
-                handleGetPlayerDetailsResponse(response, mainContent, mainHeader, true)
+                handleGetPlayerDetailsResponse(response, mainContent, true)
         );
 }
 
@@ -27,9 +25,8 @@ function getPlayerDetailsByPid(mainContent, mainHeader) {
  * Get player details
  *
  * @param mainContent main content of the page
- * @param mainHeader main header of the page
  */
-function getPlayerDetails(mainContent, mainHeader) {
+function getPlayerDetails(mainContent) {
     const route = constants.PLAYER_ID_ROUTE.substring(0, constants.PLAYER_ID_ROUTE.length - 1);
     const url =
         `${constants.API_BASE_URL}${route}?${handlerUtils.makeQueryString(requestUtils.getQuery())}`;
@@ -37,17 +34,16 @@ function getPlayerDetails(mainContent, mainHeader) {
         .get(url, constants.TOKEN)
         .then(
             response =>
-                handleGetPlayerDetailsResponse(response, mainContent, mainHeader, true)
+                handleGetPlayerDetailsResponse(response, mainContent, true)
         );
 }
 
-function searchPlayer(mainContent, mainHeader) {
+function searchPlayer(mainContent) {
     const container = views.div({class: "player-details-container"});
     const [h1, form] = playerHandlerViews.createSearchPlayerView();
     form.onsubmit = (e) => handlePlayerSearchSubmit(e);
     container.replaceChildren(h1, form);
     mainContent.replaceChildren(container);
-    mainHeader.replaceChildren(menu.get("sessionSearch"), menu.get("home"),  menu.get("gameSearch"));
 }
 
 /**
@@ -55,37 +51,25 @@ function searchPlayer(mainContent, mainHeader) {
  *
  * @param player response from the server
  * @param mainContent main content of the page
- * @param mainHeader the main header of the page
  * @param isSearch boolean to check if the response is from a search
  */
-function handleGetPlayerDetailsResponse(player, mainContent, mainHeader, isSearch = false) {
+function handleGetPlayerDetailsResponse(player, mainContent, isSearch = false) {
     const playerDetailsView = playerHandlerViews.createPlayerDetailsView(player, isSearch);
     mainContent.replaceChildren(playerDetailsView);
-    if (isSearch) {
-        mainHeader.replaceChildren(menu.get("sessionSearch"), menu.get("home"), menu.get("gameSearch"));
-    } else {
-        const createSessionHref = handlerViews.hrefButtonView("Choose a game to create a session", `#gameSearch`);
-        playerDetailsView.appendChild(createSessionHref);
-        mainHeader.replaceChildren(
-            menu.get("sessionSearch"), menu.get("gameSearch"),
-            menu.get("playerSearch"), menu.get("contacts")
-        );
-    }
 }
 
 /**
  * Get home page
  *
- * @param mainContent
- * @param mainHeader
+ * @param mainContent main content of the page
  */
-function getHome(mainContent, mainHeader) {
+function getHome(mainContent) {
     const url = `${constants.API_BASE_URL}${constants.PLAYER_ID_ROUTE}1`;
     fetcher
         .get(url, constants.TOKEN)
         .then(
             response =>
-                handleGetPlayerDetailsResponse(response, mainContent, mainHeader)
+                handleGetPlayerDetailsResponse(response, mainContent)
         );
 }
 

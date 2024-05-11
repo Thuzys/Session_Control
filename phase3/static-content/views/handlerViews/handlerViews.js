@@ -9,7 +9,7 @@ import {fetcher} from "../../utils/fetchUtils.js";
  * @returns {*}
  */
 function createHeader(text) {
-    return views.h1({}, text);
+    return views.h2({class:"w3-wide centered"}, text);
 }
 
 /**

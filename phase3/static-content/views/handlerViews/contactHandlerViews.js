@@ -9,25 +9,15 @@ function createCard(cardData) {
     const divCard = views.div({class: 'card'});
 
     const img = views.image({src: cardData.image, alt: cardData.name, style: 'width:100%'});
-    divCard.appendChild(img);
-
-    const h1 = views.h1({}, cardData.name);
-    divCard.appendChild(h1);
-
+    const h2 = views.h2({}, cardData.name);
     const pTitle = views.p({class: 'title'}, cardData.title);
-    divCard.appendChild(pTitle);
-
     const pUniversity = views.p({}, cardData.university);
-    divCard.appendChild(pUniversity);
 
     const divIcons = views.div({style: 'margin: 24px 0'});
     cardData.socials.forEach(social => {
-        const a = views.a({href: social.link});
-        const i = views.image({class: "icon-image", src: social.image, alt: social.name, style: 'width:100%'});
-        a.appendChild(i);
+        const a = views.a({href:social.link}, views.i({href: social.link, class: "w3-xlarge card-a fa fa-" + social.name}));
         divIcons.appendChild(a);
     });
-    divCard.appendChild(divIcons);
 
     const pButton = views.p({});
     const button = views.button({class: "contact-button"}, 'Contact');
@@ -35,7 +25,7 @@ function createCard(cardData) {
         window.location.href = `mailto:${cardData.email}`
     });
     pButton.appendChild(button);
-    divCard.appendChild(pButton);
+    divCard.replaceChildren(img, h2, pTitle, pUniversity, divIcons, pButton);
 
     return divCard;
 }

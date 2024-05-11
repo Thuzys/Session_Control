@@ -45,7 +45,7 @@ function option(attributes = {}) {
  * @returns {HTMLUListElement}
  */
 function ul(...items) {
-    return createElement("ul", {id: "ul"}, ...items.map(li))
+    return createElement("ul", {id: "ul", class:"pagination-players-min-height centered-list"}, ...items.map(li))
 }
 
 /**
@@ -105,6 +105,16 @@ function h2(attributes = {}, ...children) {
  */
 function h3(attributes = {}, ...children) {
     return createElement("h3", attributes, ...children);
+}
+
+/**
+ * Create h4 element with the given attributes and children.
+ * @param attributes
+ * @param children
+ * @returns {HTMLElement}
+ */
+function h4(attributes = {}, ...children) {
+    return createElement("h4", attributes, ...children);
 }
 
 /**
@@ -185,6 +195,35 @@ function image(attributes) {
     return createElement('img', attributes);
 }
 
+/**
+ * Create an i element with the given attributes and children.
+ * @param attributes
+ * @param children
+ * @returns {HTMLElement}
+ */
+function i(attributes = {}, ...children) {
+    return createElement("i", attributes, ...children);
+}
+
+/**
+ * Create a nav element with the given attributes and children.
+ * @param attributes
+ * @param children
+ * @returns {HTMLElement}
+ */
+function nav(attributes = {}, ...children) {
+    return createElement("nav", attributes, ...children);
+}
+
+/**
+ * Create an hr element with the given attributes.
+ * @param attributes
+ * @returns {HTMLElement}
+ */
+function hr(attributes = {}) {
+    return createElement("hr", attributes);
+}
+
 const views = {
     datalist,
     option,
@@ -202,7 +241,11 @@ const views = {
     a,
     h2,
     h3,
-    image
+    image,
+    i,
+    nav,
+    h4,
+    hr
 }
 
 export default views

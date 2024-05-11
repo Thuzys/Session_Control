@@ -9,28 +9,35 @@ import views from "../viewsCreators.js";
  * @returns {*} player details view
  */
 function createPlayerDetailsView(player, backButton = true) {
-    const headerText = backButton ? "Player Details:" : "Your Information:";
+    const headerText = backButton ? "Player Details" : "Your Information";
+    const hr = views.hr({class:"w3-opacity"})
     const container = views.div({class: "player-details-container"});
 
-    const header = views.h2({class: "player-details-header"}, headerText);
+    const header = handlerViews.createHeader(headerText);
 
     const detailsList = views.ul({class: "player-details-list"},
-        views.li( "UserName: " + player.userName),
-        views.li( "Email: " + player.email),
+        views.li(views.h3({class: "w3-wide blue-letters"}, "Username")),
+        views.li(player.userName),
+        views.li(views.p()),
+        views.li(views.h3({class: "w3-wide blue-letters"}, "Email")),
+        views.li(player.email),
     );
 
-    const nameHeader = views.h3({class: "player-name-header"}, player.name);
+    const nameHeader = views.h3({class: "w3-wide centered blue-letters"}, player.name);
 
     const sessionsButton = handlerViews.hrefButtonView(
         "Sessions",
         `${constants.SESSION_ROUTE}?pid=${player.pid}&offset=0`
     );
 
-    container.replaceChildren(header, nameHeader, detailsList, sessionsButton);
+    container.replaceChildren(header, hr, nameHeader, detailsList, sessionsButton, views.p());
 
     if (backButton) {
         const backButtonView = handlerViews.createBackButtonView();
         container.appendChild(backButtonView);
+    } else {
+        const createSessionHref = handlerViews.hrefButtonView("Choose a game to create a session", `#gameSearch`);
+        container.appendChild(createSessionHref);
     }
 
     return container;
@@ -41,11 +48,13 @@ function createPlayerDetailsView(player, backButton = true) {
  * @returns {*[]} search player view
  */
 function createSearchPlayerView() {
-    const h1 = views.h1({}, "Search Player:");
+    const h1 = handlerViews.createHeader("Search Player");
     const form =
         views.form({action: "#playerDetails", method: "get"},
-            views.input({type: "text", id: "pid", maxLength: 10, placeholder: "Player userName"}),
-            views.button({type: "submit", class: "submit-button"}, "Player Details")
+            views.hr({class: "w3-opacity"}),
+            views.input({type: "text", id: "pid", maxLength: 10, placeholder: "username"}),
+            views.p(),
+            views.button({type: "submit", class: "general-button"}, "Search")
         );
     return [h1, form];
 }

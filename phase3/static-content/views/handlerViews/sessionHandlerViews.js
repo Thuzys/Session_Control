@@ -48,31 +48,40 @@ function createSearchSessionView() {
  * @returns {HTMLDivElement}
  */
 function createSessionDetailsViews(session, playerList, isOwner, isInSession) {
-    const backButton = handlerViews.createBackButtonView();
     const deleteSessionButton = handlerViews.createDeleteOrLeaveSessionButtonView(session);
     const leaveSessionButton = handlerViews.createDeleteOrLeaveSessionButtonView(session, true);
     const updateButton = handlerViews.hrefButtonView("Update", "#updateSession?sid=" + session.sid);
     const div = views.div(
         {},
-        views.h3({}, "Session: " + session.gameInfo.name + " - " + session.owner.userName),
+        handlerViews.createHeader(session.owner.userName + "´s Session"),
+        views.hr({class:"w3-opacity)"}),
         views.ul(
+            views.li(views.h3({class: "w3-wide blue-letters"}, "Game")),
             views.li(
                 ...handlerViews.hrefConstructor(
                     "#games",
-                    session.gameInfo.gid, `Game: ${session.gameInfo.name}`
+                    session.gameInfo.gid, `${session.gameInfo.name}`
                 )
             ),
-            views.li("Date: " + session.date),
-            views.li("Owner: " + session.owner.userName),
-            views.li("Capacity: " + session.capacity),
-            views.li("Players:"),
+            views.li(views.p()),
+            views.li(views.h3({class: "w3-wide blue-letters"}, "Date")),
+            views.li(session.date),
+            views.li(views.p()),
+            views.li(views.h3({class: "w3-wide blue-letters"}, "Owner")),
+            views.li(session.owner.userName),
+            views.li(views.p()),
+            views.li(views.h3({class: "w3-wide blue-letters"}, "Capacity")),
+            views.li(session.capacity.toString()),
+            views.li(views.p()),
+            views.li(views.h3({class: "w3-wide blue-letters"}, "Players")),
             playerList
         ),
-        backButton
+        views.p()
     );
 
     if (isOwner) {
         div.appendChild(deleteSessionButton);
+        div.appendChild(views.p());
         div.appendChild(updateButton);
     } else if (isInSession){
         div.appendChild(leaveSessionButton);
@@ -88,17 +97,24 @@ function createSessionDetailsViews(session, playerList, isOwner, isInSession) {
  */
 function createGetSessionsView(sessions) {
     const query = requestUtils.getQuery();
-    const div = views.div({},
-        views.h1({}, "Sessions Found:")
+    const div = views.div({class: "pagination-sessions-min-height"},
+        handlerViews.createHeader("Sessions Found: "),
+        views.hr({class:"w3-opacity"})
     );
-    sessions.slice(0, constants.ELEMENTS_PER_PAGE).forEach(session => {
-        const sessionHref = handlerViews.hrefConstructor(
-            "#sessions",
-            session.sid, `Session: ${session.owner.userName} - ${session.date}`,
-            0,
-        );
-        div.appendChild(views.form({}, ...sessionHref))
+    const sessionsElems = views.ul(true);
+    sessions
+        .slice(0, constants.ELEMENTS_PER_PAGE)
+        .forEach(session => {
+        const sessionHref =
+            views.li(
+                ...handlerViews.hrefConstructor(
+                "#sessions",
+                session.sid, session.owner.userName + "´s Session" + " - " + session.date,
+                0,
+            ));
+        sessionsElems.appendChild(sessionHref);
     });
+    div.appendChild(sessionsElems);
     const nextPrev = handlerViews.createPagination(query, "#sessions", sessions.length === constants.LIMIT);
     return [div, nextPrev];
 }
@@ -109,7 +125,7 @@ function createGetSessionsView(sessions) {
  * @returns {HTMLDivElement}
  */
 function createPlayerListView(session) {
-    const div = views.div();
+    const div = views.div({class: "pagination-players-min-height"})
     const playerList = views.ul();
     if (session.players) {
         session.players
@@ -139,12 +155,18 @@ function createPlayerListView(session) {
  */
 function createCreateSessionView(gameName) {
     const header = handlerViews.createHeader("Create Session: ");
+    const hr = views.hr({class:"w3-opacity"})
     const labelCapacity = views.input({type: "number", id: "capacity", placeholder: "Enter Capacity"})
     const labelDate = views.input({type: "date", id: "dateCreate", placeholder: "Enter Date"});
     const formContent = views.form(
         {},
-        views.h3({}, gameName),
+        hr,
+        views.h4({class: "w3-wide blue-letters"}, "Game"),
+        views.p({}, gameName.toString()),
+        views.h4({class: "w3-wide blue-letters"}, "Capacity"),
         labelCapacity,
+        views.p(),
+        views.h4({class: "w3-wide blue-letters"}, "Date"),
         labelDate,
         views.p(),
         views.button({type: "submit", class: "general-button"}, "Create")
@@ -164,8 +186,13 @@ function createUpdateSessionView(session) {
     const labelDate = views.input({type: "date", id: "dateChange", placeholder: "Enter Date", value: session.date});
     const formContent = views.form(
         {},
-        views.h3({}, session.gameInfo.name),
+        views.hr({class:"w3-opacity"}),
+        views.h4({class: "w3-wide blue-letters"}, "Game"),
+        views.p({}, session.gameInfo.name),
+        views.h4({class: "w3-wide blue-letters"}, "Capacity"),
         labelCapacity,
+        views.p(),
+        views.h4({class: "w3-wide blue-letters"}, "Date"),
         labelDate,
         views.p(),
         views.button({type: "submit", class: "general-button"}, "Update")

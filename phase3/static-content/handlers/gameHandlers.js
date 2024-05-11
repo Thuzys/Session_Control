@@ -1,6 +1,5 @@
 import gameHandlerViews from "../views/handlerViews/gameHandlerViews.js";
 import handlerUtils from "./handlerUtils/handlerUtils.js";
-import menu from "../navigation/menuLinks.js";
 import requestUtils from "../utils/requestUtils.js";
 import constants from "../constants/constants.js"
 import { fetcher } from "../utils/fetchUtils.js";
@@ -10,9 +9,8 @@ import views from "../views/viewsCreators.js";
  * Search games by parameters: developer, genres and name
  *
  * @param mainContent main content of the page
- * @param mainHeader main header of the page
  */
-function searchGames(mainContent, mainHeader) {
+function searchGames(mainContent) {
     const container = views.div({class: "player-details-container"});
     const [
         header,
@@ -23,7 +21,6 @@ function searchGames(mainContent, mainHeader) {
 
     container.replaceChildren(header, form)
     mainContent.replaceChildren(container)
-    mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("sessionSearch"));
 }
 
 /**
@@ -52,22 +49,15 @@ function handleSearchGamesSubmit(e, selectedGenres) {
  * Get games by query
  *
  * @param mainContent main content of the page
- * @param mainHeader main header of the page
  */
-function getGames(mainContent, mainHeader) {
+function getGames(mainContent) {
     const query = handlerUtils.makeQueryString(requestUtils.getQuery())
     const url = `${constants.API_BASE_URL}${constants.GAME_ROUTE}?${query}`
-
     fetcher
         .get(url, constants.TOKEN)
         .then(response =>
             handleGetGamesResponse(response, mainContent)
         );
-
-    mainHeader.replaceChildren(
-        menu.get("playerSearch"), menu.get("home"),
-        menu.get("gameSearch"), menu.get("sessionSearch")
-    );
 }
 
 /**
@@ -80,10 +70,11 @@ function handleGetGamesResponse(games, mainContent) {
     const container = views.div({class: "player-details-container"});
     const [
         header,
+        hr,
         gameList,
         pagination
     ] = gameHandlerViews.createGetGameView(games)
-    container.replaceChildren(header, gameList, pagination)
+    container.replaceChildren(header, hr, gameList, pagination)
     mainContent.replaceChildren(container)
 }
 
@@ -91,19 +82,15 @@ function handleGetGamesResponse(games, mainContent) {
  * Get game details
  *
  * @param mainContent main content of the page
- * @param mainHeader main header of the page
  */
-function getGameDetails(mainContent, mainHeader){
+function getGameDetails(mainContent){
     const gameId = requestUtils.getParams()
     const url = `${constants.API_BASE_URL}${constants.GAME_ID_ROUTE}${gameId}`
-
     fetcher
         .get(url, constants.TOKEN)
         .then(response =>
             handleGetGameDetailsResponse(response, mainContent)
         );
-
-    mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("sessionSearch"))
 }
 
 /**
@@ -114,8 +101,8 @@ function getGameDetails(mainContent, mainHeader){
  */
 function handleGetGameDetailsResponse(game, mainContent) {
     const container = views.div({class: "player-details-container"});
-    const [header, div] = gameHandlerViews.createGameDetailsView(game)
-    container.replaceChildren(header, div)
+    const [header, hr, div] = gameHandlerViews.createGameDetailsView(game)
+    container.replaceChildren(header, hr, div)
     mainContent.replaceChildren(container)
 }
 

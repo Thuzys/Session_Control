@@ -13,7 +13,8 @@ import sessionHandlers from "../../handlers/sessionHandlers.js";
 function createSearchGamesView() {
     const genresValues = Object.values(genres)
 
-    const header = handlerViews.createHeader("Search Games by developer and/or Genre(s): ")
+    const header = handlerViews.createHeader("Search Games")
+    const hr = views.hr({class:"w3-opacity"})
 
     const inputDev = views.input({
         id: "InputDev",
@@ -24,8 +25,10 @@ function createSearchGamesView() {
     const addGenresButton = views.button({
         id: "AddGenresButton",
         type: "button",
-        class: "submit-button",
+        class: "general-button",
     }, "Add")
+
+    const genresHeader = views.h4({class:"w3-wide"}, "Genres Selected:")
 
     const genresList = views.datalist({
         id: "GenresList"
@@ -58,11 +61,14 @@ function createSearchGamesView() {
 
     const form = views.form(
         {},
+        hr,
         inputDev,
         views.p(),
         genresList,
         inputGenres,
+        views.p({class:"line-height: 1px"}),
         addGenresButton,
+        genresHeader,
         selectedGenresView,
         views.p(),
         searchGamesButton
@@ -145,6 +151,7 @@ function ulHasItem(item, children) {
  */
 function createGetGameView(games) {
     const header = handlerViews.createHeader("Games: ")
+    const hr = views.hr({class:"w3-opacity"})
     const gameList = views.ul()
     games.forEach(game => {
             gameList.appendChild(
@@ -164,7 +171,7 @@ function createGetGameView(games) {
         games.length === constants.LIMIT
     )
 
-    return [header, gameList, pagination]
+    return [header, hr, gameList, pagination]
 }
 
 /**
@@ -175,12 +182,12 @@ function createGetGameView(games) {
  */
 function createGameDetailsView(game) {
     const header = handlerViews.createHeader("Game Details: ")
+    const hr = views.hr({class:"w3-opacity"})
 
     const createSessionButton = views.button({type: "button", class: "general-button"}, "Create Session");
     createSessionButton.addEventListener('click', () => {
         sessionHandlers.createSession(
             document.getElementById("mainContent"),
-            document.getElementById("mainHeader"),
             game.gid,
             game.name
         );
@@ -188,15 +195,21 @@ function createGameDetailsView(game) {
 
     const div = views.div(
         {},
-        views.h2({}, `${game.name}`),
-        views.p({}, `Developer: ${game.dev}`),
-        views.p({}, `Genres: ${game.genres.join(",")}`),
+        views.h2({class: "w3-wide blue-letters centered"}, game.name),
+        views.ul(
+            views.li(views.h4({class: "w3-wide blue-letters"}, "Developer")),
+            views.li(game.dev),
+            views.li(views.h4({class: "w3-wide blue-letters"}, "Genres")),
+            views.li(game.genres.join(","))
+        ),
         handlerViews.createBackButtonView(),
+        views.p(),
         handlerViews.hrefButtonView("Sessions",
             `${constants.SESSION_ROUTE}?gid=${game.gid}&offset=0`),
+        views.p(),
         createSessionButton,
     )
-    return [header, div]
+    return [header, hr, div]
 }
 
 const gameHandlerViews = {

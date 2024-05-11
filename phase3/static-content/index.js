@@ -4,6 +4,7 @@ import playerHandlers from "./handlers/playerHandlers.js";
 import sessionHandlers from "./handlers/sessionHandlers.js";
 import gameHandlers from "./handlers/gameHandlers.js";
 import contactHandlers from "./handlers/contactHandlers.js";
+import navigationViews from "./navigation/navigationViews.js";
 
 window.addEventListener('load', loadHandler)
 window.addEventListener('hashchange', hashChangeHandler)
@@ -12,6 +13,9 @@ window.addEventListener('hashchange', hashChangeHandler)
  * Load handler routes
   */
 function loadHandler(){
+    const navigationBar = navigationViews.createNavigationBarView();
+    document.body.insertBefore(navigationBar, document.getElementById("mainContent"));
+
     router.addRouteHandler("players/home", playerHandlers.getHome)
     router.addRouteHandler("playerSearch", playerHandlers.searchPlayer)
     router.addRouteHandler("players", playerHandlers.getPlayerDetails)
@@ -34,8 +38,7 @@ function loadHandler(){
  */
 function hashChangeHandler(){
     const mainContent = document.getElementById("mainContent")
-    const mainHeader = document.getElementById("mainHeader")
     const path =  requestUtils.getPath()
     const handler = router.getRouteHandler(path)
-    handler(mainContent, mainHeader)
+    handler(mainContent)
 }

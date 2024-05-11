@@ -118,7 +118,7 @@ function createUpdateSessionButtonView(session) {
     const updateSessionButton = views.button({type: "submit", class: "general-button"}, "Update Session");
     updateSessionButton.addEventListener('click', (e) => {
         e.preventDefault();
-        handlerUtils.changeHash("#updateSession?sid=" + session.sid)
+        handlerUtils.changeHash("#updateSession/" + session.sid)
     });
     return updateSessionButton;
 }

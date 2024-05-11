@@ -123,7 +123,12 @@ function handleGetSessionDetailsResponse(session, mainContent, mainHeader) {
     const playerListView = sessionHandlerViews.createPlayerListView(session);
     const sessionDetailsView = sessionHandlerViews.createSessionDetailsViews(session, playerListView, isOwner, isInSession);
     mainContent.replaceChildren(views.div({class: "player-details-container"}, sessionDetailsView));
-    mainHeader.replaceChildren(menu.get("playerSearch"), menu.get("home"), menu.get("gameSearch"));
+    mainHeader.replaceChildren(
+        menu.get("playerSearch"),
+        menu.get("home"),
+        menu.get("gameSearch"),
+        menu.get("sessionSearch"),
+    );
 }
 
 function handleCreateSessionResponse(response) {
@@ -139,7 +144,7 @@ function createSession(mainContent, mainHeader, gid, gameName) {
 
 function handleUpdateSessionSubmit(e) {
     e.preventDefault();
-    const sid = requestUtils.getQuery().get('sid');
+    const sid = requestUtils.getParams();
     const capacity = document.getElementById('capacity').value;
     const date = document.getElementById('dateChange').value;
     const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${sid}`;
@@ -153,7 +158,7 @@ function handleUpdateSessionSubmit(e) {
 }
 
 function updateSession(mainContent, mainHeader) {
-    const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${requestUtils.getQuery().get('sid')}`;
+    const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${requestUtils.getParams()}`;
     fetcher
         .get(url, constants.TOKEN)
         .then( session => {

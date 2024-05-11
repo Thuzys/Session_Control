@@ -32,7 +32,6 @@ function createSessionFormContentView() {
 }
 
 function createSessionDetailsViews(session, playerList, isOwner, isInSession) {
-    const backButton = handlerViews.createBackButtonView();
     const deleteSessionButton = handlerViews.createDeleteSessionButtonView(session);
     const leaveSessionButton = handlerViews.createLeaveSessionButtonView(session);
     const updateButton = handlerViews.createUpdateSessionButtonView(session);
@@ -52,7 +51,6 @@ function createSessionDetailsViews(session, playerList, isOwner, isInSession) {
             views.li("Players:"),
             playerList
         ),
-        backButton
     );
 
     if (isOwner) {

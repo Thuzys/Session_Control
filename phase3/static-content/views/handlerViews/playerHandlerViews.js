@@ -5,7 +5,7 @@ function createPlayerDetailsView(player, backButton = true) {
 
     const header = views.h2({class: "player-details-header"}, headerText);
 
-    const detailsList = views.ul({class: "player-details-list"},
+    const detailsList = views.ul(
         views.li( "UserName: " + player.userName),
         views.li( "Email: " + player.email),
     );

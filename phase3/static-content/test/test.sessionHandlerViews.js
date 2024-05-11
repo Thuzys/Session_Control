@@ -26,7 +26,15 @@ describe('Test sessionHandlerViews', function() {
 
     it('should create a sessionView', function() {
         const session = [{
-            sid: "1"
+            sid: "1",
+            owner: {
+                username: "username"
+            },
+            gameInfo: {
+                name: "name",
+                gid: "1",
+            },
+            date: "date",
         }]
         window.location.hash = ""
         const sessionView = sessionHandlerViews.createGetSessionsView(session)
@@ -40,17 +48,22 @@ describe('Test sessionHandlerViews', function() {
     it('should create a sessionDetailsView', function() {
         const session = {
             sid: "1",
+            owner: {
+                username: "username"
+            },
+            gameInfo: {
+                name: "name",
+                gid: "1",
+            },
             date: "date",
-            capacity: "duration",
         }
         const player = [1, 2, 3]
         const sessionDetailsView = sessionHandlerViews.createSessionDetailsViews(session, player)
         sessionDetailsView.tagName.should.equal("DIV")
         const children = sessionDetailsView.children
-        children.length.should.equal(3)
+        children.length.should.equal(2)
         children[0].tagName.should.equal("H3")
         children[1].tagName.should.equal("UL")
-        children[2].tagName.should.equal("BUTTON")
     })
 
     it('should create a PlayerListView', function() {
@@ -58,11 +71,13 @@ describe('Test sessionHandlerViews', function() {
             players: [1, 2, 3]
         }
         const playerListView = sessionHandlerViews.createPlayerListView(session)
-        playerListView.tagName.should.equal("UL")
-        playerListView.children.length.should.equal(3)
-        playerListView.children[0].tagName.should.equal("LI")
-        playerListView.children[1].tagName.should.equal("LI")
-        playerListView.children[2].tagName.should.equal("LI")
+        playerListView.tagName.should.equal("DIV")
+        playerListView.children.length.should.equal(2)
+        const ul = playerListView.children[0]
+        ul.children[0].tagName.should.equal("LI")
+        ul.children[1].tagName.should.equal("LI")
+        ul.children[2].tagName.should.equal("LI")
+        playerListView.children[1].tagName.should.equal("DIV")
     })
 
     it('should create correct href for each session', function() {

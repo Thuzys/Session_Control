@@ -2,55 +2,99 @@ import views from "../viewsCreators.js";
 import requestUtils from "../../utils/requestUtils.js";
 import handlerViews from "./handlerViews.js";
 import constants from "../../constants/constants.js";
+import sessionHandlers from "../../handlers/sessionHandlers.js";
 
 /**
- * Create state inputs view for session search
- * @returns {*[]} state inputs view
+ * Create session form content view
+ *
+ * @returns {*[]}
  */
-function createStateInputsView() {
-    return [
-        views.label({qualifiedName: "for", value: "textbox"}, "Enter State: "),
-        views.radioButton({name: "state", value: "open"}),
-        views.radioButtonLabel("open", "Open"),
-        views.radioButton({name: "state", value: "close"}),
-        views.radioButtonLabel("close", "Close"),
-        views.radioButton({name: "state", value: "both", checked: true}),
-        views.radioButtonLabel("both", "Both")
-    ];
-}
+function createSessionFormContentView() {
+    const header = handlerViews.createHeader("Search Sessions");
+    const gidInput = handlerViews.createLabeledInput("gameName", "Enter Game name");
+    const pidInput = handlerViews.createLabeledInput("userName", "Enter Player name");
+    const dateInput = views.input({ type: "date", id: "date", placeholder: "Enter Date" });
 
-/**
- * Create search sessions view
- * @returns {*[]} session form content view
- */
-function createSearchSessionView() {
-    const gidLabelInput = handlerViews.createLabeledInput("Enter Game name: ", "text", "gameName");
-    const pidLabelInput = handlerViews.createLabeledInput("Enter Player username: ", "text", "userName");
-    const dateLabelInput = handlerViews.createLabeledInput("Enter Date: ", "date", "date");
-    const stateLabelInputs = createStateInputsView();
+    const stateLabel = views.h5({class: "w3-wide padding-left"}, "Enter State");
+    const radioOpen = handlerViews.createRadioButton("open", "OPEN");
+    const radioClose = handlerViews.createRadioButton("close", "CLOSE");
+
+    const searchButton = views.button({
+        type: "submit",
+        class: "general-button",
+        disabled: true
+    }, "Search");
+
+    const toggleSearchButton = () => {
+        handlerViews.toggleButtonState(
+            searchButton,
+            !canSearchSessions(
+                gidInput.value.trim(),
+                pidInput.value.trim(),
+                dateInput.value.trim(),
+                radioOpen.children[0].checked || radioClose.children[0].checked
+            )
+        )
+    };
+
+    handlerViews.addToggleEventListeners(
+        toggleSearchButton,
+        gidInput,
+        pidInput,
+        dateInput,
+        radioOpen.children[0],
+        radioClose.children[0],
+    );
 
     return [
-        ...gidLabelInput,
-        ...pidLabelInput,
-        ...dateLabelInput,
-        ...stateLabelInputs,
+        header,
+        views.hr({class:"w3-opacity"}),
+        gidInput,
         views.p(),
-        views.button({type: "submit", class: "general-button"}, "Search"),
+        pidInput,
+        views.p(),
+        dateInput,
+        views.p(),
+        views.div({class: "w3-row-padding w3-margin-bottom w3-center background"},
+            stateLabel,
+            views.hr({class:"w3-opacity"}),
+            radioOpen,
+            views.p(),
+            radioClose,
+            views.p(),
+        ),
+        views.p(),
+        searchButton
     ];
 }
 
 /**
- * Create session details view
- * @param session session data
- * @param playerList player list view
- * @param isOwner if true, create delete session button
- * @param isInSession if true, create leave session button
- * @returns {HTMLDivElement}
+ * Checks if search can be performed
+ *
+ * @param gidInputValue
+ * @param pidInputValue
+ * @param dateInputValue
+ * @param stateInputValue
+ * @returns {*}
+ */
+function canSearchSessions(gidInputValue, pidInputValue, dateInputValue, stateInputValue) {
+    return gidInputValue || pidInputValue || dateInputValue || stateInputValue;
+}
+
+/**
+ * Create session details views
+ *
+ * @param session
+ * @param playerList
+ * @param isOwner
+ * @param isInSession
+ * @returns {any}
  */
 function createSessionDetailsViews(session, playerList, isOwner, isInSession) {
     const deleteSessionButton = handlerViews.createDeleteOrLeaveSessionButtonView(session);
     const leaveSessionButton = handlerViews.createDeleteOrLeaveSessionButtonView(session, true);
-    const updateButton = handlerViews.hrefButtonView("Update", "#updateSession?sid=" + session.sid);
+    const updateButton = handlerViews.createUpdateSessionButtonView(session);
+    const joinSessionButton = createJoinSessionButtonView(session);
     const div = views.div(
         {},
         handlerViews.createHeader(session.owner.userName + "´s Session"),
@@ -82,9 +126,24 @@ function createSessionDetailsViews(session, playerList, isOwner, isInSession) {
         div.appendChild(updateButton);
     } else if (isInSession){
         div.appendChild(leaveSessionButton);
+    } else {
+        div.appendChild(joinSessionButton);
     }
 
     return div;
+}
+
+
+function createJoinSessionButtonView(session) {
+
+    const joinSessionButton = views.button(
+        {type: "submit", class: "general-button"},
+        "Join Session"
+    );
+    joinSessionButton.addEventListener('click', () => {
+        sessionHandlers.addPlayerToSession(session.sid);
+    });
+    return joinSessionButton;
 }
 
 /**
@@ -173,6 +232,20 @@ function createCreateSessionView(gameName) {
 }
 
 /**
+ * Function to check if session can be updated
+ *
+ * @param labelCapacity
+ * @param labelDate
+ * @param session
+ * @returns {boolean}
+ */
+function canUpdateSession(labelCapacity, labelDate, session) {
+    return (parseInt(labelCapacity.value) !== session.capacity && labelCapacity.value.trim() !== "")
+        || (labelDate.value !== session.date && labelDate.value.trim() !== "")
+
+}
+
+/**
  * Create the update session view
  * @param session session data
  * @returns {(HTMLHeadingElement|HTMLFormElement)[]}
@@ -181,6 +254,26 @@ function createUpdateSessionView(session) {
     const header = handlerViews.createHeader("Update Session: ");
     const labelCapacity = views.input({type: "number", id: "capacity", placeholder: "Enter Capacity", value: session.capacity})
     const labelDate = views.input({type: "date", id: "dateChange", placeholder: "Enter Date", value: session.date});
+
+    const updateSessionButton =
+        views.button(
+            {type: "submit", class: "general-button", disabled: true},
+            "Update"
+        )
+
+    const toggleUpdateButton = () => {
+        handlerViews.toggleButtonState(
+            updateSessionButton,
+            !canUpdateSession(labelCapacity, labelDate, session)
+        )
+    };
+
+    handlerViews.addToggleEventListeners(
+        toggleUpdateButton,
+        labelCapacity,
+        labelDate
+    );
+
     const formContent = views.form(
         {},
         views.hr({class:"w3-opacity"}),
@@ -192,14 +285,14 @@ function createUpdateSessionView(session) {
         views.h4({class: "w3-wide blue-letters"}, "Date"),
         labelDate,
         views.p(),
-        views.button({type: "submit", class: "general-button"}, "Update")
+        updateSessionButton
     );
 
     return [header, formContent];
 }
 
 const sessionHandlerViews = {
-    createSearchSessionView,
+    createSessionFormContentView,
     createSessionDetailsViews,
     createGetSessionsView,
     createPlayerListView,
@@ -208,4 +301,3 @@ const sessionHandlerViews = {
 }
 
 export default sessionHandlerViews;
-

@@ -119,6 +119,28 @@ function h4(attributes = {}, ...children) {
 }
 
 /**
+ * Create h5 element with the given attributes and children.
+ * @param attributes
+ * @param children
+ * @returns {HTMLElement}
+ */
+function h5(attributes = {}, ...children) {
+    return createElement("h5", attributes, ...children);
+
+}
+
+/**
+ * Create h6 element with the given attributes and children.
+ * @param attributes
+ * @param children
+ * @returns {HTMLElement}
+ */
+function h6(attributes = {}, ...children) {
+    return createElement("h6", attributes, ...children);
+
+}
+
+/**
  * Create a element with the given attributes and children.
  * @param attributes
  * @param children
@@ -140,11 +162,11 @@ function input(attributes = {}) {
 /**
  * Create a label element with the given attributes and text content.
  * @param attributes
- * @param textContent
+ * @param children
  * @returns {HTMLLabelElement}
  */
-function label(attributes = {}, textContent) {
-    return createElement("label", attributes, textContent);
+function label(attributes = {}, ...children) {
+    return createElement("label", attributes, ...children);
 }
 
 /**
@@ -225,6 +247,10 @@ function hr(attributes = {}) {
     return createElement("hr", attributes);
 }
 
+function span(attributes = {}, ...children) {
+    return createElement("span", attributes, ...children);
+}
+
 /**
  * Add an attribute to the given attributes object.
  * @param attributes
@@ -258,6 +284,9 @@ const views = {
     nav,
     h4,
     hr,
+    span,
+    h5,
+    h6,
 }
 
 export default views

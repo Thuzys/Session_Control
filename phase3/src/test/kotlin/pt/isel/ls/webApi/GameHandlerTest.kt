@@ -178,7 +178,7 @@ class GameHandlerTest {
         // ACT
         val response =
             executeGameHandlerTest { handler ->
-                handler.getGameByDevAndGenres(request)
+                handler.getGames(request)
             }
 
         // ASSERT
@@ -191,12 +191,12 @@ class GameHandlerTest {
         val request =
             Request(Method.GET, DUMMY_ROUTE)
                 .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
-        val expectedMessage = createJsonRspMessage("Bad Request.")
+        val expectedMessage = createJsonRspMessage("Invalid arguments: either dev, genres or name must be provided.")
 
         // ACT
         val response =
             executeGameHandlerTest { handler ->
-                handler.getGameByDevAndGenres(request)
+                handler.getGames(request)
             }
 
         // ASSERT
@@ -214,7 +214,7 @@ class GameHandlerTest {
         // ACT
         val response =
             executeGameHandlerTest { handler ->
-                handler.getGameByDevAndGenres(request)
+                handler.getGames(request)
             }
 
         // ASSERT
@@ -236,7 +236,7 @@ class GameHandlerTest {
         // ACT
         val response =
             executeGameHandlerTest { handler ->
-                handler.getGameByDevAndGenres(request)
+                handler.getGames(request)
             }
 
         // ASSERT
@@ -254,7 +254,7 @@ class GameHandlerTest {
         // ACT
         val response =
             executeGameHandlerTest { handler ->
-                handler.getGameByDevAndGenres(request)
+                handler.getGames(request)
             }
 
         // ASSERT
@@ -272,7 +272,7 @@ class GameHandlerTest {
         // ACT
         val response =
             executeGameHandlerTest { handler ->
-                handler.getGameByDevAndGenres(request)
+                handler.getGames(request)
             }
 
         // ASSERT

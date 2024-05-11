@@ -38,8 +38,8 @@ begin
         (gameName is null or s.game_name = gameName)
     group by s.sid, s.capacity, s.game_name, s.date, s.gid, s.owner
     having (state is null) or
-        (state = 'OPEN' and count(u.pid) = s.capacity and now() <= s.date) or
-        (state = 'CLOSE' and count(u.pid) < s.capacity or now() > s.date)
+        (state = 'OPEN' and count(u.pid) < s.capacity and now() <= s.date) or
+        (state = 'CLOSE' and count(u.pid) = s.capacity or now() > s.date)
     limit l offset o;
 end
 $$ language plpgsql;

@@ -3,7 +3,66 @@ import views from "../viewsCreators.js";
 import requestUtils from "../../utils/requestUtils.js";
 import constants from "../../constants/constants.js";
 import genres from "../../handlers/handlerUtils/gameGenres.js";
+import handlerUtils from "../../handlers/handlerUtils/handlerUtils.js";
 import sessionHandlers from "../../handlers/sessionHandlers.js";
+
+const genresValues = Object.values(genres)
+
+/**
+ * Create create game view
+ *
+ * @returns {any[]}
+ */
+function createCreateGameView() {
+    const header = handlerViews.createHeader("Create Game: ")
+    const genresHeader = views.h4({class:"w3-wide centered"}, "Genres Selected")
+    const inputName = handlerViews.createLabeledInput("InputName", "Insert Game Name")
+    const inputDev = handlerViews.createLabeledInput("InputDev", "Insert Developer Name")
+    const submitButton = views.button({
+        type: "submit",
+        disabled: true,
+        class: "general-button"
+    }, "Create")
+
+    const toggleCreateGameButton = () => {
+        handlerViews.toggleButtonState(
+            submitButton,
+            !inputName.value.trim() || !inputDev.value.trim() || selectedGenresView.children.length === 0,
+        )
+    }
+
+    handlerViews.addToggleEventListeners(
+        toggleCreateGameButton,
+        inputName,
+        inputDev
+    )
+
+    const [
+        addGenresButton,
+        genresList,
+        inputGenres,
+        selectedGenresView,
+    ] = createGenresView(toggleCreateGameButton)
+
+    const form = views.form(
+        {},
+        inputName,
+        views.p(),
+        inputDev,
+        views.p(),
+        genresList,
+        inputGenres,
+        views.p(),
+        addGenresButton,
+        genresHeader,
+        selectedGenresView,
+        views.p(),
+        submitButton
+    )
+
+    return [header, form]
+}
+
 
 /**
  * Create search games view
@@ -11,24 +70,82 @@ import sessionHandlers from "../../handlers/sessionHandlers.js";
  * @returns {any[]} search games view
  */
 function createSearchGamesView() {
-    const genresValues = Object.values(genres)
-
-    const header = handlerViews.createHeader("Search Games")
+    const header = handlerViews.createHeader("Search Games: ")
+    const genresHeader = views.h4({class:"w3-wide centered"}, "Genres Selected")
     const hr = views.hr({class:"w3-opacity"})
+    const inputName = handlerViews.createLabeledInput("InputName", "Insert Game Name")
+    const inputDev = handlerViews.createLabeledInput("InputDev", "Insert Developer Name")
+    const searchGamesButton =
+        views.button({
+            id: "SearchGamesButton",
+            type: "submit",
+            disabled: true,
+            class: "general-button"
+        }, "Search")
+    const createGameButton =
+        views.button({
+            id: "CreateGameButton",
+            type: "button",
+            class: "general-button",
+        }, "Create Game")
 
-    const inputDev = views.input({
-        id: "InputDev",
-        type: "text",
-        placeholder: "Insert Developer Name"
-    })
+    createGameButton.onclick = () => {
+        handlerUtils.changeHash("createGame")
+    }
 
+    const toggleSearchGamesButton = () => {
+        handlerViews.toggleButtonState(
+            searchGamesButton,
+            !inputName.value.trim() && !inputDev.value.trim() && selectedGenresView.children.length === 0
+        )
+    }
+
+    handlerViews.addToggleEventListeners(
+        toggleSearchGamesButton,
+        inputName,
+        inputDev
+    )
+
+    const [
+        addGenresButton,
+        genresList,
+        inputGenres,
+        selectedGenresView
+    ] = createGenresView(toggleSearchGamesButton)
+
+    const form = views.form(
+        {},
+        hr,
+        inputName,
+        views.p(),
+        inputDev,
+        views.p(),
+        genresList,
+        inputGenres,
+        views.p(),
+        addGenresButton,
+        genresHeader,
+        selectedGenresView,
+        views.p(),
+        searchGamesButton,
+        views.p(),
+        createGameButton
+    )
+
+    return [header, form]
+}
+
+/**
+ * Create genres view
+ *
+ * @returns {*[]}
+ */
+function createGenresView(toggleButton) {
     const addGenresButton = views.button({
         id: "AddGenresButton",
         type: "button",
         class: "general-button",
     }, "Add")
-
-    const genresHeader = views.h4({class:"w3-wide"}, "Genres Selected:")
 
     const genresList = views.datalist({
         id: "GenresList"
@@ -47,94 +164,38 @@ function createSearchGamesView() {
 
     const selectedGenresView = views.ul({class: "w3-ul w3-border w3-center w3-hover-shadow"})
 
-    const searchGamesButton = views.button({
-        id: "SearchGamesButton",
-        type: "submit",
-        class: "general-button",
-    }, "Search")
-
     addGenresButton.addEventListener("click", () => {
-        createGenresListener(selectedGenresView, inputGenres, genresValues)
+        createGenresListener(selectedGenresView, inputGenres, genresValues, toggleButton)
     })
 
-    //updateGameSearchButton(searchGamesButton, inputDev, selectedGenresView)
-
-    const form = views.form(
-        {},
-        hr,
-        inputDev,
-        views.p(),
-        genresList,
-        inputGenres,
-        views.p({class:"line-height: 1px"}),
-        addGenresButton,
-        genresHeader,
-        selectedGenresView,
-        views.p(),
-        searchGamesButton
-    )
-
-    return [header, form]
-}
-
-/**
- * Toggle search button
- *
- * @param searchGamesButton search games button
- * @param inputDev input developer
- * @param selectedGenresView selected genres view
- */
-function toggleSearchButton(searchGamesButton, inputDev, selectedGenresView) {
-    searchGamesButton.disabled = inputDev.value.trim() === "" && selectedGenresView.children.length === 0;
-}
-
-/**
- * Update game search button
- *
- * @param searchGamesButton search games button
- * @param inputDev input developer
- * @param selectedGenresView selected genres view
- */
-function updateGameSearchButton(searchGamesButton, inputDev, selectedGenresView) {
-    const update = () => toggleSearchButton(searchGamesButton, inputDev, selectedGenresView)
-    inputDev.addEventListener('input', update)
-    selectedGenresView.addEventListener('DOMNodeInserted', update)
-    selectedGenresView.addEventListener('DOMNodeRemoved', update)
+    return [addGenresButton, genresList, inputGenres, selectedGenresView]
 }
 
 /**
  * Create genres listener
  *
- * @param selectedGenresView selected genres view
- * @param inputGenres input genres
- * @param genresValues genres values
+ * @param selectedGenresView
+ * @param inputGenres
+ * @param genresValues
+ * @param toggleButton
  */
-function createGenresListener(selectedGenresView, inputGenres, genresValues) {
+function createGenresListener(selectedGenresView, inputGenres, genresValues, toggleButton) {
     const selectedGenre = document.getElementById("InputGenres").value.trim()
-    if (selectedGenre && !ulHasItem(selectedGenre, selectedGenresView.children) && genresValues.includes(selectedGenre)) {
+    if (selectedGenre && !handlerViews.ulHasItem(selectedGenre, selectedGenresView.children) && genresValues.includes(selectedGenre)) {
         inputGenres.value = ""
 
         const p = views.p({class: "progress-bar-text"}, selectedGenre)
 
         p.onclick = () => {
             selectedGenresView.removeChild(p)
+            toggleButton()
         }
         selectedGenresView.appendChild(p)
-    }
-}
 
-/**
- * Check if ul has item
- *
- * @param item item to check
- * @param children ul children
- * @returns {boolean} true if ul has item, false otherwise
- */
-function ulHasItem(item, children) {
-    return Array.from(children).some(child => {
-        if(!child.childNodes || child.childNodes.length === 0) return false
-        return Array.from(child.childNodes).some(node => node.nodeType === Node.TEXT_NODE && node.data === item)
-    })
+        selectedGenresView.appendChild(p)
+
+        toggleButton()
+    }
 }
 
 /**
@@ -209,7 +270,8 @@ function createGameDetailsView(game) {
 const gameHandlerViews = {
     createSearchGamesView,
     createGetGameView,
-    createGameDetailsView
+    createGameDetailsView,
+    createCreateGameView
 }
 
 export default gameHandlerViews

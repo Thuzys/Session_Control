@@ -4,6 +4,57 @@ import requestUtils from "../utils/requestUtils.js";
 import constants from "../constants/constants.js"
 import { fetcher } from "../utils/fetchUtils.js";
 import views from "../views/viewsCreators.js";
+import handlerViews from "../views/handlerViews/handlerViews.js";
+
+/**
+ * Create game
+ *
+ * @param mainContent
+ */
+function createGame(mainContent) {
+    const [
+        header,
+        form
+    ] = gameHandlerViews.createCreateGameView()
+
+    const container = views.div({class: "player-details-container"})
+
+    form.onsubmit = (e) => handleCreateGameSubmit(e)
+
+    container.replaceChildren(header, form)
+    mainContent.replaceChildren(container)
+}
+
+/**
+ * Handle create game submit
+ *
+ * @param e event that triggered submit
+ */
+function handleCreateGameSubmit(e) {
+    e.preventDefault()
+    const inputName = document.getElementById("InputName")
+    const inputDev = document.getElementById("InputDev")
+    const selectedGenresView = document.getElementById("ul")
+
+    const genres = handlerUtils.childrenToString(selectedGenresView.children)
+
+    const game = {
+        name: inputName.value,
+        dev: inputDev.value,
+        genres: genres
+    }
+
+    const url = `${constants.API_BASE_URL}${constants.GAME_ROUTE}`
+
+    fetcher
+        .post(url, game, constants.TOKEN)
+        .then(response => handleCreateGameResponse(response))
+}
+
+function handleCreateGameResponse(response) {
+    handlerViews.showAlert(response.msg)
+    handlerUtils.changeHash(`games/${response.id}`)
+}
 
 /**
  * Search games by parameters: developer, genres and name
@@ -31,10 +82,13 @@ function searchGames(mainContent) {
  */
 function handleSearchGamesSubmit(e, selectedGenres) {
     e.preventDefault()
+    const inputName = document.getElementById("InputName")
     const inputDev = document.getElementById("InputDev")
     const selectedGenresView = document.getElementById("ul")
 
     const params = new URLSearchParams()
+    if (inputName.value)
+        params.set("name", inputName.value)
     if (inputDev.value)
         params.set("dev", inputDev.value)
     if (selectedGenresView.children && selectedGenresView.children.length > 0)
@@ -110,6 +164,7 @@ const gameHandlers = {
     searchGames,
     getGames,
     getGameDetails,
+    createGame
 }
 
 export default gameHandlers

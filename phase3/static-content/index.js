@@ -5,9 +5,11 @@ import sessionHandlers from "./handlers/sessionHandlers.js";
 import gameHandlers from "./handlers/gameHandlers.js";
 import contactHandlers from "./handlers/contactHandlers.js";
 import navigationViews from "./navigation/navigationViews.js";
+import playerHandlerViews from "./views/handlerViews/playerHandlerViews.JS";
 
 window.addEventListener('load', loadHandler)
 window.addEventListener('hashchange', hashChangeHandler)
+
 
 /**
  * Load handler routes
@@ -18,6 +20,7 @@ function loadHandler(){
 
     router.addRouteHandler("players/home", playerHandlers.getHome)
     router.addRouteHandler("playerSearch", playerHandlers.searchPlayer)
+    router.addRouteHandler("createGame", gameHandlers.createGame)
     router.addRouteHandler("players", playerHandlers.getPlayerDetails)
     router.addRouteHandler("gameSearch", gameHandlers.searchGames)
     router.addRouteHandler("games", gameHandlers.getGames)

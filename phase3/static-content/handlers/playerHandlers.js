@@ -2,7 +2,6 @@ import requestUtils from "../utils/requestUtils.js";
 import constants from "../constants/constants.js";
 import playerHandlerViews from "../views/handlerViews/playerHandlerViews.js";
 import {fetcher} from "../utils/fetchUtils.js";
-import handlerViews from "../views/handlerViews/handlerViews.js";
 import handlerUtils from "./handlerUtils/handlerUtils.js";
 import views from "../views/viewsCreators.js";
 
@@ -44,6 +43,7 @@ function searchPlayer(mainContent) {
     form.onsubmit = (e) => handlePlayerSearchSubmit(e);
     container.replaceChildren(h1, form);
     mainContent.replaceChildren(container);
+
 }
 
 /**

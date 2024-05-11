@@ -3,7 +3,6 @@ import views from "../views/viewsCreators.js";
 import requestUtils from "../utils/requestUtils.js";
 import constants from "../constants/constants.js";
 import sessionHandlerViews from "../views/handlerViews/sessionHandlerViews.js";
-import handlerViews from "../views/handlerViews/handlerViews.js";
 import {fetcher} from "../utils/fetchUtils.js";
 import {isPlayerInSession, isPlayerOwner} from "./handlerUtils/sessionHandlersUtils.js";
 
@@ -13,11 +12,10 @@ import {isPlayerInSession, isPlayerOwner} from "./handlerUtils/sessionHandlersUt
  * @param mainContent main content of the page
  */
 function searchSessions(mainContent) {
-    const h1 = views.h2({class:"w3-text-light-grey"},"Search Sessions: ");
-    const formContent = sessionHandlerViews.createSearchSessionView();
+    const formContent =  sessionHandlerViews.createSessionFormContentView();
     const form = views.form({}, ...formContent);
     form.addEventListener('submit', (e) => handleSearchSessionsSubmit(e));
-    mainContent.replaceChildren(views.div({class: "player-details-container"}, h1, form));
+    mainContent.replaceChildren(views.div({class: "player-details-container"}, form));
 }
 
 /**
@@ -117,6 +115,36 @@ function handleGetSessionDetailsResponse(session, mainContent) {
     mainContent.replaceChildren(views.div({class: "player-details-container"}, sessionDetailsView));
 }
 
+function addPlayerToSession(sid) {
+    const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${sid}/${constants.TEMPORARY_USER_ID}`;
+    fetcher.put(url, constants.TOKEN)
+        .then( _ =>
+            window.location.reload()
+        )
+}
+
+function removePlayerFromSession(sid) {
+    const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${sid}/${constants.TEMPORARY_USER_ID}`;
+    fetcher.del(url, constants.TOKEN)
+        .then( _ =>
+            window.location.reload()
+        )
+}
+
+function deleteSession(sid) {
+    const url = constants.API_BASE_URL + constants.SESSION_ID_ROUTE + sid;
+    fetcher.del(url, constants.TOKEN)
+        .then(() => {
+            window.alert("Session deleted successfully");
+            handlerUtils.changeHash("#sessionSearch");
+        })
+        .catch(() => window.alert("Session could not be deleted"))
+}
+
+function handleCreateSessionResponse(response) {
+    handlerUtils.changeHash("#sessions/" + response.id + "?offset=0");
+}
+
 /**
  * Handle search sessions submit event
  * @param mainContent main content of the page
@@ -127,14 +155,6 @@ function createSession(mainContent, gid, gameName) {
     const [h1CreateSession, formCreateSession] = sessionHandlerViews.createCreateSessionView(gameName);
     formCreateSession.addEventListener('submit', (e) => handleCreateSessionSubmit(e, gid));
     mainContent.replaceChildren(views.div({class: "player-details-container"}, h1CreateSession, formCreateSession));
-}
-
-/**
- * Handle create session response from the server
- * @param response response from the server
- */
-function handleCreateSessionResponse(response) {
-    handlerUtils.changeHash("#sessions/" + response.id + "?offset=0");
 }
 
 /**
@@ -177,4 +197,7 @@ export default {
     getSessionDetails,
     createSession,
     updateSession,
+    addPlayerToSession,
+    removePlayerFromSession,
+    deleteSession
 };

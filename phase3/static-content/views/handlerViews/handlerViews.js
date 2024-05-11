@@ -1,30 +1,49 @@
 import views from "../viewsCreators.js";
 import handlerUtils from "../../handlers/handlerUtils/handlerUtils.js";
 import constants from "../../constants/constants.js";
-import {fetcher} from "../../utils/fetchUtils.js";
+import sessionHandlers from "../../handlers/sessionHandlers.js";
 
 /**
- * Create h1 view with text
+ * Create a radio button with a label.
+ * @param labelText text for the label
+ * @param name name for the input element
+ * @returns {HTMLElement} label element that contains the input and span elements
+ */
+function createRadioButton(labelText, name) {
+    const input = views.input({type: "radio", class: "particles-checkbox", name: "state", id: labelText, value: labelText});
+    const span = views.span({},name);
+    return views.label({class: "particles-checkbox-container"}, input, span);
+}
+
+/**
+ * Create labeled input
+ *
+ * @param id
+ * @param placeholder
+ * @returns {*}
+ */
+function createLabeledInput(id, placeholder) {
+    return views.input({type: "text", id, placeholder });
+}
+
+/**
+ * Add toggle event listeners
+ *
+ * @param toggleFn
+ * @param elements
+ */
+function addToggleEventListeners(toggleFn, ...elements) {
+    elements.forEach(el => el.addEventListener("input", toggleFn));
+}
+
+/**
+ * Create header
+ *
  * @param text
  * @returns {*}
  */
 function createHeader(text) {
     return views.h2({class:"w3-wide centered"}, text);
-}
-
-/**
- * Create labeled input
- * @param labelText label text content
- * @param inputType input type (text, password, etc.)
- * @param inputId input id attribute value
- * @returns {*[]} labeled input view
- */
-function createLabeledInput(labelText, inputType, inputId) {
-    return [
-        views.label({qualifiedName: "for", value: inputId}, labelText),
-        views.input({type: inputType, id: inputId}),
-        views.p()
-    ];
 }
 
 /**
@@ -71,7 +90,7 @@ function hrefButtonView(textContent, query) {
 function createBackButtonView() {
     const backButton = views.button({type: "button", class: "general-button"}, "Back");
     backButton.addEventListener('click', () => {
-            window.history.back();
+        window.history.back();
     });
     return backButton;
 }
@@ -87,14 +106,12 @@ function createDeleteOrLeaveSessionButtonView(session, isLeaveButton = false) {
     const button = views.button({type: "submit", class: "general-button"}, buttonText);
     button.addEventListener('click', (e) => {
         e.preventDefault();
-        let url = constants.API_BASE_URL + constants.SESSION_ID_ROUTE + session.sid;
+        const url = constants.API_BASE_URL + constants.SESSION_ID_ROUTE + session.sid;
         if (isLeaveButton) {
-            url += "/" + constants.TEMPORARY_USER_ID;
+            sessionHandlers.removePlayerFromSession(session.sid);
+        } else {
+            sessionHandlers.deleteSession(session.sid);
         }
-        fetcher.del(url, constants.TOKEN)
-            .then(() => {
-                handlerUtils.changeHash("#sessions?pid=" + constants.TEMPORARY_USER_ID + "&offset=0");
-            })
     });
     return button;
 }
@@ -138,6 +155,71 @@ function createPagination(query, hash, hasNext, elementsPerPage = constants.ELEM
     return container;
 }
 
+function createUpdateSessionButtonView(session) {
+    const updateSessionButton = views.button({type: "submit", class: "general-button"}, "Update Session");
+    updateSessionButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        handlerUtils.changeHash("#updateSession?sid=" + session.sid)
+    });
+    return updateSessionButton;
+}
+
+/**
+ * Show alert
+ *
+ * @param message
+ */
+function showAlert(message) {
+    let modal = document.getElementById("alertModal");
+    if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "alertModal";
+        modal.className = "alert-modal";
+        document.body.appendChild(modal);
+
+        const alertContent = document.createElement("div");
+        alertContent.className = "alert-content";
+        modal.appendChild(alertContent);
+
+        const messageText = document.createElement("div");
+        messageText.id = "alertMessage";
+        alertContent.appendChild(messageText);
+
+        const buttonContainer = document.createElement("div");
+        buttonContainer.className = "alert-buttons";
+        alertContent.appendChild(buttonContainer);
+
+        const closeButton = document.createElement("button");
+        closeButton.innerText = "OK";
+        closeButton.onclick = () => {
+            modal.style.display = "none";
+        };
+
+        buttonContainer.appendChild(closeButton);
+    }
+
+    document.getElementById("alertMessage").innerText = message;
+    modal.style.display = "flex";
+}
+
+/**
+ * Check if ul has item
+ *
+ * @param item
+ * @param children
+ * @returns {boolean}
+ */
+function ulHasItem(item, children) {
+    return Array.from(children).some(child => {
+        if(!child.childNodes || child.childNodes.length === 0) return false
+        return Array.from(child.childNodes).some(node => node.nodeType === Node.TEXT_NODE && node.data === item)
+    })
+}
+
+function toggleButtonState(button, condition) {
+    button.disabled = condition
+}
+
 const handlerViews = {
     hrefButtonView,
     createHeader,
@@ -145,7 +227,13 @@ const handlerViews = {
     hrefConstructor,
     createBackButtonView,
     createPagination,
+    showAlert,
+    toggleButtonState,
+    createUpdateSessionButtonView,
+    addToggleEventListeners,
+    ulHasItem,
     createDeleteOrLeaveSessionButtonView,
+    createRadioButton
 }
 
-export default handlerViews;
+export default handlerViews

@@ -51,6 +51,7 @@ a[hRef]:hover {
 .player-details-container {
     min-width: 800px;
     min-height: 200px;
+    background: black;
 }
 
 
@@ -109,6 +110,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(1);
     margin-right: 10px;
 }
+
 
 input:focus {
     background-color: rgba(17, 17, 17, 0.68);
@@ -309,3 +311,93 @@ h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 .progress-bar-text:hover::after {
     width: 100%;
 }
+
+.padding-left {
+    padding-left: 10px;
+}
+
+
+
+
+
+.particles-checkbox {
+    height: 30px;
+    width: 30px;
+    display: inline-flex;
+    appearance: none;
+    border: 3px solid #3a3a5b;
+    border-radius: 50%;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.5s ease;
+    margin: 2px;
+}
+
+.particles-checkbox:focus {
+    outline: 0;
+}
+
+.particles-checkbox:checked {
+    background-color: #577af3;
+}
+
+.particles-checkbox:checked + span {
+    border-color: #577af3;
+    color: #b3b3d1;
+}
+
+.particles-checkbox-container {
+    display: inline-flex;
+    margin: 20px;
+    align-items: center;
+    border-radius: 8px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.5s ease;
+}
+
+.particles-checkbox-container span {
+    border: 3px solid transparent;
+    border-radius: 15px;
+    margin-left: 4px;
+    padding: 30px;
+    padding-left: 70px;
+    width: 300px;
+    color: #3a3a5b;
+    transition: all 0.5s ease;
+}
+
+.particles-checkbox {
+    position: absolute;
+    left: 30px;
+}
+
+.background {
+    background-color: #111;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px;
+}
+
+body.light-mode {
+    background-color: #fff;
+    color: #111;
+}
+
+.sidebar.light-mode {
+    background-color: #535865;
+    color: #111;
+}
+
+.player-details-container.light-mode {
+    background-color: #535865;
+    color: #111;
+}
+
+.light-mode-ul {
+    background-color: #0039cb;
+    color: #111;
+}
+
+

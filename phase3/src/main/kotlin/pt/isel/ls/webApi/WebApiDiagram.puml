@@ -15,6 +15,7 @@ Interface SessionHandlerInterface {
     + deleteSession()
     + removePlayerFromSession()
     + updateCapacityOrDate()
+    + isPlayerInSession()
 }
 
 Interface PlayerHandlerInterface {
@@ -39,6 +40,7 @@ class SessionHandler {
     +deleteSession()
     +removePlayerFromSession()
     +updateCapacityOrDate()
+    +isPlayerInSession()
     - sessionManagement: SessionServices
     - playerManagement: PlayerServices
 }

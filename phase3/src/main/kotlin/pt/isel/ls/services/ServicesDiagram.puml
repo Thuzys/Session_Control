@@ -22,6 +22,7 @@ interface SessionServices {
     + updateCapacityOrDate()
     + removePlayer()
     + deleteSession()
+    + isPlayerInSession()
 }
 
 class GameManagement {
@@ -47,6 +48,7 @@ class SessionManagement {
     + updateCapacityOrDate()
     + removePlayer()
     + deleteSession()
+    + isPlayerInSession()
     -sessionDataMem: SessionStorageInterface
 }
 

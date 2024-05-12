@@ -107,12 +107,17 @@ function getSessionDetails(mainContent) {
  * @param mainContent main content of the page
  */
 function handleGetSessionDetailsResponse(session, mainContent) {
-    const isOwner =  isPlayerOwner(session);
-    const isInSession = isPlayerInSession(session);
-
-    const playerListView = sessionHandlerViews.createPlayerListView(session);
-    const sessionDetailsView = sessionHandlerViews.createSessionDetailsViews(session, playerListView, isOwner, isInSession);
-    mainContent.replaceChildren(views.div({class: "player-details-container"}, sessionDetailsView));
+    const isOwner = isPlayerOwner(session);
+    const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${session.sid}/${constants.TEMPORARY_USER_ID}`;
+    fetcher.get(url, constants.TOKEN)
+        .then(isInSession => {
+            return isInSession === true;
+        }
+        ).then(isInSession => {
+            const playerListView = sessionHandlerViews.createPlayerListView(session);
+            const sessionDetailsView = sessionHandlerViews.createSessionDetailsViews(session, playerListView, isOwner, isInSession);
+            mainContent.replaceChildren(views.div({class: "player-details-container"}, sessionDetailsView));
+        })
 }
 
 /**

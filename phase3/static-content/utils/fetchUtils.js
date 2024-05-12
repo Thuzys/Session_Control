@@ -73,9 +73,10 @@ async function fetchInternal(uri, options = {}, body = undefined, token= undefin
     return fetch(uri, options)
         .then(response => {
             if (!isResponseOK(response)) {
-                response.text().then(text => {
+                response.json().then(json => {
+                    const text = json.error
                     window.history.back()
-                    handlerViews.showAlert(`Error: ${response.status} ${response.statusText}\n${text}`)
+                    handlerViews.showAlert(text)
                 })
             } else {
                 return response.json()

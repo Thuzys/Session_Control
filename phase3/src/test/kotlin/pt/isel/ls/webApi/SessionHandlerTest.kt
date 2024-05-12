@@ -599,4 +599,60 @@ class SessionHandlerTest {
             )
         }
     }
+
+    @Test
+    fun `isPlayerInSession returns OK status`() {
+        actionOfASessionArrangement { handler: SessionHandlerInterface ->
+            val request =
+                RoutedRequest(
+                    Request(Method.GET, "$DUMMY_ROUTE/1/1")
+                        .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
+                    UriTemplate.from("$DUMMY_ROUTE/{sid}/{pid}"),
+                )
+            val response = handler.isPlayerInSession(request)
+            assertEquals(Status.OK, response.status)
+        }
+    }
+
+    @Test
+    fun `isPlayerInSession returns BAD_REQUEST status due to invalid parameters`() {
+        actionOfASessionArrangement { handler: SessionHandlerInterface ->
+            val request =
+                RoutedRequest(
+                    Request(Method.GET, "$DUMMY_ROUTE/missing/missing")
+                        .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
+                    UriTemplate.from("$DUMMY_ROUTE/{sid}/{pid}"),
+                )
+            val response = handler.isPlayerInSession(request)
+            assertEquals(Status.BAD_REQUEST, response.status)
+        }
+    }
+
+    @Test
+    fun `isPlayerInSession response is  returns true when player is in session`() {
+        actionOfASessionArrangement { handler: SessionHandlerInterface ->
+            val request =
+                RoutedRequest(
+                    Request(Method.GET, "$DUMMY_ROUTE/1/1")
+                        .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
+                    UriTemplate.from("$DUMMY_ROUTE/{sid}/{pid}"),
+                )
+            val response = handler.isPlayerInSession(request)
+            assertEquals("true", response.bodyString())
+        }
+    }
+
+    @Test
+    fun `isPlayerInSession response is false when player is not in session`() {
+        actionOfASessionArrangement { handler: SessionHandlerInterface ->
+            val request =
+                RoutedRequest(
+                    Request(Method.GET, "$DUMMY_ROUTE/1/2")
+                        .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
+                    UriTemplate.from("$DUMMY_ROUTE/{sid}/{pid}"),
+                )
+            val response = handler.isPlayerInSession(request)
+            assertEquals("false", response.bodyString())
+        }
+    }
 }

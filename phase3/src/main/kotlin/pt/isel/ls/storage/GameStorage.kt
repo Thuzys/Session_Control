@@ -87,7 +87,7 @@ class GameStorage(envVarName: String) : GameStorageInterface {
 
                 getGamesFromDB(getGamesStmt, getGenresStmt, areGenresInGameStmt, genres)
                     .ifEmpty {
-                        throw NoSuchElementException("No games found because of the given parameters")
+                        throw NoSuchElementException("No games found")
                     }
             }
         }

@@ -119,4 +119,15 @@ interface SessionServices {
      * @param sid The unique identifier of the session to be deleted.
      */
     fun deleteSession(sid: UInt)
+
+    /**
+     * Checks if a player is in a session.
+     *
+     * @param player The identifier of the player to check.
+     * @param session The identifier of the session to check.
+     */
+    fun isPlayerInSession(
+        player: UInt,
+        session: UInt,
+    ): Boolean
 }

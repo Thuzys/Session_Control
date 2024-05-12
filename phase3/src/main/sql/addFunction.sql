@@ -4,7 +4,7 @@ drop function if exists add_owner_to_session();
 
 create or replace function add_owner_to_session() returns trigger as $$
 begin
-    insert into player_session values (new.sid, new.owner);
+    insert into player_session (sid, pid) values (new.sid, new.owner);
     return new;
 end
 $$ language plpgsql;
@@ -47,7 +47,7 @@ begin
         group by s.sid, s.capacity, s.game_name, s.date, s.gid, s.owner
         having (state is null) or
             (state = 'OPEN' and count(u.pid) < s.capacity and now() <= s.date) or
-            (state = 'CLOSE' and (count(u.pid) = s.capacity and now() > s.date))
+            (state = 'CLOSE' and (count(u.pid) = s.capacity or now() > s.date))
         limit l offset o;
 end
 $$ language plpgsql;

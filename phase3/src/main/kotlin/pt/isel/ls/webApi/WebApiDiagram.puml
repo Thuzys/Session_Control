@@ -20,6 +20,7 @@ Interface SessionHandlerInterface {
 Interface PlayerHandlerInterface {
     +createPlayer()
     +getPlayer()
+    +getPlayersBy()
 }
 
 class GameHandler {
@@ -27,6 +28,7 @@ class GameHandler {
     +getGameDetails()
     +getGames()
     - gameManagement: GameServices
+    - playerManagement: PlayerServices
 }
 
 class SessionHandler {
@@ -38,11 +40,13 @@ class SessionHandler {
     +removePlayerFromSession()
     +updateCapacityOrDate()
     - sessionManagement: SessionServices
+    - playerManagement: PlayerServices
 }
 
 class PlayerHandler {
     +createPlayer()
     +getPlayer()
+    +getPlayersBy()
     - playerManagement: PlayerServices
 }
 
@@ -56,8 +60,10 @@ GameHandlerInterface <|-- GameHandler
 SessionHandlerInterface <|-- SessionHandler
 PlayerHandlerInterface <|-- PlayerHandler
 
-GameHandler *-- services.GameServices : gameManagement
-SessionHandler *-- services.SessionServices : sessionManagement
-PlayerHandler *-- services.PlayerServices : playerManagement
+GameHandler *--- services.GameServices : gameManagement
+GameHandler *--- services.PlayerServices : playerManagement
+SessionHandler *--- services.SessionServices : sessionManagement
+SessionHandler *--- services.PlayerServices : playerManagement
+PlayerHandler *--- services.PlayerServices : playerManagement
 
 @enduml

@@ -9,6 +9,11 @@ package domain {
     package errors {
     class ServicesError
     }
+    package info {
+    class GameInfo
+    class PlayerInfo
+    class SessionInfo
+    }
 }
 
 package services {
@@ -31,15 +36,18 @@ package webApi {
 package server {
 }
 
-domain -> services
-domain.errors -> services
-domain -> storage
-domain -> webApi
+domain --> services
+domain.errors --> services
+domain --> storage
+domain --> webApi
+domain.info --> storage
 
-storage -> services
+storage --> services
 
-services -> webApi
+services --> webApi
 
-webApi -> server
+webApi --> server
+
+domain.info.PlayerInfo --> domain.Session
 
 @enduml

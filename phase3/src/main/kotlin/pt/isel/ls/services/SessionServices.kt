@@ -119,12 +119,4 @@ interface SessionServices {
      * @param sid The unique identifier of the session to be deleted.
      */
     fun deleteSession(sid: UInt)
-
-//    /**
-//     * Retrieves the sid of the sessions containing the player.
-//     * @param pid The identifier of the player.
-//     *
-//     * @return A collection of sessions that contain the player.
-//     */
-//    fun getSessionsByPlayer(pid: UInt): Collection<Int>
 }

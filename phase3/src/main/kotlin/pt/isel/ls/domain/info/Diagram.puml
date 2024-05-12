@@ -1,0 +1,21 @@
+@startuml
+class GameInfo {
+    +gid: Uint
+    +name: String?
+}
+
+class PlayerInfo {
+    +pid: Uint
+    +name: String
+}
+
+class SessionInfo {
+    +sid: Uint
+    +owner: PlayerInfo
+    +game: GameInfo
+    +date: LocalDate
+}
+
+SessionInfo "n" *-- "1" GameInfo
+SessionInfo "n" *-- "1" PlayerInfo
+@enduml

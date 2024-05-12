@@ -74,12 +74,4 @@ interface SessionHandlerInterface {
      * @return A response indicating the outcome of the session deletion operation.
      */
     fun deleteSession(request: Request): Response
-
-//    /**
-//     * Retrieves the list of sessions id given a players unique identifier (pid).
-//     *
-//     * @param request The HTTP request containing the session ID.
-//     * @return A response containing the list of sessions id.
-//     */
-//    fun getSessionsByPlayer(request: Request): Response
 }

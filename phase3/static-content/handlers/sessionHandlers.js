@@ -178,7 +178,7 @@ function createSession(mainContent, gid, gameName) {
  * @param mainContent main content of the page
  */
 function updateSession(mainContent) {
-    const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${requestUtils.getQuery().get('sid')}`;
+    const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${requestUtils.getParams()}`;
     fetcher
         .get(url, constants.TOKEN)
         .then( session => {
@@ -194,7 +194,7 @@ function updateSession(mainContent) {
  */
 function handleUpdateSessionSubmit(e) {
     e.preventDefault();
-    const sid = requestUtils.getQuery().get('sid');
+    const sid = requestUtils.getParams();
     const capacity = document.getElementById('capacity').value;
     const date = document.getElementById('dateChange').value;
     const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${sid}`;

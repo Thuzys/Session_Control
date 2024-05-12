@@ -12,10 +12,10 @@ const cardData = [
         image: '/resources/Thuzys.jpg',
         email: 'A50543@alunos.isel.pt',
         socials: [
-            {name: 'gitHub', image: '/resources/gitHub.png', link: `https://github.com/Thuzys`},
+            {name: 'github', image: '/resources/github.png', link: `https://github.com/Thuzys`},
             {
-                name: 'LinkedIn',
-                image: '/resources/linkedIn.png',
+                name: 'linkedin',
+                image: '/resources/linkedin.png',
                 link: 'https://www.linkedin.com/in/arthur-cesar-oliveira-681643184'
             },
         ]

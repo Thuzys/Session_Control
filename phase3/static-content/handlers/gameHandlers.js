@@ -52,7 +52,6 @@ function handleCreateGameSubmit(e) {
 }
 
 function handleCreateGameResponse(response) {
-    handlerViews.showAlert(response.msg)
     handlerUtils.changeHash(`games/${response.id}`)
 }
 

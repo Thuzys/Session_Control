@@ -51,4 +51,3 @@ begin
         limit l offset o;
 end
 $$ language plpgsql;
-

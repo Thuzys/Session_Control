@@ -361,6 +361,42 @@ paths:
               description: Bad Request, insufficient parameters.
             '401':
               description: Unauthorized, authentication token is missing or invalid.
+    get:
+      summary: Get a player in a session
+      description: Retrieve players in a session with the provided session ID.
+      parameters:
+        - name: sid
+          in: path
+          required: true
+          description: The unique identifier of the session
+          schema:
+            type: integer
+            format: uint
+        - name: pid
+          in: path
+          required: true
+          description: The unique identifier of the player
+          schema:
+            type: integer
+            format: uint
+        - name: token
+          in: header
+          required: true
+          description: The authentication token
+          schema:
+            type: string
+            format: UUID
+      responses:
+        '200':
+          description: Players retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/isPlayerInSession'
+        '400':
+          description: Bad Request, invalid session ID provided.
+        '401':
+          description: Unauthorized, token invalid.
   /sessions/:sid:
     get:
       summary: Get session details
@@ -601,3 +637,9 @@ components:
           type: string
           format: date-time
           description: The date and time of the session
+    isPlayerInSession:
+      type: object
+      properties:
+        result:
+          type: boolean
+          description: Indicates if the player is in the session

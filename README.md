@@ -600,6 +600,12 @@ DELETE FROM PLAYER_SESSION WHERE pid = ? AND sid = ?
 ```
 
 ---
+- to see if a player is in a session:
+```sql
+SELECT * FROM PLAYER_SESSION WHERE pid = ? AND sid = ?
+```
+
+---
 
 ## Error Handling
 

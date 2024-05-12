@@ -95,4 +95,12 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
     ) = tryCatch("Unable to remove player from session due") {
         sessionDataMem.updateRemovePlayer(session, player)
     }
+
+    override fun isPlayerInSession(
+        player: UInt,
+        session: UInt,
+    ): Boolean =
+        tryCatch("Unable to check if player is in session due") {
+            sessionDataMem.isPlayerInSession(player, session)
+        }
 }

@@ -191,4 +191,25 @@ class SessionHandler(
             }
         }
     }
+
+    override fun isPlayerInSession(request: Request): Response {
+        unauthorizedAccess(request, playerManagement)
+            ?.let { return unauthorizedResponse(it) }
+        val player = request.toPidOrNull()
+        val session = request.toSidOrNull()
+        return if (player == null || session == null) {
+            makeResponse(
+                Status.BAD_REQUEST,
+                createJsonRspMessage(
+                    "Invalid or Missing parameters. Please provide 'player' and 'session' as valid values.",
+                ),
+            )
+        } else {
+            val isPlayerInSession = sessionManagement.isPlayerInSession(player, session)
+            return makeResponse(
+                Status.OK,
+                Json.encodeToString(isPlayerInSession),
+            )
+        }
+    }
 }

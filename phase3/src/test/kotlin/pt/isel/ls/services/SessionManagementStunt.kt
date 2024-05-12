@@ -112,4 +112,11 @@ object SessionManagementStunt : SessionServices {
             throw ServicesError("Unable to delete the session")
         }
     }
+
+    override fun isPlayerInSession(
+        player: UInt,
+        session: UInt,
+    ): Boolean {
+        return player == 1u && session == 1u
+    }
 }

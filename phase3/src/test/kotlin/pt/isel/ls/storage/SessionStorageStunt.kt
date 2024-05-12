@@ -78,15 +78,6 @@ class SessionStorageStunt : SessionStorageInterface {
             }
             .ifEmpty { null }
 
-//    override fun updateAddPlayer(
-//        sid: UInt,
-//        newItem: Collection<Player>,
-//    ) {
-//        hashSession[sid]?.let { session ->
-//            hashSession[sid] = session.copy(players = newItem)
-//        }
-//    }
-
     override fun updateAddPlayer(
         sid: UInt,
         pid: Collection<UInt>,
@@ -106,6 +97,13 @@ class SessionStorageStunt : SessionStorageInterface {
             return true
         }
         return false
+    }
+
+    override fun isPlayerInSession(
+        player: UInt,
+        session: UInt,
+    ): Boolean {
+        return hashSession[session]?.players?.any { playerInfo -> playerInfo.pid == player } ?: false
     }
 
     override fun updateCapacityOrDate(

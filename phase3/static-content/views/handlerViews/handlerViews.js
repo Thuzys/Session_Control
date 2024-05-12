@@ -174,32 +174,24 @@ function createUpdateSessionButtonView(session) {
 function showAlert(message) {
     let modal = document.getElementById("alertModal");
     if (!modal) {
-        modal = document.createElement("div");
-        modal.id = "alertModal";
-        modal.className = "alert-modal";
+        modal = views.div({class: "alert-modal", id: "alertModal"});
         document.body.appendChild(modal);
 
-        const alertContent = document.createElement("div");
-        alertContent.className = "alert-content";
+        const alertContent = views.div({class: "alert-content"});
         modal.appendChild(alertContent);
 
-        const messageText = document.createElement("div");
-        messageText.id = "alertMessage";
+        const messageText = views.div({id: "alertMessage"});
         alertContent.appendChild(messageText);
 
-        const buttonContainer = document.createElement("div");
-        buttonContainer.className = "alert-buttons";
+        const buttonContainer = views.div({class: "alert-buttons"});
         alertContent.appendChild(buttonContainer);
 
-        const closeButton = document.createElement("button");
-        closeButton.innerText = "OK";
+        const closeButton = views.button({type: "button"}, "OK");
         closeButton.onclick = () => {
             modal.style.display = "none";
         };
-
         buttonContainer.appendChild(closeButton);
     }
-
     document.getElementById("alertMessage").innerText = message;
     modal.style.display = "flex";
 }

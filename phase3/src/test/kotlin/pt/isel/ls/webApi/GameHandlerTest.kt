@@ -84,7 +84,7 @@ class GameHandlerTest {
                 UriTemplate.from("$DUMMY_ROUTE/{gid}"),
             )
                 .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
-        val expectedMessage = createJsonRspMessage("Bad Request.")
+        val expectedMessage = createJsonRspMessage("Invalid arguments: gid must be provided.")
 
         // ACT
         val response =

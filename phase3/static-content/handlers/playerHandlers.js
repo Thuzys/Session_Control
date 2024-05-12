@@ -86,7 +86,6 @@ function handlePlayerSearchSubmit(e) {
     e.preventDefault();
     const pid = document.getElementById("pid");
     if (pid.value === "") {
-        alert("Please enter a player id");
         return;
     }
     handlerUtils.changeHash(`#players?userName=${pid.value}`);

@@ -179,4 +179,19 @@ class SessionStorage(envName: String) : SessionStorageInterface {
             }
         }
     }
+
+    override fun isPlayerInSession(
+        player: UInt,
+        session: UInt,
+    ): Boolean =
+        dataSource.connection.use { connection ->
+            connection.executeCommand {
+                val selectCMD = "SELECT * FROM PLAYER_SESSION WHERE pid = ? AND sid = ?;"
+                val stmt1 = connection.prepareStatement(selectCMD)
+                stmt1.setInt(1, player.toInt())
+                stmt1.setInt(2, session.toInt())
+                val rs = stmt1.executeQuery()
+                rs.next()
+            }
+        }
 }

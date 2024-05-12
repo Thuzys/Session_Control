@@ -99,4 +99,16 @@ interface SessionStorageInterface {
         sid: UInt,
         pid: Collection<UInt>,
     ): Boolean
+
+    /**
+     * Checks if a player is in a session.
+     *
+     * @param player The identifier of the player to check.
+     * @param session The identifier of the session to check.
+     * @return true if the player is in the session, false otherwise.
+     */
+    fun isPlayerInSession(
+        player: UInt,
+        session: UInt,
+    ): Boolean
 }

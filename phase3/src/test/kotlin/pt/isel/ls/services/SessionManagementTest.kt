@@ -7,6 +7,7 @@ import pt.isel.ls.storage.SessionStorageStunt
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 private val date1 = LocalDate(2024, 3, 10)
@@ -212,6 +213,20 @@ class SessionManagementTest {
             // ASSERT
             assertEquals(sessionsSizeBeforeDelete.dec(), sessionManagement.getSessions(gameInfo).size)
             assertFailsWith<ServicesError> { sessionManagement.getSessionDetails(1u) }
+        }
+    }
+
+    @Test
+    fun `isPlayerInSession returns true if player is in session`() {
+        actionSessionManagementTest { sessionManagement: SessionServices ->
+            assertTrue { sessionManagement.isPlayerInSession(1u, 1u) }
+        }
+    }
+
+    @Test
+    fun `isPlayerInSession returns false if player is not in session`() {
+        actionSessionManagementTest { sessionManagement: SessionServices ->
+            assertFalse { sessionManagement.isPlayerInSession(500u, 1u) }
         }
     }
 }

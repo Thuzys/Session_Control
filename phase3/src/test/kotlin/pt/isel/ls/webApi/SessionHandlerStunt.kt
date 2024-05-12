@@ -31,4 +31,8 @@ object SessionHandlerStunt : SessionHandlerInterface {
     override fun deleteSession(request: Request): Response {
         TODO("Not yet implemented")
     }
+
+    override fun isPlayerInSession(request: Request): Response {
+        TODO("Not yet implemented")
+    }
 }

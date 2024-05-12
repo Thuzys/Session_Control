@@ -120,11 +120,14 @@ interface SessionServices {
      */
     fun deleteSession(sid: UInt)
 
-//    /**
-//     * Retrieves the sid of the sessions containing the player.
-//     * @param pid The identifier of the player.
-//     *
-//     * @return A collection of sessions that contain the player.
-//     */
-//    fun getSessionsByPlayer(pid: UInt): Collection<Int>
+    /**
+     * Checks if a player is in a session.
+     *
+     * @param player The identifier of the player to check.
+     * @param session The identifier of the session to check.
+     */
+    fun isPlayerInSession(
+        player: UInt,
+        session: UInt,
+    ): Boolean
 }

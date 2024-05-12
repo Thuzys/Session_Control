@@ -10,6 +10,7 @@ import views from "../viewsCreators.js";
  */
 function createPlayerDetailsView(player, backButton = true) {
     const headerText = backButton ? "Player Details" : "Your Information";
+    const sessionText = backButton ? "View Player's Sessions" : "Your Sessions";
     const hr = views.hr({class:"w3-opacity"})
     const container = views.div({class: "player-details-container"});
 
@@ -25,17 +26,21 @@ function createPlayerDetailsView(player, backButton = true) {
     );
 
     const sessionsButton = handlerViews.hrefButtonView(
-        "Sessions",
+        sessionText,
         `${constants.SESSION_ROUTE}?pid=${player.pid}&offset=0`
     );
 
-    container.replaceChildren(header, hr, detailsList, views.p(), sessionsButton, views.p());
+    container.replaceChildren(header, hr, detailsList, views.p());
 
     if (backButton) {
         const backButtonView = handlerViews.createBackButtonView();
+        container.appendChild(sessionsButton);
+        container.appendChild(views.p());
         container.appendChild(backButtonView);
     } else {
         const createSessionHref = handlerViews.hrefButtonView("Choose a game to create a session", `#gameSearch`);
+        container.appendChild(sessionsButton);
+        container.appendChild(views.p());
         container.appendChild(createSessionHref);
     }
     return container;
@@ -48,7 +53,7 @@ function createPlayerDetailsView(player, backButton = true) {
 function createSearchPlayerView() {
     const h1 = handlerViews.createHeader("Search Player")
     const playerInput =
-        views.input({type: "text", id: "pid", maxLength: 10, placeholder: "username"});
+        views.input({type: "text", id: "pid", placeholder: "username"});
     const searchButton =
         views.button(
             {type: "submit", class: "general-button", disabled: true},

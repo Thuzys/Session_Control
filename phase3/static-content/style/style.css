@@ -171,7 +171,7 @@ input:focus {
 
 .card {
     background-color: #111;
-    box-shadow: 0 4px 8px 0 rgb(174, 176, 190);
+    box-shadow: 0 4px 8px 0 rgb(0, 123, 255);
     max-width: 300px;
     margin: 10px;
     text-align: center;

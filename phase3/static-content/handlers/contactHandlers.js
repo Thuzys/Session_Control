@@ -6,6 +6,21 @@ import contactHandlerViews from "../views/handlerViews/contactHandlerViews.js";
  */
 const cardData = [
     {
+        name: 'Arthur Oliveira',
+        title: 'CEO & Founder',
+        university: 'ISEL University',
+        image: '/resources/Thuzys.jpg',
+        email: 'A50543@alunos.isel.pt',
+        socials: [
+            {name: 'github', image: '/resources/github.png', link: `https://github.com/Thuzys`},
+            {
+                name: 'linkedin',
+                image: '/resources/linkedin.png',
+                link: 'https://www.linkedin.com/in/arthur-cesar-oliveira-681643184'
+            },
+        ]
+    },
+    {
         name: 'Guilherme Belo',
         title: 'CEO & Founder',
         university: 'ISEL University',
@@ -14,17 +29,6 @@ const cardData = [
         socials: [
             {name: 'github', image: '/resources/gitHub.png', link: `https://github.com/GuilhermeBelo2904`},
             {name: 'linkedin', image: '/resources/linkedIn.png'},
-        ]
-    },
-    {
-        name: 'Arthur Oliveira',
-        title: 'CEO & Founder',
-        university: 'ISEL University',
-        image: '/resources/Thuzys.jpg',
-        email: 'A50543@alunos.isel.pt',
-        socials: [
-            {name: 'github', image: '/resources/gitHub.png', link: `https://github.com/Thuzys`},
-            {name: 'linkedin', image: '/resources/linkedIn.png', link: 'https://www.linkedin.com/in/arthur-cesar-oliveira-681643184'},
         ]
     },
     {

@@ -4,7 +4,6 @@ import requestUtils from "../utils/requestUtils.js";
 import constants from "../constants/constants.js"
 import { fetcher } from "../utils/fetchUtils.js";
 import views from "../views/viewsCreators.js";
-import handlerViews from "../views/handlerViews/handlerViews.js";
 
 /**
  * Create game

@@ -34,7 +34,7 @@ describe('Test sessionHandlers', function() {
 
     it('handleSearchSessionsSubmit sets the correct window location hash', function() {
         const mainContentChildren = testUtils.setupTest(sessionHandlers.searchSessions);
-        simulateSessionFormSubmission(mainContentChildren, '1', '2', '2024-04-13T22_50', 'open');
+        simulateSessionFormSubmission(mainContentChildren, '1', '2', '2024-04-13', 'open');
         window.location.hash.should.equal('#sessions?gid=1&pid=2&date=2024-04-13T22_50&state=open&offset=0');
     });
 
@@ -48,19 +48,19 @@ describe('Test sessionHandlers', function() {
 
     it('should handle form submission with empty gameId', function() {
         const mainContentChildren = testUtils.setupTest(sessionHandlers.searchSessions);
-        simulateSessionFormSubmission(mainContentChildren, '', '2', '2024-04-13T22_50', 'open');
+        simulateSessionFormSubmission(mainContentChildren, '', '2', '2024-04-13', 'open');
         window.location.hash.should.equal('#sessions?pid=2&date=2024-04-13T22_50&state=open&offset=0');
     });
 
     it('should handle form submission with state set to close', function() {
         const mainContentChildren = testUtils.setupTest(sessionHandlers.searchSessions);
-        simulateSessionFormSubmission(mainContentChildren, '1', '2', '2024-04-13T22_50', 'close');
+        simulateSessionFormSubmission(mainContentChildren, '1', '2', '2024-04-13', 'close');
         window.location.hash.should.equal('#sessions?gid=1&pid=2&date=2024-04-13T22_50&state=close&offset=0');
     });
 
     it('should handle form submission with empty playerId', function() {
         const mainContentChildren = testUtils.setupTest(sessionHandlers.searchSessions);
-        simulateSessionFormSubmission(mainContentChildren, '1', '', '2024-04-13T22_50', 'open');
+        simulateSessionFormSubmission(mainContentChildren, '1', '', '2024-04-13', 'open');
         window.location.hash.should.equal('#sessions?gid=1&date=2024-04-13T22_50&state=open&offset=0');
     });
 
@@ -72,7 +72,7 @@ describe('Test sessionHandlers', function() {
 
     it('should handle form submission with empty state', function() {
         const mainContentChildren = testUtils.setupTest(sessionHandlers.searchSessions);
-        simulateSessionFormSubmission(mainContentChildren, '1', '2', '2024-04-13T22_50', '');
+        simulateSessionFormSubmission(mainContentChildren, '1', '2', '2024-04-13', '');
         window.location.hash.should.equal('#sessions?gid=1&pid=2&date=2024-04-13T22_50&offset=0');
     });
 });

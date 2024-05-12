@@ -211,8 +211,8 @@ internal fun buildGameGetterString(
     name: String?,
 ): String {
     val baseQuery = StringBuilder("SELECT gid, name, developer FROM GAME WHERE 1=1")
-    dev?.let { baseQuery.append(" AND developer = ?") }
-    name?.let { baseQuery.append(" AND name ILIKE '%' || ? || '%'") }
+    dev?.let { baseQuery.append(" AND compare_name(developer, ?)") }
+    name?.let { baseQuery.append(" AND compare_name(name, ?)") }
     return baseQuery.toString()
 }
 

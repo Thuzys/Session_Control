@@ -3,7 +3,7 @@ import requestUtils from "../../utils/requestUtils.js";
 import handlerViews from "./handlerViews.js";
 import constants from "../../constants/constants.js";
 import sessionHandlers from "../../handlers/sessionHandlers.js";
-import handlerUtils from "../../handlers/handlerUtils/handlerUtils";
+import handlerUtils from "../../handlers/handlerUtils/handlerUtils.js";
 
 /**
  * Create session form content view

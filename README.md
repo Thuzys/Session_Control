@@ -90,7 +90,7 @@ The following diagram holds the Entity-Relationship model for the information ma
 
 ## Physical Model
 
-The physical model of the database is available in [SQL script](phase2/src/main/sql/createSchema.sql).
+The physical model of the database is available in [SQL script](phase3/src/main/sql).
 
 ---
 
@@ -123,7 +123,7 @@ Currently, the application is only available as a web application, so you will n
 
 ### Installation
 
-There is no installation required to use the web application. Simply open your web browser and navigate to the application's URL to access it.
+There is no installation required to use the web application. Open your web browser and navigate to the application's URL to access it.
 
 ### Login/Registration
 
@@ -353,7 +353,7 @@ To view your own details, follow these steps:
 To search for games, follow these steps:
 - Go to the search games page.
 - Filter the games by name, genre, or developer. 
-- To choose a genre click on the insert genre input and select the genre you want, after this click on the add button. to add the genre to the filter. If you want to remove a genre from the filter click on it on the genres selected list.
+- To choose a genre, click on the insert genre input and select the genre you want, after this click on the add button. to add the genre to the filter. If you want to remove a genre from the filter click on it on the genres selected list.
 - Click on the "Search" button to view the filtered games.
 - You will be redirected to the search results page, where you can view the games that match your filter.
 - After you choose a game you will be redirected to the game details page where you can see the game details such as name, genre, and developer.
@@ -532,17 +532,20 @@ SELECT name FROM GENRE JOIN GAME_GENRE ON GENRE.name = GAME_GENRE.genre
 ---
 - to create a player:
 ```sql
-INSERT INTO PLAYER (name, email, token) VALUES (?, ?, ?)
+INSERT INTO PLAYER (name, email, token, username) VALUES (?, ?, ?, ?)
 ```
 ---
 - to read a player:
 ```sql
-SELECT pid, name, email, token FROM PLAYER WHERE pid = ?
+SELECT pid, name, username, email, token FROM PLAYER WHERE pid = ?
 ```
 ---
 - to read a player by email or token:
 ```sql
-SELECT pid, name, email, token FROM PLAYER WHERE email = ? OR token = ? OFFSET ? LIMIT ?
+SELECT pid, name, email, userName, token 
+FROM PLAYER 
+WHERE email = ? OR token = ? or userName = ?
+OFFSET ? LIMIT ?
 ```
 ---
 - to create a session:
@@ -553,45 +556,38 @@ INSERT INTO PLAYER_SESSION (pid, sid) VALUES (?,?)
 ---
 - to read a session:
 ```sql
-SELECT sid, capacity, gid, date FROM SESSION WHERE sid = ?;
+SELECT s.capacity, s.sid, s.date, s.owner, g.name, g.gid
+FROM session s
+       JOIN game g ON s.gid = g.gid
+WHERE s.sid = ?
 ```
 ---
 - to read a session by dev, date, playerId or state:
 ```sql
-SELECT s.sid, s.capacity, s.gid, s.date
-FROM session s
-LEFT JOIN player_session ps ON ps.sid = s.sid
-    WHERE (s.gid = ? or ? = 0)
-    AND (s.date = ? or ? = 'null')
-    AND (ps.pid = ? or ? = 0)
-GROUP BY s.sid, s.capacity, s.gid, s.date
-    HAVING (? = 'null') OR
-    (? = 'OPEN' AND s.capacity > count(ps.pid)) OR
-    (? = 'CLOSE' AND s.capacity = count(ps.pid))
-OFFSET ? LIMIT ?;
+select * from get_sessions_by(?, ?, ?, ?, ?, ?, ?, ?)
 ```
 ---
 - to update a session:
 ```sql
-INSERT INTO PLAYER_SESSION (pid, sid)
-  SELECT ?, ?
-  WHERE NOT EXISTS (SELECT 1 FROM PLAYER_SESSION WHERE pid = ? AND sid = ?);
+INSERT INTO PLAYER_SESSION (pid, sid) VALUES (?, ?)
 ```
 ---
 
 ---
 - to update a session by capacity or date:
 ```sql
-UPDATE SESSION SET
+UPDATE SESSION
+SET
     capacity = CASE WHEN ? IS NOT NULL THEN ? ELSE capacity END,
-    date = CASE WHEN ? IS NOT NULL THEN ? ELSE date END
-WHERE sid = ?;
+    date = CASE WHEN ? IS NOT NULL THEN to_date(?, 'YYYY-MM-DD'::varchar) ELSE date END
+WHERE sid = ?
 ```
 ---
 
 ---
 - to delete a session:
 ```sql
+DELETE FROM PLAYER_SESSION WHERE sid = ?;
 DELETE FROM SESSION WHERE sid = ?
 ```
 

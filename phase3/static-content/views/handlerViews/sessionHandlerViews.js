@@ -3,6 +3,7 @@ import requestUtils from "../../utils/requestUtils.js";
 import handlerViews from "./handlerViews.js";
 import constants from "../../constants/constants.js";
 import sessionHandlers from "../../handlers/sessionHandlers.js";
+import handlerUtils from "../../handlers/handlerUtils/handlerUtils";
 
 /**
  * Create session form content view
@@ -87,33 +88,33 @@ function canSearchSessions(gidInputValue, pidInputValue, dateInputValue, stateIn
  * @param isInSession
  * @returns {any}
  */
-function createSessionDetailsViews(session, playerList, isOwner, isInSession) {
-    const deleteSessionButton = handlerViews.createDeleteOrLeaveSessionButtonView(session);
-    const leaveSessionButton = handlerViews.createDeleteOrLeaveSessionButtonView(session, true);
-    const updateButton = handlerViews.createUpdateSessionButtonView(session);
+function createSessionDetailsView(session, playerList, isOwner, isInSession) {
+    const deleteSessionButton = createDeleteOrLeaveSessionButtonView(session);
+    const leaveSessionButton = createDeleteOrLeaveSessionButtonView(session, true);
+    const updateButton = createUpdateSessionButtonView(session);
     const joinSessionButton = createJoinSessionButtonView(session);
     const div = views.div(
         {},
         handlerViews.createHeader(session.owner.userName + "´s Session"),
         views.hr({class:"w3-opacity)"}),
         views.div({class: "w3-margin-bottom"},
-        views.ul({class: "w3-ul w3-border w3-center w3-hover-shadow"},
-            views.li(views.h3({class: "w3-wide blue-letters"}, "Game")),
-            views.li(
-                ...handlerViews.hrefConstructor(
-                    "#games",
-                    session.gameInfo.gid, `${session.gameInfo.name}`
-                )
+            views.ul({class: "w3-ul w3-border w3-center w3-hover-shadow"},
+                views.li(views.h3({class: "w3-wide blue-letters"}, "Game")),
+                views.li(
+                    ...handlerViews.hrefConstructor(
+                        "#games",
+                        session.gameInfo.gid, `${session.gameInfo.name}`
+                    )
+                ),
+                views.li(views.h3({class: "w3-wide blue-letters"}, "Date")),
+                views.li(session.date),
+                views.li(views.h3({class: "w3-wide blue-letters"}, "Owner")),
+                views.li(session.owner.userName),
+                views.li(views.h3({class: "w3-wide blue-letters"}, "Capacity")),
+                views.li(session.capacity.toString()),
+                views.li(views.h3({class: "w3-wide blue-letters"}, "Players")),
+                playerList
             ),
-            views.li(views.h3({class: "w3-wide blue-letters"}, "Date")),
-            views.li(session.date),
-            views.li(views.h3({class: "w3-wide blue-letters"}, "Owner")),
-            views.li(session.owner.userName),
-            views.li(views.h3({class: "w3-wide blue-letters"}, "Capacity")),
-            views.li(session.capacity.toString()),
-            views.li(views.h3({class: "w3-wide blue-letters"}, "Players")),
-            playerList
-        ),
         )
     );
 
@@ -292,9 +293,44 @@ function createUpdateSessionView(session) {
     return [header, formContent];
 }
 
+/**
+ * Create update session button view
+ * @param session
+ * @returns {HTMLButtonElement}
+ */
+function createUpdateSessionButtonView(session) {
+    const updateSessionButton = views.button({type: "submit", class: "general-button"}, "Update Session");
+    updateSessionButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        handlerUtils.changeHash("#updateSession/" + session.sid)
+    });
+    return updateSessionButton;
+}
+
+/**
+ * Create delete or leave session button view
+ * @param session session to delete or leave
+ * @param isLeaveButton if true create leave button, else create delete button
+ * @returns {*} delete session button view
+ */
+function createDeleteOrLeaveSessionButtonView(session, isLeaveButton = false) {
+    const buttonText = isLeaveButton ? "Leave Session" : "Delete Session";
+    const button = views.button({type: "submit", class: "general-button"}, buttonText);
+    button.addEventListener('click', (e) => {
+        e.preventDefault();
+        const url = constants.API_BASE_URL + constants.SESSION_ID_ROUTE + session.sid;
+        if (isLeaveButton) {
+            sessionHandlers.removePlayerFromSession(session.sid);
+        } else {
+            sessionHandlers.deleteSession(session.sid);
+        }
+    });
+    return button;
+}
+
 const sessionHandlerViews = {
     createSessionFormContentView,
-    createSessionDetailsViews,
+    createSessionDetailsView,
     createGetSessionsView,
     createPlayerListView,
     createCreateSessionView,

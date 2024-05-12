@@ -111,7 +111,7 @@ function handleGetSessionDetailsResponse(session, mainContent) {
     const isInSession = isPlayerInSession(session);
 
     const playerListView = sessionHandlerViews.createPlayerListView(session);
-    const sessionDetailsView = sessionHandlerViews.createSessionDetailsViews(session, playerListView, isOwner, isInSession);
+    const sessionDetailsView = sessionHandlerViews.createSessionDetailsView(session, playerListView, isOwner, isInSession);
     mainContent.replaceChildren(views.div({class: "player-details-container"}, sessionDetailsView));
 }
 

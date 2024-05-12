@@ -93,27 +93,6 @@ function createBackButtonView() {
 }
 
 /**
- * Create delete or leave session button view
- * @param session session to delete or leave
- * @param isLeaveButton if true create leave button, else create delete button
- * @returns {*} delete session button view
- */
-function createDeleteOrLeaveSessionButtonView(session, isLeaveButton = false) {
-    const buttonText = isLeaveButton ? "Leave Session" : "Delete Session";
-    const button = views.button({type: "submit", class: "general-button"}, buttonText);
-    button.addEventListener('click', (e) => {
-        e.preventDefault();
-        const url = constants.API_BASE_URL + constants.SESSION_ID_ROUTE + session.sid;
-        if (isLeaveButton) {
-            sessionHandlers.removePlayerFromSession(session.sid);
-        } else {
-            sessionHandlers.deleteSession(session.sid);
-        }
-    });
-    return button;
-}
-
-/**
  * Create pagination view
  * @param query query
  * @param hash hash to change
@@ -150,21 +129,6 @@ function createPagination(query, hash, hasNext, elementsPerPage = constants.ELEM
     container.appendChild(nextButton);
 
     return container;
-}
-
-
-/**
- * Create update session button view
- * @param session
- * @returns {HTMLButtonElement}
- */
-function createUpdateSessionButtonView(session) {
-    const updateSessionButton = views.button({type: "submit", class: "general-button"}, "Update Session");
-    updateSessionButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        handlerUtils.changeHash("#updateSession/" + session.sid)
-    });
-    return updateSessionButton;
 }
 
 /**
@@ -235,10 +199,8 @@ const handlerViews = {
     createPagination,
     showAlert,
     toggleButtonState,
-    createUpdateSessionButtonView,
     addToggleEventListeners,
     ulHasItem,
-    createDeleteOrLeaveSessionButtonView,
     createRadioButton
 }
 

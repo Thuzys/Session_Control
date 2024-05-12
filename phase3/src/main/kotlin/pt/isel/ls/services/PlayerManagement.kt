@@ -38,4 +38,10 @@ class PlayerManagement(private val mem: PlayerStorageInterface) : PlayerServices
         tryCatch("Unable to check if the token is valid due") {
             mem.readBy(token = token) != null
         }
+
+    override fun getPlayerDetailsBy(userName: String): Player {
+        return tryCatch("Unable to get the details of a Player due") {
+            mem.readBy(userName = userName)?.firstOrNull() ?: throw ServicesError("Player not found.")
+        }
+    }
 }

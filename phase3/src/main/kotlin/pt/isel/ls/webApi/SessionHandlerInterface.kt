@@ -75,11 +75,11 @@ interface SessionHandlerInterface {
      */
     fun deleteSession(request: Request): Response
 
-//    /**
-//     * Retrieves the list of sessions id given a players unique identifier (pid).
-//     *
-//     * @param request The HTTP request containing the session ID.
-//     * @return A response containing the list of sessions id.
-//     */
-//    fun getSessionsByPlayer(request: Request): Response
+    /**
+     * Checks if a player is in a session based on the provided player ID and session ID.
+     *
+     * @param request The HTTP request containing the player and session data.
+     * @return A response indicating if the player is in the session or not.
+     */
+    fun isPlayerInSession(request: Request): Response
 }

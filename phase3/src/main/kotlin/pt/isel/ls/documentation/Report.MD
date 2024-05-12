@@ -94,7 +94,65 @@ The physical model of the database is available in [SQL script](../2324-2-LEIC42
 
 ## Web page
 
-- TODO()
+# Web Application User Guide
+
+## Introduction
+
+The web application is designed to manage game sessions and the players who join or own these sessions. 
+
+It provides functionalities to create, read, and update game sessions, games, and players.  The application has a user-friendly interface that includes a home page and a navigation menu for easy access to different parts of the application. Users can create a new game session, join an existing game session, view and filter game sessions, and update the details of a game session.
+
+## Getting Started
+
+### System Requirements
+
+Currently, the application is only available as a web application, so you will need a web browser to access it. The application is compatible with most modern web browsers, including Chrome, Firefox, and Safari.
+
+### Installation
+
+There is no installation required to use the web application. Simply open your web browser and navigate to the application's URL to access it.
+
+### Login/Registration
+
+The application currently doesn't have a login or registration system, so you can start using the application right away without any credentials. We plan to implement a login system in the future.
+
+## Navigating the Interface
+
+The web application has a simple and intuitive interface that allows users to easily access the main features of the application.
+
+### Home Page
+
+The home page is the main landing page of the application. It provides information of the current user such as the name, username, and email. It also displays two buttons:
+- Your sessions: when clicked it will show the sessions that the user is part of.
+- Choose a game to create a session: when clicked it will redirect the user to the search games page so the user can choose a game to create a session.
+
+### Navigation Menu
+
+Explain how to use the navigation menu to access different parts of the application.
+
+## Using the Features
+
+This section should be broken down into sub-sections for each main feature of the application. For each feature, provide step-by-step instructions on how to use it.
+
+### Creating a Game Session
+
+Explain how to create a new game session.
+
+### Joining a Game Session
+
+Explain how to join an existing game session.
+
+### Viewing Game Sessions
+
+Explain how to view and filter game sessions.
+
+### Updating a Game Session
+
+Explain how to update the details of a game session.
+
+## Troubleshooting
+
+Provide solutions for common problems that users might encounter while using the application.
 
 ---
 ## Open-API Specification

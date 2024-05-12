@@ -28,14 +28,16 @@ fun buildRoutes(
 ) = routes(
     PLAYER_ID_ROUTE bind Method.GET to playerHandler::getPlayer,
     PLAYER_ROUTE bind Method.POST to playerHandler::createPlayer,
+    PLAYER_ROUTE bind Method.GET to playerHandler::getPlayerBy,
     GAME_ID_ROUTE bind Method.GET to gameHandler::getGameDetails,
     GAME_ROUTE bind Method.POST to gameHandler::createGame,
-    GAME_ROUTE bind Method.GET to gameHandler::getGameByDevAndGenres,
+    GAME_ROUTE bind Method.GET to gameHandler::getGames,
     SESSION_PLAYER_ROUTE bind Method.PUT to sessionHandler::addPlayerToSession,
+    SESSION_PLAYER_ROUTE bind Method.GET to sessionHandler::isPlayerInSession,
     SESSION_ID_ROUTE bind Method.GET to sessionHandler::getSession,
     SESSION_ROUTE bind Method.POST to sessionHandler::createSession,
     SESSION_ROUTE bind Method.GET to sessionHandler::getSessions,
-    SESSION_ID_ROUTE bind Method.POST to sessionHandler::updateCapacityOrDate,
+    SESSION_ID_ROUTE bind Method.PUT to sessionHandler::updateCapacityOrDate,
     SESSION_PLAYER_ROUTE bind Method.DELETE to sessionHandler::removePlayerFromSession,
     SESSION_ID_ROUTE bind Method.DELETE to sessionHandler::deleteSession,
 )

@@ -15,9 +15,10 @@ class Game {
 class Session {
     +sid : Uint?
     +capacity : Uint
-    +gid : Uint
+    +gameInfo : GameInfo
     +date : LocalDate
-    +players : Collection<Player>
+    +owner : PlayerInfo
+    +players : Collection<PlayerInfo>
 }
 enum SessionState {
     OPEN
@@ -27,6 +28,4 @@ class Email {
     +email : String
 }
 Player "1" *-- "1" Email : contains
-Session "n" *-- "n" Player : contains
-Session "n" *-- "1" Game : contains
 @enduml

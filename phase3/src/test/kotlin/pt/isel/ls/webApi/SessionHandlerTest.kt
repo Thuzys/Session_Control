@@ -40,7 +40,10 @@ class SessionHandlerTest {
                     Method.POST,
                     DUMMY_ROUTE,
                 )
-                    .body("{\"gid\": \"1\", \"date\": \"2024-03-16T12:30\", \"capacity\": \"10\"}")
+                    .body(
+                        "{\"gid\": \"1\",\"date\": \"2024-03-16\", " +
+                            "\"capacity\": \"10\", \"owner\": \"1\", \"ownerName\": \"test1\"}",
+                    )
                     .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
             val response = handler.createSession(request)
             assertEquals(Status.CREATED, response.status)
@@ -55,10 +58,19 @@ class SessionHandlerTest {
                     Method.POST,
                     DUMMY_ROUTE,
                 )
-                    .body("{\"gid\": \"1\", \"date\": \"2024-03-16T12:30\", \"capacity\": \"10\"}")
+                    .body(
+                        "{\"gid\": \"1\",\"date\": \"2024-03-16\", " +
+                            "\"capacity\": \"10\", \"owner\": \"1\", \"ownerName\": \"test1\"}",
+                    )
                     .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
             val response = handler.createSession(request)
-            assertEquals(createJsonMessage("Session created with ID: 1 successfully."), response.bodyString())
+            assertEquals(
+                createJsonRspMessage(
+                    message = "Session created with ID: 1 successfully.",
+                    id = 1u,
+                ),
+                response.bodyString(),
+            )
         }
     }
 
@@ -100,7 +112,7 @@ class SessionHandlerTest {
                     Method.POST,
                     DUMMY_ROUTE,
                 )
-                    .body("{gid: 1, date: 2024-03-16T12:30:00}")
+                    .body("{gid: 1, date: 2024-03-16}")
                     .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
             val response = handler.createSession(request)
             assertEquals(Status.BAD_REQUEST, response.status)
@@ -179,9 +191,10 @@ class SessionHandlerTest {
             val response = handler.getSession(request)
             assertEquals(
                 expected =
-                    "{\"sid\":1,\"capacity\":1,\"gid\":1,\"date\":\"2024-03-10T12:30\"," +
-                        "\"players\":[{\"pid\":1,\"name\":\"test1\",\"userName\":\"test1\"," +
-                        "\"email\":\"default@mail.com\",\"token\":\"${SessionManagementStunt.playerToken}\"}]}",
+                    "{\"sid\":1,\"capacity\":1,\"gameInfo\":{\"gid\":1,\"name\":\"Game\"}," +
+                        "\"date\":\"2024-03-10\",\"owner\":{\"pid\":1,\"userName\":\"test1\"}," +
+                        "\"players\":[{\"pid\":1,\"userName\":\"test1\"}," +
+                        "{\"pid\":2,\"userName\":\"test2\"}]}",
                 actual = response.bodyString(),
             )
         }
@@ -300,15 +313,10 @@ class SessionHandlerTest {
             val response = handler.getSessions(request)
             assertEquals(
                 expected =
-                    "[{\"sid\":1,\"capacity\":1,\"gid\":1,\"date\":\"2024-03-10T12:30\"," +
-                        "\"players\":[{\"pid\":1,\"name\":\"test1\",\"userName\":\"test1\"," +
-                        "\"email\":\"default@mail.com\",\"token\":\"${SessionManagementStunt.playerToken}\"}]}," +
-                        "{\"sid\":2,\"capacity\":2,\"gid\":1,\"date\":\"2024-03-10T12:30\"," +
-                        "\"players\":[" +
-                        "{\"pid\":1,\"name\":\"test1\",\"userName\":\"test1\",\"email\":\"default@mail.com\"," +
-                        "\"token\":\"${SessionManagementStunt.playerToken}\"}," +
-                        "{\"pid\":2,\"name\":\"test2\",\"userName\":\"test2\",\"email\":\"default@mail.com\"," +
-                        "\"token\":\"${SessionManagementStunt.playerToken}\"}]}]",
+                    "[{\"sid\":1,\"owner\":{\"pid\":1,\"userName\":\"test1\"}," +
+                        "\"gameInfo\":{\"gid\":1,\"name\":\"Game\"},\"date\":\"2024-03-10\"}," +
+                        "{\"sid\":2,\"owner\":{\"pid\":2,\"userName\":\"test2\"}," +
+                        "\"gameInfo\":{\"gid\":1,\"name\":\"Game\"},\"date\":\"2024-03-10\"}]",
                 actual = response.bodyString(),
             )
         }
@@ -333,7 +341,7 @@ class SessionHandlerTest {
                     "$DUMMY_ROUTE?token=${UUID.randomUUID()}",
                 ).body("{\"gid\": \"1\", \"date\": \"2024-03-16T12:30\", \"capacity\": \"10\"}")
             val response = handler.createSession(request)
-            assertEquals(createJsonMessage("Unauthorized, token not provided."), response.bodyString())
+            assertEquals(createJsonRspMessage("Unauthorized, token not provided."), response.bodyString())
         }
 
     @Test
@@ -341,7 +349,7 @@ class SessionHandlerTest {
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request = Request(Method.GET, DUMMY_ROUTE)
             val response = handler.createSession(request)
-            assertEquals(createJsonMessage("Unauthorized, token not provided."), response.bodyString())
+            assertEquals(createJsonRspMessage("Unauthorized, token not provided."), response.bodyString())
         }
 
     @Test
@@ -368,7 +376,7 @@ class SessionHandlerTest {
                     UriTemplate.from("$DUMMY_ROUTE/{sid}/{pid}"),
                 )
             val response = handler.createSession(request)
-            assertEquals(createJsonMessage("Unauthorized, invalid token."), response.bodyString())
+            assertEquals(createJsonRspMessage("Unauthorized, invalid token."), response.bodyString())
         }
 
     @Test
@@ -376,7 +384,7 @@ class SessionHandlerTest {
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request = Request(Method.GET, DUMMY_ROUTE)
             val response = handler.createSession(request)
-            assertEquals(createJsonMessage("Unauthorized, token not provided."), response.bodyString())
+            assertEquals(createJsonRspMessage("Unauthorized, token not provided."), response.bodyString())
         }
 
     @Test
@@ -391,12 +399,12 @@ class SessionHandlerTest {
     fun `bad request updating a session by capacity or date due to invalid sid`() =
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request =
-                Request(
-                    Method.POST,
-                    DUMMY_ROUTE,
+                RoutedRequest(
+                    Request(Method.PUT, "$DUMMY_ROUTE/invalid")
+                        .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
+                        .body("{\"sid\": \"dummy\", \"date\": \"2024-03-16T12:30\", \"capacity\": \"10\"}"),
+                    UriTemplate.from("$DUMMY_ROUTE/{sid}"),
                 )
-                    .body("{\"sid\": \"dummy\", \"date\": \"2024-03-16T12:30\", \"capacity\": \"10\"}")
-                    .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
             val response = handler.updateCapacityOrDate(request)
             assertEquals(Status.BAD_REQUEST, response.status)
         }
@@ -405,12 +413,12 @@ class SessionHandlerTest {
     fun `bad request updating a session by capacity or date due to lack of sid`() =
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request =
-                Request(
-                    Method.POST,
-                    DUMMY_ROUTE,
+                RoutedRequest(
+                    Request(Method.PUT, "$DUMMY_ROUTE/invalid")
+                        .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
+                        .body("{\"date\":\"2024-03-16T12:30\",\"capacity\":\"10\"}"),
+                    UriTemplate.from("$DUMMY_ROUTE/{sid}"),
                 )
-                    .body("{\"date\": \"2024-03-16T12:30\", \"capacity\": \"10\"}")
-                    .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
             val response = handler.updateCapacityOrDate(request)
             assertEquals(Status.BAD_REQUEST, response.status)
         }
@@ -419,12 +427,12 @@ class SessionHandlerTest {
     fun `invalid date but valid sid and capacity returns OK status response`() =
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request =
-                Request(
-                    Method.POST,
-                    DUMMY_ROUTE,
+                RoutedRequest(
+                    Request(Method.PUT, "$DUMMY_ROUTE/1")
+                        .body("{\"date\":\"invalid_date_format\",\"capacity\":\"10\"}")
+                        .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
+                    UriTemplate.from("$DUMMY_ROUTE/{sid}"),
                 )
-                    .body("{\"sid\": \"1\", \"date\": \"invalid_date_format\", \"capacity\": \"10\"}")
-                    .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
             val response = handler.updateCapacityOrDate(request)
             assertEquals(Status.OK, response.status)
         }
@@ -433,12 +441,12 @@ class SessionHandlerTest {
     fun `invalid capacity but valid sid and date returns OK status response`() =
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request =
-                Request(
-                    Method.POST,
-                    DUMMY_ROUTE,
+                RoutedRequest(
+                    Request(Method.PUT, "$DUMMY_ROUTE/1")
+                        .body("\"date\":\"2024-03-16\",\"capacity\":\"invalid_format\"}")
+                        .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
+                    UriTemplate.from("$DUMMY_ROUTE/{sid}"),
                 )
-                    .body("{\"sid\": \"1\", \"date\": \"2024-03-16T12:30\", \"capacity\": \"invalid_format\"}")
-                    .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
             val response = handler.updateCapacityOrDate(request)
             assertEquals(Status.OK, response.status)
         }
@@ -447,12 +455,11 @@ class SessionHandlerTest {
     fun `bad request response when trying to update a session by capacity and date due to lack of capacity and date`() =
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request =
-                Request(
-                    Method.POST,
-                    DUMMY_ROUTE,
+                RoutedRequest(
+                    Request(Method.PUT, "$DUMMY_ROUTE/1")
+                        .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
+                    UriTemplate.from("$DUMMY_ROUTE/{sid}"),
                 )
-                    .body("{\"sid\": \"1\"}")
-                    .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
             val response = handler.updateCapacityOrDate(request)
             assertEquals(Status.BAD_REQUEST, response.status)
         }
@@ -461,12 +468,12 @@ class SessionHandlerTest {
     fun `OK response updating a session by capacity and date with valid parameters`() =
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request =
-                Request(
-                    Method.POST,
-                    DUMMY_ROUTE,
+                RoutedRequest(
+                    Request(Method.PUT, "$DUMMY_ROUTE/1")
+                        .body("{\"date\":\"2024-03-16\",\"capacity\":\"10\"}")
+                        .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
+                    UriTemplate.from("$DUMMY_ROUTE/{sid}"),
                 )
-                    .body("{\"sid\": \"1\", \"date\": \"2024-03-16T12:30\", \"capacity\": \"10\"}")
-                    .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
             val response = handler.updateCapacityOrDate(request)
             assertEquals(Status.OK, response.status)
         }
@@ -475,12 +482,12 @@ class SessionHandlerTest {
     fun `OK response updating a session by capacity only`() =
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request =
-                Request(
-                    Method.POST,
-                    DUMMY_ROUTE,
+                RoutedRequest(
+                    Request(Method.PUT, "$DUMMY_ROUTE/1")
+                        .body("{\"capacity\":\"10\"}")
+                        .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
+                    UriTemplate.from("$DUMMY_ROUTE/{sid}"),
                 )
-                    .body("{\"sid\": \"1\", \"capacity\": \"10\"}")
-                    .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
             val response = handler.updateCapacityOrDate(request)
             assertEquals(Status.OK, response.status)
         }
@@ -572,7 +579,7 @@ class SessionHandlerTest {
 
     @Test
     fun `getting sessions with date should change the underline to colon`() {
-        val date = "2024-03-10T12_30"
+        val date = "2024-03-10"
         val state = "open"
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request =
@@ -584,17 +591,68 @@ class SessionHandlerTest {
             val response = handler.getSessions(request)
             assertEquals(
                 expected =
-                    "[{\"sid\":1,\"capacity\":1,\"gid\":1,\"date\":\"2024-03-10T12:30\"," +
-                        "\"players\":[{\"pid\":1,\"name\":\"test1\",\"userName\":\"test1\"," +
-                        "\"email\":\"default@mail.com\",\"token\":\"${SessionManagementStunt.playerToken}\"}]}," +
-                        "{\"sid\":2,\"capacity\":2,\"gid\":1,\"date\":\"2024-03-10T12:30\"," +
-                        "\"players\":[" +
-                        "{\"pid\":1,\"name\":\"test1\",\"userName\":\"test1\",\"email\":\"default@mail.com\"," +
-                        "\"token\":\"${SessionManagementStunt.playerToken}\"}," +
-                        "{\"pid\":2,\"name\":\"test2\",\"userName\":\"test2\",\"email\":\"default@mail.com\"," +
-                        "\"token\":\"${SessionManagementStunt.playerToken}\"}]}]",
+                    "[{\"sid\":1,\"owner\":{\"pid\":1,\"userName\":\"test1\"}," +
+                        "\"gameInfo\":{\"gid\":1,\"name\":\"Game\"},\"date\":\"2024-03-10\"}" +
+                        ",{\"sid\":2,\"owner\":{\"pid\":2,\"userName\":\"test2\"}," +
+                        "\"gameInfo\":{\"gid\":1,\"name\":\"Game\"},\"date\":\"2024-03-10\"}]",
                 actual = response.bodyString(),
             )
+        }
+    }
+
+    @Test
+    fun `isPlayerInSession returns OK status`() {
+        actionOfASessionArrangement { handler: SessionHandlerInterface ->
+            val request =
+                RoutedRequest(
+                    Request(Method.GET, "$DUMMY_ROUTE/1/1")
+                        .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
+                    UriTemplate.from("$DUMMY_ROUTE/{sid}/{pid}"),
+                )
+            val response = handler.isPlayerInSession(request)
+            assertEquals(Status.OK, response.status)
+        }
+    }
+
+    @Test
+    fun `isPlayerInSession returns BAD_REQUEST status due to invalid parameters`() {
+        actionOfASessionArrangement { handler: SessionHandlerInterface ->
+            val request =
+                RoutedRequest(
+                    Request(Method.GET, "$DUMMY_ROUTE/missing/missing")
+                        .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
+                    UriTemplate.from("$DUMMY_ROUTE/{sid}/{pid}"),
+                )
+            val response = handler.isPlayerInSession(request)
+            assertEquals(Status.BAD_REQUEST, response.status)
+        }
+    }
+
+    @Test
+    fun `isPlayerInSession response is  returns true when player is in session`() {
+        actionOfASessionArrangement { handler: SessionHandlerInterface ->
+            val request =
+                RoutedRequest(
+                    Request(Method.GET, "$DUMMY_ROUTE/1/1")
+                        .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
+                    UriTemplate.from("$DUMMY_ROUTE/{sid}/{pid}"),
+                )
+            val response = handler.isPlayerInSession(request)
+            assertEquals("true", response.bodyString())
+        }
+    }
+
+    @Test
+    fun `isPlayerInSession response is false when player is not in session`() {
+        actionOfASessionArrangement { handler: SessionHandlerInterface ->
+            val request =
+                RoutedRequest(
+                    Request(Method.GET, "$DUMMY_ROUTE/1/2")
+                        .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
+                    UriTemplate.from("$DUMMY_ROUTE/{sid}/{pid}"),
+                )
+            val response = handler.isPlayerInSession(request)
+            assertEquals("false", response.bodyString())
         }
     }
 }

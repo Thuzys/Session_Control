@@ -1,8 +1,16 @@
+/**
+ * Get the query parameters from the URL
+ * @returns the query parameters
+ */
 function getParams() {
     const list = window.location.hash.replace("#", "").split("/")
     return list.length > 1 ? list[1] : ""
 }
 
+/**
+ * Get the query parameters from the URL
+ * @returns {Map<any, any>} the query parameters
+ */
 function getQuery() {
     if (window.location.hash.length === 0) {
         return new Map()
@@ -25,6 +33,10 @@ function getQuery() {
     return retMap
 }
 
+/**
+ * Get the path from the URL
+ * @returns {string} the path
+ */
 function getPath(){
     return window.location.hash.replace("#", "").split("?")[0]
 }

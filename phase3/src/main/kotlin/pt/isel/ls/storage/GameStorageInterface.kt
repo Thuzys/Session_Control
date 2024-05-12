@@ -45,6 +45,7 @@ interface GameStorageInterface {
         limit: UInt,
         dev: String? = null,
         genres: Collection<String>? = null,
+        name: String? = null,
     ): Collection<Game>
 
     /**

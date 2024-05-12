@@ -30,22 +30,49 @@ paths:
                     format: uint
         '400':
           description: Bad Request, insufficient parameters.
-        '500':
-          description: Internal Server Error
-  /players/player:
+    get:
+      summary: Get players
+      description: Retrieve players based on specified criteria.
+      parameters:
+        - name: userName
+          in: query
+          description: The name of the player
+          schema:
+            type: string
+        - name: token
+          in: header
+          required: true
+          description: The authentication token
+          schema:
+            type: string
+            format: UUID
+      responses:
+        '200':
+          description: Player retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Player'
+        '400':
+          description: Bad Request, invalid parameters provided.
+        '404':
+          description: Not Found, no players found with the provided criteria.
+        '401':
+          description: Unauthorized, token invalid.
+  /players/:pid:
     get:
       summary: Get player details
       description: Retrieve details of a player by player ID.
       parameters:
         - name: pid
-          in: query
+          in: path
           required: true
           description: The unique identifier of the player
           schema:
             type: string
         - name: token
           required: true
-          in: query
+          in: header
           description: the authentication token
           schema:
             type: string
@@ -75,7 +102,7 @@ paths:
               $ref: '#/components/schemas/NewGame'
       parameters:
         - name: token
-          in: query
+          in: header
           required: true
           description: The authentication token
           schema:
@@ -90,21 +117,17 @@ paths:
                 $ref: '#/components/schemas/Game'
         '400':
           description: Bad Request, insufficient or invalid parameters provided.
-        '500':
-          description: Internal Server Error, unable to create the game.
     get:
       summary: Get game by developer and genres
       description: Retrieve games based on the provided developer and genres.
       parameters:
         - name: dev
           in: query
-          required: true
           description: The developer of the game
           schema:
             type: string
         - name: genres
           in: query
-          required: true
           description: The genres of the game
           schema:
             type: string
@@ -121,7 +144,7 @@ paths:
             type: integer
             format: uint
         - name: token
-          in: query
+          in: header
           required: true
           description: The authentication token
           schema:
@@ -140,19 +163,19 @@ paths:
           description: Not Found, no games found with the provided criteria
         '401':
           description: Unauthorized, token invalid.
-  /games/game:
+  /games/:gid:
     get:
       summary: Get game details
       description: Retrieve details of a game by game ID.
       parameters:
         - name: gid
-          in: query
+          in: path
           required: true
           description: The unique identifier of the game
           schema:
             type: string
         - name: token
-          in: query
+          in: header
           required: true
           description: The authentication token
           schema:
@@ -183,7 +206,7 @@ paths:
               $ref: '#/components/schemas/NewSession'
       parameters:
         - name: token
-          in: query
+          in: header
           required: true
           description: The authentication token
           schema:
@@ -204,8 +227,6 @@ paths:
           description: Unauthorized, token invalid.
         '400':
           description: Missing or invalid parameters. Please provide 'gid', 'date', and 'capacity' as valid values.
-        '500':
-          description: Internal Server Error
     get:
       summary: Get sessions
       description: Retrieve sessions based on specified criteria.
@@ -231,6 +252,16 @@ paths:
         - name: playerId
           in: query
           description: The player identifier
+          schema:
+            type: string
+        - name: userName
+          in: query
+          description: The player username
+          schema:
+            type: string
+        - name: gameName
+          in: query
+          description: The game name
           schema:
             type: string
         - name: offset
@@ -265,19 +296,27 @@ paths:
           description: No sessions found with the specified criteria.
         '401':
             description: Unauthorized, token invalid.
-  /sessions/session:
-    post:
+  /sessions/:sid/:pid:
+    put:
       summary: Add player to session
       description: Add a player to a session with the provided player and session IDs.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AddPlayerToSession'
       parameters:
+        - name: sid
+          in: path
+          required: true
+          description: The unique identifier of the session
+          schema:
+            type: integer
+            format: uint
+        - name: pid
+          in: path
+          required: true
+          description: The unique identifier of the player
+          schema:
+            type: integer
+            format: uint
         - name: token
-          in: query
+          in: header
           required: true
           description: The authentication token
           schema:
@@ -290,14 +329,81 @@ paths:
           description: Bad Request, insufficient parameters.
         '401':
           description: Unauthorized, authentication token is missing or invalid.
-        '500':
-          description: Internal Server Error, player was already added to the session or an internal error occurred.
+    delete:
+        summary: Remove player from session
+        description: Removes a player from a session with the provided player and session IDs.
+        parameters:
+            - name: sid
+              in: path
+              required: true
+              description: The unique identifier of the session
+              schema:
+                  type: integer
+                  format: uint
+            - name: pid
+              in: path
+              required: true
+              description: The unique identifier of the player
+              schema:
+                  type: integer
+                  format: uint
+            - name: token
+              in: header
+              required: true
+              description: The authentication token
+              schema:
+                  type: string
+                  format: UUID
+        responses:
+            '200':
+              description: Player removed from session successfully
+            '400':
+              description: Bad Request, insufficient parameters.
+            '401':
+              description: Unauthorized, authentication token is missing or invalid.
+    get:
+      summary: Get a player in a session
+      description: Retrieve players in a session with the provided session ID.
+      parameters:
+        - name: sid
+          in: path
+          required: true
+          description: The unique identifier of the session
+          schema:
+            type: integer
+            format: uint
+        - name: pid
+          in: path
+          required: true
+          description: The unique identifier of the player
+          schema:
+            type: integer
+            format: uint
+        - name: token
+          in: header
+          required: true
+          description: The authentication token
+          schema:
+            type: string
+            format: UUID
+      responses:
+        '200':
+          description: Players retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/isPlayerInSession'
+        '400':
+          description: Bad Request, invalid session ID provided.
+        '401':
+          description: Unauthorized, token invalid.
+  /sessions/:sid:
     get:
       summary: Get session details
       description: Retrieve details of a session by session ID.
       parameters:
         - name: sid
-          in: query
+          in: path
           required: true
           description: The unique identifier of the session
           schema:
@@ -305,11 +411,11 @@ paths:
             format: uint
         - name: token
           required: true
-          in: query
+          in: header
           description: The authentication token
           schema:
-              type: string
-              format: UUID
+            type: string
+            format: UUID
       responses:
         '200':
           description: Session details retrieved successfully
@@ -322,7 +428,7 @@ paths:
         '404':
           description: Session not found with the provided session ID.
         '401':
-            description: Unauthorized, token invalid.
+          description: Unauthorized, token invalid.
     put:
       summary: Update session capacity or date
       description: Updates the capacity or date of a session with the provided session ID, capacity, and date.
@@ -335,7 +441,7 @@ paths:
       parameters:
         - name: token
           required: true
-          in: query
+          in: header
           description: The authentication token
           schema:
             type: string
@@ -357,76 +463,41 @@ paths:
           description: Unauthorized, authentication token is missing or invalid.
         '304':
           description: Not Modified, error updating session.
-  /sessions/delete/player:
-    post:
-      summary: Remove player from session
-      description: Removes a player from a session with the provided player ID and session ID.
-      requestBody:
-        required: true
-        content:
-          application/json:
+    delete:
+        summary: Delete session
+        description: Deletes a session with the provided session ID.
+        parameters:
+          - name: sid
+            in: path
+            required: true
+            description: The unique identifier of the session
             schema:
-                $ref: '#/components/schemas/RemovePlayerFromSession'
-      parameters:
-        - name: token
-          required: true
-          in: query
-          description: The authentication token
-          schema:
-            type: string
-            format: UUID
-      responses:
-        '200':
-          description: Player removed from session successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    description: Success message
-        '400':
-          description: Bad Request, invalid or missing parameters.
-        '401':
-          description: Unauthorized, authentication token is missing or invalid.
-        '304':
-          description: Not Modified, error removing player from session.
-  /sessions/delete:
-    post:
-      summary: Delete session
-      description: Deletes a session with the provided session ID.
-      requestBody:
-        required: true
-        content:
-          application/json:
+              type: integer
+              format: uint
+          - name: token
+            in: header
+            required: true
+            description: The authentication token
             schema:
-                $ref: '#/components/schemas/RemoveSession'
-      parameters:
-        - name: token
-          required: true
-          in: query
-          description: The authentication token
-          schema:
-            type: string
-            format: UUID
-      responses:
-        '200':
-          description: Session deleted successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    description: Success message
-        '400':
-          description: Bad Request, invalid or missing parameters.
-        '401':
-          description: Unauthorized, authentication token is missing or invalid.
-        '304':
-          description: Not Modified, error deleting session.
+              type: string
+              format: UUID
+        responses:
+          '200':
+            description: Session deleted successfully
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      description: Success message
+          '400':
+            description: Bad Request, invalid or missing parameters.
+          '401':
+            description: Unauthorized, authentication token is missing or invalid.
+          '304':
+            description: Not Modified, error deleting session.
 components:
   schemas:
     RemoveSession:
@@ -460,7 +531,7 @@ components:
           format: uint
         date:
           type: string
-          format: date-time
+          format: date
           description: The date and time of the session
     AddPlayerToSession:
       type: object
@@ -566,4 +637,9 @@ components:
           type: string
           format: date-time
           description: The date and time of the session
-
+    isPlayerInSession:
+      type: object
+      properties:
+        result:
+          type: boolean
+          description: Indicates if the player is in the session

@@ -37,5 +37,5 @@ interface GameHandlerInterface {
      * @param request The HTTP request containing the offset, the limit, the dev and the genres.
      * @return The HTTP response containing the result of the operation.
      */
-    fun getGameByDevAndGenres(request: Request): Response
+    fun getGames(request: Request): Response
 }

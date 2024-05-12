@@ -1,3 +1,14 @@
+/**
+ * List of available game genres
+ * @type {{
+ *          Shooter: string, Fighting: string, Action: string, OpenWorld: string,
+ *          BattleRoyale: string, Adventure: string, TacticalRPG: string,
+ *          Horror: string, MOBA: string, RPG: string, Roguelike: string,
+ *          Survival: string, MMO: string, Sandbox: string, RTS: string,
+ *          TurnBasedStrategy: string, Puzzle: string, Simulation: string,
+ *          Platformer: string, Stealth: string, Racing: string,
+ *          TowerDefense: string, Sports: string}}
+ */
 const genres = {
     RPG: "RPG",
     Adventure: "Adventure",

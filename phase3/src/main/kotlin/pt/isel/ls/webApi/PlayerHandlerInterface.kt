@@ -25,4 +25,12 @@ interface PlayerHandlerInterface {
      * @return The HTTP response containing the player's details.
      */
     fun getPlayer(request: Request): Response
+
+    /**
+     * Handles the HTTP request for retrieving a player's details.
+     *
+     * @param request The HTTP request containing the necessary information to retrieve a player's details.
+     * @return The HTTP response containing the player's details.
+     */
+    fun getPlayerBy(request: Request): Response
 }

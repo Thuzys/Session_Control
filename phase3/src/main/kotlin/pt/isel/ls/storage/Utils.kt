@@ -1,10 +1,13 @@
 package pt.isel.ls.storage
 
-import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.toLocalDate
 import pt.isel.ls.domain.Email
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
+import pt.isel.ls.domain.info.GameInfo
+import pt.isel.ls.domain.info.PlayerInfo
+import pt.isel.ls.domain.info.SessionInfo
 import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.ResultSet
@@ -24,14 +27,14 @@ internal fun getGamesFromDB(
     areGenresInGameStmt: PreparedStatement,
     genres: Collection<String>?,
 ): Collection<Game> =
-    mutableListOf<Game>().apply {
+    mutableListOf<Game>().also {
         val rs = getGameStmt.executeQuery()
 
         while (rs.next()) {
             val gid = rs.getUInt("gid")
 
             if (genres == null || areGenresInGame(areGenresInGameStmt, gid, genres)) {
-                add(
+                it.add(
                     Game(
                         gid = gid,
                         name = rs.getString("name"),
@@ -79,16 +82,15 @@ internal fun getGameFromDB(
     gid: UInt,
 ): Game? {
     val rs = getGameStmt.executeQuery()
-    return when {
-        rs.next() -> {
-            Game(
-                gid = rs.getUInt("gid"),
-                name = rs.getString("name"),
-                dev = rs.getString("developer"),
-                genres = processGenres(getGenresStmt, gid),
-            )
-        }
-        else -> null
+    return if (rs.next()) {
+        Game(
+            gid = rs.getUInt("gid"),
+            name = rs.getString("name"),
+            dev = rs.getString("developer"),
+            genres = processGenres(getGenresStmt, gid),
+        )
+    } else {
+        null
     }
 }
 
@@ -102,16 +104,14 @@ internal fun getGameFromDB(
 private fun processGenres(
     getGenresStmt: PreparedStatement,
     gid: UInt,
-): Collection<String> {
-    val genres = mutableSetOf<String>()
-
-    getGenresStmt.setUInt(1, gid)
-    val genresRS = getGenresStmt.executeQuery()
-    while (genresRS.next()) {
-        genres.add(genresRS.getString("name"))
+): Collection<String> =
+    mutableSetOf<String>().apply {
+        getGenresStmt.setUInt(1, gid)
+        val genresRS = getGenresStmt.executeQuery()
+        while (genresRS.next()) {
+            add(genresRS.getString("name"))
+        }
     }
-    return genres
-}
 
 /**
  * Adds a game to the database.
@@ -128,35 +128,14 @@ internal fun addGameToDB(
     relateGameToGenreStmt: PreparedStatement,
     addGenreStmt: PreparedStatement,
 ): UInt {
-    setGameName(addGameStmt, newItem.name)
-    setGameDev(addGameStmt, newItem.dev)
+    addGameStmt.setString(1, newItem.name)
+    addGameStmt.setString(2, newItem.dev)
     addGameStmt.executeUpdate()
+
     val gid = getGameId(addGameStmt)
     setGameGenres(gid, newItem.genres, relateGameToGenreStmt, addGenreStmt)
     return gid
 }
-
-/**
- * Sets the game name in the prepared statement.
- *
- * @param addGameStmt The [PreparedStatement] to set the game name.
- * @param name The name to be set.
- */
-private fun setGameName(
-    addGameStmt: PreparedStatement,
-    name: String,
-) = addGameStmt.setString(1, name)
-
-/**
- * Sets the game developer in the prepared statement.
- *
- * @param addGameStmt The [PreparedStatement] to set the game developer.
- * @param dev The developer to be set.
- */
-private fun setGameDev(
-    addGameStmt: PreparedStatement,
-    dev: String,
-) = addGameStmt.setString(2, dev)
 
 /**
  * Sets the game genres in the database.
@@ -227,10 +206,14 @@ private fun getGameId(addGameStmt: PreparedStatement): UInt {
  * @param dev The developer to get the games from.
  * @return The string to get games from the database.
  */
-internal fun buildGameGetterString(dev: String?): String {
-    var getGameStr = "SELECT gid, name, developer from GAME"
-    dev?.let { getGameStr += " WHERE developer = ?" }
-    return getGameStr
+internal fun buildGameGetterString(
+    dev: String?,
+    name: String?,
+): String {
+    val baseQuery = StringBuilder("SELECT gid, name, developer FROM GAME WHERE 1=1")
+    dev?.let { baseQuery.append(" AND compare_name(developer, ?)") }
+    name?.let { baseQuery.append(" AND compare_name(name, ?)") }
+    return baseQuery.toString()
 }
 
 /**
@@ -277,31 +260,109 @@ internal fun makePlayers(stmt: PreparedStatement): Collection<Player> {
 }
 
 /**
+ * Make a [Session] object from a [PreparedStatement].
+ * @param stmt The [PreparedStatement] to make the [Session] object from.
+ * @param l The limit of playersInfo.
+ * @param o The offset of playersInfo.
+ * @return A [Session] object.
+ * @throws SQLException if an exception occurs.
+ */
+internal fun Connection.makeSession(
+    stmt: PreparedStatement,
+    l: UInt,
+    o: UInt,
+): Session? {
+    val rs = stmt.executeQuery()
+    return if (rs.next()) {
+        val ownerPreparedStatement =
+            prepareStatement(
+                """
+                SELECT pid, userName FROM PLAYER
+                WHERE pid = ?;
+                """.trimIndent(),
+            )
+        ownerPreparedStatement.setInt(1, rs.getInt("owner"))
+        val owner = makePlayersInfo(ownerPreparedStatement).firstOrNull() ?: throw SQLException("Owner not found")
+        val playerStmt =
+            prepareStatement(
+                """
+                SELECT PLAYER.pid, userName FROM PLAYER
+                JOIN PLAYER_SESSION ON PLAYER.pid = PLAYER_SESSION.pid
+                WHERE sid = ?
+                LIMIT ? OFFSET ?;
+                """.trimIndent(),
+            )
+        playerStmt.setInt(1, rs.getInt("sid"))
+        playerStmt.setInt(2, l.toInt())
+        playerStmt.setInt(3, o.toInt())
+        Session(
+            rs.getInt("sid").toUInt(),
+            rs.getInt("capacity").toUInt(),
+            GameInfo(rs.getInt("gid").toUInt(), rs.getString("name")),
+            rs.getString("date").toLocalDate(),
+            owner,
+            makePlayersInfo(playerStmt),
+        )
+    } else {
+        null
+    }
+}
+
+internal fun makePlayersInfo(stmt: PreparedStatement): Collection<PlayerInfo> {
+    val rs = stmt.executeQuery()
+    val players = mutableListOf<PlayerInfo>()
+    while (rs.next()) {
+        players.add(
+            PlayerInfo(
+                rs.getInt("pid").toUInt(),
+                rs.getString("userName"),
+            ),
+        )
+    }
+    return players
+}
+
+/**
  * Makes a list of [Session] objects from a [PreparedStatement].
  *
  * @param sessionStmt The [PreparedStatement] to make the list from.
  * @return A list of [Session] objects.
  */
-internal fun Connection.makeSession(sessionStmt: PreparedStatement): Collection<Session> {
+internal fun Connection.makeSessionInfo(sessionStmt: PreparedStatement): Collection<SessionInfo> {
     val rs = sessionStmt.executeQuery()
-    val sessions = mutableListOf<Session>()
+    val sessions = mutableListOf<SessionInfo>()
     while (rs.next()) {
-        val playerStmt =
+        val ownerPreparedStatement =
             prepareStatement(
                 "SELECT PLAYER.pid, name, userName, email, token FROM PLAYER " +
-                    "JOIN PLAYER_SESSION ON PLAYER.pid = PLAYER_SESSION.pid" +
-                    " WHERE sid = ?;",
+                    " WHERE pid = ?;",
             )
-        playerStmt.setInt(1, rs.getInt("sid"))
+        ownerPreparedStatement.setInt(1, rs.getInt("owner"))
+        val owner = makePlayersInfo(ownerPreparedStatement).first()
+//        val owner = makePlayers(ownerPreparedStatement).first()
+//        val playerStmt =
+//            prepareStatement(
+//                "SELECT PLAYER.pid, name, userName, email, token FROM PLAYER " +
+//                    "JOIN PLAYER_SESSION ON PLAYER.pid = PLAYER_SESSION.pid" +
+//                    " WHERE sid = ?;",
+//            )
+//        playerStmt.setInt(1, rs.getInt("sid"))
         sessions.add(
-            Session(
+            SessionInfo(
                 rs.getInt("sid").toUInt(),
-                rs.getInt("capacity").toUInt(),
-                rs.getInt("gid").toUInt(),
-                rs.getString("date").toLocalDateTime(),
-                makePlayers(playerStmt),
+                owner,
+                GameInfo(rs.getInt("gid").toUInt(), rs.getString("game_name")),
+                rs.getString("date").toLocalDate(),
             ),
         )
+//            Session(
+//                rs.getInt("sid").toUInt(),
+//                rs.getInt("capacity").toUInt(),
+//                GameInfo(rs.getInt("gid").toUInt(), rs.getString("name")),
+//                rs.getString("date").toLocalDate(),
+//                owner,
+//                makePlayers(playerStmt),
+//            ),
     }
     return sessions
 }

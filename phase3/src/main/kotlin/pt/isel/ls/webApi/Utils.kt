@@ -1,7 +1,7 @@
 package pt.isel.ls.webApi
 
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.toLocalDate
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -65,10 +65,10 @@ internal inline fun tryResponse(
             ?.let {
                 makeResponse(
                     errorStatus,
-                    createJsonMessage(errorMsg, it),
+                    createJsonRspMessage(errorMsg, it),
                 )
             }
-            ?: makeResponse(errorStatus, "$errorMsg.")
+            ?: makeResponse(errorStatus, createJsonRspMessage("$errorMsg."))
     }
 
 /**
@@ -89,12 +89,23 @@ internal fun makeResponse(
  * @param date A string representing the date.
  * @return A LocalDateTime object parsed from the input date string, or null if the input date is invalid.
  */
-internal fun dateVerification(date: String?): LocalDateTime? {
+internal fun dateVerification(date: String?): LocalDate? {
     return try {
-        date?.replace('_', ':')?.toLocalDateTime()
+        date?.toLocalDate()
     } catch (e: IllegalArgumentException) {
         null
     }
+}
+
+/**
+ * Reads a query from a request.
+ *
+ * @param elem The element to be read.
+ * @return The query string.
+ */
+fun Request.readQuery(elem: String): String? {
+    val query = query(elem) ?: return null
+    return URLDecoder.decode(query, StandardCharsets.UTF_8.toString())
 }
 
 /**
@@ -142,6 +153,7 @@ internal fun unauthorizedAccess(
 data class Message(
     val msg: String,
     val error: String? = null,
+    val id: UInt? = null,
 )
 
 /**
@@ -149,11 +161,12 @@ data class Message(
  *
  * @param message The message to be converted to JSON.
  */
-internal fun createJsonMessage(
+internal fun createJsonRspMessage(
     message: String,
     error: String? = null,
+    id: UInt? = null,
 ): String {
-    val messageObject = Message(message, error)
+    val messageObject = Message(message, error, id)
     return Json.encodeToString(messageObject)
 }
 
@@ -166,7 +179,7 @@ internal fun createJsonMessage(
  */
 internal fun invalidParamsRspCreateSession(
     gid: UInt?,
-    date: LocalDateTime?,
+    date: LocalDate?,
     capacity: UInt?,
 ): String {
     val errorMsgs =
@@ -177,9 +190,9 @@ internal fun invalidParamsRspCreateSession(
         )
     return if (errorMsgs.isNotEmpty()) {
         val errorMsg = errorMsgs.joinToString(", ")
-        createJsonMessage("Missing or invalid $errorMsg. Please provide $errorMsg as valid values.")
+        createJsonRspMessage("Missing or invalid $errorMsg. Please provide $errorMsg as valid values.")
     } else {
-        createJsonMessage("Invalid request.")
+        createJsonRspMessage("Invalid request.")
     }
 }
 
@@ -188,4 +201,5 @@ internal fun invalidParamsRspCreateSession(
  *
  * @param reason The reason for the unauthorized response.
  */
-internal fun unauthorizedResponse(reason: String): Response = makeResponse(Status.UNAUTHORIZED, createJsonMessage("Unauthorized, $reason."))
+internal fun unauthorizedResponse(reason: String): Response =
+    makeResponse(Status.UNAUTHORIZED, createJsonRspMessage("Unauthorized, $reason."))

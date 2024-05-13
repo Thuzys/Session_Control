@@ -1,6 +1,17 @@
 drop function if exists get_sessions_by(int, varchar, varchar, int, varchar, varchar, int, int);
 drop function if exists compare_name(varchar, varchar);
 drop function if exists add_owner_to_session();
+drop function if exists check_capacity(int);
+
+create or replace function check_capacity(sid int)
+    returns boolean as $$
+declare
+    capacityNumber int;
+begin
+    select capacity into capacityNumber from session where session.sid = check_capacity.sid;
+    return (select count(*) from player_session where player_session.sid = check_capacity.sid) < capacityNumber;
+end;
+$$ language plpgsql;
 
 create or replace function add_owner_to_session() returns trigger as $$
 begin

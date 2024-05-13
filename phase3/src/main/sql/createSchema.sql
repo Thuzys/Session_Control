@@ -5,16 +5,6 @@ drop table if exists GAME;
 drop table if exists PLAYER;
 drop table if exists GENRE;
 
-create or replace function check_capacity(sid int)
-    returns boolean as $$
-declare
-    capacityNumber int;
-begin
-    select capacity into capacityNumber from session where session.sid = check_capacity.sid;
-    return (select count(*) from player_session where player_session.sid = check_capacity.sid) < capacityNumber;
-end;
-$$ language plpgsql;
-
 create table GENRE (
    name varchar(80) primary key
 );

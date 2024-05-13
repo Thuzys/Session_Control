@@ -101,19 +101,36 @@ function getSessionDetails(mainContent) {
 }
 
 /**
+ * Cache for is in session check to avoid multiple requests
+ * @type {boolean}
+ */
+let isInSessionCache = null;
+
+/**
+ * Cache for is owner check to avoid multiple requests
+ * @type {boolean}
+ */
+let isOwnerCache = null;
+
+/**
  * Handle get session details response from the server
  *
  * @param session response from the server
  * @param mainContent main content of the page
  */
 function handleGetSessionDetailsResponse(session, mainContent) {
-    const isOwner = isPlayerOwner(session);
+    const isOwner = isOwnerCache !== null ? isOwnerCache : isPlayerOwner(session);
+    isOwnerCache = isOwner;
     const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${session.sid}/${constants.TEMPORARY_USER_ID}`;
-    fetcher.get(url, constants.TOKEN)
+
+    const fetchIsInSession = isInSessionCache !== null ? Promise.resolve(isInSessionCache) : fetcher.get(url, constants.TOKEN);
+
+    fetchIsInSession
         .then(isInSession => {
-            return isInSession === true;
-        }
-        ).then(isInSession => {
+            isInSessionCache = isInSession === true;
+            return isInSessionCache;
+        })
+        .then(isInSession => {
             const playerListView = sessionHandlerViews.createPlayerListView(session);
             const sessionDetailsView = sessionHandlerViews.createSessionDetailsView(session, playerListView, isOwner, isInSession);
             mainContent.replaceChildren(views.div({class: "player-details-container"}, sessionDetailsView));

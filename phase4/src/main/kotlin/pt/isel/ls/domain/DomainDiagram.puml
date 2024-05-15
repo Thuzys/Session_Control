@@ -1,0 +1,31 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+class Player {
+    +pid : Uint?
+    +name : String
+    +email : Email
+    +token : UUID
+}
+class Game {
+    +gid : Uint?
+    +name : String
+    +dev : String
+    +genres : Collection<String>
+}
+class Session {
+    +sid : Uint?
+    +capacity : Uint
+    +gameInfo : GameInfo
+    +date : LocalDate
+    +owner : PlayerInfo
+    +players : Collection<PlayerInfo>
+}
+enum SessionState {
+    OPEN
+    CLOSE
+}
+class Email {
+    +email : String
+}
+Player "1" *-- "1" Email : contains
+@enduml

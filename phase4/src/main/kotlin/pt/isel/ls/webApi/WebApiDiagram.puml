@@ -1,0 +1,71 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+Interface GameHandlerInterface {
+    +createGame()
+    +getGameDetails()
+    +getGames()
+}
+
+Interface SessionHandlerInterface {
+    + createSession()
+    + getSession()
+    + getSessions()
+    + addPlayerToSession()
+    + deleteSession()
+    + removePlayerFromSession()
+    + updateCapacityOrDate()
+    + isPlayerInSession()
+}
+
+Interface PlayerHandlerInterface {
+    +createPlayer()
+    +getPlayer()
+    +getPlayersBy()
+}
+
+class GameHandler {
+    +createGame()
+    +getGameDetails()
+    +getGames()
+    - gameManagement: GameServices
+    - playerManagement: PlayerServices
+}
+
+class SessionHandler {
+    +createSession()
+    +getSession()
+    +getSessions()
+    +addPlayerToSession()
+    +deleteSession()
+    +removePlayerFromSession()
+    +updateCapacityOrDate()
+    +isPlayerInSession()
+    - sessionManagement: SessionServices
+    - playerManagement: PlayerServices
+}
+
+class PlayerHandler {
+    +createPlayer()
+    +getPlayer()
+    +getPlayersBy()
+    - playerManagement: PlayerServices
+}
+
+package services {
+    Interface GameServices
+    Interface SessionServices
+    Interface PlayerServices
+}
+
+GameHandlerInterface <|-- GameHandler
+SessionHandlerInterface <|-- SessionHandler
+PlayerHandlerInterface <|-- PlayerHandler
+
+GameHandler *--- services.GameServices : gameManagement
+GameHandler *--- services.PlayerServices : playerManagement
+SessionHandler *--- services.SessionServices : sessionManagement
+SessionHandler *--- services.PlayerServices : playerManagement
+PlayerHandler *--- services.PlayerServices : playerManagement
+
+@enduml

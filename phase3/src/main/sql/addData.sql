@@ -22,7 +22,7 @@ VALUES ('Player 1', 'player1@example.com', 'e247758f-02b6-4037-bd85-fc245b84d5f2
 -- Insert values into SESSION table
 INSERT INTO SESSION (capacity, gid, date, owner)
 VALUES
-    (10, 1, '2024-03-11', 1),
+    (10, 1, '2024-03-11', 2),
     (8, 2, '2024-03-11', 1),
     (12, 3, '2024-03-13', 1),
     (15, 4, '2024-03-14', 1),

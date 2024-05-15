@@ -1,0 +1,53 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+package domain {
+    class Player
+    class Game
+    class Session
+    class Email
+    package errors {
+    class ServicesError
+    }
+    package info {
+    class GameInfo
+    class PlayerInfo
+    class SessionInfo
+    }
+}
+
+package services {
+    Interface GameServiceInterface
+    Interface PlayerServiceInterface
+    Interface SessionServiceInterface
+}
+
+package storage {
+    Interface GameStorageInterface
+    Interface PlayerStorageInterface
+    Interface SessionStorageInterface
+}
+package webApi {
+    Interface GameHandler
+    Interface PlayerHandler
+    Interface SessionHandler
+}
+
+package server {
+}
+
+domain --> services
+domain.errors --> services
+domain --> storage
+domain --> webApi
+domain.info --> storage
+
+storage --> services
+
+services --> webApi
+
+webApi --> server
+
+domain.info.PlayerInfo --> domain.Session
+
+@enduml

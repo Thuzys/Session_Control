@@ -3,6 +3,7 @@ package pt.isel.ls.services
 import kotlinx.datetime.LocalDate
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
+import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.domain.info.GameInfo
 import pt.isel.ls.domain.info.GameInfoParam
 import pt.isel.ls.domain.info.PlayerInfo
@@ -12,6 +13,9 @@ import pt.isel.ls.storage.SessionStorageInterface
 
 /**
  * Represents the services related to the session in the application.
+ *
+ * @property sessionDataMem the session storage interface
+ * @throws ServicesError containing the message of the error.
  */
 class SessionManagement(private val sessionDataMem: SessionStorageInterface) : SessionServices {
     override fun addPlayer(
@@ -29,7 +33,7 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
         offset: UInt?,
     ): Session =
         tryCatch("Unable to get the details of a Session due") {
-            sessionDataMem.readSession(
+            sessionDataMem.read(
                 sid,
                 limit ?: DEFAULT_LIMIT,
                 offset ?: DEFAULT_OFFSET,
@@ -43,14 +47,13 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
         owner: PlayerInfoParam,
     ): UInt =
         tryCatch("Unable to create a new session due") {
-            requireNotNull(gameInfo.first) { "Game must be provided" }
-            val game =
-                gameInfo.first?.let { GameInfo(it, gameInfo.second) }
-                    ?: throw IllegalArgumentException("Game must be provided")
-            val (pid, userName) = owner
+            val (gid, name) = gameInfo
+            requireNotNull(gid) { "Game must be provided" }
+            val game = GameInfo(gid, name ?: "")
+            val (pid, username) = owner
             requireNotNull(pid) { "Owner pid must be provided" }
-            val ownerInfo = PlayerInfo(pid, userName ?: "")
-            sessionDataMem.createSession(Session(gameInfo = game, date = date, capacity = capacity, owner = ownerInfo))
+            val ownerInfo = PlayerInfo(pid, username ?: "")
+            sessionDataMem.create(Session(gameInfo = game, date = date, capacity = capacity, owner = ownerInfo))
         }
 
     override fun getSessions(
@@ -62,7 +65,7 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
         limit: UInt?,
     ): Collection<SessionInfo> =
         tryCatch("Unable to get the sessions due") {
-            sessionDataMem.readSessions(
+            sessionDataMem.readBy(
                 gameInfo = gameInfo,
                 date = date,
                 state = state,
@@ -86,7 +89,7 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
 
     override fun deleteSession(sid: UInt) =
         tryCatch("Unable to delete the session due") {
-            sessionDataMem.deleteSession(sid = sid)
+            sessionDataMem.delete(sid = sid)
         }
 
     override fun removePlayer(

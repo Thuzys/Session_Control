@@ -203,3 +203,9 @@ internal fun invalidParamsRspCreateSession(
  */
 internal fun unauthorizedResponse(reason: String): Response =
     makeResponse(Status.UNAUTHORIZED, createJsonRspMessage("Unauthorized, $reason."))
+
+internal fun badRequestResponse(reason: String): Response =
+    makeResponse(
+        Status.BAD_REQUEST,
+        createJsonRspMessage("Bad Request, $reason."),
+    )

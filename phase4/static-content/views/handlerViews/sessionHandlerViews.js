@@ -236,15 +236,14 @@ function createCreateSessionView(gameName) {
 
 /**
  * Function to check if session can be updated
- * @param labelCapacity
- * @param labelDate
- * @param session
+ * @param labelCapacity capacity input
+ * @param labelDate date input
+ * @param session session data
  * @returns {boolean}
  */
 function canUpdateSession(labelCapacity, labelDate, session) {
     return (parseInt(labelCapacity.value) !== session.capacity && labelCapacity.value.trim() !== "")
         || (labelDate.value !== session.date && labelDate.value.trim() !== "")
-
 }
 
 /**

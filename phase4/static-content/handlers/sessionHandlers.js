@@ -4,7 +4,7 @@ import requestUtils from "../utils/requestUtils.js";
 import constants from "../constants/constants.js";
 import sessionHandlerViews from "../views/handlerViews/sessionHandlerViews.js";
 import {fetcher} from "../utils/fetchUtils.js";
-import {isPlayerInSession, isPlayerOwner} from "./handlerUtils/sessionHandlersUtils.js";
+import {isPlayerOwner} from "./handlerUtils/sessionHandlersUtils.js";
 
 /**
  * Search sessions by game id, player id, date and state

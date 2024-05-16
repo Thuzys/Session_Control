@@ -15,21 +15,21 @@ class GameStorage(envVarName: String) : GameStorageInterface {
     }
 
     override fun create(newItem: Game): UInt =
-        dataSource.connection.use {
-            it.executeCommand {
+        dataSource.connection.use { connection ->
+            connection.executeCommand {
                 val addGameStmt =
-                    it.prepareStatement(
+                    connection.prepareStatement(
                         "INSERT INTO GAME(name, developer) VALUES (?, ?)",
                         Statement.RETURN_GENERATED_KEYS,
                     )
 
                 val addGenreStmt =
-                    it.prepareStatement(
+                    connection.prepareStatement(
                         "INSERT INTO GENRE(name) VALUES (?) ON CONFLICT DO NOTHING",
                     )
 
                 val relateGameToGenreStmt =
-                    it.prepareStatement(
+                    connection.prepareStatement(
                         "INSERT INTO GAME_GENRE(gid, genre) VALUES (?, ?)",
                     )
 

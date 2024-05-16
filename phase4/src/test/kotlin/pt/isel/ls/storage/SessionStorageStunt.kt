@@ -30,13 +30,13 @@ class SessionStorageStunt : SessionStorageInterface {
             3u to session3,
         )
 
-    override fun createSession(newItem: Session): UInt {
+    override fun create(newItem: Session): UInt {
         val sid = sessionUuid++
         hashSession[sessionUuid] = newItem.copy(sid = sid)
         return sid
     }
 
-    override fun readSession(
+    override fun read(
         sid: UInt,
         limit: UInt,
         offset: UInt,
@@ -46,7 +46,7 @@ class SessionStorageStunt : SessionStorageInterface {
                 players = hashSession[sid]?.players?.drop(offset.toInt())?.take(limit.toInt()) ?: emptyList(),
             )
 
-    override fun readSessions(
+    override fun readBy(
         gameInfo: GameInfoParam?,
         date: LocalDate?,
         state: SessionState?,
@@ -130,7 +130,7 @@ class SessionStorageStunt : SessionStorageInterface {
         }
     }
 
-    override fun deleteSession(sid: UInt) {
+    override fun delete(sid: UInt) {
         hashSession.remove(sid)
     }
 }

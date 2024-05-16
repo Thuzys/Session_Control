@@ -16,26 +16,22 @@ class GameHandler(
     private val playerServices: PlayerServices,
 ) : GameHandlerInterface {
     override fun createGame(request: Request): Response {
-        unauthorizedAccess(
-            request,
-            playerServices,
-        )?.let { return unauthorizedResponse(it) }
-
+        unauthorizedAccess(request, playerServices)?.let { return unauthorizedResponse(it) }
         val body = readBody(request)
         val name = body["name"]
         val dev = body["dev"]
         val genres = body["genres"] ?.let { processGenres(it) }
-
-        return if (name == null || dev == null || genres == null) {
-            makeResponse(
-                Status.BAD_REQUEST,
-                createJsonRspMessage("Invalid arguments: name:$name, dev:$dev, genres:$genres."),
-            )
+        val array = arrayOf(name, dev, genres)
+        return if (array.any { it == null }) {
+            badRequestResponse("Missing arguments: name:$name, dev:$dev, genres:$genres")
         } else {
             tryResponse(
                 Status.BAD_REQUEST,
                 "Invalid arguments: name:$name, dev:$dev, genres:$genres.",
             ) {
+                name as String
+                dev as String
+                genres as List<String>
                 val gid = gameManagement.createGame(name, dev, genres)
                 makeResponse(
                     Status.CREATED,
@@ -49,15 +45,11 @@ class GameHandler(
     }
 
     override fun getGameDetails(request: Request): Response {
-        unauthorizedAccess(
-            request,
-            playerServices,
-        )?.let { return unauthorizedResponse(it) }
-
+        unauthorizedAccess(request, playerServices)?.let { return unauthorizedResponse(it) }
         val gid = request.toGidOrNull()
 
         return if (gid == null) {
-            makeResponse(Status.BAD_REQUEST, createJsonRspMessage("Invalid arguments: gid must be provided."))
+            badRequestResponse("Invalid arguments: gid must be provided")
         } else {
             tryResponse(Status.NOT_FOUND, "Game not found.") {
                 val game = gameManagement.getGameDetails(gid)
@@ -67,23 +59,16 @@ class GameHandler(
     }
 
     override fun getGames(request: Request): Response {
-        unauthorizedAccess(
-            request,
-            playerServices,
-        )?.let { return unauthorizedResponse(it) }
-
+        unauthorizedAccess(request, playerServices)?.let { return unauthorizedResponse(it) }
         val offset = request.query("offset")?.toUIntOrNull()
         val limit = request.query("limit")?.toUIntOrNull()
         val dev = request.query("dev")
         val genres = request.query("genres") ?.let { processGenres(it) }
         val name = request.query("name")
-
-        return if (dev == null && genres == null && name == null) {
-            makeResponse(
-                Status.BAD_REQUEST,
-                createJsonRspMessage(
-                    "Invalid arguments: either dev, genres or name must be provided.",
-                ),
+        val array = arrayOf(dev, genres, name)
+        return if (array.all { it == null }) {
+            badRequestResponse(
+                "Invalid arguments: at least one of the following must be provided: dev, genres, name",
             )
         } else {
             tryResponse(Status.NOT_FOUND, "Game not found.") {

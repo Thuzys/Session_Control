@@ -1,6 +1,18 @@
 -- Insert values into GENRES table
 INSERT INTO GENRE (name)
-VALUES ('Action'), ('Adventure'), ('RPG'), ('Simulation'), ('Turn-based Strategy'), ('Sports'), ('Puzzle');
+VALUES
+    ('RPG'), ('Adventure'),
+    ('Shooter'), ('Turn-based Strategy'),
+    ('Action'), ('Platformer'),
+    ('Puzzle'), ('Simulation'),
+    ('Sports'), ('Racing'),
+    ('Fighting'), ('Sandbox'),
+    ('Stealth'), ('Survival'),
+    ('Horror'), ('Open world'),
+    ('Tactical RPG'), ('Real-time Strategy'),
+    ('MMO'), ('Roguelike'),
+    ('MOBA'), ('Tower Defense'),
+    ('Battle Royale');
 
 -- Insert values into GAME table
 INSERT INTO GAME (name, developer)
@@ -11,13 +23,13 @@ INSERT INTO GAME_GENRE (gid, genre)
 VALUES (1, 'Action'), (1, 'Adventure'), (2, 'RPG'), (3, 'Simulation'), (4, 'Turn-based Strategy'), (5, 'Sports');
 
 -- Insert values into PLAYER table
-INSERT INTO PLAYER (name, email, token, username)
-VALUES ('Player 1', 'player1@example.com', 'e247758f-02b6-4037-bd85-fc245b84d5f2', 'Player 1'),
-       ('Player 2', 'player2@example.com', 'e247758f-02b6-4037-bd85-fc245b84d5f2', 'Player 2'),
-       ('Player 3', 'player3@example.com', 'e247758f-02b6-4037-bd85-fc245b84d5f2', 'Player 3'),
-       ('Player 4', 'player4@example.com', 'e247758f-02b6-4037-bd85-fc245b84d5f2', 'Player 4'),
-       ('Player 5', 'player5@example.com', 'e247758f-02b6-4037-bd85-fc245b84d5f2', 'Player 5'),
-       ('Player 5', 'player6@exemple.com', 'e247758f-02b6-4037-bd85-fc245b84d5f2', 'Player 6');
+INSERT INTO PLAYER (name, email, token, username, password)
+VALUES ('Player 1', 'player1@example.com', 'e247758f-02b6-4037-bd85-fc245b84d5f2', 'Player 1', 'OBF:1v2j1uum1xtv1zej1zer1xtn1uvk1v1v'),
+       ('Player 2', 'player2@example.com', 'e247758f-02b6-4037-bd85-fc245b84d5f2', 'Player 2', 'OBF:1v2j1uum1xtv1zej1zer1xtn1uvk1v1v'),
+       ('Player 3', 'player3@example.com', 'e247758f-02b6-4037-bd85-fc245b84d5f2', 'Player 3', 'OBF:1v2j1uum1xtv1zej1zer1xtn1uvk1v1v'),
+       ('Player 4', 'player4@example.com', 'e247758f-02b6-4037-bd85-fc245b84d5f2', 'Player 4', 'OBF:1v2j1uum1xtv1zej1zer1xtn1uvk1v1v'),
+       ('Player 5', 'player5@example.com', 'e247758f-02b6-4037-bd85-fc245b84d5f2', 'Player 5', 'OBF:1v2j1uum1xtv1zej1zer1xtn1uvk1v1v'),
+       ('Player 5', 'player6@exemple.com', 'e247758f-02b6-4037-bd85-fc245b84d5f2', 'Player 6', 'OBF:1v2j1uum1xtv1zej1zer1xtn1uvk1v1v');
 
 -- Insert values into SESSION table
 INSERT INTO SESSION (capacity, gid, date, owner)

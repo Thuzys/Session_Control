@@ -1,9 +1,10 @@
 package pt.isel.ls.services
 
-import pt.isel.ls.domain.Email
 import pt.isel.ls.domain.Player
-import pt.isel.ls.domain.associatedTo
+import pt.isel.ls.domain.associateWith
 import pt.isel.ls.domain.errors.ServicesError
+import pt.isel.ls.domain.info.CreatePlayerEmailPasswordParam
+import pt.isel.ls.domain.info.CreatePlayerNameParam
 import pt.isel.ls.storage.PlayerStorageInterface
 import java.util.UUID
 
@@ -17,16 +18,13 @@ import java.util.UUID
  */
 class PlayerManagement(private val mem: PlayerStorageInterface) : PlayerServices {
     override fun createPlayer(
-        name: String,
-        email: String,
-        userName: String?,
+        nameUSerName: CreatePlayerNameParam,
+        emailPassword: CreatePlayerEmailPasswordParam,
     ): Pair<UInt, UUID> =
         tryCatch("Unable to create a new Player due") {
-            if (userName == null) {
-                (name associatedTo Email(email)).let { mem.create(it) to it.token }
-            } else {
-                name.associatedTo(Email(email), userName).let { mem.create(it) to it.token }
-            }
+            val player = nameUSerName associateWith emailPassword
+            val pid = mem.create(player)
+            pid to player.token
         }
 
     override fun getPlayerDetails(pid: UInt): Player =

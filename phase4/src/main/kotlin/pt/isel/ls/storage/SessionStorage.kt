@@ -18,7 +18,7 @@ class SessionStorage(envName: String) : SessionStorageInterface {
         dataSource.setURL(connectionURL)
     }
 
-    override fun createSession(newItem: Session): UInt =
+    override fun create(newItem: Session): UInt =
         dataSource.connection.use { connection ->
             connection.executeCommand {
                 requireNotNull(newItem.owner.pid) { "Owner must have a pid" }
@@ -44,7 +44,7 @@ class SessionStorage(envName: String) : SessionStorageInterface {
             }
         }
 
-    override fun readSession(
+    override fun read(
         sid: UInt,
         limit: UInt,
         offset: UInt,
@@ -66,7 +66,7 @@ class SessionStorage(envName: String) : SessionStorageInterface {
             }
         }
 
-    override fun readSessions(
+    override fun readBy(
         gameInfo: GameInfoParam?,
         date: LocalDate?,
         state: SessionState?,
@@ -127,7 +127,7 @@ class SessionStorage(envName: String) : SessionStorageInterface {
         }
     }
 
-    override fun deleteSession(sid: UInt) {
+    override fun delete(sid: UInt) {
         dataSource.connection.use { connection ->
             connection.executeCommand {
                 val deletePlayerSession = "DELETE FROM PLAYER_SESSION WHERE sid = ?;"

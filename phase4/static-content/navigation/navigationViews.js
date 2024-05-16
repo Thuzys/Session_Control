@@ -17,7 +17,6 @@ function createNavigationBarView() {
     );
 }
 
-
 const navigationViews = {
     createNavigationBarView
 }

@@ -1,7 +1,6 @@
 import views from "../viewsCreators.js";
 import handlerUtils from "../../handlers/handlerUtils/handlerUtils.js";
 import constants from "../../constants/constants.js";
-import sessionHandlers from "../../handlers/sessionHandlers.js";
 
 /**
  * Create a radio button with a label.

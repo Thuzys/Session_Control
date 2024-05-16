@@ -21,7 +21,7 @@ interface SessionStorageInterface {
      * @param newItem The new [Session] to be stored.
      * @return The unique identifier of the new [Session].
      */
-    fun createSession(newItem: Session): UInt
+    fun create(newItem: Session): UInt
 
     /**
      * Reads the details of a [Session] from the storage.
@@ -31,10 +31,10 @@ interface SessionStorageInterface {
      * @param offset The offset to be applied to the collection of players.
      * @return A [Session] or null if nothing is found.
      */
-    fun readSession(
+    fun read(
         sid: UInt,
-        limit: UInt = 3u,
-        offset: UInt = 0u,
+        limit: UInt,
+        offset: UInt,
     ): Session?
 
     /**
@@ -49,13 +49,13 @@ interface SessionStorageInterface {
      * @param limit The maximum number of sessions to be retrieved. Defaults to 10.
      * @return A collection of sessions matching the specified parameters, or null if no sessions are found.
      */
-    fun readSessions(
+    fun readBy(
         gameInfo: GameInfoParam? = null,
         date: LocalDate? = null,
         state: SessionState? = null,
         playerInfo: PlayerInfoParam? = null,
-        offset: UInt = 0u,
-        limit: UInt = 11u,
+        offset: UInt = OFFSET.toUInt(),
+        limit: UInt = LIMIT.toUInt(),
     ): Collection<SessionInfo>?
 
     /**
@@ -87,7 +87,7 @@ interface SessionStorageInterface {
      *
      * @param sid The unique identifier of the [Session] to be deleted.
      */
-    fun deleteSession(sid: UInt)
+    fun delete(sid: UInt)
 
     /**
      * Updates a session by adding players to it.

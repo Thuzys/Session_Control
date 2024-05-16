@@ -22,8 +22,7 @@ class SessionHandler(
     private val playerManagement: PlayerServices,
 ) : SessionHandlerInterface {
     override fun createSession(request: Request): Response {
-        unauthorizedAccess(request, playerManagement)
-            ?.let { return unauthorizedResponse(it) }
+        unauthorizedAccess(request, playerManagement)?.let { return unauthorizedResponse(it) }
         val body = readBody(request)
         val gid = body["gid"]?.toUIntOrNull()
         val gameName = body["gameName"]
@@ -33,10 +32,7 @@ class SessionHandler(
         val capacity = body["capacity"]?.toUIntOrNull()
         val params = arrayOf(gid, date, capacity, owner)
         return if (params.any { it == null }) {
-            makeResponse(
-                Status.BAD_REQUEST,
-                invalidParamsRspCreateSession(gid, date, capacity),
-            )
+            badRequestResponse(invalidParamsRspCreateSession(gid, date, capacity))
         } else {
             tryResponse(Status.BAD_REQUEST, "Unable to create session.") {
                 checkNotNull(date) { "Date is null" }
@@ -56,11 +52,9 @@ class SessionHandler(
     }
 
     override fun getSession(request: Request): Response {
-        unauthorizedAccess(request, playerManagement)
-            ?.let { return unauthorizedResponse(it) }
+        unauthorizedAccess(request, playerManagement)?.let { return unauthorizedResponse(it) }
         val sid =
-            request.toSidOrNull()
-                ?: return makeResponse(Status.BAD_REQUEST, createJsonRspMessage("Missing or invalid sid."))
+            request.toSidOrNull() ?: return badRequestResponse("Missing or invalid sid")
         val limit = request.query("limit")?.toUIntOrNull()
         val offset = request.query("offset")?.toUIntOrNull()
         return tryResponse(Status.NOT_FOUND, "Session not found.") {
@@ -70,11 +64,10 @@ class SessionHandler(
     }
 
     override fun getSessions(request: Request): Response {
-        unauthorizedAccess(request, playerManagement)
-            ?.let { return unauthorizedResponse(it) }
+        unauthorizedAccess(request, playerManagement)?.let { return unauthorizedResponse(it) }
         val gid = request.query("gid")?.toUIntOrNull()
         val date = dateVerification(request.query("date"))
-        val userName = request.query("userName")
+        val userName = request.query("username")
         val gameName = request.query("gameName")
         val state = request.query("state").toSessionState()
         val pid = request.query("pid")?.toUIntOrNull()
@@ -99,16 +92,12 @@ class SessionHandler(
     }
 
     override fun addPlayerToSession(request: Request): Response {
-        unauthorizedAccess(request, playerManagement)
-            ?.let { return unauthorizedResponse(it) }
+        unauthorizedAccess(request, playerManagement)?.let { return unauthorizedResponse(it) }
         val player = request.toPidOrNull()
         val session = request.toSidOrNull()
         return if (player == null || session == null) {
-            makeResponse(
-                Status.BAD_REQUEST,
-                createJsonRspMessage(
-                    "Invalid or Missing parameters. Please provide 'player' and 'session' as valid values.",
-                ),
+            badRequestResponse(
+                "Invalid or Missing parameters. Please provide 'player' and 'session' as valid values",
             )
         } else {
             tryResponse(Status.BAD_REQUEST, "Error adding Player $player to the Session $session") {
@@ -122,25 +111,20 @@ class SessionHandler(
     }
 
     override fun updateCapacityOrDate(request: Request): Response {
-        unauthorizedAccess(request, playerManagement)
-            ?.let { return unauthorizedResponse(it) }
+        unauthorizedAccess(request, playerManagement)?.let { return unauthorizedResponse(it) }
         val body = readBody(request)
         val sid = request.toSidOrNull()
         val capacity = body["capacity"]?.toUIntOrNull()
         val date = dateVerification(body["date"])
         return when {
             (capacity == null && date == null) ->
-                makeResponse(
-                    Status.BAD_REQUEST,
-                    createJsonRspMessage("capacity and date not provided. Session not modified"),
+                badRequestResponse(
+                    "capacity and date not provided. Session not modified",
                 )
-
             (sid == null) ->
-                makeResponse(
-                    Status.BAD_REQUEST,
-                    createJsonRspMessage("Invalid or Missing parameters. Please provide sid"),
+                badRequestResponse(
+                    "Invalid or Missing 'sid'. Session not modified",
                 )
-
             else ->
                 tryResponse(
                     Status.NOT_MODIFIED,
@@ -153,16 +137,12 @@ class SessionHandler(
     }
 
     override fun removePlayerFromSession(request: Request): Response {
-        unauthorizedAccess(request, playerManagement)
-            ?.let { return unauthorizedResponse(it) }
+        unauthorizedAccess(request, playerManagement)?.let { return unauthorizedResponse(it) }
         val player = request.toPidOrNull()
         val session = request.toSidOrNull()
         return if (player == null || session == null) {
-            makeResponse(
-                Status.BAD_REQUEST,
-                createJsonRspMessage(
-                    "Invalid or Missing parameters. Please provide 'player' and 'session' as valid values.",
-                ),
+            badRequestResponse(
+                "Invalid or Missing parameters. Please provide 'player' and 'session' as valid values",
             )
         } else {
             tryResponse(
@@ -179,11 +159,10 @@ class SessionHandler(
     }
 
     override fun deleteSession(request: Request): Response {
-        unauthorizedAccess(request, playerManagement)
-            ?.let { return unauthorizedResponse(it) }
+        unauthorizedAccess(request, playerManagement)?.let { return unauthorizedResponse(it) }
         val sid = request.toSidOrNull()
         return if (sid == null) {
-            makeResponse(Status.BAD_REQUEST, createJsonRspMessage("Invalid or Missing 'sid'."))
+            badRequestResponse("Invalid or Missing 'sid'")
         } else {
             tryResponse(Status.NOT_MODIFIED, "Error deleting Session $sid.") {
                 sessionManagement.deleteSession(sid)
@@ -193,16 +172,12 @@ class SessionHandler(
     }
 
     override fun isPlayerInSession(request: Request): Response {
-        unauthorizedAccess(request, playerManagement)
-            ?.let { return unauthorizedResponse(it) }
+        unauthorizedAccess(request, playerManagement)?.let { return unauthorizedResponse(it) }
         val player = request.toPidOrNull()
         val session = request.toSidOrNull()
         return if (player == null || session == null) {
-            makeResponse(
-                Status.BAD_REQUEST,
-                createJsonRspMessage(
-                    "Invalid or Missing parameters. Please provide 'player' and 'session' as valid values.",
-                ),
+            badRequestResponse(
+                "Invalid or Missing parameters. Please provide 'player' and 'session' as valid values",
             )
         } else {
             val isPlayerInSession = sessionManagement.isPlayerInSession(player, session)

@@ -9,6 +9,11 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class PlayerManagementTest {
+    private val email = "test@mail.com"
+    private val alreadyExistName = "test1"
+    private val name = "test2"
+    private val password = "password"
+
     private fun actionOfPlayerManagementTest(code: (player: PlayerServices) -> Unit) =
         // arrangement
         PlayerManagement(PlayerStorageStunt())
@@ -17,19 +22,25 @@ class PlayerManagementTest {
     @Test
     fun `error creating a new player successfully due email already exists`() =
         actionOfPlayerManagementTest { playerManagement: PlayerServices ->
-            assertFailsWith<ServicesError> { playerManagement.createPlayer("test2", "test@mail.com") }
+            val nameParam = name to null
+            val emailPassParam = email to password
+            assertFailsWith<ServicesError> { playerManagement.createPlayer(nameParam, emailPassParam) }
         }
 
     @Test
     fun `error creating a new player successfully due userName already exists`() =
         actionOfPlayerManagementTest { playerManagement: PlayerServices ->
-            assertFailsWith<ServicesError> { playerManagement.createPlayer("test1", "newEmail@mail.com") }
+            val nameParam = alreadyExistName to null
+            val emailPassParam = email + "m" to password
+            assertFailsWith<ServicesError> { playerManagement.createPlayer(nameParam, emailPassParam) }
         }
 
     @Test
     fun `creating a new player successfully`() =
         actionOfPlayerManagementTest { playerManagement: PlayerServices ->
-            assertEquals(3u, playerManagement.createPlayer("test3", "newEmail@mail.com").first)
+            val nameParam = name to "newUserName"
+            val emailPassParam = email + "m" to password
+            assertEquals(3u, playerManagement.createPlayer(nameParam, emailPassParam).first)
         }
 
     @Test
@@ -56,7 +67,9 @@ class PlayerManagementTest {
     @Test
     fun `error creating a new player due an invalid email`() =
         actionOfPlayerManagementTest { playerManagement: PlayerServices ->
-            assertFailsWith<ServicesError> { playerManagement.createPlayer("test1", "non-valid-email") }
+            val nameParam = name to null
+            val emailPassParam = "non-valid-email" to password
+            assertFailsWith<ServicesError> { playerManagement.createPlayer(nameParam, emailPassParam) }
         }
 
     @Test
@@ -66,7 +79,9 @@ class PlayerManagementTest {
                 expected = "Unable to create a new Player due: Invalid email pattern.",
                 actual =
                     runCatching {
-                        playerManagement.createPlayer("test1", "non-valid-email").first
+                        val nameParam = name to null
+                        val emailPassParam = "non-valid-email" to password
+                        playerManagement.createPlayer(nameParam, emailPassParam).first
                     }.exceptionOrNull()?.message,
             )
         }
@@ -74,7 +89,9 @@ class PlayerManagementTest {
     @Test
     fun `type of error creating a new player due an invalid name`() =
         actionOfPlayerManagementTest { playerManagement: PlayerServices ->
-            assertFailsWith<ServicesError> { playerManagement.createPlayer("   ", "valid@email.com") }
+            val nameParam = "   " to name
+            val emailPassParam = email to password
+            assertFailsWith<ServicesError> { playerManagement.createPlayer(nameParam, emailPassParam) }
         }
 
     @Test
@@ -84,7 +101,9 @@ class PlayerManagementTest {
                 expected = "Unable to create a new Player due: Name must not be blank.",
                 actual =
                     runCatching {
-                        playerManagement.createPlayer("   ", "valid@email.com")
+                        val nameParam = "   " to name
+                        val emailPassParam = email to password
+                        playerManagement.createPlayer(nameParam, emailPassParam)
                     }.exceptionOrNull()?.message,
             )
         }

@@ -88,7 +88,7 @@ function handlePlayerSearchSubmit(e) {
     if (pid.value === "") {
         return;
     }
-    handlerUtils.changeHash(`#players?userName=${pid.value}`);
+    handlerUtils.changeHash(`#players?username=${pid.value}`);
 }
 
 

@@ -1,6 +1,7 @@
 package pt.isel.ls.storage
 
 import kotlinx.datetime.toLocalDate
+import org.eclipse.jetty.util.security.Password
 import pt.isel.ls.domain.Email
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Player
@@ -13,6 +14,9 @@ import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.SQLException
 import java.util.UUID
+
+internal const val LIMIT = 10
+internal const val OFFSET = 0
 
 /**
  * Makes a list of [Game] objects from a [PreparedStatement].
@@ -250,6 +254,7 @@ internal fun makePlayers(stmt: PreparedStatement): Collection<Player> {
                 rs.getString("name"),
                 rs.getString("username"),
                 Email(rs.getString("email")),
+                Password(rs.getString("password")),
                 UUID.fromString(
                     rs.getString("token"),
                 ),

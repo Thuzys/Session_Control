@@ -57,13 +57,15 @@ class PlayerHandlerTest {
                     UriTemplate.from("$DUMMY_ROUTE/{pid}"),
                 )
             val response = handler.getPlayer(request)
-            assertEquals(createJsonRspMessage("Bad Request, pid not found."), response.bodyString())
+            assertEquals(createJsonRspMessage("Bad Request, pid not found or invalid."), response.bodyString())
         }
 
     @Test
     fun `status of a player created successfully`() =
         actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
-            val request = Request(Method.POST, DUMMY_ROUTE).body("{\"name\": \"name\", \"email\": \"email\"}")
+            val request =
+                Request(Method.POST, DUMMY_ROUTE)
+                    .body("{\"name\": \"name\", \"email\": \"email\", \"password\": \"password\"}")
             val response = handler.createPlayer(request)
             assertEquals(Status.CREATED, response.status)
         }
@@ -71,7 +73,9 @@ class PlayerHandlerTest {
     @Test
     fun `message of a player created successfully`() =
         actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
-            val request = Request(Method.POST, DUMMY_ROUTE).body("{\"name\": \"name\", \"email\": \"email\"}")
+            val request =
+                Request(Method.POST, DUMMY_ROUTE)
+                    .body("{\"name\": \"name\", \"email\": \"email\", \"password\": \"password\"}")
             val response = handler.createPlayer(request)
             assertEquals(
                 expected =
@@ -101,10 +105,7 @@ class PlayerHandlerTest {
             val request = Request(Method.POST, DUMMY_ROUTE).body("{\"name\": \"name\", \"email\": \" \"}")
             val response = handler.createPlayer(request)
             val expected =
-                createJsonRspMessage(
-                    message = "Unable to create player.",
-                    error = "Unable to create a new Player due to invalid name or email.",
-                )
+                createJsonRspMessage("Bad Request, insufficient parameters.")
             assertEquals(expected, response.bodyString())
         }
 
@@ -164,9 +165,10 @@ class PlayerHandlerTest {
             val response = handler.getPlayer(request)
             assertEquals(
                 expected =
-                    "{\"pid\":${PlayerManagementStunt.playerId},\"name\":\"Test\",\"userName\":\"Test\",\"email\":" +
-                        "\"${PlayerManagementStunt.playerEmail.email}\",\"token\"" +
-                        ":\"${PlayerManagementStunt.playerToken}\"}",
+                    "{\"pid\":${PlayerManagementStunt.playerId},\"name\":\"Test\",\"username\":\"Test\",\"email\":" +
+                        "\"${PlayerManagementStunt.playerEmail.email}\"," +
+                        "\"password\":\"${PlayerManagementStunt.password}\"," +
+                        "\"token\":\"${PlayerManagementStunt.playerToken}\"}",
                 actual = response.bodyString(),
             )
         }

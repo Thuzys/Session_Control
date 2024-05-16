@@ -17,16 +17,23 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
     override fun createPlayer(request: Request): Response {
         val body = readBody(request)
         val name = body["name"]
-        val userName = body["userName"]
+        val userName = body["username"]
         val email = body["email"]
-        return if (name == null || email == null) {
-            makeResponse(Status.BAD_REQUEST, createJsonRspMessage("Bad Request, insufficient parameters."))
+        val password = body["password"]
+        val params = arrayOf(name, email, password)
+        return if (params.any { it == null }) {
+            badRequestResponse("insufficient parameters")
         } else {
             tryResponse(
                 errorStatus = Status.BAD_REQUEST,
                 errorMsg = "Unable to create player.",
             ) {
-                val (id, token) = playerManagement.createPlayer(name, email, userName)
+                name as String
+                email as String
+                password as String
+                val nameParam = name to userName
+                val emailPassParam = email to password
+                val (id, token) = playerManagement.createPlayer(nameParam, emailPassParam)
                 makeResponse(
                     Status.CREATED,
                     createJsonRspMessage(
@@ -39,13 +46,8 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
     }
 
     override fun getPlayer(request: Request): Response {
-        unauthorizedAccess(
-            request,
-            playerManagement,
-        )?.let { return makeResponse(Status.UNAUTHORIZED, createJsonRspMessage("Unauthorized, $it.")) }
-        val pid =
-            request.toPidOrNull()
-                ?: return makeResponse(Status.BAD_REQUEST, createJsonRspMessage("Bad Request, pid not found."))
+        unauthorizedAccess(request, playerManagement)?.let { return unauthorizedResponse(it) }
+        val pid = request.toPidOrNull() ?: return badRequestResponse("pid not found or invalid")
         return tryResponse(
             errorStatus = Status.NOT_FOUND,
             errorMsg = "Player not found.",
@@ -56,13 +58,10 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
     }
 
     override fun getPlayerBy(request: Request): Response {
-        unauthorizedAccess(
-            request,
-            playerManagement,
-        )?.let { return makeResponse(Status.UNAUTHORIZED, createJsonRspMessage("Unauthorized, $it.")) }
-        val userName = request.readQuery("userName")
+        unauthorizedAccess(request, playerManagement)?.let { return unauthorizedResponse(it) }
+        val userName = request.readQuery("username")
         return if (userName == null) {
-            makeResponse(Status.BAD_REQUEST, createJsonRspMessage("Bad Request, insufficient parameters."))
+            badRequestResponse("insufficient parameters")
         } else {
             tryResponse(
                 errorStatus = Status.NOT_FOUND,

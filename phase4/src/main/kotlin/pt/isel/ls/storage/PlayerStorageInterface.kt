@@ -40,8 +40,8 @@ interface PlayerStorageInterface {
         email: Email? = null,
         token: String? = null,
         userName: String? = null,
-        limit: UInt = 11u,
-        offset: UInt = 0u,
+        limit: UInt = LIMIT.toUInt(),
+        offset: UInt = OFFSET.toUInt(),
     ): Collection<Player>?
 
     /**

@@ -49,10 +49,8 @@ const cardData = [
  * @param mainContent main content of the page
  */
 function getContacts(mainContent) {
-    const container = views.div({class: "contacts-container"});
     const contactsView = contactHandlerViews.createGetContactsView(cardData);
-    container.replaceChildren(contactsView);
-    mainContent.replaceChildren(container);
+    mainContent.replaceChildren(contactsView);
 }
 
 export default {

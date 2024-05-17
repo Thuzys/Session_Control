@@ -3,7 +3,6 @@ import handlerUtils from "./handlerUtils/handlerUtils.js";
 import requestUtils from "../utils/requestUtils.js";
 import constants from "../constants/constants.js"
 import { fetcher } from "../utils/fetchUtils.js";
-import views from "../views/viewsCreators.js";
 
 /**
  * Create game
@@ -11,16 +10,8 @@ import views from "../views/viewsCreators.js";
  * @param mainContent
  */
 function createGame(mainContent) {
-    const [
-        header,
-        form
-    ] = gameHandlerViews.createCreateGameView()
-
-    const container = views.div({class: "player-details-container"})
-
-    form.onsubmit = (e) => handleCreateGameSubmit(e)
-
-    container.replaceChildren(header, form)
+    const container = gameHandlerViews.createCreateGameView()
+    container.onsubmit = (e) => handleCreateGameSubmit(e)
     mainContent.replaceChildren(container)
 }
 
@@ -50,6 +41,10 @@ function handleCreateGameSubmit(e) {
         .then(response => handleCreateGameResponse(response))
 }
 
+/**
+ * Handle create game response
+ * @param response response of the create game request
+ */
 function handleCreateGameResponse(response) {
     handlerUtils.changeHash(`games/${response.id}`)
 }
@@ -60,15 +55,8 @@ function handleCreateGameResponse(response) {
  * @param mainContent main content of the page
  */
 function searchGames(mainContent) {
-    const container = views.div({class: "player-details-container"});
-    const [
-        header,
-        form,
-    ] = gameHandlerViews.createSearchGamesView()
-
-    form.onsubmit = (e) => handleSearchGamesSubmit(e)
-
-    container.replaceChildren(header, form)
+    const container = gameHandlerViews.createSearchGamesView()
+    container.onsubmit = (e) => handleSearchGamesSubmit(e)
     mainContent.replaceChildren(container)
 }
 
@@ -119,14 +107,7 @@ function getGames(mainContent) {
  * @param mainContent main content of the page
  */
 function handleGetGamesResponse(games, mainContent) {
-    const container = views.div({class: "player-details-container"});
-    const [
-        header,
-        hr,
-        gameList,
-        pagination
-    ] = gameHandlerViews.createGetGameView(games)
-    container.replaceChildren(header, hr, gameList, pagination)
+    const container = gameHandlerViews.createGetGameView(games)
     mainContent.replaceChildren(container)
 }
 
@@ -152,9 +133,7 @@ function getGameDetails(mainContent){
  * @param mainContent main content of the page
  */
 function handleGetGameDetailsResponse(game, mainContent) {
-    const container = views.div({class: "player-details-container"});
-    const [header, hr, div] = gameHandlerViews.createGameDetailsView(game)
-    container.replaceChildren(header, hr, div)
+    const container = gameHandlerViews.createGameDetailsView(game)
     mainContent.replaceChildren(container)
 }
 

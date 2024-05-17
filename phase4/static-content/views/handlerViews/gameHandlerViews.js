@@ -11,9 +11,10 @@ const genresValues = Object.values(genres)
 /**
  * Create create game view
  *
- * @returns {any[]}
+ * @returns {HTMLElement} create game view
  */
 function createCreateGameView() {
+    const container = views.div({class: "player-details-container"})
     const header = handlerViews.createHeader("Create Game: ")
     const genresHeader = views.h4({class:"w3-wide centered"}, "Genres Selected")
     const inputName = handlerViews.createLabeledInput("InputName", "Insert Game Name")
@@ -60,16 +61,18 @@ function createCreateGameView() {
         submitButton
     )
 
-    return [header, form]
+    container.replaceChildren(header, form)
+    return container
 }
 
 
 /**
  * Create search games view
  *
- * @returns {any[]} search games view
+ * @returns {HTMLElement} search games view
  */
 function createSearchGamesView() {
+    const container = views.div({class: "player-details-container"});
     const header = handlerViews.createHeader("Search Games: ")
     const genresHeader = views.h4({class:"w3-wide centered"}, "Genres Selected")
     const hr = views.hr({class:"w3-opacity"})
@@ -132,7 +135,8 @@ function createSearchGamesView() {
         createGameButton
     )
 
-    return [header, form]
+    container.replaceChildren(header, form)
+    return container
 }
 
 /**
@@ -202,9 +206,10 @@ function createGenresListener(selectedGenresView, inputGenres, genresValues, tog
  * Create get game view
  *
  * @param games games to display
- * @returns {any[]} game view
+ * @returns {HTMLElement} get game view
  */
 function createGetGameView(games) {
+    const container = views.div({class: "player-details-container"});
     const header = handlerViews.createHeader("Games: ")
     const hr = views.hr({class:"w3-opacity"})
     const gameList = views.ul({class: "w3-ul w3-border w3-center w3-hover-shadow"})
@@ -226,16 +231,18 @@ function createGetGameView(games) {
         games.length === constants.LIMIT
     )
 
-    return [header, hr, gameList, pagination]
+    container.replaceChildren(header, hr, gameList, pagination)
+    return container
 }
 
 /**
  * Create game details view
  *
  * @param game game to display
- * @returns {any[]} game details view
+ * @returns {HTMLElement} game details view
  */
 function createGameDetailsView(game) {
+    const container = views.div({class: "player-details-container"});
     const header = handlerViews.createHeader("Game Details: ")
     const hr = views.hr({class:"w3-opacity"})
 
@@ -264,7 +271,8 @@ function createGameDetailsView(game) {
         views.p(),
         createSessionButton,
     )
-    return [header, hr, div]
+    container.replaceChildren(header, hr, div)
+    return container
 }
 
 const gameHandlerViews = {

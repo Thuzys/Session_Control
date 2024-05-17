@@ -3,7 +3,6 @@ import constants from "../constants/constants.js";
 import playerHandlerViews from "../views/handlerViews/playerHandlerViews.js";
 import {fetcher} from "../utils/fetchUtils.js";
 import handlerUtils from "./handlerUtils/handlerUtils.js";
-import views from "../views/viewsCreators.js";
 
 /**
  * Get player details by player id
@@ -42,10 +41,8 @@ function getPlayerDetails(mainContent) {
  * @param mainContent main content of the page
  */
 function searchPlayer(mainContent) {
-    const container = views.div({class: "player-details-container"});
-    const [h1, form] = playerHandlerViews.createSearchPlayerView();
-    form.onsubmit = (e) => handlePlayerSearchSubmit(e);
-    container.replaceChildren(h1, form);
+    const container = playerHandlerViews.createSearchPlayerView();
+    container.onsubmit = (e) => handlePlayerSearchSubmit(e);
     mainContent.replaceChildren(container);
 
 }

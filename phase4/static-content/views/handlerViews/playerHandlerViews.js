@@ -48,9 +48,10 @@ function createPlayerDetailsView(player, backButton = true) {
 
 /**
  * Create search player view
- * @returns {*[]}
+ * @returns {HTMLElement} search player view
  */
 function createSearchPlayerView() {
+    const container = views.div({class: "player-details-container"});
     const h1 = handlerViews.createHeader("Search Player")
     const playerInput =
         views.input({type: "text", id: "pid", placeholder: "username"});
@@ -74,7 +75,8 @@ function createSearchPlayerView() {
             views.p(),
             searchButton
         );
-    return [h1, form];
+    container.replaceChildren(h1, form);
+    return container
 }
 
 const playerHandlerViews = {

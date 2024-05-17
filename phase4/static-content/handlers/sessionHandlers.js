@@ -1,5 +1,4 @@
 import handlerUtils from "./handlerUtils/handlerUtils.js";
-import views from "../views/viewsCreators.js";
 import requestUtils from "../utils/requestUtils.js";
 import constants from "../constants/constants.js";
 import sessionHandlerViews from "../views/handlerViews/sessionHandlerViews.js";
@@ -12,10 +11,9 @@ import {isPlayerOwner} from "./handlerUtils/sessionHandlersUtils.js";
  * @param mainContent main content of the page
  */
 function searchSessions(mainContent) {
-    const formContent =  sessionHandlerViews.createSessionFormContentView();
-    const form = views.form({}, ...formContent);
-    form.addEventListener('submit', (e) => handleSearchSessionsSubmit(e));
-    mainContent.replaceChildren(views.div({class: "player-details-container"}, form));
+    const container =  sessionHandlerViews.createSessionFormContentView();
+    container.onsubmit = (e) => handleSearchSessionsSubmit(e);
+    mainContent.replaceChildren(container);
 }
 
 /**
@@ -35,28 +33,6 @@ function handleSearchSessionsSubmit(e) {
     });
     params.set('offset', "0");
     handlerUtils.changeHash(`#sessions?${params}`);
-}
-
-/**
- * Handle create session form submit event
- *
- * @param e event that triggered submit
- * @param gid
- */
-function handleCreateSessionSubmit(e, gid) {
-    e.preventDefault();
-    const capacity = document.getElementById('capacity').value;
-    const date = document.getElementById('dateCreate').value;
-    const url = `${constants.API_BASE_URL}${constants.SESSION_ROUTE}`;
-    const body = {
-        gid: gid.toString(),
-        capacity: capacity,
-        date: date,
-        owner: constants.TEMPORARY_USER_ID.toString(),
-    };
-    fetcher
-        .post(url, body, constants.TOKEN)
-        .then(response => handleCreateSessionResponse(response))
 }
 
 /**
@@ -82,8 +58,50 @@ function getSessions(mainContent) {
  * @param mainContent main content of the page
  */
 function handleGetSessionsResponse(sessions, mainContent) {
-    const [sessionsView, nextPrevView] = sessionHandlerViews.createGetSessionsView(sessions);
-    mainContent.replaceChildren(views.div({class: "player-details-container"}, sessionsView, nextPrevView));
+    const container = sessionHandlerViews.createGetSessionsView(sessions);
+    mainContent.replaceChildren(container);
+}
+
+/**
+ * Handle search sessions submit event
+ * @param mainContent main content of the page
+ * @param gid game id
+ * @param gameName game name to display
+ */
+function createSession(mainContent, gid, gameName) {
+    const container = sessionHandlerViews.createCreateSessionView(gameName);
+    container.onsubmit = (e) => handleCreateSessionSubmit(e, gid);
+    mainContent.replaceChildren(container);
+}
+
+/**
+ * Handle create session form submit event
+ *
+ * @param e event that triggered submit
+ * @param gid game id
+ */
+function handleCreateSessionSubmit(e, gid) {
+    e.preventDefault();
+    const capacity = document.getElementById('capacity').value;
+    const date = document.getElementById('dateCreate').value;
+    const url = `${constants.API_BASE_URL}${constants.SESSION_ROUTE}`;
+    const body = {
+        gid: gid.toString(),
+        capacity: capacity,
+        date: date,
+        owner: constants.TEMPORARY_USER_ID.toString(),
+    };
+    fetcher
+        .post(url, body, constants.TOKEN)
+        .then(response => handleCreateSessionResponse(response))
+}
+
+/**
+ * Handle create session response
+ * @param response
+ */
+function handleCreateSessionResponse(response) {
+    handlerUtils.changeHash("#sessions/" + response.id + "?offset=0");
 }
 
 /**
@@ -132,8 +150,8 @@ function handleGetSessionDetailsResponse(session, mainContent) {
         })
         .then(isInSession => {
             const playerListView = sessionHandlerViews.createPlayerListView(session);
-            const sessionDetailsView = sessionHandlerViews.createSessionDetailsView(session, playerListView, isOwner, isInSession);
-            mainContent.replaceChildren(views.div({class: "player-details-container"}, sessionDetailsView));
+            const container = sessionHandlerViews.createSessionDetailsView(session, playerListView, isOwner, isInSession);
+            mainContent.replaceChildren(container);
         })
 }
 
@@ -162,40 +180,6 @@ function removePlayerFromSession(sid) {
 }
 
 /**
- * Delete session by session id
- * @param sid
- */
-function deleteSession(sid) {
-    const url = constants.API_BASE_URL + constants.SESSION_ID_ROUTE + sid;
-    fetcher.del(url, constants.TOKEN)
-        .then(() => {
-            window.alert("Session deleted successfully");
-            handlerUtils.changeHash("#sessionSearch");
-        })
-        .catch(() => window.alert("Session could not be deleted"))
-}
-
-/**
- * Handle create session response
- * @param response
- */
-function handleCreateSessionResponse(response) {
-    handlerUtils.changeHash("#sessions/" + response.id + "?offset=0");
-}
-
-/**
- * Handle search sessions submit event
- * @param mainContent main content of the page
- * @param gid game id
- * @param gameName game name to display
- */
-function createSession(mainContent, gid, gameName) {
-    const [h1CreateSession, formCreateSession] = sessionHandlerViews.createCreateSessionView(gameName);
-    formCreateSession.addEventListener('submit', (e) => handleCreateSessionSubmit(e, gid));
-    mainContent.replaceChildren(views.div({class: "player-details-container"}, h1CreateSession, formCreateSession));
-}
-
-/**
  * Update session capacity or date
  * @param mainContent main content of the page
  */
@@ -204,9 +188,9 @@ function updateSession(mainContent) {
     fetcher
         .get(url, constants.TOKEN)
         .then( session => {
-            const [header, form] = sessionHandlerViews.createUpdateSessionView(session);
-            form.addEventListener('submit', (e) => handleUpdateSessionSubmit(e));
-            mainContent.replaceChildren(views.div({class: "player-details-container"}, header, form));
+            const container = sessionHandlerViews.createUpdateSessionView(session);
+            container.onsubmit = (e) => handleUpdateSessionSubmit(e);
+            mainContent.replaceChildren(container);
         });
 }
 
@@ -227,6 +211,20 @@ function handleUpdateSessionSubmit(e) {
     fetcher
         .put(url, constants.TOKEN, body)
         .then(_ => handlerUtils.changeHash("#sessions/" + sid + "?offset=0"))
+}
+
+/**
+ * Delete session by session id
+ * @param sid
+ */
+function deleteSession(sid) {
+    const url = constants.API_BASE_URL + constants.SESSION_ID_ROUTE + sid;
+    fetcher.del(url, constants.TOKEN)
+        .then(() => {
+            window.alert("Session deleted successfully");
+            handlerUtils.changeHash("#sessionSearch");
+        })
+        .catch(() => window.alert("Session could not be deleted"))
 }
 
 export default {

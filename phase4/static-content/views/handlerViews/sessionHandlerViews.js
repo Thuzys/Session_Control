@@ -7,9 +7,10 @@ import handlerUtils from "../../handlers/handlerUtils/handlerUtils.js";
 
 /**
  * Create session form content view
- * @returns {*[]}
+ * @returns {HTMLDivElement} session form content view
  */
 function createSessionFormContentView() {
+    const container = views.div({class: "player-details-container"});
     const header = handlerViews.createHeader("Search Sessions");
     const gidInput = handlerViews.createLabeledInput("gameName", "Enter Game name");
     const pidInput = handlerViews.createLabeledInput("userName", "Enter Player name");
@@ -46,7 +47,8 @@ function createSessionFormContentView() {
         radioClose.children[0],
     );
 
-    return [
+    const form = views.form(
+        {},
         header,
         views.hr({class:"w3-opacity"}),
         gidInput,
@@ -65,7 +67,9 @@ function createSessionFormContentView() {
         ),
         views.p(),
         searchButton
-    ];
+    );
+    container.replaceChildren(form);
+    return container;
 }
 
 /**
@@ -86,9 +90,10 @@ function canSearchSessions(gidInputValue, pidInputValue, dateInputValue, stateIn
  * @param playerList
  * @param isOwner
  * @param isInSession
- * @returns {any}
+ * @returns {HTMLDivElement}
  */
 function createSessionDetailsView(session, playerList, isOwner, isInSession) {
+    const container = views.div({class: "player-details-container"});
     const deleteSessionButton = createDeleteOrLeaveSessionButtonView(session);
     const leaveSessionButton = createDeleteOrLeaveSessionButtonView(session, true);
     const updateButton = createUpdateSessionButtonView(session);
@@ -128,7 +133,8 @@ function createSessionDetailsView(session, playerList, isOwner, isInSession) {
         div.appendChild(joinSessionButton);
     }
 
-    return div;
+    container.replaceChildren(div);
+    return container;
 }
 
 
@@ -152,9 +158,10 @@ function createJoinSessionButtonView(session) {
 /**
  * Create get sessions view
  * @param sessions sessions data
- * @returns {(HTMLDivElement|*)[]} sessions view
+ * @returns {HTMLDivElement} get sessions view
  */
 function createGetSessionsView(sessions) {
+    const container = views.div({class: "player-details-container"});
     const query = requestUtils.getQuery();
     const div = views.div({class: "pagination-sessions-min-height"},
         handlerViews.createHeader("Sessions Found: "),
@@ -173,15 +180,16 @@ function createGetSessionsView(sessions) {
             ));
         sessionsElems.appendChild(sessionHref);
     });
-    div.appendChild(sessionsElems);
     const nextPrev = handlerViews.createPagination(query, "#sessions", sessions.length === constants.LIMIT);
-    return [div, nextPrev];
+    div.appendChild(sessionsElems);
+    container.replaceChildren(div, nextPrev);
+    return container;
 }
 
 /**
  * Create player list view
  * @param session session data
- * @returns {HTMLDivElement}
+ * @returns {HTMLDivElement} player list view
  */
 function createPlayerListView(session) {
     const div = views.div({class: "pagination-players-min-height"})
@@ -210,9 +218,10 @@ function createPlayerListView(session) {
 /**
  * Create the create session view
  * @param gameName game name
- * @returns {(HTMLHeadingElement|HTMLFormElement)[]}
+ * @returns {HTMLDivElement} create session view
  */
 function createCreateSessionView(gameName) {
+    const container = views.div({class: "player-details-container"});
     const header = handlerViews.createHeader("Create Session: ");
     const hr = views.hr({class:"w3-opacity"})
     const labelCapacity = views.input({type: "number", id: "capacity", placeholder: "Enter Capacity"})
@@ -230,16 +239,16 @@ function createCreateSessionView(gameName) {
         views.p(),
         views.button({type: "submit", class: "general-button"}, "Create")
     );
-
-    return [header, formContent];
+    container.replaceChildren(header, formContent);
+    return container;
 }
 
 /**
  * Function to check if session can be updated
- * @param labelCapacity capacity input
- * @param labelDate date input
+ * @param labelCapacity capacity
+ * @param labelDate date
  * @param session session data
- * @returns {boolean}
+ * @returns {boolean} true if session can be updated
  */
 function canUpdateSession(labelCapacity, labelDate, session) {
     return (parseInt(labelCapacity.value) !== session.capacity && labelCapacity.value.trim() !== "")
@@ -249,9 +258,10 @@ function canUpdateSession(labelCapacity, labelDate, session) {
 /**
  * Create the update session view
  * @param session session data
- * @returns {(HTMLHeadingElement|HTMLFormElement)[]}
+ * @returns {HTMLDivElement} update session view
  */
 function createUpdateSessionView(session) {
+    const container = views.div({class: "player-details-container"});
     const header = handlerViews.createHeader("Update Session: ");
     const labelCapacity = views.input({type: "number", id: "capacity", placeholder: "Enter Capacity", value: session.capacity})
     const labelDate = views.input({type: "date", id: "dateChange", placeholder: "Enter Date", value: session.date});
@@ -289,7 +299,8 @@ function createUpdateSessionView(session) {
         updateSessionButton
     );
 
-    return [header, formContent];
+    container.replaceChildren(header, formContent);
+    return container;
 }
 
 /**

@@ -74,11 +74,11 @@ function createSessionFormContentView() {
 
 /**
  * Checks if search can be performed
- * @param gidInputValue
- * @param pidInputValue
- * @param dateInputValue
- * @param stateInputValue
- * @returns {*}
+ * @param gidInputValue game id
+ * @param pidInputValue player id
+ * @param dateInputValue date
+ * @param stateInputValue state
+ * @returns {*} true if search can be performed
  */
 function canSearchSessions(gidInputValue, pidInputValue, dateInputValue, stateInputValue) {
     return gidInputValue || pidInputValue || dateInputValue || stateInputValue;
@@ -86,11 +86,11 @@ function canSearchSessions(gidInputValue, pidInputValue, dateInputValue, stateIn
 
 /**
  * Create session details views
- * @param session
- * @param playerList
- * @param isOwner
- * @param isInSession
- * @returns {HTMLDivElement}
+ * @param session session data
+ * @param playerList player list data
+ * @param isOwner is owner of the session
+ * @param isInSession is in session
+ * @returns {HTMLDivElement} session details view
  */
 function createSessionDetailsView(session, playerList, isOwner, isInSession) {
     const container = views.div({class: "player-details-container"});
@@ -140,8 +140,8 @@ function createSessionDetailsView(session, playerList, isOwner, isInSession) {
 
 /**
  * Create join session button view
- * @param session
- * @returns {HTMLButtonElement}
+ * @param session session to join
+ * @returns {HTMLButtonElement} join session button view
  */
 function createJoinSessionButtonView(session) {
 
@@ -150,6 +150,7 @@ function createJoinSessionButtonView(session) {
         "Join Session"
     );
     joinSessionButton.addEventListener('click', () => {
+        sessionStorage.setItem('isInSession', 'true');
         sessionHandlers.addPlayerToSession(session.sid);
     });
     return joinSessionButton;
@@ -330,6 +331,7 @@ function createDeleteOrLeaveSessionButtonView(session, isLeaveButton = false) {
         e.preventDefault();
         const url = constants.API_BASE_URL + constants.SESSION_ID_ROUTE + session.sid;
         if (isLeaveButton) {
+            sessionStorage.setItem('isInSession', 'false');
             sessionHandlers.removePlayerFromSession(session.sid);
         } else {
             sessionHandlers.deleteSession(session.sid);

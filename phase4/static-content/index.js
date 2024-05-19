@@ -5,20 +5,28 @@ import sessionHandlers from "./handlers/sessionHandlers.js";
 import gameHandlers from "./handlers/gameHandlers.js";
 import contactHandlers from "./handlers/contactHandlers.js";
 import navigationViews from "./navigation/navigationViews.js";
-import playerHandlerViews from "./views/handlerViews/playerHandlerViews.JS";
+import homeHandlers from "./handlers/homeHandlers.js";
 
 window.addEventListener('load', loadHandler)
 window.addEventListener('hashchange', hashChangeHandler)
+window.addEventListener('beforeunload', function () {
+    homeHandlers.logOut()
+});
 
+sessionStorage.setItem('isAuthenticated', 'true') //for testing purposes
 
 /**
  * Load handler routes
   */
 function loadHandler(){
     const navigationBar = navigationViews.createNavigationBarView();
-    document.body.insertBefore(navigationBar, document.getElementById("mainContent"));
-
-    router.addRouteHandler("players/home", playerHandlers.getHome)
+    if( sessionStorage.getItem('isAuthenticated') === 'true' ) {
+        document.body.insertBefore(navigationBar, document.getElementById("mainContent"));
+    }
+    router.addRouteHandler("logIn", homeHandlers.logIn)
+    router.addRouteHandler("register", homeHandlers.register)
+    router.addRouteHandler("logOut", homeHandlers.logOut)
+    router.addRouteHandler("players/home", homeHandlers.getHome)
     router.addRouteHandler("playerSearch", playerHandlers.searchPlayer)
     router.addRouteHandler("createGame", gameHandlers.createGame)
     router.addRouteHandler("players", playerHandlers.getPlayerDetails)
@@ -36,12 +44,37 @@ function loadHandler(){
     hashChangeHandler()
 }
 
+const routesRequiringAuth = [
+    "playerSearch",
+    "createGame",
+    "players",
+    "gameSearch",
+    "games",
+    "games/:gid",
+    "players/:pid",
+    "sessionSearch",
+    "updateSession/:sid",
+    "sessions",
+    "sessions/:sid",
+    "contacts"
+];
+
 /**
- * Handle hash change event
+ * Hash change handler
  */
 function hashChangeHandler(){
     const mainContent = document.getElementById("mainContent")
     const path =  requestUtils.getPath()
     const handler = router.getRouteHandler(path)
+
+    if (routesRequiringAuth.includes(path)) {
+        const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';
+        if (!isAuthenticated) {
+            window.location.hash = "logIn";
+            return;
+        }
+    }
+
     handler(mainContent)
 }
+

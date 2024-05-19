@@ -13,7 +13,8 @@ function createNavigationBarView() {
             createNavigationIconView("#gameSearch", "fa fa-gamepad w3-xxlarge", "Search Games"),
             createNavigationIconView("#sessionSearch", "fa fa-search w3-xxlarge", "Search Sessions"),
             createNavigationIconView("#playerSearch", "fa fa-users w3-xxlarge", "Search Player"),
-            createNavigationIconView("#contacts", "fa fa-envelope w3-xxlarge", "Contacts")
+            createNavigationIconView("#contacts", "fa fa-envelope w3-xxlarge", "Contacts"),
+            createNavigationIconView("#logOut", "fa fa-sign-out w3-xxlarge", "Log Out")
     );
 }
 

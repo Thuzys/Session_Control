@@ -37,17 +37,6 @@ function getPlayerDetails(mainContent) {
 }
 
 /**
- * Search player
- * @param mainContent main content of the page
- */
-function searchPlayer(mainContent) {
-    const container = playerHandlerViews.createSearchPlayerView();
-    container.onsubmit = (e) => handlePlayerSearchSubmit(e);
-    mainContent.replaceChildren(container);
-
-}
-
-/**
  * Handle player details response
  *
  * @param player response from the server
@@ -60,18 +49,13 @@ function handleGetPlayerDetailsResponse(player, mainContent, isSearch = false) {
 }
 
 /**
- * Get home page
- *
+ * Search player
  * @param mainContent main content of the page
  */
-function getHome(mainContent) {
-    const url = `${constants.API_BASE_URL}${constants.PLAYER_ID_ROUTE}1`;
-    fetcher
-        .get(url, constants.TOKEN)
-        .then(
-            response =>
-                handleGetPlayerDetailsResponse(response, mainContent)
-        );
+function searchPlayer(mainContent) {
+    const container = playerHandlerViews.createSearchPlayerView();
+    container.onsubmit = (e) => handlePlayerSearchSubmit(e);
+    mainContent.replaceChildren(container);
 }
 
 /**
@@ -92,6 +76,6 @@ function handlePlayerSearchSubmit(e) {
 export default {
     getPlayerDetails,
     searchPlayer,
-    getHome,
-    getPlayerDetailsByPid
+    getPlayerDetailsByPid,
+    handleGetPlayerDetailsResponse
 }

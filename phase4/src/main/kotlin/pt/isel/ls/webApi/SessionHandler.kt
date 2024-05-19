@@ -58,7 +58,7 @@ class SessionHandler(
         val limit = request.query("limit")?.toUIntOrNull()
         val offset = request.query("offset")?.toUIntOrNull()
         return tryResponse(Status.NOT_FOUND, "Session not found.") {
-            val session = sessionManagement.getSessionDetails(sid, limit, offset)
+            val session = sessionManagement.sessionDetails(sid, limit, offset)
             makeResponse(Status.FOUND, Json.encodeToString(session))
         }
     }
@@ -114,6 +114,7 @@ class SessionHandler(
         unauthorizedAccess(request, playerManagement)?.let { return unauthorizedResponse(it) }
         val body = readBody(request)
         val sid = request.toSidOrNull()
+        val pid = body["pid"]?.toUIntOrNull()
         val capacity = body["capacity"]?.toUIntOrNull()
         val date = dateVerification(body["date"])
         return when {
@@ -121,16 +122,17 @@ class SessionHandler(
                 badRequestResponse(
                     "capacity and date not provided. Session not modified",
                 )
-            (sid == null) ->
+            (sid == null || pid == null) ->
                 badRequestResponse(
-                    "Invalid or Missing 'sid'. Session not modified",
+                    "Invalid/Missing 'sid' or 'pid'. Session not modified",
                 )
             else ->
                 tryResponse(
                     Status.NOT_MODIFIED,
                     "Error updating session $sid. Check if $sid is valid",
                 ) {
-                    sessionManagement.updateCapacityOrDate(sid, capacity, date)
+                    val authentication = Pair(pid, sid)
+                    sessionManagement.updateCapacityOrDate(authentication, capacity, date)
                     return makeResponse(Status.OK, createJsonRspMessage("Session $sid updated successfully"))
                 }
         }

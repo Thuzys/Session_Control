@@ -4,6 +4,7 @@ import kotlinx.datetime.LocalDate
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.errors.ServicesError
+import pt.isel.ls.domain.info.AuthenticationParam
 import pt.isel.ls.domain.info.GameInfo
 import pt.isel.ls.domain.info.GameInfoParam
 import pt.isel.ls.domain.info.PlayerInfo
@@ -27,7 +28,7 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
         }
     }
 
-    override fun getSessionDetails(
+    override fun sessionDetails(
         sid: UInt,
         limit: UInt?,
         offset: UInt?,
@@ -76,12 +77,12 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
         }
 
     override fun updateCapacityOrDate(
-        sid: UInt,
+        authentication: AuthenticationParam,
         capacity: UInt?,
         date: LocalDate?,
-    ) = tryCatch("Unable to update session $sid due") {
+    ) = tryCatch("Unable to update session ${authentication.second} due") {
         sessionDataMem.updateCapacityOrDate(
-            sid = sid,
+            authentication = authentication,
             capacity = capacity,
             date = date,
         )

@@ -3,6 +3,7 @@ package pt.isel.ls.storage
 import kotlinx.datetime.LocalDate
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
+import pt.isel.ls.domain.info.AuthenticationParam
 import pt.isel.ls.domain.info.GameInfo
 import pt.isel.ls.domain.info.GameInfoParam
 import pt.isel.ls.domain.info.PlayerInfo
@@ -107,12 +108,16 @@ class SessionStorageStunt : SessionStorageInterface {
     }
 
     override fun updateCapacityOrDate(
-        sid: UInt,
+        authentication: AuthenticationParam,
         capacity: UInt?,
         date: LocalDate?,
     ) {
+        val (pid, sid) = authentication
         val sessionToUpdate = hashSession[sid]
         sessionToUpdate?.let { session ->
+            if (session.owner.pid != pid) {
+                throw IllegalArgumentException("Player is not the owner of the session.")
+            }
             hashSession[sid] =
                 session.copy(
                     capacity = capacity ?: sessionToUpdate.capacity,

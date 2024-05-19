@@ -6,7 +6,6 @@ import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.domain.info.CreatePlayerEmailPasswordParam
 import pt.isel.ls.domain.info.CreatePlayerNameParam
 import pt.isel.ls.storage.PlayerStorageInterface
-import java.util.UUID
 
 /**
  * Represents the services made by the application.
@@ -20,7 +19,7 @@ class PlayerManagement(private val mem: PlayerStorageInterface) : PlayerServices
     override fun createPlayer(
         nameUSerName: CreatePlayerNameParam,
         emailPassword: CreatePlayerEmailPasswordParam,
-    ): Pair<UInt, UUID> =
+    ): CreatedPlayer =
         tryCatch("Unable to create a new Player due") {
             val player = nameUSerName associateWith emailPassword
             val pid = mem.create(player)

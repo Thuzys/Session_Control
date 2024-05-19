@@ -7,6 +7,13 @@ import pt.isel.ls.domain.info.CreatePlayerNameParam
 import java.util.UUID
 
 /**
+ * Represents a pair of a [UInt] and a [UUID].
+ * - The [UInt] is a unique key to be associated with the new [Player].
+ * - The [UUID] is a unique identifier.
+ */
+typealias CreatedPlayer = Pair<UInt, UUID>
+
+/**
  * Represents the services related to the player in the application.
  *
  * This interface provides methods for creating a new player and retrieving the details of a player.
@@ -27,7 +34,7 @@ interface PlayerServices {
     fun createPlayer(
         nameUSerName: CreatePlayerNameParam,
         emailPassword: CreatePlayerEmailPasswordParam,
-    ): Pair<UInt, UUID>
+    ): CreatedPlayer
 
     /**
      * Returns the details of a player.

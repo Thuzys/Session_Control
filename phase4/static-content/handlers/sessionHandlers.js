@@ -206,7 +206,8 @@ function handleUpdateSessionSubmit(e) {
     const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${sid}`;
     const body = {
         capacity: capacity,
-        date: date
+        date: date,
+        pid: constants.TEMPORARY_USER_ID.toString()
     };
     fetcher
         .put(url, constants.TOKEN, body)

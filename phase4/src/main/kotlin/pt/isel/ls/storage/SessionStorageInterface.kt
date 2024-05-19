@@ -4,6 +4,7 @@ import kotlinx.datetime.LocalDate
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
+import pt.isel.ls.domain.info.AuthenticationParam
 import pt.isel.ls.domain.info.GameInfoParam
 import pt.isel.ls.domain.info.PlayerInfoParam
 import pt.isel.ls.domain.info.SessionInfo
@@ -61,12 +62,12 @@ interface SessionStorageInterface {
     /**
      * Updates a [Session] capacity, date or both.
      *
-     * @param sid The unique identifier of the [Session] to be updated.
+     * @param authentication The [AuthenticationParam] of the player and session.
      * @param capacity the new value for the capacity. Defaults to null.
      * @param date the new value for the date. Defaults to null
      */
     fun updateCapacityOrDate(
-        sid: UInt,
+        authentication: AuthenticationParam,
         capacity: UInt? = null,
         date: LocalDate? = null,
     )

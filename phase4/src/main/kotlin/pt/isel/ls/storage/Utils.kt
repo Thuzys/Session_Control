@@ -193,7 +193,7 @@ private fun gameGenresRelation(
 }
 
 /**
- * Gets the game id from the prepared statement.
+ * Gets the id from the prepared statement.
  *
  * @param addGameStmt The [PreparedStatement] to get the game id from.
  * @return The game id.
@@ -386,6 +386,14 @@ internal fun <T> Connection.executeCommand(cmd: Connection.() -> T): T {
         autoCommit = true
         return response
     } catch (e: SQLException) {
+        rollback()
+        autoCommit = true
+        throw e
+    } catch (e: IllegalArgumentException) {
+        rollback()
+        autoCommit = true
+        throw e
+    } catch (e: IllegalStateException) {
         rollback()
         autoCommit = true
         throw e

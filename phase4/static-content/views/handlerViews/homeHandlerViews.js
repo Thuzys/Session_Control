@@ -31,7 +31,8 @@ function createLoginView() {
         password
     )
 
-    const span = views.span({class: "w3-opacity centered"}, "Don't have an account? ", views.a({href: "#register"}, "Create one!"));
+    const span = views.span({class: "w3-opacity centered"},
+        "Don't have an account? ", views.a({href: "#register",  style: "padding-left: 5px;"}, "Create one!"));
 
     container.replaceChildren(header, views.hr({class:"w3-opacity"}), div, submitButton, views.p(), span);
     return container;
@@ -92,10 +93,14 @@ function createRegisterView() {
         name,
         email,
         password,
-        confirmPassword
+        confirmPassword,
+
     )
 
-    container.replaceChildren(header, views.hr({class:"w3-opacity"}), div, submitButton);
+    const span = views.span({class: "w3-opacity centered"},
+        "Already have an account?", views.a({href: "#logIn",  style: "padding-left: 5px;"}, "Log in"));
+
+    container.replaceChildren(header, views.hr({class:"w3-opacity"}), div, submitButton, views.p(), span);
     return container;
 
 }

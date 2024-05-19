@@ -12,7 +12,7 @@ import handlerViews from "../views/handlerViews/handlerViews.js";
  * @param mainContent main content of the page
  */
 function searchSessions(mainContent) {
-    const container =  sessionHandlerViews.createSessionFormContentView();
+    const container =  sessionHandlerViews.createSearchSessionsView();
     container.onsubmit = (e) => handleSearchSessionsSubmit(e);
     mainContent.replaceChildren(container);
 }
@@ -134,10 +134,8 @@ function handleGetSessionDetailsResponse(session, mainContent) {
     });
 
     let isOwner = sessionStorage.getItem('isOwner');
-    console.log(isOwner);
     if (isOwner == null) {
         isOwner = isPlayerOwner(session);
-        console.log(isOwner);
         sessionStorage.setItem('isOwner', isOwner.toString());
     }
 

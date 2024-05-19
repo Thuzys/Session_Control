@@ -9,7 +9,7 @@ import handlerUtils from "../../handlers/handlerUtils/handlerUtils.js";
  * Create session form content view
  * @returns {HTMLDivElement} session form content view
  */
-function createSessionFormContentView() {
+function createSearchSessionsView() {
     const container = views.div({class: "player-details-container"});
     const header = handlerViews.createHeader("Search Sessions");
     const gidInput = handlerViews.createLabeledInput("gameName", "Enter Game name");
@@ -104,21 +104,17 @@ function createSessionDetailsView(session, playerList, isOwner, isInSession) {
         views.hr({class:"w3-opacity)"}),
         views.div({class: "w3-margin-bottom"},
             views.ul({class: "w3-ul w3-border w3-center w3-hover-shadow"},
-                views.li(views.h3({class: "w3-wide blue-letters"}, "Game")),
+                views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Game"),
                 views.li(
                     ...handlerViews.hrefConstructor(
                         "#games",
                         session.gameInfo.gid, `${session.gameInfo.name}`
                     )
-                ),
-                views.li(views.h3({class: "w3-wide blue-letters"}, "Date")),
-                views.li(session.date),
-                views.li(views.h3({class: "w3-wide blue-letters"}, "Owner")),
-                views.li(session.owner.userName),
-                views.li(views.h3({class: "w3-wide blue-letters"}, "Capacity")),
-                views.li(session.capacity.toString()),
-                views.li(views.h3({class: "w3-wide blue-letters"}, "Players")),
-                playerList
+                ),),),
+                views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Date"), views.li(session.date))),
+                views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Owner"), views.li(session.owner.userName))),
+                views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Capacity"), views.li(session.capacity.toString()))),
+                views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Players"), playerList)),
             ),
         )
     );
@@ -342,7 +338,7 @@ function createDeleteOrLeaveSessionButtonView(session, isLeaveButton = false) {
 }
 
 const sessionHandlerViews = {
-    createSessionFormContentView,
+    createSearchSessionsView,
     createSessionDetailsView,
     createGetSessionsView,
     createPlayerListView,

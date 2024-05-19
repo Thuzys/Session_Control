@@ -17,12 +17,9 @@ function createPlayerDetailsView(player, backButton = true) {
     const header = handlerViews.createHeader(headerText);
 
     const detailsList = views.ul({class: "w3-ul w3-border w3-center w3-hover-shadow"},
-        views.li(views.h3({class: "w3-wide blue-letters"}, "Name")),
-        views.li(player.name),
-        views.li(views.h3({class: "w3-wide blue-letters"}, "Username")),
-        views.li(player.userName),
-        views.li(views.h3({class: "w3-wide blue-letters"}, "Email")),
-        views.li(player.email),
+        views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Name"),views.li(player.name) )),
+        views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Username"), views.li(player.userName))),
+        views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Email"), views.li(player.email)))
     );
 
     const sessionsButton = handlerViews.hrefButtonView(
@@ -54,7 +51,7 @@ function createSearchPlayerView() {
     const container = views.div({class: "player-details-container"});
     const h1 = handlerViews.createHeader("Search Player")
     const playerInput =
-        views.input({type: "text", id: "pid", placeholder: "username"});
+        views.input({type: "text", id: "pid", placeholder: "Username"});
     const searchButton =
         views.button(
             {type: "submit", class: "general-button", disabled: true},

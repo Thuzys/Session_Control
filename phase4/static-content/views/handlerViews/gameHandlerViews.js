@@ -243,7 +243,7 @@ function createGetGameView(games) {
  */
 function createGameDetailsView(game) {
     const container = views.div({class: "player-details-container"});
-    const header = handlerViews.createHeader("Game Details: ")
+    const header = handlerViews.createHeader("Game Details")
     const hr = views.hr({class:"w3-opacity"})
 
     const createSessionButton = views.button({type: "button", class: "general-button"}, "Create Session");
@@ -255,21 +255,28 @@ function createGameDetailsView(game) {
         );
     });
 
+    const genresList = views.ul({
+        id: "GenresList"
+    })
+
+    game.genres.forEach(genre => {
+        genresList.appendChild(views.li(genre))
+    })
+
     const div = views.div(
         {},
         views.h2({class: "w3-wide blue-letters centered"}, game.name),
         views.ul({class: "w3-ul w3-border w3-center w3-hover-shadow"},
-            views.li(views.h4({class: "w3-wide blue-letters"}, "Developer")),
-            views.li(game.dev),
-            views.li(views.h4({class: "w3-wide blue-letters"}, "Genres")),
-            views.li(game.genres.join(","))
+            views.li(views.div({},views.h4({class: "w3-wide blue-letters"}, "Developer"), views.li(game.dev))),
+            views.li(views.div({}, views.h4({class: "w3-wide blue-letters"}, "Genres"), genresList)),
         ),
+        views.p(),
         handlerViews.createBackButtonView(),
         views.p(),
         handlerViews.hrefButtonView("Sessions",
             `${constants.SESSION_ROUTE}?gid=${game.gid}&offset=0`),
         views.p(),
-        createSessionButton,
+        createSessionButton
     )
     container.replaceChildren(header, hr, div)
     return container

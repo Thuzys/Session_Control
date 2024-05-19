@@ -72,24 +72,10 @@ function handlePlayerSearchSubmit(e) {
     handlerUtils.changeHash(`#players?userName=${pid.value}`);
 }
 
-/**
- * Get home page
- *
- * @param mainContent main content of the page
- */
-function getHome(mainContent) {
-    const url = `${constants.API_BASE_URL}${constants.PLAYER_ID_ROUTE}1`;
-    fetcher
-        .get(url, constants.TOKEN)
-        .then(
-            response =>
-                handleGetPlayerDetailsResponse(response, mainContent)
-        );
-}
 
 export default {
     getPlayerDetails,
     searchPlayer,
-    getHome,
-    getPlayerDetailsByPid
+    getPlayerDetailsByPid,
+    handleGetPlayerDetailsResponse
 }

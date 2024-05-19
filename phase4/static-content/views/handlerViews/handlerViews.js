@@ -17,12 +17,27 @@ function createRadioButton(labelText, name) {
 
 /**
  * Create labeled input
- * @param id
- * @param placeholder
- * @returns {*}
+ * @param id id of the input
+ * @param placeholder placeholder of the input
+ * @returns {HTMLInputElement} labeled input
  */
 function createLabeledInput(id, placeholder) {
     return views.input({type: "text", id, placeholder });
+}
+
+function createLabeledEmailInput(id, placeholder) {
+    return views.input({type: "email", id, placeholder });
+
+}
+
+/**
+ * Create labeled password input
+ * @param id id of the input
+ * @param placeholder placeholder of the input
+ * @returns {HTMLInputElement} labeled password input
+ */
+function createLabeledPasswordInput(id, placeholder) {
+    return views.input({type: "password", id, placeholder });
 }
 
 /**
@@ -193,7 +208,9 @@ const handlerViews = {
     toggleButtonState,
     addToggleEventListeners,
     ulHasItem,
-    createRadioButton
+    createRadioButton,
+    createLabeledPasswordInput,
+    createLabeledEmailInput
 }
 
 export default handlerViews

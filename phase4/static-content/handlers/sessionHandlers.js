@@ -4,6 +4,7 @@ import constants from "../constants/constants.js";
 import sessionHandlerViews from "../views/handlerViews/sessionHandlerViews.js";
 import {fetcher} from "../utils/fetchUtils.js";
 import {isPlayerOwner} from "./handlerUtils/sessionHandlersUtils.js";
+import handlerViews from "../views/handlerViews/handlerViews.js";
 
 /**
  * Search sessions by game id, player id, date and state
@@ -119,38 +120,40 @@ function getSessionDetails(mainContent) {
 }
 
 /**
- * Cache for is in session check to avoid multiple requests
- * @type {boolean}
- */
-let isInSessionCache = null;
-
-/**
- * Cache for is owner check to avoid multiple requests
- * @type {boolean}
- */
-let isOwnerCache = null;
-
-/**
  * Handle get session details response from the server
  *
  * @param session response from the server
  * @param mainContent main content of the page
  */
 function handleGetSessionDetailsResponse(session, mainContent) {
-    const isOwner = isOwnerCache !== null ? isOwnerCache : isPlayerOwner(session);
-    isOwnerCache = isOwner;
+    window.addEventListener('hashchange', function() {
+        if (!location.hash.includes('sessions/')) {
+            sessionStorage.removeItem('isOwner');
+            sessionStorage.removeItem('isInSession');
+        }
+    });
+
+    let isOwner = sessionStorage.getItem('isOwner');
+    console.log(isOwner);
+    if (isOwner == null) {
+        isOwner = isPlayerOwner(session);
+        console.log(isOwner);
+        sessionStorage.setItem('isOwner', isOwner.toString());
+    }
+
     const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${session.sid}/${constants.TEMPORARY_USER_ID}`;
 
-    const fetchIsInSession = isInSessionCache !== null ? Promise.resolve(isInSessionCache) : fetcher.get(url, constants.TOKEN);
+    let isInSession = sessionStorage.getItem('isInSession');
+    const fetchIsInSession = isInSession !== null ? Promise.resolve(isInSession.toString() === "true") : fetcher.get(url, constants.TOKEN);
 
     fetchIsInSession
         .then(isInSession => {
-            isInSessionCache = isInSession === true;
-            return isInSessionCache;
+            sessionStorage.setItem('isInSession', isInSession);
+            return isInSession;
         })
         .then(isInSession => {
             const playerListView = sessionHandlerViews.createPlayerListView(session);
-            const container = sessionHandlerViews.createSessionDetailsView(session, playerListView, isOwner, isInSession);
+            const container = sessionHandlerViews.createSessionDetailsView(session, playerListView, isOwner.toString() === "true", isInSession);
             mainContent.replaceChildren(container);
         })
 }
@@ -221,7 +224,7 @@ function deleteSession(sid) {
     const url = constants.API_BASE_URL + constants.SESSION_ID_ROUTE + sid;
     fetcher.del(url, constants.TOKEN)
         .then(() => {
-            window.alert("Session deleted successfully");
+            handlerViews.showAlert("Session deleted successfully");
             handlerUtils.changeHash("#sessionSearch");
         })
         .catch(() => window.alert("Session could not be deleted"))

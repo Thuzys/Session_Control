@@ -89,6 +89,22 @@ input[type="text"] {
     width: 800px;
 }
 
+input[type="email"] {
+    padding-left: 10px;
+    background-color: #111;
+    color: white;
+    height: 50px;
+    width: 800px;
+}
+
+input[type="password"] {
+    padding-left: 10px;
+    background-color: #111;
+    color: white;
+    height: 50px;
+    width: 800px;
+}
+
 input[type="number"] {
     padding-left: 10px;
     background-color: #111;

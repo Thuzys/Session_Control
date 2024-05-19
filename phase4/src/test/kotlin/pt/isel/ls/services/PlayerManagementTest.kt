@@ -2,6 +2,7 @@ package pt.isel.ls.services
 
 import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.storage.PlayerStorageStunt
+import java.util.UUID
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -13,10 +14,11 @@ class PlayerManagementTest {
     private val alreadyExistName = "test1"
     private val name = "test2"
     private val password = "password"
+    private val token = UUID.randomUUID()
 
     private fun actionOfPlayerManagementTest(code: (player: PlayerServices) -> Unit) =
         // arrangement
-        PlayerManagement(PlayerStorageStunt())
+        PlayerManagement(PlayerStorageStunt(token))
             .let(code)
 
     @Test
@@ -40,7 +42,7 @@ class PlayerManagementTest {
         actionOfPlayerManagementTest { playerManagement: PlayerServices ->
             val nameParam = name to "newUserName"
             val emailPassParam = email + "m" to password
-            assertEquals(3u, playerManagement.createPlayer(nameParam, emailPassParam).first)
+            assertEquals(3u, playerManagement.createPlayer(nameParam, emailPassParam).pid)
         }
 
     @Test
@@ -81,7 +83,7 @@ class PlayerManagementTest {
                     runCatching {
                         val nameParam = name to null
                         val emailPassParam = "non-valid-email" to password
-                        playerManagement.createPlayer(nameParam, emailPassParam).first
+                        playerManagement.createPlayer(nameParam, emailPassParam).pid
                     }.exceptionOrNull()?.message,
             )
         }
@@ -119,5 +121,24 @@ class PlayerManagementTest {
         actionOfPlayerManagementTest { playerManagement: PlayerServices ->
             val invalidToken = ""
             assertFalse { playerManagement.isValidToken(invalidToken) }
+        }
+
+    @Test
+    fun `getting details of a player by userName successfully`() =
+        actionOfPlayerManagementTest { playerManagement: PlayerServices ->
+            assertEquals("test1", playerManagement.getPlayerDetailsBy("test1").name)
+        }
+
+    @Test
+    fun `login successfully`() =
+        actionOfPlayerManagementTest { playerManagement: PlayerServices ->
+            val playerAuthentication = playerManagement.login("test1", "password")
+            assertEquals(1u, playerAuthentication.pid)
+        }
+
+    @Test
+    fun `logout successfully`() =
+        actionOfPlayerManagementTest { playerManagement: PlayerServices ->
+            playerManagement.logout(token)
         }
 }

@@ -9,20 +9,14 @@ import homeHandlers from "./handlers/homeHandlers.js";
 
 window.addEventListener('load', loadHandler)
 window.addEventListener('hashchange', hashChangeHandler)
-window.addEventListener('beforeunload', function () {
-    homeHandlers.logOut()
-});
-
-sessionStorage.setItem('isAuthenticated', 'true') //for testing purposes
+// window.addEventListener('beforeunload', function () {
+//     homeHandlers.logOut()
+// });
 
 /**
  * Load handler routes
   */
 function loadHandler(){
-    const navigationBar = navigationViews.createNavigationBarView();
-    if( sessionStorage.getItem('isAuthenticated') === 'true' ) {
-        document.body.insertBefore(navigationBar, document.getElementById("mainContent"));
-    }
     router.addRouteHandler("logIn", homeHandlers.logIn)
     router.addRouteHandler("register", homeHandlers.register)
     router.addRouteHandler("logOut", homeHandlers.logOut)
@@ -39,7 +33,7 @@ function loadHandler(){
     router.addRouteHandler("sessions", sessionHandlers.getSessions)
     router.addRouteHandler("sessions/:sid", sessionHandlers.getSessionDetails)
     router.addRouteHandler("contacts", contactHandlers.getContacts)
-    router.addDefaultNotFoundRouteHandler((dummy1, dummy2) => window.location.hash = "players/home")
+    router.addDefaultNotFoundRouteHandler((dummy1, dummy2) => window.location.hash = "logIn")
 
     hashChangeHandler()
 }
@@ -63,6 +57,10 @@ const routesRequiringAuth = [
  * Hash change handler
  */
 function hashChangeHandler(){
+    const navigationBar = navigationViews.createNavigationBarView();
+    if( sessionStorage.getItem('isAuthenticated') === 'true' ) {
+        document.body.insertBefore(navigationBar, document.getElementById("mainContent"));
+    }
     const mainContent = document.getElementById("mainContent")
     const path =  requestUtils.getPath()
     const handler = router.getRouteHandler(path)

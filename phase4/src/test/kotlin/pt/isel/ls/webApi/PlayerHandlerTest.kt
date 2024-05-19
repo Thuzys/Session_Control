@@ -78,13 +78,7 @@ class PlayerHandlerTest {
                     .body("{\"name\": \"name\", \"email\": \"email\", \"password\": \"password\"}")
             val response = handler.createPlayer(request)
             assertEquals(
-                expected =
-                    createJsonRspMessage(
-                        message =
-                            "Player created with id ${PlayerManagementStunt.playerId} " +
-                                "and token ${PlayerManagementStunt.playerToken}.",
-                        id = PlayerManagementStunt.playerId,
-                    ),
+                expected = "{\"pid\":${PlayerManagementStunt.playerId},\"token\":\"${PlayerManagementStunt.playerToken}\"}",
                 actual = response.bodyString(),
             )
         }
@@ -200,5 +194,88 @@ class PlayerHandlerTest {
             val request = Request(Method.GET, "$DUMMY_ROUTE?pid=${PlayerManagementStunt.playerId}")
             val response = handler.getPlayer(request)
             assertEquals(createJsonRspMessage("Unauthorized, token not provided."), response.bodyString())
+        }
+
+    @Test
+    fun `login status of bad request due lack of username`() =
+        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
+            val request = Request(Method.POST, DUMMY_ROUTE).body("{\"password\": \"password\"}")
+            val response = handler.login(request)
+            assertEquals(Status.BAD_REQUEST, response.status)
+        }
+
+    @Test
+    fun `login message of bad request due lack of username`() =
+        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
+            val request = Request(Method.POST, DUMMY_ROUTE).body("{\"password\": \"password\"}")
+            val response = handler.login(request)
+            assertEquals(createJsonRspMessage("Bad Request, insufficient parameters."), response.bodyString())
+        }
+
+    @Test
+    fun `login status of bad request due lack of password`() =
+        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
+            val request = Request(Method.POST, DUMMY_ROUTE).body("{\"username\": \"username\"}")
+            val response = handler.login(request)
+            assertEquals(Status.BAD_REQUEST, response.status)
+        }
+
+    @Test
+    fun `login message of bad request due lack of password`() =
+        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
+            val request = Request(Method.POST, DUMMY_ROUTE).body("{\"username\": \"username\"}")
+            val response = handler.login(request)
+            assertEquals(createJsonRspMessage("Bad Request, insufficient parameters."), response.bodyString())
+        }
+
+    @Test
+    fun `login successfully`() =
+        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
+            val request = Request(Method.POST, DUMMY_ROUTE).body("{\"username\": \"Test\", \"password\": \"password\"}")
+            val response = handler.login(request)
+            assertEquals(Status.OK, response.status)
+        }
+
+    @Test
+    fun `message of login successfully`() =
+        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
+            val request = Request(Method.POST, DUMMY_ROUTE).body("{\"username\": \"Test\", \"password\": \"password\"}")
+            val response = handler.login(request)
+            assertEquals(
+                expected =
+                    "{\"pid\":${PlayerManagementStunt.playerId}," +
+                        "\"token\":\"${PlayerManagementStunt.playerToken}\"}",
+                actual = response.bodyString(),
+            )
+        }
+
+    @Test
+    fun `unsuccessful logout invalid token`() =
+        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
+            val request =
+                Request(Method.DELETE, DUMMY_ROUTE)
+                    .header("Authorization", "Bearer ${UUID.randomUUID()}")
+            val response = handler.logout(request)
+            assertEquals(Status.UNAUTHORIZED, response.status)
+        }
+
+    @Test
+    fun `message of unsuccessful logout invalid token`() =
+        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
+            val request =
+                Request(Method.DELETE, DUMMY_ROUTE)
+                    .header("Authorization", "Bearer ${UUID.randomUUID()}")
+            val response = handler.logout(request)
+            assertEquals(createJsonRspMessage("Unauthorized, invalid token."), response.bodyString())
+        }
+
+    @Test
+    fun `successful logout`() =
+        actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
+            val request =
+                Request(Method.DELETE, DUMMY_ROUTE)
+                    .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
+            val response = handler.logout(request)
+            assertEquals(Status.OK, response.status)
         }
 }

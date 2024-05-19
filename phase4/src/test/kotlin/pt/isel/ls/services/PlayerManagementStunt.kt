@@ -6,6 +6,7 @@ import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.domain.info.CreatePlayerEmailPasswordParam
 import pt.isel.ls.domain.info.CreatePlayerNameParam
+import pt.isel.ls.domain.info.PlayerAuthentication
 import java.util.UUID
 
 object PlayerManagementStunt : PlayerServices {
@@ -28,9 +29,9 @@ object PlayerManagementStunt : PlayerServices {
     override fun createPlayer(
         nameUSerName: CreatePlayerNameParam,
         emailPassword: CreatePlayerEmailPasswordParam,
-    ): Pair<UInt, UUID> =
+    ): PlayerAuthentication =
         if (nameUSerName.first.isNotBlank() && emailPassword.first.isNotBlank() && emailPassword.second.isNotBlank()) {
-            Pair(playerId, playerToken)
+            PlayerAuthentication(playerId, playerToken)
         } else {
             throw ServicesError("Unable to create a new Player due to invalid name or email.")
         }
@@ -51,6 +52,19 @@ object PlayerManagementStunt : PlayerServices {
             return player
         } else {
             throw ServicesError("Unable to get the details of a Player due to nonexistent userName.")
+        }
+    }
+
+    override fun login(
+        userName: String,
+        password: String,
+    ): PlayerAuthentication {
+        return PlayerAuthentication(playerId, playerToken)
+    }
+
+    override fun logout(token: UUID) {
+        if (token != playerToken) {
+            throw ServicesError("Unable to logout due to invalid token.")
         }
     }
 }

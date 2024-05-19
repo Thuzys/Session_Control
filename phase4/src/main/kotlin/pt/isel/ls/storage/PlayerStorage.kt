@@ -80,14 +80,37 @@ class PlayerStorage(envName: String) : PlayerStorageInterface {
             }
         }
 
-    override fun update(
-        uInt: UInt,
-        newItem: Player,
-    ) {
-        TODO("Not needed for this phase.")
+    override fun update(newItem: Player) {
+        dataSource.connection.use { connection ->
+            connection.executeCommand {
+                checkNotNull(newItem.pid) { "Player id is null." }
+                val updateQuery =
+                    "UPDATE PLAYER SET name = ?, email = ?, token = ?, username = ?, password = ? WHERE pid = ?"
+                val stmt = connection.prepareStatement(updateQuery)
+                var idx = 1
+                stmt.setString(idx++, newItem.name)
+                stmt.setString(idx++, newItem.email.email)
+                stmt.setString(idx++, newItem.token.toString())
+                stmt.setString(idx++, newItem.username)
+                stmt.setString(idx++, Password.obfuscate(newItem.password.toString()))
+                stmt.setInt(idx, newItem.pid.toInt())
+                stmt.executeUpdate()
+            }
+        }
     }
 
     override fun delete(uInt: UInt) {
         TODO("Not needed for this phase.")
+    }
+
+    override fun deleteToken(token: String) {
+        dataSource.connection.use { connection ->
+            connection.executeCommand {
+                val deleteQuery = "UPDATE PLAYER SET token = NULL WHERE token = ?"
+                val stmt = connection.prepareStatement(deleteQuery)
+                stmt.setString(1, token)
+                stmt.executeUpdate()
+            }
+        }
     }
 }

@@ -16,7 +16,17 @@ function createLoginView() {
         password,
         views.p(),
     )
-    const submitButton = views.button({type: "submit", class: "general-button", disabled: true}, "Log In");
+    const submitButton =
+        views
+            .button(
+                {
+                    id: "login-button",
+                    type: "submit",
+                    class: "general-button",
+                    disabled: true
+                },
+                "Log In",
+            );
 
     const toggleLoginButton = () => {
         handlerViews.toggleButtonState(
@@ -31,9 +41,24 @@ function createLoginView() {
         password
     )
 
-    const span = views.span({class: "w3-opacity centered"}, "Don't have an account? ", views.a({href: "#register"}, "Create one!"));
+    const span =
+        views
+            .span(
+                {class: "w3-opacity centered"},
+                "Don't have an account? ",
+                views.a({href: "#register"},
+                    "Create one!")
+            );
 
-    container.replaceChildren(header, views.hr({class:"w3-opacity"}), div, submitButton, views.p(), span);
+    const form = views.form(
+        {},
+        views.hr({class:"w3-opacity"}),
+        div,
+        submitButton,
+        views.p(),
+        span,
+    )
+    container.replaceChildren(header, form);
     return container;
 }
 
@@ -95,18 +120,25 @@ function createRegisterView() {
         confirmPassword
     )
 
-    container.replaceChildren(header, views.hr({class:"w3-opacity"}), div, submitButton);
+    const form = views.form(
+        {},
+        views.hr({class:"w3-opacity"}),
+        div,
+        submitButton,
+    );
+
+    container.replaceChildren(header, form);
     return container;
 
 }
 
 /**
- * Check if name, username, email, password and confirm password are not empty
+ * Check if the name, username, email, password and confirm password are not empty
  * @param name name of the user
  * @param email email of the user
  * @param password password of the user
  * @param confirmPassword confirm password of the user
- * @returns {*} true if name, username, email, password and confirm password are not empty
+ * @returns {*} true if the name, username, email, password and confirm password are not empty
  */
 function canCreateAccount(name, email, password, confirmPassword) {
     return name && email && password && confirmPassword;

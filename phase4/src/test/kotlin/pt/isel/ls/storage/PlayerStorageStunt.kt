@@ -3,11 +3,13 @@ package pt.isel.ls.storage
 import org.eclipse.jetty.util.security.Password
 import pt.isel.ls.domain.Email
 import pt.isel.ls.domain.Player
+import java.util.UUID
 
-class PlayerStorageStunt : PlayerStorageInterface {
+class PlayerStorageStunt(token: UUID) : PlayerStorageInterface {
     private val defaultMail = Email("default@mail.com")
     private val password = Password("password")
-    private val player1 = Player(1u, "test1", "test1", defaultMail, password)
+    val playerToken = token
+    private val player1 = Player(1u, "test1", "test1", defaultMail, password, playerToken)
     private val player2 = Player(2u, "test2", "test2", defaultMail, password)
     private var uid: UInt = 3u
     private val players =
@@ -39,14 +41,17 @@ class PlayerStorageStunt : PlayerStorageInterface {
             .take(limit.toInt())
             .ifEmpty { null }
 
-    override fun update(
-        uInt: UInt,
-        newItem: Player,
-    ) {
-        TODO("Not yet implemented")
+    override fun update(newItem: Player) {
+        val pid = newItem.pid
+        checkNotNull(pid) { "Player not found." }
+        players[pid] = newItem
     }
 
     override fun delete(uInt: UInt) {
         TODO("Not yet implemented")
+    }
+
+    override fun deleteToken(token: String) {
+        // do nothing
     }
 }

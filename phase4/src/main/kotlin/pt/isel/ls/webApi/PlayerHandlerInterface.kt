@@ -33,4 +33,20 @@ interface PlayerHandlerInterface {
      * @return The HTTP response containing the player's details.
      */
     fun getPlayerBy(request: Request): Response
+
+    /**
+     * Handles the HTTP request for logging in a player.
+     *
+     * @param request The HTTP request containing the necessary information to log in a player.
+     * @return The HTTP response indicating the result of the operation.
+     */
+    fun login(request: Request): Response
+
+    /**
+     * Handles the HTTP request for logging out a player.
+     *
+     * @param request The HTTP request containing the necessary information to log out a player.
+     * @return The HTTP response indicating the result of the operation.
+     */
+    fun logout(request: Request): Response
 }

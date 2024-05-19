@@ -20,7 +20,7 @@ function createPlayerDetailsView(player, backButton = true) {
         views.li(views.h3({class: "w3-wide blue-letters"}, "Name")),
         views.li(player.name),
         views.li(views.h3({class: "w3-wide blue-letters"}, "Username")),
-        views.li(player.userName),
+        views.li(player.username),
         views.li(views.h3({class: "w3-wide blue-letters"}, "Email")),
         views.li(player.email),
     );

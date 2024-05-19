@@ -15,4 +15,12 @@ object PlayerHandlerStunt : PlayerHandlerInterface {
     override fun getPlayerBy(request: Request): Response {
         TODO("Not yet implemented")
     }
+
+    override fun login(request: Request): Response {
+        TODO("Not yet implemented")
+    }
+
+    override fun logout(request: Request): Response {
+        TODO("Not yet implemented")
+    }
 }

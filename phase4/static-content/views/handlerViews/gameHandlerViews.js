@@ -79,12 +79,15 @@ function createSearchGamesView() {
     const inputName = handlerViews.createLabeledInput("InputName", "Insert Game Name")
     const inputDev = handlerViews.createLabeledInput("InputDev", "Insert Developer Name")
     const searchGamesButton =
-        views.button({
-            id: "SearchGamesButton",
-            type: "submit",
-            disabled: true,
-            class: "general-button"
-        }, "Search")
+        views.button(
+            {
+                id: "SearchGamesButton",
+                type: "submit",
+                disabled: true,
+                class: "general-button"
+            },
+            "Search",
+        )
     const createGameButton =
         views.button({
             id: "CreateGameButton",

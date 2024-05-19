@@ -4,14 +4,8 @@ import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.domain.info.CreatePlayerEmailPasswordParam
 import pt.isel.ls.domain.info.CreatePlayerNameParam
+import pt.isel.ls.domain.info.PlayerAuthentication
 import java.util.UUID
-
-/**
- * Represents a pair of a [UInt] and a [UUID].
- * - The [UInt] is a unique key to be associated with the new [Player].
- * - The [UUID] is a unique identifier.
- */
-typealias CreatedPlayer = Pair<UInt, UUID>
 
 /**
  * Represents the services related to the player in the application.
@@ -34,7 +28,7 @@ interface PlayerServices {
     fun createPlayer(
         nameUSerName: CreatePlayerNameParam,
         emailPassword: CreatePlayerEmailPasswordParam,
-    ): CreatedPlayer
+    ): PlayerAuthentication
 
     /**
      * Returns the details of a player.
@@ -61,4 +55,24 @@ interface PlayerServices {
      * @throws ServicesError containing the message of the error.
      */
     fun getPlayerDetailsBy(userName: String): Player
+
+    /**
+     * Logs in a player.
+     *
+     * @param userName the username of the player.
+     * @param password the password of the player.
+     * @return a [PlayerAuthentication] containing the token of the player.
+     * @throws ServicesError containing the message of the error.
+     */
+    fun login(
+        userName: String,
+        password: String,
+    ): PlayerAuthentication
+
+    /**
+     * Logs out a player.
+     *
+     * @param token the token of the player.
+     */
+    fun logout(token: UUID)
 }

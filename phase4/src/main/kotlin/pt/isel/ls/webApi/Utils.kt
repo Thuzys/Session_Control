@@ -13,6 +13,7 @@ import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.services.PlayerServices
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
+import java.util.UUID
 
 /**
  * Processes the genres string and returns a collection of genres.
@@ -130,6 +131,16 @@ internal fun Request.toSidOrNull(): UInt? = path("sid")?.toUIntOrNull()
 internal fun Request.toGidOrNull(): UInt? = path("gid")?.toUIntOrNull()
 
 /**
+ * Get the token of a request, if incapable return null.
+ *
+ * @return The token ([UUID]) or null.
+ */
+internal fun Request.toTokenOrNull(): UUID? {
+    val token = header("authorization")?.removePrefix("Bearer ")
+    return token?.let { UUID.fromString(it) }
+}
+
+/**
  * Verifies if the request has a valid token.
  *
  * @param request The request to be verified.
@@ -203,3 +214,9 @@ internal fun invalidParamsRspCreateSession(
  */
 internal fun unauthorizedResponse(reason: String): Response =
     makeResponse(Status.UNAUTHORIZED, createJsonRspMessage("Unauthorized, $reason."))
+
+internal fun badRequestResponse(reason: String): Response =
+    makeResponse(
+        Status.BAD_REQUEST,
+        createJsonRspMessage("Bad Request, $reason."),
+    )

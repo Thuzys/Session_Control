@@ -3,6 +3,7 @@ package pt.isel.ls.storage
 import kotlinx.datetime.LocalDate
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
+import pt.isel.ls.domain.info.AuthenticationParam
 import pt.isel.ls.domain.info.GameInfo
 import pt.isel.ls.domain.info.GameInfoParam
 import pt.isel.ls.domain.info.PlayerInfo
@@ -30,13 +31,13 @@ class SessionStorageStunt : SessionStorageInterface {
             3u to session3,
         )
 
-    override fun createSession(newItem: Session): UInt {
+    override fun create(newItem: Session): UInt {
         val sid = sessionUuid++
         hashSession[sessionUuid] = newItem.copy(sid = sid)
         return sid
     }
 
-    override fun readSession(
+    override fun read(
         sid: UInt,
         limit: UInt,
         offset: UInt,
@@ -46,7 +47,7 @@ class SessionStorageStunt : SessionStorageInterface {
                 players = hashSession[sid]?.players?.drop(offset.toInt())?.take(limit.toInt()) ?: emptyList(),
             )
 
-    override fun readSessions(
+    override fun readBy(
         gameInfo: GameInfoParam?,
         date: LocalDate?,
         state: SessionState?,
@@ -107,12 +108,16 @@ class SessionStorageStunt : SessionStorageInterface {
     }
 
     override fun updateCapacityOrDate(
-        sid: UInt,
+        authentication: AuthenticationParam,
         capacity: UInt?,
         date: LocalDate?,
     ) {
+        val (pid, sid) = authentication
         val sessionToUpdate = hashSession[sid]
         sessionToUpdate?.let { session ->
+            if (session.owner.pid != pid) {
+                throw IllegalArgumentException("Player is not the owner of the session.")
+            }
             hashSession[sid] =
                 session.copy(
                     capacity = capacity ?: sessionToUpdate.capacity,
@@ -130,7 +135,7 @@ class SessionStorageStunt : SessionStorageInterface {
         }
     }
 
-    override fun deleteSession(sid: UInt) {
+    override fun delete(sid: UInt) {
         hashSession.remove(sid)
     }
 }

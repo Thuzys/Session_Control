@@ -18,7 +18,7 @@ function createPlayerDetailsView(player, backButton = true) {
 
     const detailsList = views.ul({class: "w3-ul w3-border w3-center w3-hover-shadow"},
         views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Name"),views.li(player.name) )),
-        views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Username"), views.li(player.userName))),
+        views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Username"), views.li(player.username))),
         views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Email"), views.li(player.email)))
     );
 

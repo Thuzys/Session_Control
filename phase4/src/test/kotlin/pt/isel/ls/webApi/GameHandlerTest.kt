@@ -42,7 +42,7 @@ class GameHandlerTest {
         val request =
             Request(Method.POST, DUMMY_ROUTE)
                 .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
-        val expectedMessage = createJsonRspMessage("Invalid arguments: name:null, dev:null, genres:null.")
+        val expectedMessage = createJsonRspMessage("Bad Request, Missing arguments: name:null, dev:null, genres:null.")
 
         // ACT
         val response =
@@ -84,7 +84,7 @@ class GameHandlerTest {
                 UriTemplate.from("$DUMMY_ROUTE/{gid}"),
             )
                 .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
-        val expectedMessage = createJsonRspMessage("Invalid arguments: gid must be provided.")
+        val expectedMessage = createJsonRspMessage("Bad Request, Invalid arguments: gid must be provided.")
 
         // ACT
         val response =
@@ -191,7 +191,10 @@ class GameHandlerTest {
         val request =
             Request(Method.GET, DUMMY_ROUTE)
                 .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
-        val expectedMessage = createJsonRspMessage("Invalid arguments: either dev, genres or name must be provided.")
+        val expectedMessage =
+            createJsonRspMessage(
+                "Bad Request, Invalid arguments: at least one of the following must be provided: dev, genres, name.",
+            )
 
         // ACT
         val response =

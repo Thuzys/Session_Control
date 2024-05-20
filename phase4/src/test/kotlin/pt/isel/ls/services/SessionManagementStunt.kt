@@ -4,12 +4,12 @@ import kotlinx.datetime.LocalDate
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.errors.ServicesError
+import pt.isel.ls.domain.info.AuthenticationParam
 import pt.isel.ls.domain.info.GameInfo
 import pt.isel.ls.domain.info.GameInfoParam
 import pt.isel.ls.domain.info.PlayerInfo
 import pt.isel.ls.domain.info.PlayerInfoParam
 import pt.isel.ls.domain.info.SessionInfo
-import java.util.UUID
 
 private val pid = 1u
 private val sid1 = 1u
@@ -20,7 +20,6 @@ private val owner1 = PlayerInfo(1u, "test1")
 private val owner2 = PlayerInfo(2u, "test2")
 
 object SessionManagementStunt : SessionServices {
-    val playerToken: UUID = UUID.randomUUID()
     private val player1 = PlayerInfo(1u, "test1")
     private val player2 = PlayerInfo(2u, "test2")
     private val players2: Collection<PlayerInfo> = listOf(player1, player2)
@@ -35,7 +34,7 @@ object SessionManagementStunt : SessionServices {
         // do nothing
     }
 
-    override fun getSessionDetails(
+    override fun sessionDetails(
         sid: UInt,
         limit: UInt?,
         offset: UInt?,
@@ -94,10 +93,15 @@ object SessionManagementStunt : SessionServices {
     }
 
     override fun updateCapacityOrDate(
-        sid: UInt,
+        authentication: AuthenticationParam,
         capacity: UInt?,
         date: LocalDate?,
     ) {
+        if (authentication.first != pid || authentication.second != sid1) {
+            throw ServicesError("Unable to update session")
+        } else {
+            // do nothing
+        }
     }
 
     override fun removePlayer(

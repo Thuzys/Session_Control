@@ -35,9 +35,9 @@ function handleCreateGameSubmit(e) {
     }
 
     const url = `${constants.API_BASE_URL}${constants.GAME_ROUTE}`
-
+    const token = sessionStorage.getItem('token')
     fetcher
-        .post(url, game, constants.TOKEN)
+        .post(url, game, token)
         .then(response => handleCreateGameResponse(response))
 }
 
@@ -64,9 +64,8 @@ function searchGames(mainContent) {
  * Handle search games submit
  *
  * @param e event that triggered submit
- * @param selectedGenres selected genres
  */
-function handleSearchGamesSubmit(e, selectedGenres) {
+function handleSearchGamesSubmit(e) {
     e.preventDefault()
     const inputName = document.getElementById("InputName")
     const inputDev = document.getElementById("InputDev")
@@ -93,8 +92,9 @@ function handleSearchGamesSubmit(e, selectedGenres) {
 function getGames(mainContent) {
     const query = handlerUtils.makeQueryString(requestUtils.getQuery())
     const url = `${constants.API_BASE_URL}${constants.GAME_ROUTE}?${query}`
+    const token = sessionStorage.getItem('token')
     fetcher
-        .get(url, constants.TOKEN)
+        .get(url, token)
         .then(response =>
             handleGetGamesResponse(response, mainContent)
         );
@@ -119,8 +119,9 @@ function handleGetGamesResponse(games, mainContent) {
 function getGameDetails(mainContent){
     const gameId = requestUtils.getParams()
     const url = `${constants.API_BASE_URL}${constants.GAME_ID_ROUTE}${gameId}`
+    const token = sessionStorage.getItem('token')
     fetcher
-        .get(url, constants.TOKEN)
+        .get(url, token)
         .then(response =>
             handleGetGameDetailsResponse(response, mainContent)
         );

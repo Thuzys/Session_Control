@@ -1,9 +1,12 @@
 package pt.isel.ls.services
 
-import pt.isel.ls.domain.Email
+import org.eclipse.jetty.util.security.Password
 import pt.isel.ls.domain.Player
-import pt.isel.ls.domain.associatedTo
+import pt.isel.ls.domain.associateWith
 import pt.isel.ls.domain.errors.ServicesError
+import pt.isel.ls.domain.info.CreatePlayerEmailPasswordParam
+import pt.isel.ls.domain.info.CreatePlayerNameParam
+import pt.isel.ls.domain.info.PlayerAuthentication
 import pt.isel.ls.storage.PlayerStorageInterface
 import java.util.UUID
 
@@ -17,16 +20,13 @@ import java.util.UUID
  */
 class PlayerManagement(private val mem: PlayerStorageInterface) : PlayerServices {
     override fun createPlayer(
-        name: String,
-        email: String,
-        userName: String?,
-    ): Pair<UInt, UUID> =
+        nameUSerName: CreatePlayerNameParam,
+        emailPassword: CreatePlayerEmailPasswordParam,
+    ): PlayerAuthentication =
         tryCatch("Unable to create a new Player due") {
-            if (userName == null) {
-                (name associatedTo Email(email)).let { mem.create(it) to it.token }
-            } else {
-                name.associatedTo(Email(email), userName).let { mem.create(it) to it.token }
-            }
+            val player = nameUSerName associateWith emailPassword
+            val pid = mem.create(player)
+            PlayerAuthentication(pid, player.token)
         }
 
     override fun getPlayerDetails(pid: UInt): Player =
@@ -44,4 +44,26 @@ class PlayerManagement(private val mem: PlayerStorageInterface) : PlayerServices
             mem.readBy(userName = userName)?.firstOrNull() ?: throw ServicesError("Player not found.")
         }
     }
+
+    override fun login(
+        userName: String,
+        password: String,
+    ): PlayerAuthentication =
+        tryCatch("Unable to login due") {
+            mem.readBy(userName = userName)?.firstOrNull()?.let {
+                if (Password(password) == it.password) {
+                    val newPlayer = it.copy(token = UUID.randomUUID())
+                    checkNotNull(newPlayer.pid) { "Player id is null." }
+                    mem.update(newPlayer)
+                    PlayerAuthentication(newPlayer.pid, newPlayer.token)
+                } else {
+                    throw ServicesError("Invalid password.")
+                }
+            } ?: throw ServicesError("Player not found.")
+        }
+
+    override fun logout(token: UUID) =
+        tryCatch("Unable to logout due") {
+            mem.deleteToken(token.toString())
+        }
 }

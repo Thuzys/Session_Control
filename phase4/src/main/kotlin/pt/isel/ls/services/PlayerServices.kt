@@ -2,6 +2,9 @@ package pt.isel.ls.services
 
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.errors.ServicesError
+import pt.isel.ls.domain.info.CreatePlayerEmailPasswordParam
+import pt.isel.ls.domain.info.CreatePlayerNameParam
+import pt.isel.ls.domain.info.PlayerAuthentication
 import java.util.UUID
 
 /**
@@ -15,16 +18,17 @@ interface PlayerServices {
     /**
      * Creates a new player and stores it.
      *
-     * @param name the name of the player.
-     * @param email the email (is unique to each player) to be associated with the player.
-     * @return A pair containing a [UInt] as a unique key to be associated with the new [Player] and a [UUID] as a unique identifier.
+     * @param nameUSerName the name and username of the player.
+     * If the username is null, the name will be used as the username.
+     * @param emailPassword the email and password of the player.
+     * @return A pair containing a [UInt] as a unique key to be associated with the new [Player]
+     * and a [UUID] as a unique identifier.
      * @throws ServicesError containing the message of the error.
      */
     fun createPlayer(
-        name: String,
-        email: String,
-        userName: String? = null,
-    ): Pair<UInt, UUID>
+        nameUSerName: CreatePlayerNameParam,
+        emailPassword: CreatePlayerEmailPasswordParam,
+    ): PlayerAuthentication
 
     /**
      * Returns the details of a player.
@@ -51,4 +55,24 @@ interface PlayerServices {
      * @throws ServicesError containing the message of the error.
      */
     fun getPlayerDetailsBy(userName: String): Player
+
+    /**
+     * Logs in a player.
+     *
+     * @param userName the username of the player.
+     * @param password the password of the player.
+     * @return a [PlayerAuthentication] containing the token of the player.
+     * @throws ServicesError containing the message of the error.
+     */
+    fun login(
+        userName: String,
+        password: String,
+    ): PlayerAuthentication
+
+    /**
+     * Logs out a player.
+     *
+     * @param token the token of the player.
+     */
+    fun logout(token: UUID)
 }

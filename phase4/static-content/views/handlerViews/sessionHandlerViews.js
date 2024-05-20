@@ -250,7 +250,6 @@ function createCreateSessionView(gameName) {
 function canUpdateSession(labelCapacity, labelDate, session) {
     return (parseInt(labelCapacity.value) !== session.capacity && labelCapacity.value.trim() !== "")
         || (labelDate.value !== session.date && labelDate.value.trim() !== "")
-
 }
 
 /**

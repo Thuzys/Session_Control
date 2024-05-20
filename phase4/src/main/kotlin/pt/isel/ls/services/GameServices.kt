@@ -1,6 +1,7 @@
 package pt.isel.ls.services
 
 import pt.isel.ls.domain.Game
+import pt.isel.ls.domain.info.Genres
 
 /**
  * Represents the game's services management.
@@ -50,4 +51,11 @@ interface GameServices {
         offset: UInt? = null,
         limit: UInt? = null,
     ): Collection<Game>
+
+    /**
+     * Gets all genres.
+     *
+     * @return [Genres].
+     */
+    fun getAllGenres(): Genres
 }

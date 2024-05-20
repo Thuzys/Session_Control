@@ -41,4 +41,6 @@ object GameManagementStunt : GameServices {
         } else {
             throw ServicesError("Unable to find the game due to invalid dev or genres.")
         }
+
+    override fun getAllGenres() = gameGenres
 }

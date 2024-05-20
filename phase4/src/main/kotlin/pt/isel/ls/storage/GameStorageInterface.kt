@@ -1,6 +1,7 @@
 package pt.isel.ls.storage
 
 import pt.isel.ls.domain.Game
+import pt.isel.ls.domain.info.Genres
 
 /**
  * Interface that defines the operations that can be done on the game storage.
@@ -65,4 +66,11 @@ interface GameStorageInterface {
      * @param uInt the id of the game.
      */
     fun delete(uInt: UInt)
+
+    /**
+     * Reads all genres.
+     *
+     * @return the [Genres].
+     */
+    fun readGenres(): Genres
 }

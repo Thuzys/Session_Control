@@ -42,7 +42,7 @@ function handleLoginSubmit(e) {
     const url = `${constants.API_BASE_URL}${constants.LOGIN_ROUTE}`;
     const body = {username: username, password: password};
     fetcher
-        .post(url, body)
+        .post(url, body, undefined, false)
         .then(response => handleLogInRegisterResponse(response))
 }
 

@@ -15,4 +15,8 @@ object GameHandlerStunt : GameHandlerInterface {
     override fun getGames(request: Request): Response {
         TODO()
     }
+
+    override fun getAllGenres(request: Request): Response {
+        TODO("Not yet implemented")
+    }
 }

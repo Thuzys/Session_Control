@@ -3,6 +3,7 @@ package pt.isel.ls.services
 import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.storage.GameStorageStunt
 import kotlin.test.Test
+import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
@@ -198,6 +199,20 @@ class GameManagementTest {
 
             // ACT & ASSERT
             assertFailsWith<ServicesError> { handler.getGames(gameDev, gameGenres, gameName) }
+        }
+    }
+
+    @Test
+    fun `read all genres successfully`() {
+        executeGameManagementTest { handler ->
+            // ARRANGE
+            val expectedGenres = setOf("genre", "genre2")
+
+            // ACT
+            val genres = handler.getAllGenres()
+
+            // ASSERT
+            assertContentEquals(expectedGenres, genres)
         }
     }
 }

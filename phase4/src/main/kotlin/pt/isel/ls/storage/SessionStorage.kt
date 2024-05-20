@@ -4,6 +4,7 @@ import kotlinx.datetime.LocalDate
 import org.postgresql.ds.PGSimpleDataSource
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
+import pt.isel.ls.domain.info.AuthenticationParam
 import pt.isel.ls.domain.info.GameInfoParam
 import pt.isel.ls.domain.info.PlayerInfoParam
 import pt.isel.ls.domain.info.SessionInfo
@@ -18,7 +19,7 @@ class SessionStorage(envName: String) : SessionStorageInterface {
         dataSource.setURL(connectionURL)
     }
 
-    override fun createSession(newItem: Session): UInt =
+    override fun create(newItem: Session): UInt =
         dataSource.connection.use { connection ->
             connection.executeCommand {
                 requireNotNull(newItem.owner.pid) { "Owner must have a pid" }
@@ -44,7 +45,7 @@ class SessionStorage(envName: String) : SessionStorageInterface {
             }
         }
 
-    override fun readSession(
+    override fun read(
         sid: UInt,
         limit: UInt,
         offset: UInt,
@@ -66,7 +67,7 @@ class SessionStorage(envName: String) : SessionStorageInterface {
             }
         }
 
-    override fun readSessions(
+    override fun readBy(
         gameInfo: GameInfoParam?,
         date: LocalDate?,
         state: SessionState?,
@@ -101,12 +102,19 @@ class SessionStorage(envName: String) : SessionStorageInterface {
         }
 
     override fun updateCapacityOrDate(
-        sid: UInt,
+        authentication: AuthenticationParam,
         capacity: UInt?,
         date: LocalDate?,
     ) {
         dataSource.connection.use { connection ->
             connection.executeCommand {
+                val (pid, sid) = authentication
+                val slcCMD = "SELECT sid FROM SESSION WHERE sid = ? AND owner = ?;"
+                val stmt0 = connection.prepareStatement(slcCMD)
+                stmt0.setInt(1, sid.toInt())
+                stmt0.setInt(2, pid.toInt())
+                val rs = stmt0.executeQuery()
+                require(rs.next()) { "Session not found, or player is not the owner." }
                 val updateCMD =
                     "UPDATE SESSION\n" +
                         "SET\n" +
@@ -127,7 +135,7 @@ class SessionStorage(envName: String) : SessionStorageInterface {
         }
     }
 
-    override fun deleteSession(sid: UInt) {
+    override fun delete(sid: UInt) {
         dataSource.connection.use { connection ->
             connection.executeCommand {
                 val deletePlayerSession = "DELETE FROM PLAYER_SESSION WHERE sid = ?;"

@@ -11,8 +11,9 @@ import handlerUtils from "./handlerUtils/handlerUtils.js";
  */
 function getPlayerDetailsByPid(mainContent) {
     const url = `${constants.API_BASE_URL}${constants.PLAYER_ID_ROUTE}${requestUtils.getParams()}`;
+    const token = sessionStorage.getItem('token');
     fetcher
-        .get(url, constants.TOKEN)
+        .get(url, token)
         .then(
             response =>
                 handleGetPlayerDetailsResponse(response, mainContent, true)
@@ -28,23 +29,13 @@ function getPlayerDetails(mainContent) {
     const route = constants.PLAYER_ID_ROUTE.substring(0, constants.PLAYER_ID_ROUTE.length - 1);
     const url =
         `${constants.API_BASE_URL}${route}?${handlerUtils.makeQueryString(requestUtils.getQuery())}`;
+    const token = sessionStorage.getItem('token');
     fetcher
-        .get(url, constants.TOKEN)
+        .get(url, token)
         .then(
             response =>
                 handleGetPlayerDetailsResponse(response, mainContent, true)
         );
-}
-
-/**
- * Search player
- * @param mainContent main content of the page
- */
-function searchPlayer(mainContent) {
-    const container = playerHandlerViews.createSearchPlayerView();
-    container.onsubmit = (e) => handlePlayerSearchSubmit(e);
-    mainContent.replaceChildren(container);
-
 }
 
 /**
@@ -60,18 +51,13 @@ function handleGetPlayerDetailsResponse(player, mainContent, isSearch = false) {
 }
 
 /**
- * Get home page
- *
+ * Search player
  * @param mainContent main content of the page
  */
-function getHome(mainContent) {
-    const url = `${constants.API_BASE_URL}${constants.PLAYER_ID_ROUTE}1`;
-    fetcher
-        .get(url, constants.TOKEN)
-        .then(
-            response =>
-                handleGetPlayerDetailsResponse(response, mainContent)
-        );
+function searchPlayer(mainContent) {
+    const container = playerHandlerViews.createSearchPlayerView();
+    container.onsubmit = (e) => handlePlayerSearchSubmit(e);
+    mainContent.replaceChildren(container);
 }
 
 /**
@@ -85,13 +71,13 @@ function handlePlayerSearchSubmit(e) {
     if (pid.value === "") {
         return;
     }
-    handlerUtils.changeHash(`#players?userName=${pid.value}`);
+    handlerUtils.changeHash(`#players?username=${pid.value}`);
 }
 
 
 export default {
     getPlayerDetails,
     searchPlayer,
-    getHome,
-    getPlayerDetailsByPid
+    getPlayerDetailsByPid,
+    handleGetPlayerDetailsResponse
 }

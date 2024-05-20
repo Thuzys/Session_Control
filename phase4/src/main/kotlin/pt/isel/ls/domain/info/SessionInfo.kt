@@ -5,6 +5,13 @@ import kotlinx.serialization.Serializable
 import pt.isel.ls.domain.Session
 
 /**
+ * Represents a pair of [UInt] and [UInt].
+ * - The first [UInt] is the identifier of the player.
+ * - The second [UInt] is the identifier of the session.
+ */
+typealias AuthenticationParam = Pair<UInt, UInt>
+
+/**
  * Represents the [Session] information with specified game identifier, date, sid and owner.
  *
  * @param sid The unique identifier of the session.

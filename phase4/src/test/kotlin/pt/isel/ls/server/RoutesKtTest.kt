@@ -59,7 +59,7 @@ class RoutesKtTest {
     @Test
     fun `buildRoutes returns router with post SESSION_ID_ROUTE`() =
         actionOfRoutesArrangement { handler: RoutingHttpHandler ->
-            val request = Request(Method.PUT, SESSION_ID_ROUTE)
+            val request = Request(Method.PUT, SESSION_PLAYER_ROUTE)
             assertIs<RouterMatch.MatchingHandler>(
                 handler.match(request),
                 "No matching handler found for $request",
@@ -120,6 +120,26 @@ class RoutesKtTest {
     fun `buildRoutes returns router with delete SESSION_DELETE_ROUTE`() =
         actionOfRoutesArrangement { handler: RoutingHttpHandler ->
             val request = Request(Method.DELETE, SESSION_ID_ROUTE)
+            assertIs<RouterMatch.MatchingHandler>(
+                handler.match(request),
+                "No matching handler found for $request",
+            )
+        }
+
+    @Test
+    fun `buildRoutes returns router with post PLAYER_LOGIN_ROUTE`() =
+        actionOfRoutesArrangement { handler: RoutingHttpHandler ->
+            val request = Request(Method.POST, PLAYER_LOGIN_ROUTE)
+            assertIs<RouterMatch.MatchingHandler>(
+                handler.match(request),
+                "No matching handler found for $request",
+            )
+        }
+
+    @Test
+    fun `buildRoutes returns router with post PLAYER_LOGOUT_ROUTE`() =
+        actionOfRoutesArrangement { handler: RoutingHttpHandler ->
+            val request = Request(Method.POST, PLAYER_LOGOUT_ROUTE)
             assertIs<RouterMatch.MatchingHandler>(
                 handler.match(request),
                 "No matching handler found for $request",

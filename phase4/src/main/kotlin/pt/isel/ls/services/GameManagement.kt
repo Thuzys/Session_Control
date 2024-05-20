@@ -1,10 +1,14 @@
 package pt.isel.ls.services
 
 import pt.isel.ls.domain.Game
+import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.storage.GameStorageInterface
 
 /**
  * Class responsible for managing the game services.
+ *
+ * @property storage The storage interface for the game.
+ * @throws ServicesError containing the message of the error.
  */
 class GameManagement(private val storage: GameStorageInterface) : GameServices {
     override fun createGame(

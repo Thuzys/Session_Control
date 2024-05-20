@@ -4,6 +4,7 @@ import kotlinx.datetime.LocalDate
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.errors.ServicesError
+import pt.isel.ls.domain.info.AuthenticationParam
 import pt.isel.ls.domain.info.GameInfoParam
 import pt.isel.ls.domain.info.PlayerInfoParam
 import pt.isel.ls.domain.info.SessionInfo
@@ -39,7 +40,7 @@ interface SessionServices {
      * @return a [Session] containing all the information wanted or null if nothing is found.
      * @throws ServicesError containing the message of the error.
      */
-    fun getSessionDetails(
+    fun sessionDetails(
         sid: UInt,
         limit: UInt? = null,
         offset: UInt? = null,
@@ -91,13 +92,13 @@ interface SessionServices {
      * updated to the new value provided in 'date'. If 'capacity' is null, only the date will be updated, and vice versa.
      * If both 'capacity' and 'date' are null, no changes will be applied to the session.
      *
-     * @param sid The identifier of the session to update.
+     * @param authentication The identifier of the player and the session.
      * @param capacity The new capacity of the session (optional). If null, the capacity will not be updated.
      * @param date The new date and time of the session (optional). If null, the date will not be updated.
      * @throws ServicesError if there's an issue updating the session.
      */
     fun updateCapacityOrDate(
-        sid: UInt,
+        authentication: AuthenticationParam,
         capacity: UInt? = null,
         date: LocalDate? = null,
     )

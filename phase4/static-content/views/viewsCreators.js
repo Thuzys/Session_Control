@@ -17,6 +17,9 @@ function createElement(tagName, attributes = {}, ...children) {
             element.appendChild(child)
         }
     }
+    if (localStorage.getItem('lightMode') === 'enabled') {
+        element.classList.add('light-mode');
+    }
     return element;
 }
 

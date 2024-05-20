@@ -41,8 +41,8 @@ interface GameStorageInterface {
      * @return the games.
      */
     fun readBy(
-        offset: UInt,
-        limit: UInt,
+        offset: UInt = LIMIT.toUInt(),
+        limit: UInt = OFFSET.toUInt(),
         dev: String? = null,
         genres: Collection<String>? = null,
         name: String? = null,

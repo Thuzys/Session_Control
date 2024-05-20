@@ -429,7 +429,7 @@ class SessionHandlerTest {
             val request =
                 RoutedRequest(
                     Request(Method.PUT, "$DUMMY_ROUTE/1")
-                        .body("{\"date\":\"invalid_date_format\",\"capacity\":\"10\"}")
+                        .body("{\"date\":\"invalid_date_format\",\"capacity\":\"10\",\"pid\":\"1\"}")
                         .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
                     UriTemplate.from("$DUMMY_ROUTE/{sid}"),
                 )
@@ -443,7 +443,7 @@ class SessionHandlerTest {
             val request =
                 RoutedRequest(
                     Request(Method.PUT, "$DUMMY_ROUTE/1")
-                        .body("\"date\":\"2024-03-16\",\"capacity\":\"invalid_format\"}")
+                        .body("{\"date\":\"2024-03-16\",\"capacity\":\"invalid_format\",\"pid\":\"1\"}")
                         .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
                     UriTemplate.from("$DUMMY_ROUTE/{sid}"),
                 )
@@ -470,7 +470,7 @@ class SessionHandlerTest {
             val request =
                 RoutedRequest(
                     Request(Method.PUT, "$DUMMY_ROUTE/1")
-                        .body("{\"date\":\"2024-03-16\",\"capacity\":\"10\"}")
+                        .body("{\"date\":\"2024-03-16\",\"capacity\":\"10\",\"pid\":\"1\"}")
                         .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
                     UriTemplate.from("$DUMMY_ROUTE/{sid}"),
                 )
@@ -484,7 +484,7 @@ class SessionHandlerTest {
             val request =
                 RoutedRequest(
                     Request(Method.PUT, "$DUMMY_ROUTE/1")
-                        .body("{\"capacity\":\"10\"}")
+                        .body("{\"capacity\":\"10\",\"pid\":\"1\"}")
                         .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
                     UriTemplate.from("$DUMMY_ROUTE/{sid}"),
                 )

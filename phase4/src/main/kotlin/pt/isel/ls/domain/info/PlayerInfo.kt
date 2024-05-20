@@ -3,6 +3,33 @@ package pt.isel.ls.domain.info
 import kotlinx.serialization.Serializable
 
 /**
+ * The information about the player.
+ * Used to retrieve a session.
+ *
+ * [UInt] is the identifier of the player.
+ * [String] is the username of the player.
+ */
+typealias PlayerInfoParam = Pair<UInt?, String?>
+
+/**
+ * The information to create a player.
+ * Used to create a new player.
+ *
+ * - first [String] is the name of the player.
+ * - second [String] is the username of the player, if null the name will be used as username.
+ */
+typealias CreatePlayerNameParam = Pair<String, String?>
+
+/**
+ * The information to create a player.
+ * Used to create a new player.
+ *
+ * - first [String] is the email of the player.
+ * - second [String] is the password of the player.
+ */
+typealias CreatePlayerEmailPasswordParam = Pair<String, String>
+
+/**
  * Represents the player information with a specified identifier, username, and email.
  *
  * @param pid The unique identifier of the player.

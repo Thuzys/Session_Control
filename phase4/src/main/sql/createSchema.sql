@@ -19,7 +19,6 @@ create table GAME (
 create table GAME_GENRE (
     gid int references GAME(gid),
     genre varchar(80) references GENRE(name)
-        CONSTRAINT valid_genre CHECK (genre IN ('RPG', 'Adventure', 'Shooter', 'Turn-based Strategy', 'Action', 'Platformer', 'Puzzle', 'Simulation', 'Sports', 'Racing', 'Fighting', 'Sandbox', 'Stealth', 'Survival', 'Horror', 'Open world', 'Tactical RPG', 'Real-time Strategy', 'MMO', 'Roguelike', 'MOBA', 'Tower Defense', 'Battle Royale'))
 );
 
 create table PLAYER (
@@ -27,6 +26,7 @@ create table PLAYER (
     name varchar(80),
     username varchar(40) unique not null,
     email varchar(40) check (position('@' in email) > 0) unique,
+    password varchar(40) not null,
     token varchar(40)
 );
 

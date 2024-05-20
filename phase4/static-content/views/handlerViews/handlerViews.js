@@ -1,7 +1,6 @@
 import views from "../viewsCreators.js";
 import handlerUtils from "../../handlers/handlerUtils/handlerUtils.js";
 import constants from "../../constants/constants.js";
-import sessionHandlers from "../../handlers/sessionHandlers.js";
 
 /**
  * Create a radio button with a label.
@@ -11,18 +10,33 @@ import sessionHandlers from "../../handlers/sessionHandlers.js";
  */
 function createRadioButton(labelText, name) {
     const input = views.input({type: "radio", class: "particles-checkbox", name: "state", id: labelText, value: labelText});
-    const span = views.span({},name);
+    const span = views.span({class: "span-class"},name);
     return views.label({class: "particles-checkbox-container"}, input, span);
 }
 
 /**
  * Create labeled input
- * @param id
- * @param placeholder
- * @returns {*}
+ * @param id id of the input
+ * @param placeholder placeholder of the input
+ * @returns {HTMLInputElement} labeled input
  */
 function createLabeledInput(id, placeholder) {
     return views.input({type: "text", id, placeholder });
+}
+
+function createLabeledEmailInput(id, placeholder) {
+    return views.input({type: "email", id, placeholder });
+
+}
+
+/**
+ * Create labeled password input
+ * @param id id of the input
+ * @param placeholder placeholder of the input
+ * @returns {HTMLInputElement} labeled password input
+ */
+function createLabeledPasswordInput(id, placeholder) {
+    return views.input({type: "password", id, placeholder });
 }
 
 /**
@@ -193,7 +207,9 @@ const handlerViews = {
     toggleButtonState,
     addToggleEventListeners,
     ulHasItem,
-    createRadioButton
+    createRadioButton,
+    createLabeledPasswordInput,
+    createLabeledEmailInput
 }
 
 export default handlerViews

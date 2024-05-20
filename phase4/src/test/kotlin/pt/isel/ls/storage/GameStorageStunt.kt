@@ -1,6 +1,7 @@
 package pt.isel.ls.storage
 
 import pt.isel.ls.domain.Game
+import pt.isel.ls.domain.info.Genres
 
 class GameStorageStunt : GameStorageInterface {
     private val game1 = Game(1u, "test", "dev", setOf("genre"))
@@ -53,4 +54,10 @@ class GameStorageStunt : GameStorageInterface {
     override fun delete(uInt: UInt) {
         TODO("Not needed for tests")
     }
+
+    override fun readGenres() =
+        games
+            .values
+            .flatMap { it.genres }
+            .distinct()
 }

@@ -2,6 +2,7 @@ package pt.isel.ls.services
 
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.errors.ServicesError
+import pt.isel.ls.domain.info.Genres
 import pt.isel.ls.storage.GameStorageInterface
 
 /**
@@ -41,5 +42,10 @@ class GameManagement(private val storage: GameStorageInterface) : GameServices {
                 genres,
                 name,
             )
+        }
+
+    override fun getAllGenres(): Genres =
+        tryCatch("Unable to find the genres due") {
+            storage.readGenres()
         }
 }

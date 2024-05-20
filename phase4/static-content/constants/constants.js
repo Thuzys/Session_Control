@@ -83,6 +83,12 @@ const TEMPORARY_USER_ID = 1
 const LOGIN_ROUTE = PLAYER_ROUTE + "/login"
 
 /**
+ * The genres route
+ * @type {string}
+ */
+const GENRES_ROUTE = "genres"
+
+/**
  * general constants used for the application
  */
 const constants = {
@@ -99,7 +105,8 @@ const constants = {
     LIMIT_PLAYERS,
     ELEMENTS_PER_PAGE_PLAYERS,
     TEMPORARY_USER_ID,
-    LOGIN_ROUTE
+    LOGIN_ROUTE,
+    GENRES_ROUTE,
 }
 
 export default constants;

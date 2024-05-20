@@ -77,4 +77,11 @@ class GameHandler(
             }
         }
     }
+
+    override fun getAllGenres(request: Request): Response {
+        return tryResponse(Status.NOT_FOUND, "Game not found.") {
+            val genres = gameManagement.getAllGenres()
+            makeResponse(Status.FOUND, Json.encodeToString(genres))
+        }
+    }
 }

@@ -6,6 +6,8 @@ import gameHandlers from "./handlers/gameHandlers.js";
 import contactHandlers from "./handlers/contactHandlers.js";
 import navigationViews from "./navigation/navigationViews.js";
 import homeHandlers from "./handlers/homeHandlers.js";
+import {fetcher} from "./utils/fetchUtils.js";
+import constants from "./constants/constants.js";
 import createBB8Toggle from "./views/handlerViews/switchLightModeView.js";
 
 window.addEventListener('load', loadHandler)
@@ -31,25 +33,29 @@ window.onload = function() {
  * Load handler routes
   */
 function loadHandler(){
-    router.addRouteHandler("logIn", homeHandlers.logIn)
-    router.addRouteHandler("register", homeHandlers.register)
-    router.addRouteHandler("logOut", homeHandlers.logOut)
-    router.addRouteHandler("players/home", homeHandlers.getHome)
-    router.addRouteHandler("playerSearch", playerHandlers.searchPlayer)
-    router.addRouteHandler("createGame", gameHandlers.createGame)
-    router.addRouteHandler("players", playerHandlers.getPlayerDetails)
-    router.addRouteHandler("gameSearch", gameHandlers.searchGames)
-    router.addRouteHandler("games", gameHandlers.getGames)
-    router.addRouteHandler("games/:gid", gameHandlers.getGameDetails)
-    router.addRouteHandler("players/:pid", playerHandlers.getPlayerDetailsByPid)
-    router.addRouteHandler("sessionSearch", sessionHandlers.searchSessions)
-    router.addRouteHandler("updateSession/:sid", sessionHandlers.updateSession)
-    router.addRouteHandler("sessions", sessionHandlers.getSessions)
-    router.addRouteHandler("sessions/:sid", sessionHandlers.getSessionDetails)
-    router.addRouteHandler("contacts", contactHandlers.getContacts)
-    router.addDefaultNotFoundRouteHandler((dummy1, dummy2) => window.location.hash = "logIn")
+    const url = `${constants.API_BASE_URL}${constants.GENRES_ROUTE}`
+    fetcher.get(url, undefined, false).then(data => {
+        sessionStorage.setItem('genres', JSON.stringify(data))
+        router.addRouteHandler("logIn", homeHandlers.logIn)
+        router.addRouteHandler("register", homeHandlers.register)
+        router.addRouteHandler("logOut", homeHandlers.logOut)
+        router.addRouteHandler("players/home", homeHandlers.getHome)
+        router.addRouteHandler("playerSearch", playerHandlers.searchPlayer)
+        router.addRouteHandler("createGame", gameHandlers.createGame)
+        router.addRouteHandler("players", playerHandlers.getPlayerDetails)
+        router.addRouteHandler("gameSearch", gameHandlers.searchGames)
+        router.addRouteHandler("games", gameHandlers.getGames)
+        router.addRouteHandler("games/:gid", gameHandlers.getGameDetails)
+        router.addRouteHandler("players/:pid", playerHandlers.getPlayerDetailsByPid)
+        router.addRouteHandler("sessionSearch", sessionHandlers.searchSessions)
+        router.addRouteHandler("updateSession/:sid", sessionHandlers.updateSession)
+        router.addRouteHandler("sessions", sessionHandlers.getSessions)
+        router.addRouteHandler("sessions/:sid", sessionHandlers.getSessionDetails)
+        router.addRouteHandler("contacts", contactHandlers.getContacts)
+        router.addDefaultNotFoundRouteHandler((_, _1) => window.location.hash = "logIn")
 
-    hashChangeHandler()
+        hashChangeHandler()
+    })
 }
 
 const routesRequiringAuth = [

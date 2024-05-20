@@ -12,6 +12,14 @@ import kotlinx.serialization.Serializable
 typealias GameInfoParam = Pair<UInt?, String?>
 
 /**
+ * All genres of the games.
+ *
+ * [String] is the genre of the game.
+ * [Genres] is the collection of genres.
+ */
+typealias Genres = Collection<String>
+
+/**
  * Represents a game with its identifier and name.
  *
  * @param gid The identifier of the game.

@@ -314,13 +314,13 @@ input.light-mode:focus {
 .card-a.light-mode {
     text-decoration: none;
     font-size: 120px;
-    color: #007bff;
+    color: #000000;
     transition: color 0.3s ease;
     margin: 2px;
 }
 
 .card-a.light-mode:hover {
-    color: #111;
+    color: #007bff;
 }
 
 .title.light-mode {
@@ -334,7 +334,7 @@ input.light-mode:focus {
     display: inline-block;
     padding: 8px;
     color: #ffffff;
-    background-color: #007bff;
+    background-color: #000000;
     text-align: center;
     cursor: pointer;
     width: 100%;

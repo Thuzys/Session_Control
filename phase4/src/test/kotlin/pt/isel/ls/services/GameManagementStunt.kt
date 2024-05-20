@@ -2,7 +2,6 @@ package pt.isel.ls.services
 
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.errors.ServicesError
-import pt.isel.ls.domain.info.Genres
 
 object GameManagementStunt : GameServices {
     private val gameId = 1u

@@ -1,7 +1,6 @@
 package pt.isel.ls.storage
 
 import pt.isel.ls.domain.Game
-import pt.isel.ls.domain.info.Genres
 
 class GameStorageStunt : GameStorageInterface {
     private val game1 = Game(1u, "test", "dev", setOf("genre"))

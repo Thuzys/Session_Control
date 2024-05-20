@@ -2,7 +2,11 @@ package pt.isel.ls.services
 
 import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.storage.GameStorageStunt
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertContentEquals
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 class GameManagementTest {
     private fun executeGameManagementTest(action: (gameServices: GameServices) -> Unit) =

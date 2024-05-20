@@ -141,5 +141,4 @@ class PlayerManagementTest {
         actionOfPlayerManagementTest { playerManagement: PlayerServices ->
             playerManagement.logout(token)
         }
-
 }

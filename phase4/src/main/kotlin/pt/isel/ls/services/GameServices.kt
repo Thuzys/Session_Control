@@ -59,4 +59,3 @@ interface GameServices {
      */
     fun getAllGenres(): Genres
 }
-

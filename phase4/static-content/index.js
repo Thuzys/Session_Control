@@ -6,12 +6,26 @@ import gameHandlers from "./handlers/gameHandlers.js";
 import contactHandlers from "./handlers/contactHandlers.js";
 import navigationViews from "./navigation/navigationViews.js";
 import homeHandlers from "./handlers/homeHandlers.js";
+import createBB8Toggle from "./views/handlerViews/switchLightModeView.js";
 
 window.addEventListener('load', loadHandler)
 window.addEventListener('hashchange', hashChangeHandler)
+
 // window.addEventListener('beforeunload', function () {
 //     homeHandlers.logOut()
 // });
+
+/**
+ * Create a toggle switch for light mode and dark mode
+ * @type {HTMLLabelElement}
+ */
+const bb8Toggle = createBB8Toggle();
+window.onload = function() {
+    if (localStorage.getItem('lightMode') === 'disabled') {
+        bb8Toggle.querySelector('.bb8-toggle__checkbox').checked = true;
+    }
+    document.body.appendChild(bb8Toggle);
+}
 
 /**
  * Load handler routes
@@ -57,10 +71,12 @@ const routesRequiringAuth = [
  * Hash change handler
  */
 function hashChangeHandler(){
-    const navigationBar = navigationViews.createNavigationBarView();
-    if( sessionStorage.getItem('isAuthenticated') === 'true' ) {
+    const existingNavigationBar = document.getElementById('navBar');
+    if (!existingNavigationBar && sessionStorage.getItem('isAuthenticated') === 'true') {
+        const navigationBar = navigationViews.createNavigationBarView();
         document.body.insertBefore(navigationBar, document.getElementById("mainContent"));
     }
+
     const mainContent = document.getElementById("mainContent")
     const path =  requestUtils.getPath()
     const handler = router.getRouteHandler(path)

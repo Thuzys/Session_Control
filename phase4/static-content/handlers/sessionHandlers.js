@@ -26,7 +26,7 @@ function searchSessions(mainContent) {
 function handleSearchSessionsSubmit(e) {
     e.preventDefault();
     const params = new URLSearchParams();
-    ['gameName', 'userName', 'date'].forEach(id => {
+    ['gameName', 'username', 'date'].forEach(id => {
         const value = document.getElementById(id).value;
         if (value) params.set(id, value.replace(':', '_'));
     });

@@ -73,7 +73,7 @@ function createCreateGameView() {
  */
 function createSearchGamesView() {
     const container = views.div({class: "player-details-container"});
-    const header = handlerViews.createHeader("Search Games: ")
+    const header = handlerViews.createHeader("Search Games")
     const genresHeader = views.h4({class:"w3-wide centered"}, "Genres Selected")
     const hr = views.hr({class:"w3-opacity"})
     const inputName = handlerViews.createLabeledInput("InputName", "Insert Game Name")
@@ -213,7 +213,7 @@ function createGenresListener(selectedGenresView, inputGenres, genresValues, tog
  */
 function createGetGameView(games) {
     const container = views.div({class: "player-details-container"});
-    const header = handlerViews.createHeader("Games: ")
+    const header = handlerViews.createHeader("Games")
     const hr = views.hr({class:"w3-opacity"})
     const gameList = views.ul({class: "w3-ul w3-border w3-center w3-hover-shadow"})
     games.forEach(game => {

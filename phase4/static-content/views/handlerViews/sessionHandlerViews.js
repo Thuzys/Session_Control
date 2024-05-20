@@ -13,10 +13,10 @@ function createSearchSessionsView() {
     const container = views.div({class: "player-details-container"});
     const header = handlerViews.createHeader("Search Sessions");
     const gidInput = handlerViews.createLabeledInput("gameName", "Enter Game name");
-    const pidInput = handlerViews.createLabeledInput("userName", "Enter Player name");
+    const pidInput = handlerViews.createLabeledInput("username", "Enter Player name");
     const dateInput = views.input({ type: "date", id: "date", placeholder: "Enter Date" });
 
-    const stateLabel = views.h5({class: "w3-wide padding-left"}, "Enter State");
+    const stateLabel = views.h5({class: "w3-wide padding-left enter-state"}, "Enter State");
     const radioOpen = handlerViews.createRadioButton("open", "OPEN");
     const radioClose = handlerViews.createRadioButton("close", "CLOSE");
 
@@ -57,7 +57,7 @@ function createSearchSessionsView() {
         views.p(),
         dateInput,
         views.p(),
-        views.div({class: "w3-row-padding w3-margin-bottom w3-center background"},
+        views.div({class: "w3-row-padding w3-margin-bottom w3-center background-state"},
             stateLabel,
             views.hr({class:"w3-opacity"}),
             radioOpen,
@@ -161,7 +161,7 @@ function createGetSessionsView(sessions) {
     const container = views.div({class: "player-details-container"});
     const query = requestUtils.getQuery();
     const div = views.div({class: "pagination-sessions-min-height"},
-        handlerViews.createHeader("Sessions Found: "),
+        handlerViews.createHeader("Sessions Found"),
         views.hr({class:"w3-opacity"})
     );
     const sessionsElems = views.ul({class: "centered-list w3-ul w3-border w3-center w3-hover-shadow"});
@@ -219,7 +219,7 @@ function createPlayerListView(session) {
  */
 function createCreateSessionView(gameName) {
     const container = views.div({class: "player-details-container"});
-    const header = handlerViews.createHeader("Create Session: ");
+    const header = handlerViews.createHeader("Create Session");
     const hr = views.hr({class:"w3-opacity"})
     const labelCapacity = views.input({type: "number", id: "capacity", placeholder: "Enter Capacity"})
     const labelDate = views.input({type: "date", id: "dateCreate", placeholder: "Enter Date"});
@@ -259,7 +259,7 @@ function canUpdateSession(labelCapacity, labelDate, session) {
  */
 function createUpdateSessionView(session) {
     const container = views.div({class: "player-details-container"});
-    const header = handlerViews.createHeader("Update Session: ");
+    const header = handlerViews.createHeader("Update Session");
     const labelCapacity = views.input({type: "number", id: "capacity", placeholder: "Enter Capacity", value: session.capacity})
     const labelDate = views.input({type: "date", id: "dateChange", placeholder: "Enter Date", value: session.date});
 

@@ -10,7 +10,7 @@ import views from "../viewsCreators.js";
  */
 function createPlayerDetailsView(player, backButton = true) {
     const headerText = backButton ? "Player Details" : "Your Information";
-    const sessionText = backButton ? "View Player's Sessions" : "Your Sessions";
+    const sessionText = backButton ? "View Player's Sessions & Sessions they are in" : "Your Sessions & Sessions you're in";
     const hr = views.hr({class:"w3-opacity"})
     const container = views.div({class: "player-details-container"});
 

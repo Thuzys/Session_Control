@@ -24,7 +24,7 @@ interface PlayerServices {
     /**
      * Creates a new player and stores it.
      *
-     * @param nameUSerName the name and username of the player.
+     * @param nameUsername the name and username of the player.
      * If the username is null, the name will be used as the username.
      * @param emailPassword the email and password of the player.
      * @return A pair containing a [UInt] as a unique key to be associated with the new [Player]
@@ -32,7 +32,7 @@ interface PlayerServices {
      * @throws ServicesError containing the message of the error.
      */
     fun createPlayer(
-        nameUSerName: CreatePlayerNameParam,
+        nameUsername: CreatePlayerNameParam,
         emailPassword: CreatePlayerEmailPasswordParam,
     ): CreatedPlayer
 

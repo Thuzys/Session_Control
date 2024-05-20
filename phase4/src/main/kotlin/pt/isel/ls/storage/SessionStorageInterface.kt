@@ -57,7 +57,7 @@ interface SessionStorageInterface {
         playerInfo: PlayerInfoParam? = null,
         offset: UInt = OFFSET.toUInt(),
         limit: UInt = LIMIT.toUInt(),
-    ): Collection<SessionInfo>?
+    ): Collection<SessionInfo>
 
     /**
      * Updates a [Session] capacity, date or both.
@@ -102,14 +102,14 @@ interface SessionStorageInterface {
     ): Boolean
 
     /**
-     * Checks if a player is in a session.
+     * Retrieves a player from a session.
      *
-     * @param player The identifier of the player to check.
-     * @param session The identifier of the session to check.
-     * @return true if the player is in the session, false otherwise.
+     * @param player The identifier of the player to retrieve.
+     * @param session The identifier of the session which the player is in.
+     * @return The [Player] if found, null otherwise.
      */
-    fun isPlayerInSession(
+    fun readPlayer(
         player: UInt,
         session: UInt,
-    ): Boolean
+    ): Player?
 }

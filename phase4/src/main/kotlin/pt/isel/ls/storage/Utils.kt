@@ -248,21 +248,44 @@ internal fun makePlayers(stmt: PreparedStatement): Collection<Player> {
     val rs = stmt.executeQuery()
     val players = mutableListOf<Player>()
     while (rs.next()) {
-        players.add(
-            Player(
-                rs.getInt("pid").toUInt(),
-                rs.getString("name"),
-                rs.getString("username"),
-                Email(rs.getString("email")),
-                Password(rs.getString("password")),
-                UUID.fromString(
-                    rs.getString("token"),
-                ),
-            ),
-        )
+        players.add(buildPlayer(rs))
     }
     return players
 }
+
+/**
+ * Makes a [Player] object from a [PreparedStatement].
+ *
+ * @param stmt The [PreparedStatement] to make the [Player] object from.
+ * @return A [Player] object.
+ * @throws SQLException if an exception occurs.
+ */
+internal fun makePlayer(stmt: PreparedStatement): Player? {
+    val rs = stmt.executeQuery()
+    return if (rs.next()) {
+        buildPlayer(rs)
+    } else {
+        null
+    }
+}
+
+/**
+ * Builds a [Player] object from a [ResultSet].
+ *
+ * @param rs The [ResultSet] to build the [Player] object from.
+ * @return A [Player] object.
+ */
+private fun buildPlayer(rs: ResultSet): Player =
+    Player(
+        rs.getInt("pid").toUInt(),
+        rs.getString("name"),
+        rs.getString("username"),
+        Email(rs.getString("email")),
+        Password(rs.getString("password")),
+        UUID.fromString(
+            rs.getString("token"),
+        ),
+    )
 
 /**
  * Make a [Session] object from a [PreparedStatement].

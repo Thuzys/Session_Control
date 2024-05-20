@@ -26,10 +26,10 @@ object PlayerManagementStunt : PlayerServices {
         )
 
     override fun createPlayer(
-        nameUSerName: CreatePlayerNameParam,
+        nameUsername: CreatePlayerNameParam,
         emailPassword: CreatePlayerEmailPasswordParam,
     ): Pair<UInt, UUID> =
-        if (nameUSerName.first.isNotBlank() && emailPassword.first.isNotBlank() && emailPassword.second.isNotBlank()) {
+        if (nameUsername.first.isNotBlank() && emailPassword.first.isNotBlank() && emailPassword.second.isNotBlank()) {
             Pair(playerId, playerToken)
         } else {
             throw ServicesError("Unable to create a new Player due to invalid name or email.")

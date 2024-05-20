@@ -3,7 +3,7 @@ import requestUtils from "../utils/requestUtils.js";
 import constants from "../constants/constants.js";
 import sessionHandlerViews from "../views/handlerViews/sessionHandlerViews.js";
 import {fetcher} from "../utils/fetchUtils.js";
-import {isPlayerOwner} from "./handlerUtils/sessionHandlersUtils.js";
+import {isPlayerOwner, isValidPlayer} from "./handlerUtils/sessionHandlersUtils.js";
 import handlerViews from "../views/handlerViews/handlerViews.js";
 
 /**
@@ -144,18 +144,27 @@ function handleGetSessionDetailsResponse(session, mainContent) {
     const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${session.sid}/${constants.TEMPORARY_USER_ID}`;
 
     let isInSession = sessionStorage.getItem('isInSession');
-    const fetchIsInSession = isInSession !== null ? Promise.resolve(isInSession.toString() === "true") : fetcher.get(url, constants.TOKEN);
+    if (isInSession !== null) {
+        Promise.resolve(isInSession === "true")
+            .then(response => {
+                isInSession = response;
+            })
+    } else {
+        fetcher.get(url, constants.TOKEN)
+            .then(response => {
+                isInSession = isValidPlayer(response) ? "true" : "false";
+            });
+    }
 
-    fetchIsInSession
-        .then(isInSession => {
-            sessionStorage.setItem('isInSession', isInSession);
-            return isInSession;
-        })
-        .then(isInSession => {
-            const playerListView = sessionHandlerViews.createPlayerListView(session);
-            const container = sessionHandlerViews.createSessionDetailsView(session, playerListView, isOwner.toString() === "true", isInSession);
-            mainContent.replaceChildren(container);
-        })
+    sessionStorage.setItem('isInSession', isInSession);
+    const playerListView = sessionHandlerViews.createPlayerListView(session);
+    const container = sessionHandlerViews.createSessionDetailsView(
+        session,
+        playerListView,
+        isOwner.toString() === "true",
+        isInSession
+    );
+    mainContent.replaceChildren(container);
 }
 
 /**

@@ -329,7 +329,6 @@ function createDeleteOrLeaveSessionButtonView(session, isLeaveButton = false) {
     const button = views.button({type: "submit", class: "general-button"}, buttonText);
     button.addEventListener('click', (e) => {
         e.preventDefault();
-        const url = constants.API_BASE_URL + constants.SESSION_ID_ROUTE + session.sid;
         if (isLeaveButton) {
             sessionStorage.setItem('isInSession', 'false');
             sessionHandlers.removePlayerFromSession(session.sid);

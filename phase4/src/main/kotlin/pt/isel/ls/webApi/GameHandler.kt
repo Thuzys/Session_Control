@@ -21,8 +21,8 @@ class GameHandler(
         val name = body["name"]
         val dev = body["dev"]
         val genres = body["genres"] ?.let { processGenres(it) }
-        val array = arrayOf(name, dev, genres)
-        return if (array.any { it == null }) {
+        val args = arrayOf(name, dev, genres)
+        return if (args.any { it == null }) {
             badRequestResponse("Missing arguments: name:$name, dev:$dev, genres:$genres")
         } else {
             tryResponse(
@@ -65,13 +65,13 @@ class GameHandler(
         val dev = request.query("dev")
         val genres = request.query("genres") ?.let { processGenres(it) }
         val name = request.query("name")
-        val array = arrayOf(dev, genres, name)
-        return if (array.all { it == null }) {
+        val args = arrayOf(dev, genres, name)
+        return if (args.all { it == null }) {
             badRequestResponse(
                 "Invalid arguments: at least one of the following must be provided: dev, genres, name",
             )
         } else {
-            tryResponse(Status.NOT_FOUND, "Game not found.") {
+            tryResponse(Status.INTERNAL_SERVER_ERROR, "An error occurred while retrieving games.") {
                 val games = gameManagement.getGames(dev, genres, name, offset, limit)
                 makeResponse(Status.FOUND, Json.encodeToString(games))
             }

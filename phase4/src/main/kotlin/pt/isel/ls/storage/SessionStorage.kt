@@ -2,6 +2,7 @@ package pt.isel.ls.storage
 
 import kotlinx.datetime.LocalDate
 import org.postgresql.ds.PGSimpleDataSource
+import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.info.AuthenticationParam
@@ -74,7 +75,7 @@ class SessionStorage(envName: String) : SessionStorageInterface {
         playerInfo: PlayerInfoParam?,
         offset: UInt,
         limit: UInt,
-    ): Collection<SessionInfo>? =
+    ): Collection<SessionInfo> =
         dataSource.connection.use { connection ->
             connection.executeCommand {
                 val selectSessionCMD =
@@ -96,8 +97,7 @@ class SessionStorage(envName: String) : SessionStorageInterface {
                 gameName?.let { stmt2.setString(idx++, it) } ?: stmt2.setNull(idx++, java.sql.Types.VARCHAR)
                 limit.let { stmt2.setInt(idx++, it.toInt()) }
                 offset.let { stmt2.setInt(idx, it.toInt()) }
-                val collection = makeSessionInfo(stmt2)
-                collection.ifEmpty { null }
+                makeSessionInfo(stmt2)
             }
         }
 
@@ -188,18 +188,21 @@ class SessionStorage(envName: String) : SessionStorageInterface {
         }
     }
 
-    override fun isPlayerInSession(
+    override fun readPlayer(
         player: UInt,
         session: UInt,
-    ): Boolean =
+    ): Player? =
         dataSource.connection.use { connection ->
             connection.executeCommand {
-                val selectCMD = "SELECT * FROM PLAYER_SESSION WHERE pid = ? AND sid = ?;"
-                val stmt1 = connection.prepareStatement(selectCMD)
-                stmt1.setInt(1, player.toInt())
-                stmt1.setInt(2, session.toInt())
-                val rs = stmt1.executeQuery()
-                rs.next()
+                val selectCMD =
+                    "SELECT p.pid, p.name, p.username, p.email, p.password, p.token " +
+                        "FROM PLAYER p " +
+                        "JOIN PLAYER_SESSION ps ON p.pid = ps.pid " +
+                        "WHERE p.pid = ? AND ps.sid = ?;"
+                val stmt = connection.prepareStatement(selectCMD)
+                stmt.setInt(1, player.toInt())
+                stmt.setInt(2, session.toInt())
+                makePlayer(stmt)
             }
         }
 }

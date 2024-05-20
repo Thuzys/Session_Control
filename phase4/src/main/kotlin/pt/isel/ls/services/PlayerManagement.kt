@@ -17,11 +17,11 @@ import pt.isel.ls.storage.PlayerStorageInterface
  */
 class PlayerManagement(private val mem: PlayerStorageInterface) : PlayerServices {
     override fun createPlayer(
-        nameUSerName: CreatePlayerNameParam,
+        nameUsername: CreatePlayerNameParam,
         emailPassword: CreatePlayerEmailPasswordParam,
     ): CreatedPlayer =
         tryCatch("Unable to create a new Player due") {
-            val player = nameUSerName associateWith emailPassword
+            val player = nameUsername associateWith emailPassword
             val pid = mem.create(player)
             pid to player.token
         }

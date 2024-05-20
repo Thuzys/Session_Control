@@ -1,6 +1,7 @@
 package pt.isel.ls.services
 
 import kotlinx.datetime.LocalDate
+import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.errors.ServicesError
@@ -122,13 +123,14 @@ interface SessionServices {
     fun deleteSession(sid: UInt)
 
     /**
-     * Checks if a player is in a session.
+     * Retrieves a player from a session.
      *
-     * @param player The identifier of the player to check.
-     * @param session The identifier of the session to check.
+     * @param player The identifier of the player to retrieve.
+     * @param session The identifier of the session from which the player will be retrieved.
+     * @return The player that was retrieved.
      */
-    fun isPlayerInSession(
+    fun getPlayerFromSession(
         player: UInt,
         session: UInt,
-    ): Boolean
+    ): Player
 }

@@ -83,7 +83,7 @@ class SessionHandler(
                 ),
             )
         }
-        return tryResponse(Status.NOT_FOUND, "Unable to retrieve sessions.") {
+        return tryResponse(Status.INTERNAL_SERVER_ERROR, "An error occurred while retrieving sessions.") {
             val gameInfo = Pair(gid, gameName)
             val playerInfo = Pair(pid, userName)
             val sessionsInfo = sessionManagement.getSessions(gameInfo, date, state, playerInfo, offset, limit)
@@ -173,20 +173,19 @@ class SessionHandler(
         }
     }
 
-    override fun isPlayerInSession(request: Request): Response {
+    override fun getPlayerFromSession(request: Request): Response {
         unauthorizedAccess(request, playerManagement)?.let { return unauthorizedResponse(it) }
-        val player = request.toPidOrNull()
-        val session = request.toSidOrNull()
-        return if (player == null || session == null) {
+        val pid = request.toPidOrNull()
+        val sid = request.toSidOrNull()
+        return if (pid == null || sid == null) {
             badRequestResponse(
                 "Invalid or Missing parameters. Please provide 'player' and 'session' as valid values",
             )
         } else {
-            val isPlayerInSession = sessionManagement.isPlayerInSession(player, session)
-            return makeResponse(
-                Status.OK,
-                Json.encodeToString(isPlayerInSession),
-            )
+            tryResponse(Status.NOT_FOUND, "Error retrieving Player $pid from Session $sid.") {
+                val player = sessionManagement.getPlayerFromSession(pid, sid)
+                return makeResponse(Status.FOUND, Json.encodeToString(player))
+            }
         }
     }
 }

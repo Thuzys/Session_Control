@@ -1,6 +1,9 @@
 package pt.isel.ls.storage
 
 import kotlinx.datetime.LocalDate
+import org.eclipse.jetty.util.security.Password
+import pt.isel.ls.domain.Email
+import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.info.AuthenticationParam
@@ -10,15 +13,33 @@ import pt.isel.ls.domain.info.PlayerInfo
 import pt.isel.ls.domain.info.PlayerInfoParam
 import pt.isel.ls.domain.info.SessionInfo
 import pt.isel.ls.services.getSessionState
+import kotlin.collections.HashMap
 
 class SessionStorageStunt : SessionStorageInterface {
     private val player1 = PlayerInfo(1u, "test1")
     private val player2 = PlayerInfo(2u, "test2")
+    private val completePlayer1 =
+        Player(
+            1u,
+            "test1",
+            "test1",
+            Email("test1@gmail.com"),
+            Password("test1"),
+        )
+    private val completePlayer2 =
+        Player(
+            2u,
+            "test2",
+            "test2",
+            Email("test2@gmail.com"),
+            Password("test2"),
+        )
 
     private var sessionUuid: UInt = 4u
     private val date1 = LocalDate(2024, 3, 10)
     private val players: Collection<PlayerInfo> = listOf(player1)
     private val players2: Collection<PlayerInfo> = listOf(player1, player2)
+    private val completePlayers = listOf(completePlayer1, completePlayer2)
     private val gameInfo = GameInfo(1u, "Game")
     private val gameInfo2 = GameInfo(2u, "Game2")
     private val session1 = Session(1u, 2u, gameInfo, date1, player1, players2)
@@ -54,7 +75,7 @@ class SessionStorageStunt : SessionStorageInterface {
         playerInfo: PlayerInfoParam?,
         offset: UInt,
         limit: UInt,
-    ): Collection<SessionInfo>? =
+    ): Collection<SessionInfo> =
         hashSession
             .values
             .filter { session ->
@@ -77,7 +98,6 @@ class SessionStorageStunt : SessionStorageInterface {
                     session.date,
                 )
             }
-            .ifEmpty { null }
 
     override fun updateAddPlayer(
         sid: UInt,
@@ -100,12 +120,12 @@ class SessionStorageStunt : SessionStorageInterface {
         return false
     }
 
-    override fun isPlayerInSession(
+    override fun readPlayer(
         player: UInt,
         session: UInt,
-    ): Boolean {
-        return hashSession[session]?.players?.any { playerInfo -> playerInfo.pid == player } ?: false
-    }
+    ): Player? =
+        hashSession[session]?.players?.find { playerInfo -> playerInfo.pid == player }
+            ?.let { playerInfo -> completePlayers.find { player -> player.pid == playerInfo.pid } }
 
     override fun updateCapacityOrDate(
         authentication: AuthenticationParam,

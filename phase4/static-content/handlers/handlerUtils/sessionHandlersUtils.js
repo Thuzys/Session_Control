@@ -5,11 +5,8 @@ import constants from "../../constants/constants.js";
  * @param session
  * @returns {boolean}
  */
-function isPlayerInSession(session) {
-    if (!session.players) {
-        return false;
-    }
-    return session.players.some(p => p.pid === constants.TEMPORARY_USER_ID);
+function isValidPlayer(session) {
+    return session.pid !== undefined;
 }
 
 /**
@@ -22,6 +19,6 @@ function isPlayerOwner(session) {
 }
 
 export {
-    isPlayerInSession,
+    isValidPlayer,
     isPlayerOwner
 }

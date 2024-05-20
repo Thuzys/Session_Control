@@ -34,13 +34,11 @@ class GameStorageStunt : GameStorageInterface {
         val gamesToSearch = games.values.toList()
         val rangeToSearch = gamesToSearch.drop(offset.toInt()).take(limit.toInt())
 
-        val filtered =
-            rangeToSearch.filter { game ->
+        return rangeToSearch
+            .filter { game ->
                 (dev == null || game.dev == dev) && (genres == null || game.genres.containsAll(genres)) &&
                     (name == null || game.name == name)
             }
-
-        return filtered.ifEmpty { throw NoSuchElementException("No games found") }
     }
 
     override fun update(

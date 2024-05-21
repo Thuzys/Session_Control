@@ -1,4 +1,3 @@
-import views from "../views/viewsCreators.js";
 import contactHandlerViews from "../views/handlerViews/contactHandlerViews.js";
 
 /**

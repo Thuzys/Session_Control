@@ -47,14 +47,9 @@ interface PlayerStorageInterface {
     /**
      * Updates a Player given its unique identifier.
      *
-     * @param uInt The unique identifier of the Player.
      * @param newItem The new Player object to be updated.
-     * @return The updated Player object.
      */
-    fun update(
-        uInt: UInt,
-        newItem: Player,
-    )
+    fun update(newItem: Player)
 
     /**
      * Deletes a Player given its unique identifier.
@@ -62,4 +57,11 @@ interface PlayerStorageInterface {
      * @param uInt The unique identifier of the Player.
      */
     fun delete(uInt: UInt)
+
+    /**
+     * Deletes a token from the storage.
+     *
+     * @param token The token to be deleted.
+     */
+    fun deleteToken(token: String)
 }

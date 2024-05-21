@@ -3,8 +3,9 @@ import requestUtils from "../utils/requestUtils.js";
 import constants from "../constants/constants.js";
 import sessionHandlerViews from "../views/handlerViews/sessionHandlerViews.js";
 import {fetcher} from "../utils/fetchUtils.js";
-import {isPlayerOwner, isValidPlayer} from "./handlerUtils/sessionHandlersUtils.js";
+import {isPlayerOwner} from "./handlerUtils/sessionHandlersUtils.js";
 import handlerViews from "../views/handlerViews/handlerViews.js";
+
 
 /**
  * Search sessions by game id, player id, date and state
@@ -12,7 +13,7 @@ import handlerViews from "../views/handlerViews/handlerViews.js";
  * @param mainContent main content of the page
  */
 function searchSessions(mainContent) {
-    const container =  sessionHandlerViews.createSessionFormContentView();
+    const container = sessionHandlerViews.createSearchSessionsView();
     container.onsubmit = (e) => handleSearchSessionsSubmit(e);
     mainContent.replaceChildren(container);
 }
@@ -25,7 +26,7 @@ function searchSessions(mainContent) {
 function handleSearchSessionsSubmit(e) {
     e.preventDefault();
     const params = new URLSearchParams();
-    ['gameName', 'userName', 'date'].forEach(id => {
+    ['gameName', 'username', 'date'].forEach(id => {
         const value = document.getElementById(id).value;
         if (value) params.set(id, value.replace(':', '_'));
     });
@@ -44,8 +45,9 @@ function handleSearchSessionsSubmit(e) {
 function getSessions(mainContent) {
     const query = requestUtils.getQuery();
     const queryString = handlerUtils.makeQueryString(query);
+    const token = sessionStorage.getItem('token');
     const url = `${constants.API_BASE_URL}${constants.SESSION_ROUTE}?${queryString}`;
-    fetcher.get(url, constants.TOKEN)
+    fetcher.get(url, token)
         .then(
             response =>
                 handleGetSessionsResponse(response, mainContent)
@@ -85,15 +87,17 @@ function handleCreateSessionSubmit(e, gid) {
     e.preventDefault();
     const capacity = document.getElementById('capacity').value;
     const date = document.getElementById('dateCreate').value;
+    const pid = sessionStorage.getItem('pid');
+    const token = sessionStorage.getItem('token');
     const url = `${constants.API_BASE_URL}${constants.SESSION_ROUTE}`;
     const body = {
         gid: gid.toString(),
         capacity: capacity,
         date: date,
-        owner: constants.TEMPORARY_USER_ID.toString(),
+        owner: pid,
     };
     fetcher
-        .post(url, body, constants.TOKEN)
+        .post(url, body, token)
         .then(response => handleCreateSessionResponse(response))
 }
 
@@ -112,7 +116,8 @@ function handleCreateSessionResponse(response) {
  */
 function getSessionDetails(mainContent) {
     const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${requestUtils.getParams()}`;
-    fetcher.get(url, constants.TOKEN)
+    const token = sessionStorage.getItem('token');
+    fetcher.get(url, token)
         .then(
             response =>
                 handleGetSessionDetailsResponse(response, mainContent)
@@ -134,37 +139,56 @@ function handleGetSessionDetailsResponse(session, mainContent) {
     });
 
     let isOwner = sessionStorage.getItem('isOwner');
-    console.log(isOwner);
     if (isOwner == null) {
         isOwner = isPlayerOwner(session);
-        console.log(isOwner);
         sessionStorage.setItem('isOwner', isOwner.toString());
     }
+    const pid = sessionStorage.getItem('pid');
+    const token = sessionStorage.getItem('token');
 
-    const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${session.sid}/${constants.TEMPORARY_USER_ID}`;
+    const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${session.sid}/${pid}`;
 
     let isInSession = sessionStorage.getItem('isInSession');
+
     if (isInSession !== null) {
-        Promise.resolve(isInSession === "true")
+        Promise.resolve(isInSession.toString() === "true")
             .then(response => {
-                isInSession = response;
+                sessionStorage.setItem('isInSession', response.toString());
+                return response;
+            })
+            .then(isInSession => {
+                const playerListView = sessionHandlerViews.createPlayerListView(session);
+                const container = sessionHandlerViews
+                    .createSessionDetailsView(
+                        session,
+                        playerListView,
+                        isOwner.toString() === "true",
+                        isInSession
+                    );
+                mainContent.replaceChildren(container);
             })
     } else {
-        fetcher.get(url, constants.TOKEN)
-            .then(response => {
-                isInSession = isValidPlayer(response) ? "true" : "false";
-            });
+        fetcher.get(
+            url,
+            token,
+            false,
+            () => { isInSession = "false" }
+        ).then(_ => {
+            if (isInSession !== "false") {
+                isInSession = "true";
+            }
+        })
+        sessionStorage.setItem('isInSession', isInSession);
+        const playerListView = sessionHandlerViews.createPlayerListView(session);
+        const container = sessionHandlerViews
+            .createSessionDetailsView(
+                session,
+                playerListView,
+                isOwner.toString() === "true",
+                isInSession
+            );
+        mainContent.replaceChildren(container);
     }
-
-    sessionStorage.setItem('isInSession', isInSession);
-    const playerListView = sessionHandlerViews.createPlayerListView(session);
-    const container = sessionHandlerViews.createSessionDetailsView(
-        session,
-        playerListView,
-        isOwner.toString() === "true",
-        isInSession
-    );
-    mainContent.replaceChildren(container);
 }
 
 /**
@@ -172,8 +196,10 @@ function handleGetSessionDetailsResponse(session, mainContent) {
  * @param sid
  */
 function addPlayerToSession(sid) {
-    const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${sid}/${constants.TEMPORARY_USER_ID}`;
-    fetcher.put(url, constants.TOKEN)
+    const pid = sessionStorage.getItem('pid');
+    const token = sessionStorage.getItem('token');
+    const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${sid}/${pid}`;
+    fetcher.put(url, token)
         .then( _ =>
             window.location.reload()
         )
@@ -184,8 +210,10 @@ function addPlayerToSession(sid) {
  * @param sid
  */
 function removePlayerFromSession(sid) {
-    const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${sid}/${constants.TEMPORARY_USER_ID}`;
-    fetcher.del(url, constants.TOKEN)
+    const pid = sessionStorage.getItem('pid');
+    const token = sessionStorage.getItem('token');
+    const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${sid}/${pid}`;
+    fetcher.del(url, token)
         .then( _ =>
             window.location.reload()
         )
@@ -197,9 +225,10 @@ function removePlayerFromSession(sid) {
  */
 function updateSession(mainContent) {
     const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${requestUtils.getParams()}`;
+    const token = sessionStorage.getItem('token');
     fetcher
-        .get(url, constants.TOKEN)
-        .then( session => {
+        .get(url, token)
+        .then(session => {
             const container = sessionHandlerViews.createUpdateSessionView(session);
             container.onsubmit = (e) => handleUpdateSessionSubmit(e);
             mainContent.replaceChildren(container);
@@ -215,14 +244,16 @@ function handleUpdateSessionSubmit(e) {
     const sid = requestUtils.getParams();
     const capacity = document.getElementById('capacity').value;
     const date = document.getElementById('dateChange').value;
+    const pid = sessionStorage.getItem('pid');
+    const token = sessionStorage.getItem('token');
     const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${sid}`;
     const body = {
         capacity: capacity,
         date: date,
-        pid: constants.TEMPORARY_USER_ID.toString()
+        pid: pid,
     };
     fetcher
-        .put(url, constants.TOKEN, body)
+        .put(url, token, body)
         .then(_ => handlerUtils.changeHash("#sessions/" + sid + "?offset=0"))
 }
 
@@ -232,7 +263,8 @@ function handleUpdateSessionSubmit(e) {
  */
 function deleteSession(sid) {
     const url = constants.API_BASE_URL + constants.SESSION_ID_ROUTE + sid;
-    fetcher.del(url, constants.TOKEN)
+    const token = sessionStorage.getItem('token');
+    fetcher.del(url, token)
         .then(() => {
             handlerViews.showAlert("Session deleted successfully");
             handlerUtils.changeHash("#sessionSearch");

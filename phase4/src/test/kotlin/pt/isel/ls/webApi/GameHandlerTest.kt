@@ -327,4 +327,38 @@ class GameHandlerTest {
         // ASSERT
         assertEquals(expectedMessage, response.bodyString())
     }
+
+    @Test
+    fun `all genres found status`() {
+        // ARRANGE
+        val request = Request(Method.GET, DUMMY_ROUTE)
+        val expectedStatus = Status.FOUND
+
+        // ACT
+        val response =
+            executeGameHandlerTest { handler ->
+                handler.getAllGenres(request)
+            }
+
+        // ASSERT
+        assertEquals(expectedStatus, response.status)
+    }
+
+    @Test
+    fun `all genres found message`() {
+        // ARRANGE
+        val request =
+            Request(Method.GET, DUMMY_ROUTE)
+                .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
+        val expectedMessage = "[\"TestGenre\"]"
+
+        // ACT
+        val response =
+            executeGameHandlerTest { handler ->
+                handler.getAllGenres(request)
+            }
+
+        // ASSERT
+        assertEquals(expectedMessage, response.bodyString())
+    }
 }

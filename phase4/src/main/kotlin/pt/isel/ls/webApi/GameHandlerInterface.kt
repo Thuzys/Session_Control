@@ -38,4 +38,12 @@ interface GameHandlerInterface {
      * @return The HTTP response containing the result of the operation.
      */
     fun getGames(request: Request): Response
+
+    /**
+     * Retrieves the genres of a game.
+     *
+     * @param request The HTTP request containing the game identifier.
+     * @return The HTTP response containing the result of the operation.
+     */
+    fun getAllGenres(request: Request): Response
 }

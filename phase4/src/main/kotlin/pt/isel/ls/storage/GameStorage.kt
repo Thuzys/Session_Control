@@ -2,6 +2,7 @@ package pt.isel.ls.storage
 
 import org.postgresql.ds.PGSimpleDataSource
 import pt.isel.ls.domain.Game
+import pt.isel.ls.domain.info.Genres
 import java.sql.Statement
 
 /**
@@ -92,6 +93,20 @@ class GameStorage(envVarName: String) : GameStorageInterface {
     override fun delete(uInt: UInt) {
         TODO("Not needed")
     }
+
+    override fun readGenres(): Genres =
+        dataSource.connection.use {
+            it.executeCommand {
+                val getGenresStmt = it.prepareStatement("SELECT name FROM GENRE")
+                val genres = mutableListOf<String>()
+                getGenresStmt.executeQuery().use { rs ->
+                    while (rs.next()) {
+                        genres.add(rs.getString("name"))
+                    }
+                }
+                genres
+            }
+        }
 
     override fun update(
         uInt: UInt,

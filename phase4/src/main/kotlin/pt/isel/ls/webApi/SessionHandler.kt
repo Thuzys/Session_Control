@@ -117,24 +117,19 @@ class SessionHandler(
         val pid = body["pid"]?.toUIntOrNull()
         val capacity = body["capacity"]?.toUIntOrNull()
         val date = dateVerification(body["date"])
-        return when {
-            (capacity == null && date == null) ->
-                badRequestResponse(
-                    "capacity and date not provided. Session not modified",
-                )
-            (sid == null || pid == null) ->
-                badRequestResponse(
-                    "Invalid/Missing 'sid' or 'pid'. Session not modified",
-                )
-            else ->
-                tryResponse(
-                    Status.NOT_MODIFIED,
-                    "Error updating session $sid. Check if $sid is valid",
-                ) {
-                    val authentication = Pair(pid, sid)
-                    sessionManagement.updateCapacityOrDate(authentication, capacity, date)
-                    return makeResponse(Status.OK, createJsonRspMessage("Session $sid updated successfully"))
-                }
+        if (pid == null || sid == null) {
+            return badRequestResponse("Invalid/Missing 'sid' or 'pid'. Session not modified")
+        }
+        if (capacity == null && date == null) {
+            return badRequestResponse("capacity and date not provided. Session not modified")
+        }
+        return tryResponse(
+            Status.NOT_MODIFIED,
+            "Error updating session $sid. Check if $sid is valid",
+        ) {
+            val authentication = Pair(pid, sid)
+            sessionManagement.updateCapacityOrDate(authentication, capacity, date)
+            return makeResponse(Status.OK, createJsonRspMessage("Session $sid updated successfully"))
         }
     }
 

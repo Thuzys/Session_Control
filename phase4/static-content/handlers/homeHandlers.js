@@ -10,9 +10,11 @@ import handlerUtils from "./handlerUtils/handlerUtils.js";
  * @param mainContent main content of the page
  */
 function getHome(mainContent) {
-    const url = `${constants.API_BASE_URL}${constants.PLAYER_ID_ROUTE}1`;
+    const pid = sessionStorage.getItem('pid');
+    const token = sessionStorage.getItem('token');
+    const url = `${constants.API_BASE_URL}${constants.PLAYER_ID_ROUTE}${pid}`;
     fetcher
-        .get(url, constants.TOKEN)
+        .get(url, token)
         .then(
             response =>
                 playerHandlers.handleGetPlayerDetailsResponse(response, mainContent)
@@ -40,7 +42,7 @@ function handleLoginSubmit(e) {
     const url = `${constants.API_BASE_URL}${constants.LOGIN_ROUTE}`;
     const body = {username: username, password: password};
     fetcher
-        .post(url, body)
+        .post(url, body, undefined, false)
         .then(response => handleLogInRegisterResponse(response))
 }
 
@@ -64,7 +66,7 @@ function handleCreateAccountSubmit(e) {
     const email = document.getElementById('email').value;
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
 
     if (password !== confirmPassword) {
         handlerViews.showAlert('Passwords do not match!');
@@ -90,13 +92,17 @@ function handleCreateAccountSubmit(e) {
 function handleLogInRegisterResponse(response) {
         sessionStorage.setItem('pid', response.pid);
         sessionStorage.setItem('isAuthenticated', 'true');
-        handlerUtils.changeHash('#home');
+        sessionStorage.setItem('token', response.token);
+        handlerUtils.changeHash('#players/home');
 }
 
 /**
  * Log out the user
  */
 function logOut() {
+    if (sessionStorage.getItem('isAuthenticated') === 'false') {
+        return;
+    }
     sessionStorage.removeItem('pid');
     sessionStorage.setItem('isAuthenticated', 'false');
     //TODO(ERASE TOKEN FROM DATABASE)

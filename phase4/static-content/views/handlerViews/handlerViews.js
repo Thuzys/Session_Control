@@ -10,7 +10,7 @@ import constants from "../../constants/constants.js";
  */
 function createRadioButton(labelText, name) {
     const input = views.input({type: "radio", class: "particles-checkbox", name: "state", id: labelText, value: labelText});
-    const span = views.span({},name);
+    const span = views.span({class: "span-class"},name);
     return views.label({class: "particles-checkbox-container"}, input, span);
 }
 

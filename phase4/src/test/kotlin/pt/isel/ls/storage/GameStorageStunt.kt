@@ -51,4 +51,10 @@ class GameStorageStunt : GameStorageInterface {
     override fun delete(uInt: UInt) {
         TODO("Not needed for tests")
     }
+
+    override fun readGenres() =
+        games
+            .values
+            .flatMap { it.genres }
+            .distinct()
 }

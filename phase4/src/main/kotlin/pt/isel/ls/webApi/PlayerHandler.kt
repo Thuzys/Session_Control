@@ -33,13 +33,10 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
                 password as String
                 val nameParam = name to userName
                 val emailPassParam = email to password
-                val (id, token) = playerManagement.createPlayer(nameParam, emailPassParam)
+                val authentication = playerManagement.createPlayer(nameParam, emailPassParam)
                 makeResponse(
                     Status.CREATED,
-                    createJsonRspMessage(
-                        message = "Player created with id $id and token $token.",
-                        id = id,
-                    ),
+                    Json.encodeToString(authentication),
                 )
             }
         }
@@ -70,6 +67,45 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
                 val player = playerManagement.getPlayerDetailsBy(userName)
                 makeResponse(Status.FOUND, Json.encodeToString(player))
             }
+        }
+    }
+
+    override fun login(request: Request): Response {
+        val body = readBody(request)
+        val username = body["username"]
+        val password = body["password"]
+        val params = arrayOf(username, password)
+        return if (params.any { it == null }) {
+            badRequestResponse("insufficient parameters")
+        } else {
+            tryResponse(
+                errorStatus = Status.BAD_REQUEST,
+                errorMsg = "Unable to login player.",
+            ) {
+                username as String
+                password as String
+                val playerInfo = playerManagement.login(username, password)
+                makeResponse(
+                    Status.OK,
+                    Json.encodeToString(playerInfo),
+                )
+            }
+        }
+    }
+
+    override fun logout(request: Request): Response {
+        unauthorizedAccess(request, playerManagement)?.let { return unauthorizedResponse(it) }
+        val token = request.toTokenOrNull()
+        checkNotNull(token) { "token not found or invalid." }
+        return tryResponse(
+            errorStatus = Status.BAD_REQUEST,
+            errorMsg = "Unable to logout player.",
+        ) {
+            playerManagement.logout(token)
+            makeResponse(
+                Status.OK,
+                createJsonRspMessage("Player logged out successfully."),
+            )
         }
     }
 }

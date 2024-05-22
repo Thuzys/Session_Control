@@ -134,10 +134,13 @@ function createSessionDetailsView(
         div.appendChild(deleteSessionButton);
         div.appendChild(views.p());
         div.appendChild(updateButton);
+        div.appendChild(views.p());
     } else if (isInSession){
         div.appendChild(leaveSessionButton);
+        div.appendChild(views.p())
     } else {
         div.appendChild(joinSessionButton);
+        div.appendChild(views.p())
     }
     div.appendChild(backToSessionsButton);
     container.replaceChildren(div);
@@ -153,7 +156,7 @@ function createSessionDetailsView(
  */
 function createJoinSessionButtonView(session, addPlayerToSession) {
     const joinSessionButton = views.button(
-        {type: "submit", class: "general-button"},
+        {type: "button", class: "general-button"},
         "Join Session"
     );
     joinSessionButton.addEventListener('click', () => {
@@ -352,7 +355,7 @@ function createUpdateSessionView(session) {
  * @returns {HTMLButtonElement}
  */
 function createUpdateSessionButtonView(session) {
-    const updateSessionButton = views.button({type: "submit", class: "general-button"}, "Update Session");
+    const updateSessionButton = views.button({type: "button", class: "general-button"}, "Update Session");
     updateSessionButton.addEventListener('click', (e) => {
         e.preventDefault();
         handlerUtils.changeHash("#updateSession/" + session.sid)
@@ -373,7 +376,7 @@ function createDeleteOrLeaveSessionButtonView(
     deleteSession = undefined, removePlayerFromSession = undefined
 ) {
     const buttonText = isLeaveButton ? "Leave Session" : "Delete Session";
-    const button = views.button({type: "submit", class: "general-button"}, buttonText);
+    const button = views.button({type: "button", class: "general-button"}, buttonText);
     button.addEventListener('click', (e) => {
         e.preventDefault();
         if (isLeaveButton) {

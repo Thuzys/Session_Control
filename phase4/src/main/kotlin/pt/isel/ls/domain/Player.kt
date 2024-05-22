@@ -31,7 +31,7 @@ data class Player(
 ) {
     init {
         require(name.isNotBlank()) { "Name must not be blank." }
-        require(username.isNotBlank()) { "UserName must not be blank." }
+        require(username.isNotBlank()) { "Username must not be blank." }
     }
 }
 

@@ -2,7 +2,6 @@ import views from "../viewsCreators.js";
 import requestUtils from "../../utils/requestUtils.js";
 import handlerViews from "./handlerViews.js";
 import constants from "../../constants/constants.js";
-import sessionHandlers from "../../handlers/sessionHandlers.js";
 import handlerUtils from "../../handlers/handlerUtils/handlerUtils.js";
 
 /**
@@ -90,14 +89,26 @@ function canSearchSessions(gidInputValue, pidInputValue, dateInputValue, stateIn
  * @param playerList player list data
  * @param isOwner is owner of the session
  * @param isInSession is in session
+ * @param addPlayerToSession add player to session
+ * @param removePlayerFromSession remove player from session
+ * @param deleteSession delete session
  * @returns {HTMLDivElement} session details view
  */
-function createSessionDetailsView(session, playerList, isOwner, isInSession) {
+function createSessionDetailsView(
+    session,
+    playerList,
+    isOwner,
+    isInSession,
+    addPlayerToSession,
+    removePlayerFromSession,
+    deleteSession,
+) {
     const container = views.div({class: "player-details-container"});
-    const deleteSessionButton = createDeleteOrLeaveSessionButtonView(session);
-    const leaveSessionButton = createDeleteOrLeaveSessionButtonView(session, true);
+    const deleteSessionButton = createDeleteOrLeaveSessionButtonView(session, false, deleteSession);
+    const leaveSessionButton = createDeleteOrLeaveSessionButtonView(session, true, undefined, removePlayerFromSession);
+    const backToSessionsButton = handlerViews.createBackButtonView(sessionStorage.getItem('back'))
     const updateButton = createUpdateSessionButtonView(session);
-    const joinSessionButton = createJoinSessionButtonView(session);
+    const joinSessionButton = createJoinSessionButtonView(session, addPlayerToSession);
     const div = views.div(
         {},
         handlerViews.createHeader(session.owner.userName + "´s Session"),
@@ -128,7 +139,7 @@ function createSessionDetailsView(session, playerList, isOwner, isInSession) {
     } else {
         div.appendChild(joinSessionButton);
     }
-
+    div.appendChild(backToSessionsButton);
     container.replaceChildren(div);
     return container;
 }
@@ -137,16 +148,19 @@ function createSessionDetailsView(session, playerList, isOwner, isInSession) {
 /**
  * Create join session button view
  * @param session session to join
+ * @param addPlayerToSession add player to session function
  * @returns {HTMLButtonElement} join session button view
  */
-function createJoinSessionButtonView(session) {
+function createJoinSessionButtonView(session, addPlayerToSession) {
     const joinSessionButton = views.button(
         {type: "submit", class: "general-button"},
         "Join Session"
     );
     joinSessionButton.addEventListener('click', () => {
         sessionStorage.setItem('isInSession', 'true');
-        sessionHandlers.addPlayerToSession(session.sid);
+        if (addPlayerToSession) {
+            addPlayerToSession(session.sid);
+        }
     });
     return joinSessionButton;
 }
@@ -179,6 +193,7 @@ function createGetSessionsView(sessions) {
     const nextPrev = handlerViews.createPagination(query, "#sessions", sessions.length === constants.LIMIT);
     div.appendChild(sessionsElems);
     container.replaceChildren(div, nextPrev);
+    sessionStorage.setItem('back', window.location.hash);
     return container;
 }
 
@@ -349,18 +364,27 @@ function createUpdateSessionButtonView(session) {
  * Create delete or leave session button view
  * @param session session to delete or leave
  * @param isLeaveButton if true create leave button, else create delete button
+ * @param deleteSession delete session function
+ * @param removePlayerFromSession remove player from session function
  * @returns {*} delete session button view
  */
-function createDeleteOrLeaveSessionButtonView(session, isLeaveButton = false) {
+function createDeleteOrLeaveSessionButtonView(
+    session, isLeaveButton = false,
+    deleteSession = undefined, removePlayerFromSession = undefined
+) {
     const buttonText = isLeaveButton ? "Leave Session" : "Delete Session";
     const button = views.button({type: "submit", class: "general-button"}, buttonText);
     button.addEventListener('click', (e) => {
         e.preventDefault();
         if (isLeaveButton) {
             sessionStorage.setItem('isInSession', 'false');
-            sessionHandlers.removePlayerFromSession(session.sid);
+            if (removePlayerFromSession) {
+                removePlayerFromSession(session.sid);
+            }
         } else {
-            sessionHandlers.deleteSession(session.sid);
+            if (deleteSession) {
+                deleteSession(session.sid);
+            }
         }
     });
     return button;

@@ -150,42 +150,45 @@ function handleGetSessionDetailsResponse(session, mainContent) {
 
     let isInSession = sessionStorage.getItem('isInSession');
 
-    if (isInSession !== null) {
-        Promise.resolve(isInSession.toString() === "true")
-            .then(response => {
-                sessionStorage.setItem('isInSession', response.toString());
-                return response;
-            })
-            .then(isInSession => {
-                const playerListView = sessionHandlerViews.createPlayerListView(session);
-                const container = sessionHandlerViews
-                    .createSessionDetailsView(
-                        session,
-                        playerListView,
-                        isOwner.toString() === "true",
-                        isInSession
-                    );
-                mainContent.replaceChildren(container);
-            })
-    } else {
+    if (isInSession === null) {
         fetcher.get(
             url,
             token,
             false,
-            () => { isInSession = "false" }
+            () => {
+                isInSession = "false"
+            }
         ).then(_ => {
             if (isInSession !== "false") {
                 isInSession = "true";
             }
+        }).then(_ => {
+            sessionStorage.setItem('isInSession', isInSession)
+            const playerListView = sessionHandlerViews.createPlayerListView(session);
+            const container = sessionHandlerViews
+                .createSessionDetailsView(
+                    session,
+                    playerListView,
+                    isOwner.toString() === "true",
+                    isInSession.toString() === "true",
+                    addPlayerToSession,
+                    removePlayerFromSession,
+                    deleteSession
+                );
+            mainContent.replaceChildren(container);
+
         })
-        sessionStorage.setItem('isInSession', isInSession);
+    } else {
         const playerListView = sessionHandlerViews.createPlayerListView(session);
         const container = sessionHandlerViews
             .createSessionDetailsView(
                 session,
                 playerListView,
                 isOwner.toString() === "true",
-                isInSession
+                isInSession.toString() === "true",
+                addPlayerToSession,
+                removePlayerFromSession,
+                deleteSession
             );
         mainContent.replaceChildren(container);
     }
@@ -278,7 +281,4 @@ export default {
     getSessionDetails,
     createSession,
     updateSession,
-    addPlayerToSession,
-    removePlayerFromSession,
-    deleteSession
 };

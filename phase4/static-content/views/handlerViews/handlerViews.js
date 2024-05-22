@@ -63,10 +63,9 @@ function createHeader(text) {
  * @param id id of the href
  * @param textBase text of the href
  * @param offset offset parameter of the href (optional)
- * @param limit limit parameter of the href (optional)
  * @returns {*[]} href view
  */
-function hrefConstructor(hrefBase, id, textBase, offset = undefined, limit = undefined) {
+function hrefConstructor(hrefBase, id, textBase, offset = undefined) {
     if (offset !== undefined) {
         return [
             views.a({href: `${hrefBase}/${id}?offset=${offset}`}, `${textBase}`),
@@ -96,12 +95,17 @@ function hrefButtonView(textContent, query) {
 
 /**
  * Create back button view
+ * @param previousHash hash to go back
  * @returns {*} back button view
  */
-function createBackButtonView() {
+function createBackButtonView(previousHash) {
     const backButton = views.button({type: "button", class: "general-button"}, "Back");
     backButton.addEventListener('click', () => {
-        window.history.back();
+        if (previousHash) {
+            window.location.hash = previousHash;
+        } else {
+            window.history.back();
+        }
     });
     return backButton;
 }

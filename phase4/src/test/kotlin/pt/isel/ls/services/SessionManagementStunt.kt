@@ -1,6 +1,9 @@
 package pt.isel.ls.services
 
 import kotlinx.datetime.LocalDate
+import org.eclipse.jetty.util.security.Password
+import pt.isel.ls.domain.Email
+import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.errors.ServicesError
@@ -10,6 +13,7 @@ import pt.isel.ls.domain.info.GameInfoParam
 import pt.isel.ls.domain.info.PlayerInfo
 import pt.isel.ls.domain.info.PlayerInfoParam
 import pt.isel.ls.domain.info.SessionInfo
+import java.util.UUID
 
 private val pid = 1u
 private val sid1 = 1u
@@ -18,6 +22,11 @@ private val gid1 = 1u
 private val date1 = LocalDate(2024, 3, 10)
 private val owner1 = PlayerInfo(1u, "test1")
 private val owner2 = PlayerInfo(2u, "test2")
+private val p1Token = UUID.fromString("568f8e19-4e4c-43a2-a1c9-d416aa39a8b4")
+private const val P1_NAME = "test1"
+private const val P1_USERNAME = "test1"
+private val p1Email = Email("test1@gmail.com")
+private val p1Password = Password("test1")
 
 object SessionManagementStunt : SessionServices {
     private val player1 = PlayerInfo(1u, "test1")
@@ -88,7 +97,7 @@ object SessionManagementStunt : SessionServices {
                 listOf(
                     SessionInfo(sid2, owner2, gameInfoVal, date1),
                 )
-            else -> throw ServicesError("There are no Sessions that satisfy the given details")
+            else -> emptyList()
         }
     }
 
@@ -117,10 +126,20 @@ object SessionManagementStunt : SessionServices {
         }
     }
 
-    override fun isPlayerInSession(
+    override fun getPlayerFromSession(
         player: UInt,
         session: UInt,
-    ): Boolean {
-        return player == 1u && session == 1u
+    ): Player {
+        if (player != pid || session != sid1) {
+            throw ServicesError("Unable to get player")
+        }
+        return Player(
+            pid,
+            P1_NAME,
+            P1_USERNAME,
+            p1Email,
+            p1Password,
+            p1Token,
+        )
     }
 }

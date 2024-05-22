@@ -32,7 +32,7 @@ object SessionHandlerStunt : SessionHandlerInterface {
         TODO("Not yet implemented")
     }
 
-    override fun isPlayerInSession(request: Request): Response {
+    override fun getPlayerFromSession(request: Request): Response {
         TODO("Not yet implemented")
     }
 }

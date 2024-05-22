@@ -7,7 +7,6 @@ import pt.isel.ls.storage.SessionStorageStunt
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 private val date1 = LocalDate(2024, 3, 10)
@@ -85,10 +84,11 @@ class SessionManagementTest {
     }
 
     @Test
-    fun `no match in trying to get Sessions throws ServicesError`() {
+    fun `no match in trying to get Sessions returns an empty collection`() {
         actionSessionManagementTest { sessionManagement: SessionServices ->
             val gameInfo = Pair(8u, null)
-            assertFailsWith<ServicesError> { sessionManagement.getSessions(gameInfo) }
+            val sessions = sessionManagement.getSessions(gameInfo)
+            assertTrue(sessions.isEmpty())
         }
     }
 
@@ -221,16 +221,20 @@ class SessionManagementTest {
     }
 
     @Test
-    fun `isPlayerInSession returns true if player is in session`() {
+    fun `getPlayerFromSession returns a player successfully`() {
         actionSessionManagementTest { sessionManagement: SessionServices ->
-            assertTrue { sessionManagement.isPlayerInSession(1u, 1u) }
+            val player = sessionManagement.getPlayerFromSession(1u, 1u)
+            assertEquals(1u, player.pid)
         }
     }
 
     @Test
-    fun `isPlayerInSession returns false if player is not in session`() {
+    fun `getPlayerFromSession fails due to player not found with Services Error`() {
         actionSessionManagementTest { sessionManagement: SessionServices ->
-            assertFalse { sessionManagement.isPlayerInSession(500u, 1u) }
+            val nonExistentPid = 70u
+            assertFailsWith<ServicesError> {
+                sessionManagement.getPlayerFromSession(nonExistentPid, 1u)
+            }
         }
     }
 }

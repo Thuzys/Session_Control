@@ -22,12 +22,14 @@ class GameHandler(
 ) : GameHandlerInterface {
     override fun createGame(request: Request): Response {
         unauthorizedAccess(request, playerServices)?.let { return unauthorizedResponse(it) }
+
         val body = readBody(request)
         val name = body["name"]
         val dev = body["dev"]
         val genres = body["genres"] ?.let { processGenres(it) }
-        val array = arrayOf(name, dev, genres)
-        return if (array.any { it == null }) {
+        val params = arrayOf(name, dev, genres)
+
+        return if (params.any { it == null }) {
             badResponse("Missing arguments: name:$name, dev:$dev, genres:$genres")
         } else {
             tryResponse(Status.BAD_REQUEST, "Invalid arguments: name:$name, dev:$dev, genres:$genres.") {
@@ -56,17 +58,19 @@ class GameHandler(
 
     override fun getGames(request: Request): Response {
         unauthorizedAccess(request, playerServices)?.let { return unauthorizedResponse(it) }
+
         val offset = request.query("offset")?.toUIntOrNull()
         val limit = request.query("limit")?.toUIntOrNull()
         val dev = request.query("dev")
         val genres = request.query("genres") ?.let { processGenres(it) }
         val name = request.query("name")
-        val array = arrayOf(dev, genres, name)
-        return if (array.all { it == null }) {
+        val params = arrayOf(dev, genres, name)
+
+        return if (params.all { it == null }) {
             val msg = "Invalid arguments: at least one of the following must be provided: dev, genres, name"
             badResponse(msg)
         } else {
-            tryResponse(Status.NOT_FOUND, "Game not found.") {
+            tryResponse(Status.INTERNAL_SERVER_ERROR, "An error occurred while retrieving games.") {
                 val games = gameManagement.getGames(dev, genres, name, offset, limit)
                 foundResponse(Json.encodeToString(games))
             }

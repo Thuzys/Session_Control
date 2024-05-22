@@ -20,11 +20,11 @@ import java.util.UUID
  */
 class PlayerManagement(private val mem: PlayerStorageInterface) : PlayerServices {
     override fun createPlayer(
-        nameUSerName: CreatePlayerNameParam,
+        nameUsername: CreatePlayerNameParam,
         emailPassword: CreatePlayerEmailPasswordParam,
     ): PlayerAuthentication =
         tryCatch("Unable to create a new Player due") {
-            val player = nameUSerName associateWith emailPassword
+            val player = nameUsername associateWith emailPassword
             val pid = mem.create(player)
             PlayerAuthentication(pid, player.token)
         }

@@ -7,7 +7,7 @@ private const val ENV_NAME = "JDBC_DATABASE_URL"
 
 fun main() {
     val routes = routingHttpHandler(ENV_NAME)
-
+    
     val server = routes.asServer(Jetty(8080)).start()
     println("Server started at ${server.port()}")
 

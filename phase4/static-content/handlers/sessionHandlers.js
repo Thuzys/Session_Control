@@ -13,7 +13,7 @@ import handlerViews from "../views/handlerViews/handlerViews.js";
  * @param mainContent main content of the page
  */
 function searchSessions(mainContent) {
-    const container =  sessionHandlerViews.createSearchSessionsView();
+    const container = sessionHandlerViews.createSearchSessionsView();
     container.onsubmit = (e) => handleSearchSessionsSubmit(e);
     mainContent.replaceChildren(container);
 }
@@ -149,21 +149,46 @@ function handleGetSessionDetailsResponse(session, mainContent) {
     const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${session.sid}/${pid}`;
 
     let isInSession = sessionStorage.getItem('isInSession');
-    const fetchIsInSession =
-        isInSession !== null
-            ? Promise.resolve(isInSession.toString() === "true")
-            : fetcher.get(url, token);
 
-    fetchIsInSession
-        .then(isInSession => {
-            sessionStorage.setItem('isInSession', isInSession);
-            return isInSession;
+    if (isInSession !== null) {
+        Promise.resolve(isInSession.toString() === "true")
+            .then(response => {
+                sessionStorage.setItem('isInSession', response.toString());
+                return response;
+            })
+            .then(isInSession => {
+                const playerListView = sessionHandlerViews.createPlayerListView(session);
+                const container = sessionHandlerViews
+                    .createSessionDetailsView(
+                        session,
+                        playerListView,
+                        isOwner.toString() === "true",
+                        isInSession
+                    );
+                mainContent.replaceChildren(container);
+            })
+    } else {
+        fetcher.get(
+            url,
+            token,
+            false,
+            () => { isInSession = "false" }
+        ).then(_ => {
+            if (isInSession !== "false") {
+                isInSession = "true";
+            }
         })
-        .then(isInSession => {
-            const playerListView = sessionHandlerViews.createPlayerListView(session);
-            const container = sessionHandlerViews.createSessionDetailsView(session, playerListView, isOwner.toString() === "true", isInSession);
-            mainContent.replaceChildren(container);
-        })
+        sessionStorage.setItem('isInSession', isInSession);
+        const playerListView = sessionHandlerViews.createPlayerListView(session);
+        const container = sessionHandlerViews
+            .createSessionDetailsView(
+                session,
+                playerListView,
+                isOwner.toString() === "true",
+                isInSession
+            );
+        mainContent.replaceChildren(container);
+    }
 }
 
 /**
@@ -203,7 +228,7 @@ function updateSession(mainContent) {
     const token = sessionStorage.getItem('token');
     fetcher
         .get(url, token)
-        .then( session => {
+        .then(session => {
             const container = sessionHandlerViews.createUpdateSessionView(session);
             container.onsubmit = (e) => handleUpdateSessionSubmit(e);
             mainContent.replaceChildren(container);

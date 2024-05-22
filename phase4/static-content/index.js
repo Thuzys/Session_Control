@@ -76,7 +76,7 @@ const routesRequiringAuth = [
 /**
  * Hash change handler
  */
-function hashChangeHandler(){
+function hashChangeHandler() {
     const existingNavigationBar = document.getElementById('navBar');
     if (!existingNavigationBar && sessionStorage.getItem('isAuthenticated') === 'true') {
         const navigationBar = navigationViews.createNavigationBarView();

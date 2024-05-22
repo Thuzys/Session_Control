@@ -89,18 +89,6 @@ class GameManagementTest {
     }
 
     @Test
-    fun `get Game by developer and genres with no results - Failure due to non existing combination of developer and genres`() {
-        executeGameManagementTest { handler ->
-            // ARRANGE
-            val gameDev = "dev"
-            val gameGenres = setOf("genre2")
-
-            // ACT & ASSERT
-            assertFailsWith<ServicesError> { handler.getGames(gameDev, gameGenres, null) }
-        }
-    }
-
-    @Test
     fun `get Game by developer - Success`() {
         executeGameManagementTest { handler ->
             // ARRANGE
@@ -115,13 +103,16 @@ class GameManagementTest {
     }
 
     @Test
-    fun `get Game by developer with no results - Failure due to non existing developer`() {
+    fun `get Game by developer - Returns an empty collection due to non existing dev`() {
         executeGameManagementTest { handler ->
             // ARRANGE
             val gameDev = "dev3"
 
-            // ACT & ASSERT
-            assertFailsWith<ServicesError> { handler.getGames(gameDev, null, null) }
+            // ACT
+            val games = handler.getGames(gameDev, null, null)
+
+            // ASSERT
+            assertTrue { games.isEmpty() }
         }
     }
 
@@ -140,13 +131,16 @@ class GameManagementTest {
     }
 
     @Test
-    fun `get Game by genres with no results - Failure due to non existing genre`() {
+    fun `get Game by genres - Returns an empty collection due to non existing genre`() {
         executeGameManagementTest { handler ->
             // ARRANGE
             val gameGenres = setOf("genre45")
 
-            // ACT & ASSERT
-            assertFailsWith<ServicesError> { handler.getGames(null, gameGenres, null) }
+            // ACT
+            val games = handler.getGames(null, gameGenres, null)
+
+            // ASSERT
+            assertTrue { games.isEmpty() }
         }
     }
 
@@ -165,13 +159,16 @@ class GameManagementTest {
     }
 
     @Test
-    fun `get Game by name with no results - Failure due to non existing name`() {
+    fun `get Game by name - Returns an empty collection due to non existing name`() {
         executeGameManagementTest { handler ->
             // ARRANGE
             val gameName = "test70"
 
-            // ACT & ASSERT
-            assertFailsWith<ServicesError> { handler.getGames(null, null, gameName) }
+            // ACT
+            val games = handler.getGames(null, null, gameName)
+
+            // ASSERT
+            assertTrue { games.isEmpty() }
         }
     }
 
@@ -190,15 +187,18 @@ class GameManagementTest {
     }
 
     @Test
-    fun `get Game by developer, genres and name with no results - Failure due to non existing combination of developer, genres and name`() {
+    fun `Returns an empty collection due to non existing developer, genres and name`() {
         executeGameManagementTest { handler ->
             // ARRANGE
-            val gameDev = "dev"
-            val gameGenres = setOf("genre2")
-            val gameName = "test3"
+            val gameDev = "dev872"
+            val gameGenres = setOf("genre23")
+            val gameName = "test39"
 
-            // ACT & ASSERT
-            assertFailsWith<ServicesError> { handler.getGames(gameDev, gameGenres, gameName) }
+            // ACT
+            val games = handler.getGames(gameDev, gameGenres, gameName)
+
+            // ASSERT
+            assertTrue { games.isEmpty() }
         }
     }
 

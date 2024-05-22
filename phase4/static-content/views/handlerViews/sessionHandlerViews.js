@@ -140,7 +140,6 @@ function createSessionDetailsView(session, playerList, isOwner, isInSession) {
  * @returns {HTMLButtonElement} join session button view
  */
 function createJoinSessionButtonView(session) {
-
     const joinSessionButton = views.button(
         {type: "submit", class: "general-button"},
         "Join Session"
@@ -213,6 +212,17 @@ function createPlayerListView(session) {
 }
 
 /**
+ * Function to check if session can be created
+ *
+ * @param labelCapacity capacity
+ * @param labelDate date
+ * @returns {boolean} true if session can be created
+ */
+function canCreateSession(labelCapacity, labelDate) {
+    return labelCapacity.value.trim() !== "" && labelDate.value.trim() !== "";
+}
+
+/**
  * Create the create session view
  * @param gameName game name
  * @returns {HTMLDivElement} create session view
@@ -220,12 +230,33 @@ function createPlayerListView(session) {
 function createCreateSessionView(gameName) {
     const container = views.div({class: "player-details-container"});
     const header = handlerViews.createHeader("Create Session");
-    const hr = views.hr({class:"w3-opacity"})
     const labelCapacity = views.input({type: "number", id: "capacity", placeholder: "Enter Capacity"})
-    const labelDate = views.input({type: "date", id: "dateCreate", placeholder: "Enter Date"});
+    const labelDate = views.input({
+        type: "date",
+        id: "dateCreate",
+        placeholder: "Enter Date"});
+    const createSessionButton = views.button({
+        type: "submit",
+        class: "general-button",
+        disabled: true
+    }, "Create");
+
+    const toggleCreateSessionButton = () => {
+        handlerViews.toggleButtonState(
+            createSessionButton,
+            !canCreateSession(labelCapacity, labelDate)
+        )
+    }
+
+    handlerViews.addToggleEventListeners(
+        toggleCreateSessionButton,
+        labelCapacity,
+        labelDate
+    );
+
     const formContent = views.form(
         {},
-        hr,
+        views.hr({class:"w3-opacity"}),
         views.h4({class: "w3-wide blue-letters"}, "Game"),
         views.p({}, gameName.toString()),
         views.h4({class: "w3-wide blue-letters"}, "Capacity"),
@@ -234,7 +265,7 @@ function createCreateSessionView(gameName) {
         views.h4({class: "w3-wide blue-letters"}, "Date"),
         labelDate,
         views.p(),
-        views.button({type: "submit", class: "general-button"}, "Create")
+        createSessionButton
     );
     container.replaceChildren(header, formContent);
     return container;
@@ -325,7 +356,6 @@ function createDeleteOrLeaveSessionButtonView(session, isLeaveButton = false) {
     const button = views.button({type: "submit", class: "general-button"}, buttonText);
     button.addEventListener('click', (e) => {
         e.preventDefault();
-        const url = constants.API_BASE_URL + constants.SESSION_ID_ROUTE + session.sid;
         if (isLeaveButton) {
             sessionStorage.setItem('isInSession', 'false');
             sessionHandlers.removePlayerFromSession(session.sid);

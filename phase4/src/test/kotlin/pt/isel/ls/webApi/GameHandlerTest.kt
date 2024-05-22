@@ -232,7 +232,7 @@ class GameHandlerTest {
                 .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
         val expectedMessage =
             createJsonRspMessage(
-                "Game not found.",
+                "An error occurred while retrieving games.",
                 "Unable to find the game due to invalid dev or genres.",
             )
 
@@ -270,7 +270,7 @@ class GameHandlerTest {
         val request =
             Request(Method.GET, "$DUMMY_ROUTE?dev=TestDev2&genres=TestGenre")
                 .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
-        val expectedStatus = Status.NOT_FOUND
+        val expectedStatus = Status.INTERNAL_SERVER_ERROR
 
         // ACT
         val response =

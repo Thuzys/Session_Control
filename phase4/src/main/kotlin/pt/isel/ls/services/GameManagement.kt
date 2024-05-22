@@ -34,7 +34,7 @@ class GameManagement(private val storage: GameStorageInterface) : GameServices {
         offset: UInt?,
         limit: UInt?,
     ): Collection<Game> =
-        tryCatch("Unable to find the game due") {
+        tryCatch("Unable to find games due") {
             storage.readBy(
                 offset ?: DEFAULT_OFFSET,
                 limit ?: DEFAULT_LIMIT,

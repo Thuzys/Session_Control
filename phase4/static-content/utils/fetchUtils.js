@@ -6,14 +6,16 @@ import handlerViews from "../views/handlerViews/handlerViews.js";
  * @param uri the uri to fetch data from
  * @param token the token to use
  * @param isToGoBack if the page should go back if the response is not OK
+ * @param onError the function to call if an error occurs
  * @returns {Promise<*>} the data fetched
  */
 async function get(
     uri,
     token = undefined,
     isToGoBack = true,
+    onError = undefined,
 ) {
-    return fetchInternal(uri, {}, undefined, token, isToGoBack)
+    return fetchInternal(uri, {}, undefined, token, isToGoBack, onError)
 }
 
 /**
@@ -22,14 +24,16 @@ async function get(
  * @param uri the uri to delete data from
  * @param token the token to use
  * @param isToGoBack if the page should go back if the response is not OK
+ * @param onError the function to call if an error occurs
  * @returns {Promise<*>}
  */
 async function del(
     uri,
     token = undefined,
     isToGoBack = true,
+    onError = undefined,
 ) {
-    return fetchInternal(uri, {method: "DELETE"}, undefined, token, isToGoBack)
+    return fetchInternal(uri, {method: "DELETE"}, undefined, token, isToGoBack, onError)
 }
 
 /**
@@ -39,6 +43,7 @@ async function del(
  * @param token the token to use
  * @param body the data to update
  * @param isToGoBack if the page should go back if the response is not OK
+ * @param onError the function to call if an error occurs
  * @returns {Promise<*>}
  */
 async function put(
@@ -46,8 +51,9 @@ async function put(
     token = undefined,
     body = undefined,
     isToGoBack = true,
+    onError = undefined,
 ) {
-    return fetchInternal(uri, {method: "PUT"}, body, token, isToGoBack)
+    return fetchInternal(uri, {method: "PUT"}, body, token, isToGoBack, onError)
 }
 
 /**
@@ -57,6 +63,7 @@ async function put(
  * @param body the data to post
  * @param token the token to use
  * @param isToGoBack if the page should go back if the response is not OK
+ * @param onError the function to call if an error occurs
  * @returns {Promise<*>}
  */
 async function post(
@@ -64,8 +71,9 @@ async function post(
     body,
     token = undefined,
     isToGoBack = true,
+    onError = undefined,
 ) {
-    return fetchInternal(uri, {method: "POST"}, body, token, isToGoBack)
+    return fetchInternal(uri, {method: "POST"}, body, token, isToGoBack, onError)
 }
 
 /**
@@ -76,6 +84,7 @@ async function post(
  * @param body the data to fetch
  * @param token the token to use
  * @param isToGoBack if the page should go back if the response is not OK
+ * @param onError the function to call if an error occurs
  * @returns {Promise<any>} the data fetched
  */
 async function fetchInternal(
@@ -83,6 +92,7 @@ async function fetchInternal(
     body = undefined,
     token= undefined,
     isToGoBack = true,
+    onError = undefined,
 ) {
     if(body || token){
         if(token){
@@ -106,7 +116,11 @@ async function fetchInternal(
                     if (isToGoBack) {
                         window.history.back()
                     }
-                    handlerViews.showAlert(text)
+                    if (!onError) {
+                        handlerViews.showAlert(text)
+                    } else {
+                        onError(text)
+                    }
                 })
             } else {
                 return response.json()

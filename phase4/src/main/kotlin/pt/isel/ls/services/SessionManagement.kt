@@ -1,6 +1,7 @@
 package pt.isel.ls.services
 
 import kotlinx.datetime.LocalDate
+import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.errors.ServicesError
@@ -73,7 +74,7 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
                 playerInfo = playerInfo,
                 offset = offset ?: DEFAULT_OFFSET,
                 limit = limit ?: DEFAULT_LIMIT,
-            ) ?: throw NoSuchElementException("No sessions found")
+            )
         }
 
     override fun updateCapacityOrDate(
@@ -100,11 +101,12 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
         sessionDataMem.updateRemovePlayer(session, player)
     }
 
-    override fun isPlayerInSession(
+    override fun getPlayerFromSession(
         player: UInt,
         session: UInt,
-    ): Boolean =
-        tryCatch("Unable to check if player is in session due") {
-            sessionDataMem.isPlayerInSession(player, session)
+    ): Player =
+        tryCatch("Unable to get player from session due") {
+            sessionDataMem.readPlayer(player, session)
+                ?: throw NoSuchElementException("Player not found in session")
         }
 }

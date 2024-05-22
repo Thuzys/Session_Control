@@ -102,5 +102,3 @@ VALUES
     (3, 18),
     (4, 19),
     (5, 20);
-
-TRUNCATE TABLE PLAYER_SESSION;

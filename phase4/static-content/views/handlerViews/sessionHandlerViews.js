@@ -132,11 +132,19 @@ function createSessionDetailsView(
 
     if (isOwner) {
         div.appendChild(deleteSessionButton);
+        div.appendChild(views.p());
         div.appendChild(updateButton);
+        div.appendChild(views.p());
     } else if (isInSession){
         div.appendChild(leaveSessionButton);
+        div.appendChild(views.p())
     } else {
-        div.appendChild(joinSessionButton);
+        const date = new Date(session.date);
+        const currentDate = new Date();
+        if (currentDate <= date) {
+            div.appendChild(joinSessionButton);
+            div.appendChild(views.p())
+        }
     }
     div.appendChild(backToSessionsButton);
     container.replaceChildren(div);
@@ -156,9 +164,8 @@ function createJoinSessionButtonView(session, addPlayerToSession) {
         "Join Session"
     );
     joinSessionButton.addEventListener('click', () => {
-        sessionStorage.setItem('isInSession', 'true');
         if (addPlayerToSession) {
-            addPlayerToSession(session.sid);
+            addPlayerToSession(session.sid)
         }
     });
     return joinSessionButton;

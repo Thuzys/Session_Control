@@ -125,6 +125,32 @@ function getSessionDetails(mainContent) {
 }
 
 /**
+ * Make session details
+ *
+ * @param session
+ * @param mainContent
+ */
+function makeSessionDetails(session, mainContent) {
+    Promise.resolve(sessionStorage.getItem('isInSession') === "true")
+        .then(isInSession => {
+            const playerListView = sessionHandlerViews.createPlayerListView(session);
+            Promise.resolve(sessionStorage.getItem('isOwner') === "true")
+                .then(isOwner => {
+                    const container = sessionHandlerViews.createSessionDetailsView(
+                        session,
+                        playerListView,
+                        isOwner,
+                        isInSession,
+                        addPlayerToSession,
+                        removePlayerFromSession,
+                        deleteSession
+                    );
+                    mainContent.replaceChildren(container);
+                });
+        });
+}
+
+/**
  * Handle get session details response from the server
  *
  * @param session response from the server
@@ -162,35 +188,10 @@ function handleGetSessionDetailsResponse(session, mainContent) {
             if (!getPlayerFromSessionError) {
                 sessionStorage.setItem('isInSession', "true");
             }
-        })
-
-        Promise.resolve(sessionStorage.getItem('isInSession') === "true")
-            .then(response => {
-                const playerListView = sessionHandlerViews.createPlayerListView(session);
-                const container = sessionHandlerViews.createSessionDetailsView(
-                    session,
-                    playerListView,
-                    isOwner === "true",
-                    response,
-                    addPlayerToSession,
-                    removePlayerFromSession,
-                    deleteSession
-                );
-                mainContent.replaceChildren(container);
-            });
+            makeSessionDetails(session, mainContent);
+        });
     } else {
-        const playerListView = sessionHandlerViews.createPlayerListView(session);
-        const container = sessionHandlerViews
-            .createSessionDetailsView(
-                session,
-                playerListView,
-                isOwner === "true",
-                isInSession === "true",
-                addPlayerToSession,
-                removePlayerFromSession,
-                deleteSession
-            );
-        mainContent.replaceChildren(container);
+        makeSessionDetails(session, mainContent);
     }
 }
 

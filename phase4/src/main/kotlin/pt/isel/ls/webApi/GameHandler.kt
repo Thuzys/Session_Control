@@ -7,6 +7,11 @@ import org.http4k.core.Response
 import org.http4k.core.Status
 import pt.isel.ls.services.GameServices
 import pt.isel.ls.services.PlayerServices
+import pt.isel.ls.webApi.response.badResponse
+import pt.isel.ls.webApi.response.createdResponse
+import pt.isel.ls.webApi.response.foundResponse
+import pt.isel.ls.webApi.response.tryResponse
+import pt.isel.ls.webApi.response.unauthorizedResponse
 
 /**
  * Class responsible for handling the requests related to the games.
@@ -21,25 +26,16 @@ class GameHandler(
         val name = body["name"]
         val dev = body["dev"]
         val genres = body["genres"] ?.let { processGenres(it) }
-        val args = arrayOf(name, dev, genres)
-        return if (args.any { it == null }) {
-            badRequestResponse("Missing arguments: name:$name, dev:$dev, genres:$genres")
+        val params = arrayOf(name, dev, genres)
+        return if (params.any { it == null }) {
+            badResponse("Missing arguments: name:$name, dev:$dev, genres:$genres")
         } else {
-            tryResponse(
-                Status.BAD_REQUEST,
-                "Invalid arguments: name:$name, dev:$dev, genres:$genres.",
-            ) {
-                name as String
-                dev as String
+            tryResponse(Status.BAD_REQUEST, "Invalid arguments: name:$name, dev:$dev, genres:$genres.") {
+                checkNotNull(name) { "Name must be provided." }
+                checkNotNull(dev) { "Dev must be provided." }
                 genres as List<String>
                 val gid = gameManagement.createGame(name, dev, genres)
-                makeResponse(
-                    Status.CREATED,
-                    createJsonRspMessage(
-                        message = "Game created with id $gid.",
-                        id = gid,
-                    ),
-                )
+                createdResponse(createJsonRspMessage(message = "Game created with id $gid.", id = gid))
             }
         }
     }
@@ -49,11 +45,11 @@ class GameHandler(
         val gid = request.toGidOrNull()
 
         return if (gid == null) {
-            badRequestResponse("Invalid arguments: gid must be provided")
+            badResponse("Invalid arguments: gid must be provided")
         } else {
             tryResponse(Status.NOT_FOUND, "Game not found.") {
                 val game = gameManagement.getGameDetails(gid)
-                makeResponse(Status.FOUND, Json.encodeToString(game))
+                foundResponse(Json.encodeToString(game))
             }
         }
     }
@@ -65,15 +61,14 @@ class GameHandler(
         val dev = request.query("dev")
         val genres = request.query("genres") ?.let { processGenres(it) }
         val name = request.query("name")
-        val args = arrayOf(dev, genres, name)
-        return if (args.all { it == null }) {
-            badRequestResponse(
-                "Invalid arguments: at least one of the following must be provided: dev, genres, name",
-            )
+        val params = arrayOf(dev, genres, name)
+        return if (params.all { it == null }) {
+            val msg = "Invalid arguments: at least one of the following must be provided: dev, genres, name"
+            badResponse(msg)
         } else {
             tryResponse(Status.INTERNAL_SERVER_ERROR, "An error occurred while retrieving games.") {
                 val games = gameManagement.getGames(dev, genres, name, offset, limit)
-                makeResponse(Status.FOUND, Json.encodeToString(games))
+                foundResponse(Json.encodeToString(games))
             }
         }
     }
@@ -81,7 +76,7 @@ class GameHandler(
     override fun getAllGenres(request: Request): Response {
         return tryResponse(Status.NOT_FOUND, "Game not found.") {
             val genres = gameManagement.getAllGenres()
-            makeResponse(Status.FOUND, Json.encodeToString(genres))
+            foundResponse(Json.encodeToString(genres))
         }
     }
 }

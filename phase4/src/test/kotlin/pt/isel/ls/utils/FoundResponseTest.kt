@@ -2,18 +2,18 @@ package pt.isel.ls.utils
 
 import org.http4k.core.Response
 import org.http4k.core.Status
-import pt.isel.ls.webApi.badRequestResponse
+import pt.isel.ls.webApi.response.foundResponse
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class BadRequestResponseTest {
+class FoundResponseTest {
     @Test
-    fun `make bad request response`() {
-        val response = badRequestResponse("test")
+    fun `make found response`() {
+        val response = foundResponse("test")
         val expected =
-            Response(Status.BAD_REQUEST)
+            Response(Status.FOUND)
                 .header("Content-Type", "application/json")
-                .body("{\"msg\":\"Bad Request, test.\"}")
+                .body("test")
         assertEquals(expected, response)
     }
 }

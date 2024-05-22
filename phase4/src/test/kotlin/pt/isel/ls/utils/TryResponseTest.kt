@@ -4,7 +4,7 @@ import org.http4k.core.Response
 import org.http4k.core.Status
 import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.webApi.createJsonRspMessage
-import pt.isel.ls.webApi.tryResponse
+import pt.isel.ls.webApi.response.tryResponse
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

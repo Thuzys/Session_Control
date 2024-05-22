@@ -90,10 +90,6 @@ class GameStorage(envVarName: String) : GameStorageInterface {
             }
         }
 
-    override fun delete(uInt: UInt) {
-        TODO("Not needed")
-    }
-
     override fun readGenres(): Genres =
         dataSource.connection.use {
             it.executeCommand {
@@ -114,4 +110,9 @@ class GameStorage(envVarName: String) : GameStorageInterface {
     ) {
         TODO("Not needed")
     }
+
+    override fun delete(uInt: UInt) {
+        TODO("Not needed")
+    }
+
 }

@@ -23,18 +23,23 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
     override fun createPlayer(request: Request): Response {
         val body = readBody(request)
         val name = body["name"]
-        val userName = body["username"]
+        val username = body["username"]
         val email = body["email"]
         val password = body["password"]
         val params = arrayOf(name, email, password)
         return if (params.any { it == null }) {
             badResponse("insufficient parameters")
         } else {
+            checkNotNull(name) { "name not found or invalid." }
+            checkNotNull(email) { "email not found or invalid." }
+            checkNotNull(password) { "password not found or invalid." }
+            if (name.isBlank()) {
+                return badResponse("name cannot be empty")
+            } else if (username != null && username.isBlank()) {
+                return badResponse("username cannot be empty")
+            }
             tryResponse(Status.BAD_REQUEST, "Unable to create player.") {
-                name as String
-                email as String
-                password as String
-                val nameParam = name to userName
+                val nameParam = name to username
                 val emailPassParam = email to password
                 val authentication = playerManagement.createPlayer(nameParam, emailPassParam)
                 createdResponse(Json.encodeToString(authentication))

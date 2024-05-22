@@ -25,7 +25,7 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
         session: UInt,
     ) = tryCatch("Unable to add player to session due") {
         if (!sessionDataMem.updateAddPlayer(session, setOf(player))) {
-            throw IllegalArgumentException("Unable to add player to session.")
+            throw ServicesError("Unable to add player to session.")
         }
     }
 

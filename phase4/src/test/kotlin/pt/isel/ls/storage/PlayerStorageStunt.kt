@@ -3,12 +3,13 @@ package pt.isel.ls.storage
 import org.eclipse.jetty.util.security.Password
 import pt.isel.ls.domain.Email
 import pt.isel.ls.domain.Player
+import java.sql.SQLException
 import java.util.UUID
 
 class PlayerStorageStunt(token: UUID) : PlayerStorageInterface {
     private val defaultMail = Email("default@mail.com")
     private val password = Password("password")
-    val playerToken = token
+    private val playerToken = token
     private val player1 = Player(1u, "test1", "test1", defaultMail, password, playerToken)
     private val player2 = Player(2u, "test2", "test2", defaultMail, password)
     private var uid: UInt = 3u
@@ -19,8 +20,12 @@ class PlayerStorageStunt(token: UUID) : PlayerStorageInterface {
         )
 
     override fun create(newItem: Player): UInt {
-        require(!players.map { it.value.email }.contains(newItem.email)) { "Email already exists." }
-        require(!players.map { it.value.username }.contains(newItem.username)) { "UserName already exists." }
+        if (players.map { it.value.email }.contains(newItem.email)) {
+            throw SQLException("Email already exists.")
+        }
+        if (players.map { it.value.username }.contains(newItem.username)) {
+            throw SQLException("Username already exists.")
+        }
         players[uid++] = newItem
         return uid - 1u
     }

@@ -35,7 +35,10 @@ class GameHandler(
             tryResponse(Status.BAD_REQUEST, "Invalid arguments: name:$name, dev:$dev, genres:$genres.") {
                 checkNotNull(name) { "Name must be provided." }
                 checkNotNull(dev) { "Dev must be provided." }
-                genres as List<String>
+                checkNotNull(genres) { "Genres must be provided." }
+                if (genres.isEmpty()) {
+                    return badResponse("Genres cannot be empty.")
+                }
                 val gid = gameManagement.createGame(name, dev, genres)
                 createdResponse(createJsonRspMessage(message = "Game created with id $gid.", id = gid))
             }

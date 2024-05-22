@@ -132,7 +132,6 @@ function createSessionDetailsView(
 
     if (isOwner) {
         div.appendChild(deleteSessionButton);
-        div.appendChild(views.p());
         div.appendChild(updateButton);
     } else if (isInSession){
         div.appendChild(leaveSessionButton);

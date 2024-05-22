@@ -24,10 +24,6 @@ internal inline fun <T> tryCatch(
         block()
     } catch (error: NoSuchElementException) {
         throw ServicesError("$msg: ${treatResponse(error.message)}")
-    } catch (domainError: IllegalArgumentException) {
-        throw ServicesError("$msg: ${treatResponse(domainError.message)}")
-    } catch (domainError: IllegalStateException) {
-        throw ServicesError("$msg: ${treatResponse(domainError.message)}")
     } catch (storageError: SQLException) {
         throw ServicesError("$msg: ${treatResponse(storageError.message)}")
     }

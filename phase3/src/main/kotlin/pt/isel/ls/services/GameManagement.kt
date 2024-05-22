@@ -22,10 +22,9 @@ class GameManagement(private val storage: GameStorageInterface) : GameServices {
             storage.read(gid)
         }
 
-    override fun getGames(
+    override fun getGameByDevAndGenres(
         dev: String?,
         genres: Collection<String>?,
-        name: String?,
         offset: UInt?,
         limit: UInt?,
     ): Collection<Game> =
@@ -35,7 +34,6 @@ class GameManagement(private val storage: GameStorageInterface) : GameServices {
                 limit ?: DEFAULT_LIMIT,
                 dev,
                 genres,
-                name,
             )
         }
 }

@@ -4,7 +4,7 @@
 interface GameServices {
     +createGame()
     +getGameDetails()
-    +getGames()
+    +getGameByDevAndGenres()
 }
 
 interface PlayerServices {
@@ -28,7 +28,7 @@ interface SessionServices {
 class GameManagement {
     +createGame()
     +getGameDetails()
-    +getGames()
+    +getGameByDevAndGenres()
     -storage: GameStorageInterface
 }
 

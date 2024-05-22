@@ -113,7 +113,7 @@ class SessionHandler(
         } else {
             tryResponse(Status.BAD_REQUEST, "Error adding Player $player to the Session $session") {
                 sessionManagement.addPlayer(player, session)
-                makeResponse(
+                return makeResponse(
                     Status.OK,
                     createJsonRspMessage("Player $player added to Session $session successfully."),
                 )

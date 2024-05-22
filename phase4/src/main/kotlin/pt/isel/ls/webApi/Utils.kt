@@ -107,8 +107,11 @@ internal fun unauthorizedAccess(
     request: Request,
     pManagement: PlayerServices,
 ): String? =
-    request.header("authorization")?.removePrefix("Bearer ")
-        ?.let { return if (pManagement.isValidToken(it)) null else "invalid token" } ?: "token not provided"
+    request
+        .header("authorization")
+        ?.removePrefix("Bearer ")
+        ?.let { return if (pManagement.isValidToken(it)) null else "invalid token" }
+        ?: "token not provided"
 
 /**
  * Represents a message.
@@ -132,10 +135,7 @@ internal fun createJsonRspMessage(
     message: String,
     error: String? = null,
     id: UInt? = null,
-): String {
-    val messageObject = Message(message, error, id)
-    return Json.encodeToString(messageObject)
-}
+): String = Json.encodeToString(Message(message, error, id))
 
 /**
  * Creates a JSON message with the invalid parameters.

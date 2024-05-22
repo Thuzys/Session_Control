@@ -114,5 +114,4 @@ class GameStorage(envVarName: String) : GameStorageInterface {
     override fun delete(uInt: UInt) {
         TODO("Not needed")
     }
-
 }

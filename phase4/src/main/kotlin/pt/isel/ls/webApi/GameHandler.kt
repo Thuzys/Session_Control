@@ -22,11 +22,13 @@ class GameHandler(
 ) : GameHandlerInterface {
     override fun createGame(request: Request): Response {
         unauthorizedAccess(request, playerServices)?.let { return unauthorizedResponse(it) }
+
         val body = readBody(request)
         val name = body["name"]
         val dev = body["dev"]
         val genres = body["genres"] ?.let { processGenres(it) }
         val params = arrayOf(name, dev, genres)
+
         return if (params.any { it == null }) {
             badResponse("Missing arguments: name:$name, dev:$dev, genres:$genres")
         } else {
@@ -56,12 +58,14 @@ class GameHandler(
 
     override fun getGames(request: Request): Response {
         unauthorizedAccess(request, playerServices)?.let { return unauthorizedResponse(it) }
+
         val offset = request.query("offset")?.toUIntOrNull()
         val limit = request.query("limit")?.toUIntOrNull()
         val dev = request.query("dev")
         val genres = request.query("genres") ?.let { processGenres(it) }
         val name = request.query("name")
         val params = arrayOf(dev, genres, name)
+
         return if (params.all { it == null }) {
             val msg = "Invalid arguments: at least one of the following must be provided: dev, genres, name"
             badResponse(msg)

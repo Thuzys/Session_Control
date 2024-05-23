@@ -61,7 +61,7 @@ interface PlayerStorageInterface {
     /**
      * Deletes a token from the storage.
      *
-     * @param token The token to be deleted.
+     * @param pid The token to be deleted.
      */
-    fun deleteToken(token: String)
+    fun deleteToken(pid: UInt)
 }

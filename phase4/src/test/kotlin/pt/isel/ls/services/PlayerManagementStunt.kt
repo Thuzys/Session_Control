@@ -62,9 +62,9 @@ object PlayerManagementStunt : PlayerServices {
         return PlayerAuthentication(playerId, playerToken)
     }
 
-    override fun logout(token: UUID) {
-        if (token != playerToken) {
-            throw ServicesError("Unable to logout due to invalid token.")
+    override fun logout(pid: UInt) {
+        if (pid != playerId) {
+            throw ServicesError("Unable to logout due invalid pid.")
         }
     }
 }

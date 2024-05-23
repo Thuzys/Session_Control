@@ -6,11 +6,11 @@ import pt.isel.ls.domain.Player
 import java.sql.SQLException
 import java.util.UUID
 
-class PlayerStorageStunt(token: UUID) : PlayerStorageInterface {
+class PlayerStorageStunt(pid: UInt) : PlayerStorageInterface {
     private val defaultMail = Email("default@mail.com")
     private val password = Password("password")
-    private val playerToken = token
-    private val player1 = Player(1u, "test1", "test1", defaultMail, password, playerToken)
+    private val playerToken = UUID.randomUUID()
+    private val player1 = Player(pid, "test1", "test1", defaultMail, password, playerToken)
     private val player2 = Player(2u, "test2", "test2", defaultMail, password)
     private var uid: UInt = 3u
     private val players =
@@ -56,7 +56,7 @@ class PlayerStorageStunt(token: UUID) : PlayerStorageInterface {
         TODO("Not yet implemented")
     }
 
-    override fun deleteToken(token: String) {
+    override fun deleteToken(pid: UInt) {
         // do nothing
     }
 }

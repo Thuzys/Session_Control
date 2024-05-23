@@ -2,7 +2,6 @@ package pt.isel.ls.services
 
 import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.storage.PlayerStorageStunt
-import java.util.UUID
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -14,11 +13,11 @@ class PlayerManagementTest {
     private val alreadyExistName = "test1"
     private val name = "test2"
     private val password = "password"
-    private val token = UUID.randomUUID()
+    private val pid = 1u
 
     private fun actionOfPlayerManagementTest(code: (player: PlayerServices) -> Unit) =
         // arrangement
-        PlayerManagement(PlayerStorageStunt(token))
+        PlayerManagement(PlayerStorageStunt(pid))
             .let(code)
 
     @Test
@@ -139,6 +138,6 @@ class PlayerManagementTest {
     @Test
     fun `logout successfully`() =
         actionOfPlayerManagementTest { playerManagement: PlayerServices ->
-            playerManagement.logout(token)
+            playerManagement.logout(pid)
         }
 }

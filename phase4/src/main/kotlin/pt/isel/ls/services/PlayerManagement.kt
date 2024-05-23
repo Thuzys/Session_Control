@@ -8,7 +8,6 @@ import pt.isel.ls.domain.info.CreatePlayerEmailPasswordParam
 import pt.isel.ls.domain.info.CreatePlayerNameParam
 import pt.isel.ls.domain.info.PlayerAuthentication
 import pt.isel.ls.storage.PlayerStorageInterface
-import java.util.UUID
 
 /**
  * Represents the services made by the application.
@@ -57,18 +56,17 @@ class PlayerManagement(private val mem: PlayerStorageInterface) : PlayerServices
         tryCatch("Unable to login due") {
             mem.readBy(userName = username)?.firstOrNull()?.let {
                 if (Password(password) == it.password) {
-                    val newPlayer = it.copy(token = UUID.randomUUID())
-                    checkNotNullService(newPlayer.pid) { "Player id is null." }
-                    mem.update(newPlayer)
-                    PlayerAuthentication(newPlayer.pid, newPlayer.token)
+                    checkNotNullService(it.pid) { "Player id is null." }
+                    mem.update(it)
+                    PlayerAuthentication(it.pid, it.token)
                 } else {
                     throw ServicesError("Invalid password.")
                 }
             } ?: throw ServicesError("Player not found.")
         }
 
-    override fun logout(token: UUID) =
+    override fun logout(pid: UInt) =
         tryCatch("Unable to logout due") {
-            mem.deleteToken(token.toString())
+            mem.deleteToken(pid)
         }
 }

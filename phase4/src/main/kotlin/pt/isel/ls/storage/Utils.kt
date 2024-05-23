@@ -285,9 +285,11 @@ private fun buildPlayer(rs: ResultSet): Player =
         rs.getString("username"),
         Email(rs.getString("email")),
         Password(rs.getString("password")),
-        UUID.fromString(
-            rs.getString("token"),
-        ),
+        if (rs.getString("token") == null) {
+            UUID.randomUUID()
+        } else {
+            UUID.fromString(rs.getString("token"))
+        },
     )
 
 /**

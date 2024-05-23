@@ -24,6 +24,10 @@ class PlayerManagement(private val mem: PlayerStorageInterface) : PlayerServices
         emailPassword: CreatePlayerEmailPasswordParam,
     ): PlayerAuthentication =
         tryCatch("Unable to create a new Player due") {
+            val (name, username) = nameUsername
+            checkValidService(name.isNotBlank()) { "Name must not be blank." }
+            val condition = !username.isNullOrBlank() || username == null
+            checkValidService(condition) { "Username cannot be empty." }
             val player = nameUsername associateWith emailPassword
             val pid = mem.create(player)
             PlayerAuthentication(pid, player.token)
@@ -39,21 +43,22 @@ class PlayerManagement(private val mem: PlayerStorageInterface) : PlayerServices
             mem.readBy(token = token) != null
         }
 
-    override fun getPlayerDetailsBy(userName: String): Player {
+    override fun getPlayerDetailsBy(username: String): Player {
         return tryCatch("Unable to get the details of a Player due") {
-            mem.readBy(userName = userName)?.firstOrNull() ?: throw ServicesError("Player not found.")
+            checkValidService(username.isNotBlank()) { "username cannot be empty" }
+            mem.readBy(userName = username)?.firstOrNull() ?: throw ServicesError("Player not found.")
         }
     }
 
     override fun login(
-        userName: String,
+        username: String,
         password: String,
     ): PlayerAuthentication =
         tryCatch("Unable to login due") {
-            mem.readBy(userName = userName)?.firstOrNull()?.let {
+            mem.readBy(userName = username)?.firstOrNull()?.let {
                 if (Password(password) == it.password) {
                     val newPlayer = it.copy(token = UUID.randomUUID())
-                    checkNotNull(newPlayer.pid) { "Player id is null." }
+                    checkNotNullService(newPlayer.pid) { "Player id is null." }
                     mem.update(newPlayer)
                     PlayerAuthentication(newPlayer.pid, newPlayer.token)
                 } else {

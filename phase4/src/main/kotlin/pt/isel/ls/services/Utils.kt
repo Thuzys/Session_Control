@@ -1,9 +1,13 @@
 package pt.isel.ls.services
 
+import kotlinx.datetime.toKotlinLocalDate
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.errors.ServicesError
 import java.sql.SQLException
+import java.time.LocalDate
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 const val DEFAULT_OFFSET = 0u
 const val DEFAULT_LIMIT = 11u
@@ -28,6 +32,12 @@ internal inline fun <T> tryCatch(
         throw ServicesError("$msg: ${treatResponse(storageError.message)}")
     }
 
+/**
+ * Treats the response message.
+ *
+ * @param msg The message to be treated.
+ * @return The treated message.
+ */
 private fun treatResponse(msg: String?): String {
     return if (msg != null && msg.last() == '.') {
         msg
@@ -37,11 +47,54 @@ private fun treatResponse(msg: String?): String {
 }
 
 /**
+ * Checks if a value is valid.
+ *
+ * @param condition The condition to be checked.
+ * @param lazyMessage The message to be displayed in case of an error.
+ * @throws ServicesError containing the message of the error.
+ */
+internal inline fun checkValidService(
+    condition: Boolean,
+    lazyMessage: () -> String,
+) {
+    if (!condition) {
+        throw ServicesError(lazyMessage())
+    }
+}
+
+/**
+ * Checks if a value is not null.
+ *
+ * @param value The value to be checked.
+ * @param lazyMessage The message to be displayed in case of an error.
+ * @return The value if it is not null.
+ * @throws ServicesError containing the message of the error.
+ */
+@OptIn(ExperimentalContracts::class)
+internal inline fun <T> checkNotNullService(
+    value: T?,
+    lazyMessage: () -> String,
+): T {
+    contract {
+        returns() implies (value != null)
+    }
+    return value ?: throw ServicesError(lazyMessage())
+}
+
+/**
+ * Gets the current local date.
+ *
+ * @return The current local date.
+ */
+fun currentLocalDate(): kotlinx.datetime.LocalDate = LocalDate.now().toKotlinLocalDate()
+
+/**
  * Determines the state of a session.
  *
  * @param session The session for which the state is being determined.
  * @return The state of the session (OPEN or CLOSE).
  */
 internal fun getSessionState(session: Session): SessionState {
-    return if (session.players.size.toUInt() < session.capacity) SessionState.OPEN else SessionState.CLOSE
+    val condition = session.players.size.toUInt() < session.capacity && session.date >= currentLocalDate()
+    return if (condition) SessionState.OPEN else SessionState.CLOSE
 }

@@ -93,7 +93,7 @@ class PlayerManagementTest {
         actionOfPlayerManagementTest { playerManagement: PlayerServices ->
             val nameParam = "   " to name
             val emailPassParam = email to password
-            assertFailsWith<IllegalArgumentException> { playerManagement.createPlayer(nameParam, emailPassParam) }
+            assertFailsWith<ServicesError> { playerManagement.createPlayer(nameParam, emailPassParam) }
         }
 
     @Test

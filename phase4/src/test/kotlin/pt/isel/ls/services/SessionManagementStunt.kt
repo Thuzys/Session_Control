@@ -129,17 +129,17 @@ object SessionManagementStunt : SessionServices {
     override fun getPlayerFromSession(
         player: UInt,
         session: UInt,
-    ): Player {
+    ): Player? =
         if (player != pid || session != sid1) {
-            throw ServicesError("Unable to get player")
+            null
+        } else {
+            Player(
+                pid,
+                P1_NAME,
+                P1_USERNAME,
+                p1Email,
+                p1Password,
+                p1Token,
+            )
         }
-        return Player(
-            pid,
-            P1_NAME,
-            P1_USERNAME,
-            p1Email,
-            p1Password,
-            p1Token,
-        )
-    }
 }

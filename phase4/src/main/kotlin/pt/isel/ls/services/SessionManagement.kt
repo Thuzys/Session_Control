@@ -112,9 +112,8 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
     override fun getPlayerFromSession(
         player: UInt,
         session: UInt,
-    ): Player =
+    ): Player? =
         tryCatch("Unable to get player from session due") {
             sessionDataMem.readPlayer(player, session)
-                ?: throw NoSuchElementException("Player not found in session")
         }
 }

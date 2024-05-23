@@ -132,5 +132,5 @@ interface SessionServices {
     fun getPlayerFromSession(
         player: UInt,
         session: UInt,
-    ): Player
+    ): Player?
 }

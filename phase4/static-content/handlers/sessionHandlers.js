@@ -177,13 +177,17 @@ function handleGetSessionDetailsResponse(session, mainContent) {
         fetcher.get(
             url,
             token,
-            false,
-            () => {
-                sessionStorage.setItem('isInSession', "false")
-                makeSessionDetails(session, mainContent);
+            false
+            // () => {
+            //     sessionStorage.setItem('isInSession', "false")
+            //     makeSessionDetails(session, mainContent);
+            // }
+        ).then(response => {
+            if (response !== null) {
+                sessionStorage.setItem('isInSession', "true");
+            } else {
+                sessionStorage.setItem('isInSession', "false");
             }
-        ).then(_ => {
-            sessionStorage.setItem('isInSession', "true");
             makeSessionDetails(session, mainContent);
         });
     } else {

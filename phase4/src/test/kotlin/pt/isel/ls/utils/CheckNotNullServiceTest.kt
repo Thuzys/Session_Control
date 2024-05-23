@@ -13,9 +13,10 @@ class CheckNotNullServiceTest {
         val condition = false
         val lazyMessage = { "Error message" }
         // Act
-        val exception = assertFailsWith<ServicesError> {
-            checkValidService(condition, lazyMessage)
-        }
+        val exception =
+            assertFailsWith<ServicesError> {
+                checkValidService(condition, lazyMessage)
+            }
         // Assert
         assertEquals("Error message", exception.message)
     }

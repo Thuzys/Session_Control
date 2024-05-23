@@ -1,14 +1,10 @@
 package pt.isel.ls.services
 
 import kotlinx.datetime.DatePeriod
-import kotlinx.datetime.DateTimePeriod
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.plus
-import org.eclipse.jetty.server.session.DatabaseAdaptor
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.storage.SessionStorageStunt
-import java.time.Period
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith

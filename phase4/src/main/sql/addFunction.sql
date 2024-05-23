@@ -76,7 +76,7 @@ begin
         where
             (Pgid is null or s.gid = Pgid) and
             (currDate is null or s.date = to_date(currDate, 'YYYY-MM-DD')) and
-            (gameName is null or s.game_name = gameName)
+            (gameName is null or compare_name(s.game_name, gameName))
         group by s.sid, s.capacity, s.game_name, s.date, s.gid, s.owner
         having (state is null) or
             (state = 'OPEN' and count(u.pid) < s.capacity and now() <= s.date) or

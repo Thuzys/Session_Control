@@ -111,7 +111,7 @@ function createSessionDetailsView(
     const joinSessionButton = createJoinSessionButtonView(session, addPlayerToSession);
     const div = views.div(
         {},
-        handlerViews.createHeader(session.owner.userName + "´s Session"),
+        handlerViews.createHeader(session.owner.username + "´s Session"),
         views.hr({class:"w3-opacity)"}),
         views.div({class: "w3-margin-bottom"},
             views.ul({class: "w3-ul w3-border w3-center w3-hover-shadow"},
@@ -123,7 +123,7 @@ function createSessionDetailsView(
                     )
                 ),),),
                 views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Date"), views.li(session.date))),
-                views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Owner"), views.li(session.owner.userName))),
+                views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Owner"), views.li(session.owner.username))),
                 views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Capacity"), views.li(session.capacity.toString()))),
                 views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Players"), playerList)),
             ),
@@ -191,7 +191,7 @@ function createGetSessionsView(sessions) {
             views.li(
                 ...handlerViews.hrefConstructor(
                 "#sessions",
-                session.sid, session.owner.userName + "´s Session" + " - " + session.date,
+                session.sid, session.owner.username + "´s Session" + " - " + session.date,
                 0,
             ));
         sessionsElems.appendChild(sessionHref);
@@ -216,7 +216,7 @@ function createPlayerListView(session) {
             .slice(0, constants.ELEMENTS_PER_PAGE_PLAYERS)
             .forEach(player => {
             const playerLi = views.li(
-                ...handlerViews.hrefConstructor("#players", player.pid, player.userName)
+                ...handlerViews.hrefConstructor("#players", player.pid, player.username)
             );
             playerList.appendChild(playerLi);
         });

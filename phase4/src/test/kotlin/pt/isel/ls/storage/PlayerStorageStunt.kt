@@ -35,13 +35,13 @@ class PlayerStorageStunt(pid: UInt) : PlayerStorageInterface {
     override fun readBy(
         email: Email?,
         token: String?,
-        userName: String?,
+        username: String?,
         limit: UInt,
         offset: UInt,
     ): Collection<Player>? =
         players
             .values
-            .filter { it.email == email || token.toString().isNotEmpty() || it.username == userName }
+            .filter { it.email == email || token.toString().isNotEmpty() || it.username == username }
             .drop(offset.toInt())
             .take(limit.toInt())
             .ifEmpty { null }

@@ -45,7 +45,7 @@ class PlayerManagement(private val mem: PlayerStorageInterface) : PlayerServices
     override fun getPlayerDetailsBy(username: String): Player {
         return tryCatch("Unable to get the details of a Player due") {
             checkValidService(username.isNotBlank()) { "username cannot be empty" }
-            mem.readBy(userName = username)?.firstOrNull() ?: throw ServicesError("Player not found.")
+            mem.readBy(username = username)?.firstOrNull() ?: throw ServicesError("Player not found.")
         }
     }
 
@@ -54,7 +54,7 @@ class PlayerManagement(private val mem: PlayerStorageInterface) : PlayerServices
         password: String,
     ): PlayerAuthentication =
         tryCatch("Unable to login due") {
-            mem.readBy(userName = username)?.firstOrNull()?.let {
+            mem.readBy(username = username)?.firstOrNull()?.let {
                 if (Password(password) == it.password) {
                     checkNotNullService(it.pid) { "Player id is null." }
                     mem.update(it)

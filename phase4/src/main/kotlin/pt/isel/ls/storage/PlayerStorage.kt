@@ -56,7 +56,7 @@ class PlayerStorage(envName: String) : PlayerStorageInterface {
     override fun readBy(
         email: Email?,
         token: String?,
-        userName: String?,
+        username: String?,
         limit: UInt,
         offset: UInt,
     ): Collection<Player>? =
@@ -70,7 +70,7 @@ class PlayerStorage(envName: String) : PlayerStorageInterface {
                 var idx = 1
                 stmt.setString(idx++, email?.email)
                 stmt.setString(idx++, token)
-                stmt.setString(idx++, userName)
+                stmt.setString(idx++, username)
                 stmt.setInt(idx++, offset.toInt())
                 stmt.setInt(idx, limit.toInt())
                 makePlayers(stmt).ifEmpty { null }

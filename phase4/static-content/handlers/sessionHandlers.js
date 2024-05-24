@@ -178,10 +178,6 @@ function handleGetSessionDetailsResponse(session, mainContent) {
             url,
             token,
             false
-            // () => {
-            //     sessionStorage.setItem('isInSession', "false")
-            //     makeSessionDetails(session, mainContent);
-            // }
         ).then(response => {
             if (response !== null) {
                 sessionStorage.setItem('isInSession', "true");

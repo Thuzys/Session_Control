@@ -47,8 +47,8 @@ object PlayerManagementStunt : PlayerServices {
         return token == playerToken.toString()
     }
 
-    override fun getPlayerDetailsBy(userName: String): Player {
-        if (userName == PLAYER_NAME) {
+    override fun getPlayerDetailsBy(username: String): Player {
+        if (username == PLAYER_NAME) {
             return player
         } else {
             throw ServicesError("Unable to get the details of a Player due to nonexistent userName.")
@@ -56,7 +56,7 @@ object PlayerManagementStunt : PlayerServices {
     }
 
     override fun login(
-        userName: String,
+        username: String,
         password: String,
     ): PlayerAuthentication {
         return PlayerAuthentication(playerId, playerToken)

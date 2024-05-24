@@ -13,10 +13,6 @@ import createBB8Toggle from "./views/handlerViews/switchLightModeView.js";
 window.addEventListener('load', loadHandler)
 window.addEventListener('hashchange', hashChangeHandler)
 
-// window.addEventListener('beforeunload', function () {
-//     homeHandlers.logOut()
-// });
-
 /**
  * Create a toggle switch for light mode and dark mode
  * @type {HTMLLabelElement}
@@ -52,8 +48,9 @@ function loadHandler(){
         router.addRouteHandler("sessions", sessionHandlers.getSessions)
         router.addRouteHandler("sessions/:sid", sessionHandlers.getSessionDetails)
         router.addRouteHandler("contacts", contactHandlers.getContacts)
-        router.addDefaultNotFoundRouteHandler((_, _1) => window.location.hash = "logIn")
-
+        router.addDefaultNotFoundRouteHandler((_, _1) => {
+            window.location.hash = sessionStorage.getItem('isAuthenticated') === 'true' ? "players/home" : "logIn";
+        })
         hashChangeHandler()
     })
 }
@@ -81,6 +78,9 @@ function hashChangeHandler() {
     if (!existingNavigationBar && sessionStorage.getItem('isAuthenticated') === 'true') {
         const navigationBar = navigationViews.createNavigationBarView();
         document.body.insertBefore(navigationBar, document.getElementById("mainContent"));
+    }
+    if (!location.hash.includes('sessions/')) {
+        sessionStorage.removeItem('isInSession');
     }
 
     const mainContent = document.getElementById("mainContent")

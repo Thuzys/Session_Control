@@ -8,9 +8,9 @@ import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.domain.info.AuthenticationParam
 import pt.isel.ls.domain.info.GameInfo
 import pt.isel.ls.domain.info.GameInfoParam
-import pt.isel.ls.domain.info.PlayerInfo
 import pt.isel.ls.domain.info.PlayerInfoParam
 import pt.isel.ls.domain.info.SessionInfo
+import pt.isel.ls.domain.info.associateWith
 import pt.isel.ls.storage.SessionStorageInterface
 
 /**
@@ -25,7 +25,7 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
         session: UInt,
     ) = tryCatch("Unable to add player to session due") {
         if (!sessionDataMem.updateAddPlayer(session, setOf(player))) {
-            throw IllegalArgumentException("Unable to add player to session.")
+            throw ServicesError("Unable to add player to session.")
         }
     }
 
@@ -50,11 +50,14 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
     ): UInt =
         tryCatch("Unable to create a new session due") {
             val (gid, name) = gameInfo
-            requireNotNull(gid) { "Game must be provided" }
+            checkNotNullService(gid) { "Game must be provided" }
             val game = GameInfo(gid, name ?: "")
             val (pid, username) = owner
-            requireNotNull(pid) { "Owner pid must be provided" }
-            val ownerInfo = PlayerInfo(pid, username ?: "")
+            checkNotNullService(pid) { "Owner pid must be provided" }
+            checkValidService(!username.isNullOrBlank()) { "Owner username must be provided" }
+            username as String
+            checkValidService(date >= currentLocalDate()) { "Date must not be in the past." }
+            val ownerInfo = pid associateWith username
             sessionDataMem.create(Session(gameInfo = game, date = date, capacity = capacity, owner = ownerInfo))
         }
 
@@ -67,6 +70,8 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
         limit: UInt?,
     ): Collection<SessionInfo> =
         tryCatch("Unable to get the sessions due") {
+            val condition = gameInfo != null || date != null || state != null || playerInfo != null
+            checkValidService(condition) { "At least one parameter must be provided." }
             sessionDataMem.readBy(
                 gameInfo = gameInfo,
                 date = date,
@@ -82,6 +87,9 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
         capacity: UInt?,
         date: LocalDate?,
     ) = tryCatch("Unable to update session ${authentication.second} due") {
+        val condition = date == null || date >= currentLocalDate()
+        checkValidService(date != null || capacity != null) { "At least one parameter must be provided." }
+        checkValidService(condition) { "Date must not be in the past." }
         sessionDataMem.updateCapacityOrDate(
             authentication = authentication,
             capacity = capacity,

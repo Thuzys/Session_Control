@@ -192,9 +192,9 @@ class SessionHandlerTest {
             assertEquals(
                 expected =
                     "{\"sid\":1,\"capacity\":1,\"gameInfo\":{\"gid\":1,\"name\":\"Game\"}," +
-                        "\"date\":\"2024-03-10\",\"owner\":{\"pid\":1,\"userName\":\"test1\"}," +
-                        "\"players\":[{\"pid\":1,\"userName\":\"test1\"}," +
-                        "{\"pid\":2,\"userName\":\"test2\"}]}",
+                        "\"date\":\"2024-03-10\",\"owner\":{\"pid\":1,\"username\":\"test1\"}," +
+                        "\"players\":[{\"pid\":1,\"username\":\"test1\"}," +
+                        "{\"pid\":2,\"username\":\"test2\"}]}",
                 actual = response.bodyString(),
             )
         }
@@ -301,9 +301,9 @@ class SessionHandlerTest {
             val response = handler.getSessions(request)
             assertEquals(
                 expected =
-                    "[{\"sid\":1,\"owner\":{\"pid\":1,\"userName\":\"test1\"}," +
+                    "[{\"sid\":1,\"owner\":{\"pid\":1,\"username\":\"test1\"}," +
                         "\"gameInfo\":{\"gid\":1,\"name\":\"Game\"},\"date\":\"2024-03-10\"}," +
-                        "{\"sid\":2,\"owner\":{\"pid\":2,\"userName\":\"test2\"}," +
+                        "{\"sid\":2,\"owner\":{\"pid\":2,\"username\":\"test2\"}," +
                         "\"gameInfo\":{\"gid\":1,\"name\":\"Game\"},\"date\":\"2024-03-10\"}]",
                 actual = response.bodyString(),
             )
@@ -579,9 +579,9 @@ class SessionHandlerTest {
             val response = handler.getSessions(request)
             assertEquals(
                 expected =
-                    "[{\"sid\":1,\"owner\":{\"pid\":1,\"userName\":\"test1\"}," +
+                    "[{\"sid\":1,\"owner\":{\"pid\":1,\"username\":\"test1\"}," +
                         "\"gameInfo\":{\"gid\":1,\"name\":\"Game\"},\"date\":\"2024-03-10\"}" +
-                        ",{\"sid\":2,\"owner\":{\"pid\":2,\"userName\":\"test2\"}," +
+                        ",{\"sid\":2,\"owner\":{\"pid\":2,\"username\":\"test2\"}," +
                         "\"gameInfo\":{\"gid\":1,\"name\":\"Game\"},\"date\":\"2024-03-10\"}]",
                 actual = response.bodyString(),
             )

@@ -1,6 +1,7 @@
 package pt.isel.ls.services
 
-import kotlinx.datetime.LocalDate
+import kotlinx.datetime.DatePeriod
+import kotlinx.datetime.plus
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.storage.SessionStorageStunt
@@ -9,8 +10,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
-private val date1 = LocalDate(2024, 3, 10)
-private val date2 = LocalDate(1904, 3, 10)
+private val date1 = currentLocalDate()
+private val date2 = date1.plus(DatePeriod(days = 1))
 private val owner = Pair(1u, "username")
 
 class SessionManagementTest {
@@ -95,7 +96,7 @@ class SessionManagementTest {
     @Test
     fun `get Sessions by date returns successfully`() {
         actionSessionManagementTest { sessionManagement: SessionServices ->
-            val date = LocalDate(2024, 3, 10)
+            val date = currentLocalDate()
             val sessions = sessionManagement.getSessions(date = date)
             assertEquals(3, sessions.size)
             assertTrue(sessions.all { session -> session.date == date })
@@ -192,14 +193,12 @@ class SessionManagementTest {
     }
 
     @Test
-    fun `trying to update a session with capacity and date null does not affect the session`() {
+    fun `trying to update a session with capacity and date null does not affect the session due ServiceError`() {
         actionSessionManagementTest { sessionManagement: SessionServices ->
-            val oldSession = sessionManagement.sessionDetails(1u)
             val authentication = Pair(1u, 1u)
-            sessionManagement.updateCapacityOrDate(authentication, null, null)
-            val updatedSession = sessionManagement.sessionDetails(1u)
-            assertEquals(oldSession.date, updatedSession.date)
-            assertEquals(oldSession.capacity, updatedSession.capacity)
+            assertFailsWith<ServicesError> {
+                sessionManagement.updateCapacityOrDate(authentication, null, null)
+            }
         }
     }
 

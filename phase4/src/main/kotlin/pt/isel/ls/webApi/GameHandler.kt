@@ -35,7 +35,7 @@ class GameHandler(
             tryResponse(Status.BAD_REQUEST, "Invalid arguments: name:$name, dev:$dev, genres:$genres.") {
                 checkNotNull(name) { "Name must be provided." }
                 checkNotNull(dev) { "Dev must be provided." }
-                genres as List<String>
+                checkNotNull(genres) { "Genres must be provided." }
                 val gid = gameManagement.createGame(name, dev, genres)
                 createdResponse(createJsonRspMessage(message = "Game created with id $gid.", id = gid))
             }
@@ -62,7 +62,7 @@ class GameHandler(
         val offset = request.query("offset")?.toUIntOrNull()
         val limit = request.query("limit")?.toUIntOrNull()
         val dev = request.query("dev")
-        val genres = request.query("genres") ?.let { processGenres(it) }
+        val genres = request.query("genres")?.let { processGenres(it) }
         val name = request.query("name")
         val params = arrayOf(dev, genres, name)
 

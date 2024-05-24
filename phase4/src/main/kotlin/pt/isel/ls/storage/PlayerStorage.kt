@@ -38,10 +38,7 @@ class PlayerStorage(envName: String) : PlayerStorageInterface {
                 stm.setString(idx++, newItem.username)
                 stm.setString(idx, Password.obfuscate(newItem.password.toString()))
                 stm.executeUpdate()
-                val key = stm.generatedKeys
-                check(key.next()) { "No key returned" }
-                val pid = key.getInt(1)
-                pid.toUInt()
+                uInt(stm)
             }
         }
 

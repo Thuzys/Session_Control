@@ -139,7 +139,8 @@ class SessionHandler(
         } else {
             tryResponse(Status.NOT_MODIFIED, "Error removing Player $player from the Session $session.") {
                 sessionManagement.removePlayer(player, session)
-                return okResponse(createJsonRspMessage("Player $player removed from Session $session successfully."))
+                val msg = "Player $player removed from Session $session successfully."
+                return okResponse(createJsonRspMessage(msg))
             }
         }
     }

@@ -63,10 +63,9 @@ function createHeader(text) {
  * @param id id of the href
  * @param textBase text of the href
  * @param offset offset parameter of the href (optional)
- * @param limit limit parameter of the href (optional)
  * @returns {*[]} href view
  */
-function hrefConstructor(hrefBase, id, textBase, offset = undefined, limit = undefined) {
+function hrefConstructor(hrefBase, id, textBase, offset = undefined) {
     if (offset !== undefined) {
         return [
             views.a({href: `${hrefBase}/${id}?offset=${offset}`}, `${textBase}`),
@@ -96,12 +95,17 @@ function hrefButtonView(textContent, query) {
 
 /**
  * Create back button view
+ * @param previousHash hash to go back
  * @returns {*} back button view
  */
-function createBackButtonView() {
+function createBackButtonView(previousHash) {
     const backButton = views.button({type: "button", class: "general-button"}, "Back");
     backButton.addEventListener('click', () => {
-        window.history.back();
+        if (previousHash) {
+            window.location.hash = previousHash;
+        } else {
+            window.history.back();
+        }
     });
     return backButton;
 }
@@ -196,6 +200,25 @@ function toggleButtonState(button, condition) {
     button.disabled = condition
 }
 
+/**
+ * Create button view
+ *
+ * @param buttonId button id
+ * @param buttonType button type
+ * @param buttonClass button class
+ * @param buttonText button text
+ * @param isButtonDisabled is button disabled
+ * @returns {HTMLButtonElement} button view
+ */
+function createButtonView(buttonId, buttonType, buttonClass, buttonText, isButtonDisabled = false) {
+    return views.button({
+        id: buttonId,
+        type: buttonType,
+        disabled: isButtonDisabled,
+        class: buttonClass
+    }, buttonText)
+}
+
 const handlerViews = {
     hrefButtonView,
     createHeader,
@@ -209,7 +232,8 @@ const handlerViews = {
     ulHasItem,
     createRadioButton,
     createLabeledPasswordInput,
-    createLabeledEmailInput
+    createLabeledEmailInput,
+    createButtonView
 }
 
 export default handlerViews

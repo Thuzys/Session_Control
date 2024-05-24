@@ -27,8 +27,7 @@ function getPlayerDetailsByPid(mainContent) {
  */
 function getPlayerDetails(mainContent) {
     const route = constants.PLAYER_ID_ROUTE.substring(0, constants.PLAYER_ID_ROUTE.length - 1);
-    const url =
-        `${constants.API_BASE_URL}${route}?${handlerUtils.makeQueryString(requestUtils.getQuery())}`;
+    const url = `${constants.API_BASE_URL}${route}?${handlerUtils.makeQueryString(requestUtils.getQuery())}`;
     const token = sessionStorage.getItem('token');
     fetcher
         .get(url, token)

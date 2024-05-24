@@ -108,6 +108,7 @@ async function fetchInternal(
         }
         if (body) options.body = JSON.stringify(body)
     }
+    console.log(uri, options)
     return fetch(uri, options)
         .then(response => {
             if (!isResponseOK(response)) {

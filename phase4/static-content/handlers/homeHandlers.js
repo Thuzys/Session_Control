@@ -90,7 +90,7 @@ function handleCreateAccountSubmit(e) {
  * @param response response from the server
  */
 function handleLogInRegisterResponse(response) {
-        sessionStorage.setItem('pid', response.pid);
+    sessionStorage.setItem('pid', response.pid);
         sessionStorage.setItem('isAuthenticated', 'true');
         sessionStorage.setItem('token', response.token);
         handlerUtils.changeHash('#players/home');
@@ -103,9 +103,12 @@ function logOut() {
     if (sessionStorage.getItem('isAuthenticated') === 'false') {
         return;
     }
-    sessionStorage.removeItem('pid');
     sessionStorage.setItem('isAuthenticated', 'false');
-    //TODO(ERASE TOKEN FROM DATABASE)
+    const url = `${constants.API_BASE_URL}${constants.PLAYER_ID_ROUTE}${sessionStorage.getItem("pid")}`;
+    fetcher
+        .put(url, sessionStorage.getItem('token')).then(_ => {})
+   sessionStorage.removeItem('token');
+    sessionStorage.removeItem('pid');
     handlerUtils.changeHash('#logIn');
     window.location.reload();
 }

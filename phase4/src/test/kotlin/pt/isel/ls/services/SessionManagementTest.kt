@@ -8,6 +8,7 @@ import pt.isel.ls.storage.SessionStorageStunt
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 private val date1 = currentLocalDate()
@@ -223,7 +224,7 @@ class SessionManagementTest {
     fun `getPlayerFromSession returns a player successfully`() {
         actionSessionManagementTest { sessionManagement: SessionServices ->
             val player = sessionManagement.getPlayerFromSession(1u, 1u)
-            assertEquals(1u, player.pid)
+            assertEquals(1u, player?.pid)
         }
     }
 
@@ -231,9 +232,7 @@ class SessionManagementTest {
     fun `getPlayerFromSession fails due to player not found with Services Error`() {
         actionSessionManagementTest { sessionManagement: SessionServices ->
             val nonExistentPid = 70u
-            assertFailsWith<ServicesError> {
-                sessionManagement.getPlayerFromSession(nonExistentPid, 1u)
-            }
+            assertNull(sessionManagement.getPlayerFromSession(nonExistentPid, 1u))
         }
     }
 }

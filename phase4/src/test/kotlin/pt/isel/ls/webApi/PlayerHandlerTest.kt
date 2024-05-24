@@ -273,8 +273,11 @@ class PlayerHandlerTest {
     fun `successful logout`() =
         actionOfAPlayerArrangement { handler: PlayerHandlerInterface ->
             val request =
-                Request(Method.DELETE, DUMMY_ROUTE)
-                    .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
+                RoutedRequest(
+                    Request(Method.POST, "$DUMMY_ROUTE/${PlayerManagementStunt.playerId}")
+                        .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
+                    UriTemplate.from("$DUMMY_ROUTE/{pid}"),
+                )
             val response = handler.logout(request)
             assertEquals(Status.OK, response.status)
         }

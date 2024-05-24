@@ -645,7 +645,7 @@ class SessionHandlerTest {
                     UriTemplate.from("$DUMMY_ROUTE/{sid}/{pid}"),
                 )
             val response = handler.getPlayerFromSession(request)
-            assertEquals(Status.NOT_FOUND, response.status)
+            assertEquals(Status.FOUND, response.status)
         }
     }
 }

@@ -131,7 +131,14 @@ function getSessionDetails(mainContent) {
  * @param mainContent
  */
 function makeSessionDetails(session, mainContent) {
-    const playerListView = sessionHandlerViews.createPlayerListView(session);
+    const playerListView = sessionHandlerViews.createPlayerListView(session, isPlayerOwner(session));
+    playerListView.onsubmit = (e) => {
+        e.preventDefault();
+        const pid = document.getElementById('remove_player').value;
+        if (pid) {
+            removePlayerFromSession(session.sid, pid);
+        }
+    };
     const container = sessionHandlerViews.createSessionDetailsView(
         session,
         playerListView,
@@ -142,23 +149,6 @@ function makeSessionDetails(session, mainContent) {
         deleteSession
     );
     mainContent.replaceChildren(container);
-    // Promise.resolve(sessionStorage.getItem('isInSession') === "true")
-    //     .then(isInSession => {
-    //         const playerListView = sessionHandlerViews.createPlayerListView(session);
-    //         Promise.resolve(sessionStorage.getItem('isOwner') === "true")
-    //             .then(isOwner => {
-    //                 const container = sessionHandlerViews.createSessionDetailsView(
-    //                     session,
-    //                     playerListView,
-    //                     isOwner,
-    //                     isInSession,
-    //                     addPlayerToSession,
-    //                     removePlayerFromSession,
-    //                     deleteSession
-    //                 );
-    //                 mainContent.replaceChildren(container);
-    //             });
-    //     });
 }
 
 /**
@@ -208,9 +198,15 @@ function addPlayerToSession(sid) {
 /**
  * Remove player from session
  * @param sid
+ * @param pid_remove
  */
-function removePlayerFromSession(sid) {
-    const pid = sessionStorage.getItem('pid');
+function removePlayerFromSession(sid, pid_remove = undefined) {
+    let pid;
+    if (pid_remove === undefined) {
+        pid = sessionStorage.getItem('pid');
+    }  else  {
+        pid = pid_remove;
+    }
     const token = sessionStorage.getItem('token');
     const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${sid}/${pid}`;
     fetcher.del(url, token)

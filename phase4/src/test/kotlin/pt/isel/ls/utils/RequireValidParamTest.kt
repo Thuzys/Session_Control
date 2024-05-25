@@ -1,12 +1,12 @@
 package pt.isel.ls.utils
 
 import org.junit.jupiter.api.Assertions.assertEquals
-import pt.isel.ls.domain.errors.ServicesError
-import pt.isel.ls.services.checkValidService
+import pt.isel.ls.domain.errors.ParamError
+import pt.isel.ls.services.requireValidParam
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
-class CheckValidServicesTest {
+class RequireValidParamTest {
     @Test
     fun `assert check valid service throws exception when condition is false`() {
         // Arrange
@@ -14,8 +14,8 @@ class CheckValidServicesTest {
         val lazyMessage = { "Error message" }
         // Act
         val exception =
-            assertFailsWith<ServicesError> {
-                checkValidService(condition, lazyMessage)
+            assertFailsWith<ParamError> {
+                requireValidParam(condition, lazyMessage)
             }
         // Assert
         assertEquals("Error message", exception.message)
@@ -27,7 +27,7 @@ class CheckValidServicesTest {
         val condition = true
         val lazyMessage = { "Error message" }
         // Act
-        checkValidService(condition, lazyMessage)
+        requireValidParam(condition, lazyMessage)
         // Assert
         // No exception is thrown
     }

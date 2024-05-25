@@ -1,5 +1,6 @@
 package pt.isel.ls.services
 
+import pt.isel.ls.domain.errors.ParamError
 import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.storage.PlayerStorageStunt
 import kotlin.test.Test
@@ -92,7 +93,7 @@ class PlayerManagementTest {
         actionOfPlayerManagementTest { playerManagement: PlayerServices ->
             val nameParam = "   " to name
             val emailPassParam = email to password
-            assertFailsWith<ServicesError> { playerManagement.createPlayer(nameParam, emailPassParam) }
+            assertFailsWith<ParamError> { playerManagement.createPlayer(nameParam, emailPassParam) }
         }
 
     @Test

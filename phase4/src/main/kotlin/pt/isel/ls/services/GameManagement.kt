@@ -18,7 +18,7 @@ class GameManagement(private val storage: GameStorageInterface) : GameServices {
         genres: Collection<String>,
     ): UInt =
         tryCatch("Unable to create a new game due") {
-            checkValidService(genres.isNotEmpty()) { "At least on genre must be provided." }
+            requireValidParam(genres.isNotEmpty()) { "At least on genre must be provided." }
             val newGame = Game(name = name, dev = dev, genres = genres)
             storage.create(newGame)
         }
@@ -36,8 +36,8 @@ class GameManagement(private val storage: GameStorageInterface) : GameServices {
         limit: UInt?,
     ): Collection<Game> =
         tryCatch("Unable to find games due") {
-            val condition = dev != null || genres != null || name != null
-            checkValidService(condition) { "At least one parameter must be provided." }
+            val condition = arrayOf(dev, genres, name).any { it != null }
+            requireValidParam(condition) { "At least one parameter must be provided." }
             storage.readBy(
                 offset ?: DEFAULT_OFFSET,
                 limit ?: DEFAULT_LIMIT,

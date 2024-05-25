@@ -1,5 +1,6 @@
 package pt.isel.ls.services
 
+import pt.isel.ls.domain.errors.ParamError
 import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.storage.GameStorageStunt
 import kotlin.test.Test
@@ -39,7 +40,7 @@ class GameManagementTest {
             val invalidGenres = setOf<String>()
 
             // ACT & ASSERT
-            assertFailsWith<ServicesError> {
+            assertFailsWith<ParamError> {
                 handler.createGame(gameName, gameDev, invalidGenres)
             }
         }

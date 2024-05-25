@@ -206,19 +206,39 @@ function createGetSessionsView(sessions) {
 /**
  * Create player list view
  * @param session session data
+ * @param isOwner is owner of the session
  * @returns {HTMLDivElement} player list view
  */
-function createPlayerListView(session) {
+function createPlayerListView(session, isOwner = false) {
     const div = views.div({class: "pagination-players-min-height"})
     const playerList = views.ul({class:"pagination-players-min-height"});
     if (session.players) {
         session.players
             .slice(0, constants.ELEMENTS_PER_PAGE_PLAYERS)
             .forEach(player => {
-            const playerLi = views.li(
-                ...handlerViews.hrefConstructor("#players", player.pid, player.username)
-            );
-            playerList.appendChild(playerLi);
+                if (!isOwner || isOwner && player.pid === parseInt(sessionStorage.getItem('pid'))) {
+                    const playerLi = views.li(
+                        ...handlerViews.hrefConstructor("#players", player.pid, player.username)
+                    );
+                    playerList.appendChild(playerLi);
+                } else {
+                    const playerLi = views.li(
+                        views.form(
+                            {},
+                            ...handlerViews.hrefConstructor("#players", player.pid, player.username),
+                            views.p(),
+                            views.button(
+                                {type: "submit", class: "general-button", id: "remove_player", value: player.pid},
+                                "X"
+                            )
+                        )
+                    )
+                    playerList.appendChild(playerLi);
+                }
+            // const playerLi = views.li(
+            //     ...handlerViews.hrefConstructor("#players", player.pid, player.username)
+            // );
+            // playerList.appendChild(playerLi);
         });
     }
     div.appendChild(playerList);

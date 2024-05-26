@@ -696,3 +696,9 @@ hr.light-mode {
     background-color: white;
     color: black;
 }
+
+.form-dummy {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}

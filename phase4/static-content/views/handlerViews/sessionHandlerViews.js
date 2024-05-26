@@ -224,11 +224,10 @@ function createPlayerListView(session, isOwner = false) {
                 } else {
                     const playerLi = views.li(
                         views.form(
-                            {},
+                            {class: "form-dummy"},
                             ...handlerViews.hrefConstructor("#players", player.pid, player.username),
-                            views.p(),
                             views.button(
-                                {type: "submit", class: "general-button", id: "remove_player", value: player.pid},
+                                {type: "submit", class: "", id: "remove_player", value: player.pid},
                                 "X"
                             )
                         )

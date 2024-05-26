@@ -150,9 +150,14 @@ class SessionStorageStunt : SessionStorageInterface {
     override fun updateRemovePlayer(
         sid: UInt,
         pid: UInt,
+        token: String,
     ) {
         hashSession[sid]?.let { session ->
-            hashSession[sid] = session.copy(players = session.players.filter { player -> player.pid != pid })
+            hashSession[sid] =
+                session
+                    .copy(
+                        players = session.players.filter { player -> player.pid != pid && token != "invalid_token" },
+                    )
         }
     }
 

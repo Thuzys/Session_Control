@@ -12,6 +12,7 @@ import pt.isel.ls.domain.info.PlayerInfo
  * @param capacity The maximum number of players allowed in the session.
  * @param gameInfo The game being played in the session.
  * @param date The date and time of the session.
+ * @param owner The player that created the session.
  * @param players Collection of players currently in the session.
  * @throws IllegalArgumentException If the capacity is zero.
  */

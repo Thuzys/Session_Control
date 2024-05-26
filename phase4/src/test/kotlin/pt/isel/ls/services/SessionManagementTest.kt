@@ -143,7 +143,7 @@ class SessionManagementTest {
         actionSessionManagementTest { sessionManagement: SessionServices ->
             val currentCollection = sessionManagement.sessionDetails(1u)
             val currentSize = currentCollection.players.size
-            sessionManagement.removePlayer(1u, 1u)
+            sessionManagement.removePlayer(1u, 1u, "valid_token")
             val newCollection = sessionManagement.sessionDetails(1u)
             assertTrue { newCollection.players.size == currentSize.dec() }
         }
@@ -166,7 +166,7 @@ class SessionManagementTest {
         actionSessionManagementTest { sessionManagement: SessionServices ->
             val currentCollection = sessionManagement.sessionDetails(1u)
             val currentSize = currentCollection.players.size
-            sessionManagement.removePlayer(4u, 1u)
+            sessionManagement.removePlayer(4u, 1u, "valid_token")
             val newCollection = sessionManagement.sessionDetails(1u)
             assertTrue { newCollection.players.size == currentSize }
         }

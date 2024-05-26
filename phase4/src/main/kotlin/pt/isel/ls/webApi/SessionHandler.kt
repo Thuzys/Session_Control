@@ -133,12 +133,17 @@ class SessionHandler(
         unauthorizedAccess(request, playerManagement)?.let { return unauthorizedResponse(it) }
         val player = request.toPidOrNull()
         val session = request.toSidOrNull()
-        return if (player == null || session == null) {
+        val token = request.toTokenOrNull()
+        val args = arrayOf(player, session, token)
+        return if (args.any { it == null }) {
             val msg = "Invalid or Missing parameters. Please provide 'player' and 'session' as valid values"
             badResponse(msg)
         } else {
             tryResponse(Status.NOT_MODIFIED, "Error removing Player $player from the Session $session.") {
-                sessionManagement.removePlayer(player, session)
+                checkNotNull(player) { "Player is null" }
+                checkNotNull(session) { "Session is null" }
+                checkNotNull(token) { "Token is null" }
+                sessionManagement.removePlayer(player, session, token.toString())
                 val msg = "Player $player removed from Session $session successfully."
                 return okResponse(createJsonRspMessage(msg))
             }

@@ -5,7 +5,7 @@ import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.errors.ParamError
 import pt.isel.ls.domain.errors.ServicesError
-import java.sql.SQLException
+import pt.isel.ls.domain.errors.StorageError
 import java.time.LocalDate
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
@@ -29,7 +29,7 @@ internal inline fun <T> tryCatch(
         block()
     } catch (error: NoSuchElementException) {
         throw ServicesError("$msg: ${treatResponse(error.message)}")
-    } catch (storageError: SQLException) {
+    } catch (storageError: StorageError) {
         throw ServicesError("$msg: ${treatResponse(storageError.message)}")
     }
 

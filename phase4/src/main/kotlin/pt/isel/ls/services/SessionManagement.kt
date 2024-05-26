@@ -105,8 +105,9 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
     override fun removePlayer(
         player: UInt,
         session: UInt,
+        token: String,
     ) = tryCatch("Unable to remove player from session due") {
-        sessionDataMem.updateRemovePlayer(session, player)
+        sessionDataMem.updateRemovePlayer(session, player, token)
     }
 
     override fun getPlayerFromSession(

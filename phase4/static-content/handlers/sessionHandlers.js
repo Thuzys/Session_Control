@@ -131,14 +131,12 @@ function getSessionDetails(mainContent) {
  * @param mainContent
  */
 function makeSessionDetails(session, mainContent) {
-    const playerListView = sessionHandlerViews.createPlayerListView(session, isPlayerOwner(session));
-    playerListView.onsubmit = (e) => {
-        e.preventDefault();
-        const pid = document.getElementById('remove_player').value;
-        if (pid) {
-            removePlayerFromSession(session.sid, pid);
-        }
-    };
+    let playerListView;
+    if (!isPlayerOwner(session)) {
+        playerListView = sessionHandlerViews.createPlayerListView(session);
+    } else {
+        playerListView = sessionHandlerViews.createPlayerListView(session, removePlayerFromSession);
+    }
     const container = sessionHandlerViews.createSessionDetailsView(
         session,
         playerListView,

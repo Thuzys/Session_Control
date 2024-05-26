@@ -107,7 +107,7 @@ function logOut() {
     const url = `${constants.API_BASE_URL}${constants.PLAYER_ID_ROUTE}${sessionStorage.getItem("pid")}`;
     fetcher
         .put(url, sessionStorage.getItem('token')).then(_ => {})
-   sessionStorage.removeItem('token');
+    sessionStorage.removeItem('token');
     sessionStorage.removeItem('pid');
     handlerUtils.changeHash('#logIn');
     window.location.reload();

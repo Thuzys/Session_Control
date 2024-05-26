@@ -206,39 +206,39 @@ function createGetSessionsView(sessions) {
 /**
  * Create player list view
  * @param session session data
- * @param isOwner is owner of the session
+ * @param removePlayerFromSession remove player from session function
  * @returns {HTMLDivElement} player list view
  */
-function createPlayerListView(session, isOwner = false) {
+function createPlayerListView(session, removePlayerFromSession = undefined) {
     const div = views.div({class: "pagination-players-min-height"})
     const playerList = views.ul({class:"pagination-players-min-height"});
     if (session.players) {
         session.players
             .slice(0, constants.ELEMENTS_PER_PAGE_PLAYERS)
             .forEach(player => {
-                if (!isOwner || isOwner && player.pid === parseInt(sessionStorage.getItem('pid'))) {
+                if (!removePlayerFromSession || removePlayerFromSession && player.pid === parseInt(sessionStorage.getItem('pid'))) {
                     const playerLi = views.li(
                         ...handlerViews.hrefConstructor("#players", player.pid, player.username)
                     );
                     playerList.appendChild(playerLi);
                 } else {
+                    const button = views.button(
+                        {type: "click", class: "general-button", id: "remove_player", value: player.pid},
+                        "X"
+                    )
+                    button.addEventListener('click', () => {
+                        removePlayerFromSession(session.sid, player.pid)
+                    });
                     const playerLi = views.li(
-                        views.form(
+                        views.div(
                             {},
                             ...handlerViews.hrefConstructor("#players", player.pid, player.username),
                             views.p(),
-                            views.button(
-                                {type: "submit", class: "general-button", id: "remove_player", value: player.pid},
-                                "X"
-                            )
+                            button
                         )
                     )
                     playerList.appendChild(playerLi);
                 }
-            // const playerLi = views.li(
-            //     ...handlerViews.hrefConstructor("#players", player.pid, player.username)
-            // );
-            // playerList.appendChild(playerLi);
         });
     }
     div.appendChild(playerList);

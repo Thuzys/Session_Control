@@ -37,9 +37,6 @@ tasks.jar {
                 }
             }
     from(dependencies)
-//    from("static-content") {
-//        into("static-content")
-//    }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 

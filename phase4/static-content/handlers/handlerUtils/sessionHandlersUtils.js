@@ -1,4 +1,3 @@
-
 /**
  * Check if a player is owner of a session
  * @param session

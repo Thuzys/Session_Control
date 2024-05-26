@@ -2,6 +2,7 @@ package pt.isel.ls.services
 
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.errors.ServicesError
+import pt.isel.ls.domain.info.Genres
 import pt.isel.ls.storage.GameStorageInterface
 
 /**
@@ -17,6 +18,7 @@ class GameManagement(private val storage: GameStorageInterface) : GameServices {
         genres: Collection<String>,
     ): UInt =
         tryCatch("Unable to create a new game due") {
+            requireValidParam(genres.isNotEmpty()) { "At least on genre must be provided." }
             val newGame = Game(name = name, dev = dev, genres = genres)
             storage.create(newGame)
         }
@@ -33,7 +35,9 @@ class GameManagement(private val storage: GameStorageInterface) : GameServices {
         offset: UInt?,
         limit: UInt?,
     ): Collection<Game> =
-        tryCatch("Unable to find the game due") {
+        tryCatch("Unable to find games due") {
+            val condition = arrayOf(dev, genres, name).any { it != null }
+            requireValidParam(condition) { "At least one parameter must be provided." }
             storage.readBy(
                 offset ?: DEFAULT_OFFSET,
                 limit ?: DEFAULT_LIMIT,
@@ -41,5 +45,10 @@ class GameManagement(private val storage: GameStorageInterface) : GameServices {
                 genres,
                 name,
             )
+        }
+
+    override fun getAllGenres(): Genres =
+        tryCatch("Unable to find the genres due") {
+            storage.readGenres()
         }
 }

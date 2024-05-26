@@ -460,6 +460,10 @@ h5.light-mode {
     color: white;
 }
 
+#mainContent, body {
+    transition: all 0.3s ease-in;
+}
+
 #mainContent.light-mode {
     background-color: white;
     color: black;

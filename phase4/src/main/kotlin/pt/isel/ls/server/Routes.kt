@@ -15,7 +15,7 @@ const val GAME_ID_ROUTE = "$GAME_ROUTE/{gid}"
 const val SESSION_ID_ROUTE = "$SESSION_ROUTE/{sid}"
 const val SESSION_PLAYER_ROUTE = "$SESSION_ID_ROUTE/{pid}"
 const val PLAYER_LOGIN_ROUTE = "$PLAYER_ROUTE/login"
-const val PLAYER_LOGOUT_ROUTE = "$PLAYER_ROUTE/logout"
+const val GAME_GENRES_ROUTE = "/genres"
 
 /**
  * Builds the routes for the application services
@@ -35,7 +35,7 @@ fun buildRoutes(
     GAME_ROUTE bind Method.POST to gameHandler::createGame,
     GAME_ROUTE bind Method.GET to gameHandler::getGames,
     SESSION_PLAYER_ROUTE bind Method.PUT to sessionHandler::addPlayerToSession,
-    SESSION_PLAYER_ROUTE bind Method.GET to sessionHandler::isPlayerInSession,
+    SESSION_PLAYER_ROUTE bind Method.GET to sessionHandler::getPlayerFromSession,
     SESSION_ID_ROUTE bind Method.GET to sessionHandler::getSession,
     SESSION_ROUTE bind Method.POST to sessionHandler::createSession,
     SESSION_ROUTE bind Method.GET to sessionHandler::getSessions,
@@ -43,5 +43,6 @@ fun buildRoutes(
     SESSION_PLAYER_ROUTE bind Method.DELETE to sessionHandler::removePlayerFromSession,
     SESSION_ID_ROUTE bind Method.DELETE to sessionHandler::deleteSession,
     PLAYER_LOGIN_ROUTE bind Method.POST to playerHandler::login,
-    PLAYER_LOGOUT_ROUTE bind Method.POST to playerHandler::logout,
+    PLAYER_ID_ROUTE bind Method.PUT to playerHandler::logout,
+    GAME_GENRES_ROUTE bind Method.GET to gameHandler::getAllGenres,
 )

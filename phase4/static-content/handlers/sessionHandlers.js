@@ -13,7 +13,7 @@ import handlerViews from "../views/handlerViews/handlerViews.js";
  * @param mainContent main content of the page
  */
 function searchSessions(mainContent) {
-    const container =  sessionHandlerViews.createSearchSessionsView();
+    const container = sessionHandlerViews.createSearchSessionsView();
     container.onsubmit = (e) => handleSearchSessionsSubmit(e);
     mainContent.replaceChildren(container);
 }
@@ -125,45 +125,60 @@ function getSessionDetails(mainContent) {
 }
 
 /**
+ * Make session details
+ *
+ * @param session
+ * @param mainContent
+ */
+function makeSessionDetails(session, mainContent) {
+    const playerListView = sessionHandlerViews.createPlayerListView(session, isPlayerOwner(session));
+    playerListView.onsubmit = (e) => {
+        e.preventDefault();
+        const pid = document.getElementById('remove_player').value;
+        if (pid) {
+            removePlayerFromSession(session.sid, pid);
+        }
+    };
+    const container = sessionHandlerViews.createSessionDetailsView(
+        session,
+        playerListView,
+        isPlayerOwner(session),
+        sessionStorage.getItem('isInSession') === "true",
+        addPlayerToSession,
+        removePlayerFromSession,
+        deleteSession
+    );
+    mainContent.replaceChildren(container);
+}
+
+/**
  * Handle get session details response from the server
  *
  * @param session response from the server
  * @param mainContent main content of the page
  */
 function handleGetSessionDetailsResponse(session, mainContent) {
-    window.addEventListener('hashchange', function() {
-        if (!location.hash.includes('sessions/')) {
-            sessionStorage.removeItem('isOwner');
-            sessionStorage.removeItem('isInSession');
-        }
-    });
-
-    let isOwner = sessionStorage.getItem('isOwner');
-    if (isOwner == null) {
-        isOwner = isPlayerOwner(session);
-        sessionStorage.setItem('isOwner', isOwner.toString());
-    }
     const pid = sessionStorage.getItem('pid');
     const token = sessionStorage.getItem('token');
 
     const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${session.sid}/${pid}`;
-
-    let isInSession = sessionStorage.getItem('isInSession');
-    const fetchIsInSession =
-        isInSession !== null
-            ? Promise.resolve(isInSession.toString() === "true")
-            : fetcher.get(url, token);
-
-    fetchIsInSession
-        .then(isInSession => {
-            sessionStorage.setItem('isInSession', isInSession);
-            return isInSession;
-        })
-        .then(isInSession => {
-            const playerListView = sessionHandlerViews.createPlayerListView(session);
-            const container = sessionHandlerViews.createSessionDetailsView(session, playerListView, isOwner.toString() === "true", isInSession);
-            mainContent.replaceChildren(container);
-        })
+    const isInSession = sessionStorage.getItem('isInSession');
+    if (isInSession === null) {
+        fetcher.get(
+            url,
+            token,
+            false
+        ).then(response => {
+            if (response !== null) {
+                sessionStorage.setItem('isInSession', "true");
+            } else {
+                sessionStorage.setItem('isInSession', "false");
+            }
+            makeSessionDetails(session, mainContent);
+        });
+    } else {
+        makeSessionDetails(session, mainContent);
+    }
 }
 
 /**
@@ -183,9 +198,15 @@ function addPlayerToSession(sid) {
 /**
  * Remove player from session
  * @param sid
+ * @param pid_remove
  */
-function removePlayerFromSession(sid) {
-    const pid = sessionStorage.getItem('pid');
+function removePlayerFromSession(sid, pid_remove = undefined) {
+    let pid;
+    if (pid_remove === undefined) {
+        pid = sessionStorage.getItem('pid');
+    }  else  {
+        pid = pid_remove;
+    }
     const token = sessionStorage.getItem('token');
     const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${sid}/${pid}`;
     fetcher.del(url, token)
@@ -203,7 +224,7 @@ function updateSession(mainContent) {
     const token = sessionStorage.getItem('token');
     fetcher
         .get(url, token)
-        .then( session => {
+        .then(session => {
             const container = sessionHandlerViews.createUpdateSessionView(session);
             container.onsubmit = (e) => handleUpdateSessionSubmit(e);
             mainContent.replaceChildren(container);
@@ -253,7 +274,4 @@ export default {
     getSessionDetails,
     createSession,
     updateSession,
-    addPlayerToSession,
-    removePlayerFromSession,
-    deleteSession
 };

@@ -2,18 +2,18 @@ package pt.isel.ls.utils
 
 import org.http4k.core.Response
 import org.http4k.core.Status
-import pt.isel.ls.webApi.response.unauthorizedResponse
+import pt.isel.ls.webApi.response.okResponse
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class UnauthorizedResponseTest {
+class OkResponseTest {
     @Test
-    fun `make unauthorized response`() {
-        val response = unauthorizedResponse("test")
+    fun `make ok response`() {
+        val response = okResponse("test")
         val expected =
-            Response(Status.UNAUTHORIZED)
+            Response(Status.OK)
                 .header("Content-Type", "application/json")
-                .body("{\"msg\":\"Unauthorized, test.\"}")
+                .body("test")
         assertEquals(expected, response)
     }
 }

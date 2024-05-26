@@ -18,7 +18,7 @@ interface PlayerServices {
     /**
      * Creates a new player and stores it.
      *
-     * @param nameUSerName the name and username of the player.
+     * @param nameUsername the name and username of the player.
      * If the username is null, the name will be used as the username.
      * @param emailPassword the email and password of the player.
      * @return A pair containing a [UInt] as a unique key to be associated with the new [Player]
@@ -26,7 +26,7 @@ interface PlayerServices {
      * @throws ServicesError containing the message of the error.
      */
     fun createPlayer(
-        nameUSerName: CreatePlayerNameParam,
+        nameUsername: CreatePlayerNameParam,
         emailPassword: CreatePlayerEmailPasswordParam,
     ): PlayerAuthentication
 
@@ -50,29 +50,29 @@ interface PlayerServices {
     /**
      * Returns the details of a player.
      *
-     * @param userName the username of each player.
+     * @param username the username of each player.
      * @return a [Player] containing all the information wanted or null if nothing is found.
      * @throws ServicesError containing the message of the error.
      */
-    fun getPlayerDetailsBy(userName: String): Player
+    fun getPlayerDetailsBy(username: String): Player
 
     /**
      * Logs in a player.
      *
-     * @param userName the username of the player.
+     * @param username the username of the player.
      * @param password the password of the player.
      * @return a [PlayerAuthentication] containing the token of the player.
      * @throws ServicesError containing the message of the error.
      */
     fun login(
-        userName: String,
+        username: String,
         password: String,
     ): PlayerAuthentication
 
     /**
      * Logs out a player.
      *
-     * @param token the token of the player.
+     * @param pid the identifier of the player.
      */
-    fun logout(token: UUID)
+    fun logout(pid: UInt)
 }

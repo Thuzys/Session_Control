@@ -2,6 +2,7 @@ package pt.isel.ls.storage
 
 import org.postgresql.ds.PGSimpleDataSource
 import pt.isel.ls.domain.Game
+import pt.isel.ls.domain.info.Genres
 import java.sql.Statement
 
 /**
@@ -65,7 +66,10 @@ class GameStorage(envVarName: String) : GameStorageInterface {
     ): Collection<Game> =
         dataSource.connection.use {
             it.executeCommand {
-                val getGameStr = buildGameGetterString(dev, name)
+                val baseQuery = StringBuilder("SELECT gid, name, developer FROM GAME WHERE 1=1")
+                dev?.let { baseQuery.append(" AND compare_name(developer, ?)") }
+                name?.let { baseQuery.append(" AND compare_name(name, ?)") }
+                val getGameStr = baseQuery.toString()
                 val getGamesStmt = it.prepareStatement("$getGameStr LIMIT ? OFFSET ?")
 
                 val getGenresStmt =
@@ -86,20 +90,31 @@ class GameStorage(envVarName: String) : GameStorageInterface {
                 getGamesStmt.setUInt(paramIdx, offset)
 
                 getGamesFromDB(getGamesStmt, getGenresStmt, areGenresInGameStmt, genres)
-                    .ifEmpty {
-                        throw NoSuchElementException("No games found")
-                    }
             }
         }
 
-    override fun delete(uInt: UInt) {
-        TODO("Not needed")
-    }
+    override fun readGenres(): Genres =
+        dataSource.connection.use {
+            it.executeCommand {
+                val getGenresStmt = it.prepareStatement("SELECT name FROM GENRE")
+                val genres = mutableListOf<String>()
+                getGenresStmt.executeQuery().use { rs ->
+                    while (rs.next()) {
+                        genres.add(rs.getString("name"))
+                    }
+                }
+                genres
+            }
+        }
 
     override fun update(
         uInt: UInt,
         newItem: Game,
     ) {
+        TODO("Not needed")
+    }
+
+    override fun delete(uInt: UInt) {
         TODO("Not needed")
     }
 }

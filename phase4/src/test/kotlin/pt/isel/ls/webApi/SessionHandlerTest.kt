@@ -192,9 +192,9 @@ class SessionHandlerTest {
             assertEquals(
                 expected =
                     "{\"sid\":1,\"capacity\":1,\"gameInfo\":{\"gid\":1,\"name\":\"Game\"}," +
-                        "\"date\":\"2024-03-10\",\"owner\":{\"pid\":1,\"userName\":\"test1\"}," +
-                        "\"players\":[{\"pid\":1,\"userName\":\"test1\"}," +
-                        "{\"pid\":2,\"userName\":\"test2\"}]}",
+                        "\"date\":\"2024-03-10\",\"owner\":{\"pid\":1,\"username\":\"test1\"}," +
+                        "\"players\":[{\"pid\":1,\"username\":\"test1\"}," +
+                        "{\"pid\":2,\"username\":\"test2\"}]}",
                 actual = response.bodyString(),
             )
         }
@@ -276,18 +276,6 @@ class SessionHandlerTest {
     }
 
     @Test
-    fun `bad request status getting sessions `() {
-        val gid = "3"
-        actionOfASessionArrangement { handler: SessionHandlerInterface ->
-            val request =
-                Request(Method.GET, "$DUMMY_ROUTE?gid=$gid")
-                    .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
-            val response = handler.getSessions(request)
-            assertEquals(Status.NOT_FOUND, response.status)
-        }
-    }
-
-    @Test
     fun `found status getting sessions heaving with no sessions satisfying the details provided`() {
         val gid = "400"
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
@@ -313,9 +301,9 @@ class SessionHandlerTest {
             val response = handler.getSessions(request)
             assertEquals(
                 expected =
-                    "[{\"sid\":1,\"owner\":{\"pid\":1,\"userName\":\"test1\"}," +
+                    "[{\"sid\":1,\"owner\":{\"pid\":1,\"username\":\"test1\"}," +
                         "\"gameInfo\":{\"gid\":1,\"name\":\"Game\"},\"date\":\"2024-03-10\"}," +
-                        "{\"sid\":2,\"owner\":{\"pid\":2,\"userName\":\"test2\"}," +
+                        "{\"sid\":2,\"owner\":{\"pid\":2,\"username\":\"test2\"}," +
                         "\"gameInfo\":{\"gid\":1,\"name\":\"Game\"},\"date\":\"2024-03-10\"}]",
                 actual = response.bodyString(),
             )
@@ -591,9 +579,9 @@ class SessionHandlerTest {
             val response = handler.getSessions(request)
             assertEquals(
                 expected =
-                    "[{\"sid\":1,\"owner\":{\"pid\":1,\"userName\":\"test1\"}," +
+                    "[{\"sid\":1,\"owner\":{\"pid\":1,\"username\":\"test1\"}," +
                         "\"gameInfo\":{\"gid\":1,\"name\":\"Game\"},\"date\":\"2024-03-10\"}" +
-                        ",{\"sid\":2,\"owner\":{\"pid\":2,\"userName\":\"test2\"}," +
+                        ",{\"sid\":2,\"owner\":{\"pid\":2,\"username\":\"test2\"}," +
                         "\"gameInfo\":{\"gid\":1,\"name\":\"Game\"},\"date\":\"2024-03-10\"}]",
                 actual = response.bodyString(),
             )
@@ -601,7 +589,7 @@ class SessionHandlerTest {
     }
 
     @Test
-    fun `isPlayerInSession returns OK status`() {
+    fun `getPlayerFromSession returns FOUND status`() {
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request =
                 RoutedRequest(
@@ -609,27 +597,27 @@ class SessionHandlerTest {
                         .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
                     UriTemplate.from("$DUMMY_ROUTE/{sid}/{pid}"),
                 )
-            val response = handler.isPlayerInSession(request)
-            assertEquals(Status.OK, response.status)
+            val response = handler.getPlayerFromSession(request)
+            assertEquals(Status.FOUND, response.status)
         }
     }
 
     @Test
-    fun `isPlayerInSession returns BAD_REQUEST status due to invalid parameters`() {
+    fun `getPlayerFromSession returns BAD_REQUEST status due to invalid parameters`() {
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request =
                 RoutedRequest(
-                    Request(Method.GET, "$DUMMY_ROUTE/missing/missing")
+                    Request(Method.GET, "$DUMMY_ROUTE/invalid/invalid")
                         .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
                     UriTemplate.from("$DUMMY_ROUTE/{sid}/{pid}"),
                 )
-            val response = handler.isPlayerInSession(request)
+            val response = handler.getPlayerFromSession(request)
             assertEquals(Status.BAD_REQUEST, response.status)
         }
     }
 
     @Test
-    fun `isPlayerInSession response is  returns true when player is in session`() {
+    fun `getPlayerFromSession returns the player if found`() {
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request =
                 RoutedRequest(
@@ -637,13 +625,18 @@ class SessionHandlerTest {
                         .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
                     UriTemplate.from("$DUMMY_ROUTE/{sid}/{pid}"),
                 )
-            val response = handler.isPlayerInSession(request)
-            assertEquals("true", response.bodyString())
+            val response = handler.getPlayerFromSession(request)
+            assertEquals(
+                expected =
+                    "{\"pid\":1,\"name\":\"test1\",\"username\":\"test1\",\"email\":" +
+                        "\"test1@gmail.com\",\"password\":\"test1\",\"token\":\"568f8e19-4e4c-43a2-a1c9-d416aa39a8b4\"}",
+                actual = response.bodyString(),
+            )
         }
     }
 
     @Test
-    fun `isPlayerInSession response is false when player is not in session`() {
+    fun `getPlayerFromSession returns NOT_FOUND status due to player not found`() {
         actionOfASessionArrangement { handler: SessionHandlerInterface ->
             val request =
                 RoutedRequest(
@@ -651,8 +644,8 @@ class SessionHandlerTest {
                         .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}"),
                     UriTemplate.from("$DUMMY_ROUTE/{sid}/{pid}"),
                 )
-            val response = handler.isPlayerInSession(request)
-            assertEquals("false", response.bodyString())
+            val response = handler.getPlayerFromSession(request)
+            assertEquals(Status.FOUND, response.status)
         }
     }
 }

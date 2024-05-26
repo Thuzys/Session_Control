@@ -6,6 +6,12 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
 import pt.isel.ls.services.PlayerServices
+import pt.isel.ls.webApi.response.badResponse
+import pt.isel.ls.webApi.response.createdResponse
+import pt.isel.ls.webApi.response.foundResponse
+import pt.isel.ls.webApi.response.okResponse
+import pt.isel.ls.webApi.response.tryResponse
+import pt.isel.ls.webApi.response.unauthorizedResponse
 
 /**
  * Handles player-related HTTP requests.
@@ -17,56 +23,40 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
     override fun createPlayer(request: Request): Response {
         val body = readBody(request)
         val name = body["name"]
-        val userName = body["username"]
+        val username = body["username"]
         val email = body["email"]
         val password = body["password"]
         val params = arrayOf(name, email, password)
         return if (params.any { it == null }) {
-            badRequestResponse("insufficient parameters")
+            badResponse("insufficient parameters")
         } else {
-            tryResponse(
-                errorStatus = Status.BAD_REQUEST,
-                errorMsg = "Unable to create player.",
-            ) {
-                name as String
-                email as String
-                password as String
-                val nameParam = name to userName
+            checkNotNull(name) { "name not found or invalid." }
+            checkNotNull(email) { "email not found or invalid." }
+            checkNotNull(password) { "password not found or invalid." }
+            tryResponse(Status.BAD_REQUEST, "Unable to create player.") {
+                val nameParam = name to username
                 val emailPassParam = email to password
                 val authentication = playerManagement.createPlayer(nameParam, emailPassParam)
-                makeResponse(
-                    Status.CREATED,
-                    Json.encodeToString(authentication),
-                )
+                createdResponse(Json.encodeToString(authentication))
             }
         }
     }
 
     override fun getPlayer(request: Request): Response {
         unauthorizedAccess(request, playerManagement)?.let { return unauthorizedResponse(it) }
-        val pid = request.toPidOrNull() ?: return badRequestResponse("pid not found or invalid")
-        return tryResponse(
-            errorStatus = Status.NOT_FOUND,
-            errorMsg = "Player not found.",
-        ) {
+        val pid = request.toPidOrNull() ?: return badResponse("pid not found or invalid")
+        return tryResponse(Status.NOT_FOUND, "Player not found.") {
             val player = playerManagement.getPlayerDetails(pid)
-            makeResponse(Status.FOUND, Json.encodeToString(player))
+            foundResponse(Json.encodeToString(player))
         }
     }
 
     override fun getPlayerBy(request: Request): Response {
         unauthorizedAccess(request, playerManagement)?.let { return unauthorizedResponse(it) }
-        val userName = request.readQuery("username")
-        return if (userName == null) {
-            badRequestResponse("insufficient parameters")
-        } else {
-            tryResponse(
-                errorStatus = Status.NOT_FOUND,
-                errorMsg = "Player not found.",
-            ) {
-                val player = playerManagement.getPlayerDetailsBy(userName)
-                makeResponse(Status.FOUND, Json.encodeToString(player))
-            }
+        val userName = request.readQuery("username") ?: return badResponse("username not found or invalid")
+        return tryResponse(Status.NOT_FOUND, "Player not found.") {
+            val player = playerManagement.getPlayerDetailsBy(userName)
+            foundResponse(Json.encodeToString(player))
         }
     }
 
@@ -76,36 +66,23 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
         val password = body["password"]
         val params = arrayOf(username, password)
         return if (params.any { it == null }) {
-            badRequestResponse("insufficient parameters")
+            badResponse("insufficient parameters")
         } else {
-            tryResponse(
-                errorStatus = Status.BAD_REQUEST,
-                errorMsg = "Unable to login player.",
-            ) {
-                username as String
-                password as String
+            tryResponse(Status.BAD_REQUEST, "Unable to login player.") {
+                checkNotNull(username) { "username must not be null." }
+                checkNotNull(password) { "password must not be null." }
                 val playerInfo = playerManagement.login(username, password)
-                makeResponse(
-                    Status.OK,
-                    Json.encodeToString(playerInfo),
-                )
+                okResponse(Json.encodeToString(playerInfo))
             }
         }
     }
 
     override fun logout(request: Request): Response {
         unauthorizedAccess(request, playerManagement)?.let { return unauthorizedResponse(it) }
-        val token = request.toTokenOrNull()
-        checkNotNull(token) { "token not found or invalid." }
-        return tryResponse(
-            errorStatus = Status.BAD_REQUEST,
-            errorMsg = "Unable to logout player.",
-        ) {
-            playerManagement.logout(token)
-            makeResponse(
-                Status.OK,
-                createJsonRspMessage("Player logged out successfully."),
-            )
+        val pid = request.toPidOrNull() ?: return badResponse("pid not found or invalid")
+        return tryResponse(Status.BAD_REQUEST, "Unable to logout player.") {
+            playerManagement.logout(pid)
+            okResponse(createJsonRspMessage("Player logged out successfully."))
         }
     }
 }

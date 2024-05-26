@@ -1,15 +1,16 @@
 package pt.isel.ls.services
 
 import kotlinx.datetime.LocalDate
+import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.domain.info.AuthenticationParam
 import pt.isel.ls.domain.info.GameInfo
 import pt.isel.ls.domain.info.GameInfoParam
-import pt.isel.ls.domain.info.PlayerInfo
 import pt.isel.ls.domain.info.PlayerInfoParam
 import pt.isel.ls.domain.info.SessionInfo
+import pt.isel.ls.domain.info.associateWith
 import pt.isel.ls.storage.SessionStorageInterface
 
 /**
@@ -24,7 +25,7 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
         session: UInt,
     ) = tryCatch("Unable to add player to session due") {
         if (!sessionDataMem.updateAddPlayer(session, setOf(player))) {
-            throw IllegalArgumentException("Unable to add player to session.")
+            throw ServicesError("Unable to add player to session.")
         }
     }
 
@@ -49,11 +50,14 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
     ): UInt =
         tryCatch("Unable to create a new session due") {
             val (gid, name) = gameInfo
-            requireNotNull(gid) { "Game must be provided" }
+            checkNotNullParam(gid) { "Game must be provided" }
             val game = GameInfo(gid, name ?: "")
             val (pid, username) = owner
-            requireNotNull(pid) { "Owner pid must be provided" }
-            val ownerInfo = PlayerInfo(pid, username ?: "")
+            checkNotNullParam(pid) { "Owner pid must be provided" }
+            requireValidParam(!username.isNullOrBlank()) { "Owner username must be provided" }
+            username as String
+            requireValidParam(date >= currentLocalDate()) { "Date must not be in the past." }
+            val ownerInfo = pid associateWith username
             sessionDataMem.create(Session(gameInfo = game, date = date, capacity = capacity, owner = ownerInfo))
         }
 
@@ -66,6 +70,8 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
         limit: UInt?,
     ): Collection<SessionInfo> =
         tryCatch("Unable to get the sessions due") {
+            val condition = arrayOf(gameInfo, date, state, playerInfo).any { it != null }
+            requireValidParam(condition) { "At least one parameter must be provided." }
             sessionDataMem.readBy(
                 gameInfo = gameInfo,
                 date = date,
@@ -73,7 +79,7 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
                 playerInfo = playerInfo,
                 offset = offset ?: DEFAULT_OFFSET,
                 limit = limit ?: DEFAULT_LIMIT,
-            ) ?: throw NoSuchElementException("No sessions found")
+            )
         }
 
     override fun updateCapacityOrDate(
@@ -81,6 +87,9 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
         capacity: UInt?,
         date: LocalDate?,
     ) = tryCatch("Unable to update session ${authentication.second} due") {
+        val condition = date == null || date >= currentLocalDate()
+        requireValidParam(date != null || capacity != null) { "At least one parameter must be provided." }
+        requireValidParam(condition) { "Date must not be in the past." }
         sessionDataMem.updateCapacityOrDate(
             authentication = authentication,
             capacity = capacity,
@@ -96,15 +105,16 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
     override fun removePlayer(
         player: UInt,
         session: UInt,
+        token: String,
     ) = tryCatch("Unable to remove player from session due") {
-        sessionDataMem.updateRemovePlayer(session, player)
+        sessionDataMem.updateRemovePlayer(session, player, token)
     }
 
-    override fun isPlayerInSession(
+    override fun getPlayerFromSession(
         player: UInt,
         session: UInt,
-    ): Boolean =
-        tryCatch("Unable to check if player is in session due") {
-            sessionDataMem.isPlayerInSession(player, session)
+    ): Player? =
+        tryCatch("Unable to get player from session due") {
+            sessionDataMem.readPlayer(player, session)
         }
 }

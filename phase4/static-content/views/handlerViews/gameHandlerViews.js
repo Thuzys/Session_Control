@@ -2,11 +2,8 @@ import handlerViews from "./handlerViews.js";
 import views from "../viewsCreators.js";
 import requestUtils from "../../utils/requestUtils.js";
 import constants from "../../constants/constants.js";
-import genres from "../../handlers/handlerUtils/gameGenres.js";
 import handlerUtils from "../../handlers/handlerUtils/handlerUtils.js";
 import sessionHandlers from "../../handlers/sessionHandlers.js";
-
-const genresValues = Object.values(genres)
 
 /**
  * Create create game view
@@ -157,7 +154,7 @@ function createGenresView(toggleButton) {
     const genresList = views.datalist({
         id: "GenresList"
     })
-
+    const genresValues = JSON.parse(sessionStorage.getItem('genres'))
     genresValues.forEach(genre => {
         genresList.appendChild(views.option({value: genre}))
     })

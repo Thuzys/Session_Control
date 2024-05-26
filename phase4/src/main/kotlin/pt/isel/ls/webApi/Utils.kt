@@ -6,10 +6,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.http4k.core.Request
-import org.http4k.core.Response
-import org.http4k.core.Status
 import org.http4k.routing.path
-import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.services.PlayerServices
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
@@ -42,47 +39,6 @@ internal fun readBody(request: Request): Map<String, String> {
         key to value
     }
 }
-
-/**
- * Creates a response with a given status and message.
- * The response is created by executing a block of code.
- * If an exception occurs, the response will have the given status and message.
- * Otherwise, the response will be the block of code results.
- *
- * @param errorStatus The status of the response.
- * @param errorMsg The message of the response.
- * @param block The block of code to be executed.
- * @return The response with the given status and message.
- */
-internal inline fun tryResponse(
-    errorStatus: Status,
-    errorMsg: String,
-    block: () -> Response,
-): Response =
-    try {
-        block()
-    } catch (e: ServicesError) {
-        e.message
-            ?.let {
-                makeResponse(
-                    errorStatus,
-                    createJsonRspMessage(errorMsg, it),
-                )
-            }
-            ?: makeResponse(errorStatus, createJsonRspMessage("$errorMsg."))
-    }
-
-/**
- * Creates a response with a given status and message.
- *
- * @param status The status of the response.
- * @param msg The message of the response.
- * @return The response with the given status and message.
- */
-internal fun makeResponse(
-    status: Status,
-    msg: String,
-): Response = Response(status).body(msg).header("Content-Type", "application/json")
 
 /**
  * Verifies and parses a date string into a LocalDateTime object.
@@ -151,8 +107,11 @@ internal fun unauthorizedAccess(
     request: Request,
     pManagement: PlayerServices,
 ): String? =
-    request.header("authorization")?.removePrefix("Bearer ")
-        ?.let { return if (pManagement.isValidToken(it)) null else "invalid token" } ?: "token not provided"
+    request
+        .header("authorization")
+        ?.removePrefix("Bearer ")
+        ?.let { return if (pManagement.isValidToken(it)) null else "invalid token" }
+        ?: "token not provided"
 
 /**
  * Represents a message.
@@ -161,7 +120,7 @@ internal fun unauthorizedAccess(
  * @property error The error message. Can be null if there isn´t any information associated.
  */
 @Serializable
-data class Message(
+private data class Message(
     val msg: String,
     val error: String? = null,
     val id: UInt? = null,
@@ -176,10 +135,7 @@ internal fun createJsonRspMessage(
     message: String,
     error: String? = null,
     id: UInt? = null,
-): String {
-    val messageObject = Message(message, error, id)
-    return Json.encodeToString(messageObject)
-}
+): String = Json.encodeToString(Message(message, error, id))
 
 /**
  * Creates a JSON message with the invalid parameters.
@@ -193,30 +149,16 @@ internal fun invalidParamsRspCreateSession(
     date: LocalDate?,
     capacity: UInt?,
 ): String {
-    val errorMsgs =
+    val errorMessages =
         listOfNotNull(
             if (gid == null) "'gid'" else null,
             if (date == null) "'date'" else null,
             if (capacity == null) "'capacity'" else null,
         )
-    return if (errorMsgs.isNotEmpty()) {
-        val errorMsg = errorMsgs.joinToString(", ")
+    return if (errorMessages.isNotEmpty()) {
+        val errorMsg = errorMessages.joinToString(", ")
         createJsonRspMessage("Missing or invalid $errorMsg. Please provide $errorMsg as valid values.")
     } else {
         createJsonRspMessage("Invalid request.")
     }
 }
-
-/**
- * Creates an unauthorized response.
- *
- * @param reason The reason for the unauthorized response.
- */
-internal fun unauthorizedResponse(reason: String): Response =
-    makeResponse(Status.UNAUTHORIZED, createJsonRspMessage("Unauthorized, $reason."))
-
-internal fun badRequestResponse(reason: String): Response =
-    makeResponse(
-        Status.BAD_REQUEST,
-        createJsonRspMessage("Bad Request, $reason."),
-    )

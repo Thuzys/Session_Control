@@ -6,6 +6,15 @@ drop function if exists is_session_closed();
 drop function if exists check_capacity();
 drop function if exists delete_player_from_sessions();
 
+create or replace function check_valid_capacity() returns trigger as $$
+begin
+    if (new.capacity < (select count(pid) from player_session where sid = new.sid)) then
+        raise exception 'Capacity must be greater than the number of players in the session';
+    end if;
+    return new;
+end;
+$$ language plpgsql;
+
 create or replace function delete_player_from_sessions() returns trigger as $$
 begin
     delete from player_session where player_session.pid = old.pid;

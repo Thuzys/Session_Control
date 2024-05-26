@@ -70,7 +70,7 @@ class GameHandler(
             val msg = "Invalid arguments: at least one of the following must be provided: dev, genres, name"
             badResponse(msg)
         } else {
-            tryResponse(Status.INTERNAL_SERVER_ERROR, "An error occurred while retrieving games.") {
+            tryResponse(Status.NOT_FOUND, "An error occurred while retrieving games.") {
                 val games = gameManagement.getGames(dev, genres, name, offset, limit)
                 foundResponse(Json.encodeToString(games))
             }

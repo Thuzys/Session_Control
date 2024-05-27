@@ -503,7 +503,7 @@ class SessionHandlerTest {
             val response = handler.deleteSession(request)
 
             // ASSERT
-            assertEquals(Status.NOT_MODIFIED, response.status)
+            assertEquals(Status.FORBIDDEN, response.status)
         }
     }
 
@@ -561,7 +561,7 @@ class SessionHandlerTest {
             val response = handler.removePlayerFromSession(request)
 
             // ASSERT
-            assertEquals(Status.NOT_MODIFIED, response.status)
+            assertEquals(Status.FORBIDDEN, response.status)
         }
     }
 

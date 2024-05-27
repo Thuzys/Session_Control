@@ -80,7 +80,7 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
     override fun logout(request: Request): Response {
         unauthorizedAccess(request, playerManagement)?.let { return unauthorizedResponse(it) }
         val pid = request.toPidOrNull() ?: return badResponse("pid not found or invalid")
-        return tryResponse(Status.BAD_REQUEST, "Unable to logout player.") {
+        return tryResponse(Status.FORBIDDEN, "Unable to logout player.") {
             playerManagement.logout(pid)
             okResponse(createJsonRspMessage("Player logged out successfully."))
         }

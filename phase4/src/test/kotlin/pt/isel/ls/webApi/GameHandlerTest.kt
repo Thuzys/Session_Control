@@ -270,7 +270,7 @@ class GameHandlerTest {
         val request =
             Request(Method.GET, "$DUMMY_ROUTE?dev=TestDev2&genres=TestGenre")
                 .header("Authorization", "Bearer ${PlayerManagementStunt.playerToken}")
-        val expectedStatus = Status.INTERNAL_SERVER_ERROR
+        val expectedStatus = Status.NOT_FOUND
 
         // ACT
         val response =

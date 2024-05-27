@@ -102,13 +102,21 @@ async function fetchInternal(
     return fetch(uri, options)
         .then(response => {
             if (!isResponseOK(response)) {
-                response.json().then(json => {
-                    const text = json.error
+                try {
+                    response.json().then(json => {
+                        const text = json.error
+                        handlerViews.showAlert(text)
+                        if (isToGoBack) {
+                            window.history.back()
+                        }
+                    })
+                } catch (e) {
+                    const text = "An error occurred"
                     handlerViews.showAlert(text)
                     if (isToGoBack) {
                         window.history.back()
                     }
-                })
+                }
             } else {
                 return response.json()
             }
@@ -122,7 +130,7 @@ async function fetchInternal(
  * @returns {boolean} true if the response is OK
  */
 function isResponseOK(response) {
-    return response.status >= 200 && response.status < 399
+    return response.status >= 200 && response.status < 399 && response.status !== 304
 }
 
 export const fetcher = {

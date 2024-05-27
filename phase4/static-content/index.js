@@ -9,12 +9,14 @@ import homeHandlers from "./handlers/homeHandlers.js";
 import {fetcher} from "./utils/fetchUtils.js";
 import constants from "./constants/constants.js";
 import createBB8Toggle from "./views/handlerViews/switchLightModeView.js";
+import handlerUtils from "./handlers/handlerUtils/handlerUtils.js";
 
 window.addEventListener('load', loadHandler)
 window.addEventListener('hashchange', hashChangeHandler)
 
 /**
  * Create a toggle switch for light mode and dark mode
+ *
  * @type {HTMLLabelElement}
  */
 const bb8Toggle = createBB8Toggle();
@@ -29,7 +31,7 @@ window.onload = function() {
  * Load handler routes
   */
 function loadHandler(){
-    const url = `${constants.API_BASE_URL}${constants.GENRES_ROUTE}`
+    const url = handlerUtils.createURL(constants.GENRES_ROUTE);
     fetcher.get(url, undefined, false).then(data => {
         sessionStorage.setItem('genres', JSON.stringify(data))
         router.addRouteHandler("logIn", homeHandlers.logIn)
@@ -55,6 +57,11 @@ function loadHandler(){
     })
 }
 
+/**
+ * Routes that require authentication
+ *
+ * @type {string[]} routes that require authentication
+ */
 const routesRequiringAuth = [
     "playerSearch",
     "createGame",
@@ -84,7 +91,7 @@ function hashChangeHandler() {
     }
 
     const mainContent = document.getElementById("mainContent")
-    const path =  requestUtils.getPath()
+    const path = requestUtils.getPath()
     const handler = router.getRouteHandler(path)
 
     if (routesRequiringAuth.includes(path)) {

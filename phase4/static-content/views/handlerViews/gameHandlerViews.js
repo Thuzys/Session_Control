@@ -3,12 +3,6 @@ import views from "../viewsCreators.js";
 import requestUtils from "../../utils/requestUtils.js";
 import constants from "../../constants/constants.js";
 import handlerUtils from "../../handlers/handlerUtils/handlerUtils.js";
-import sessionHandlers from "../../handlers/sessionHandlers.js";
-
-
-function canCreateGame(inputName, inputDev, selectedGenresView) {
-    return inputName.value.trim() && inputDev.value.trim() && selectedGenresView.children.length > 0
-}
 
 /**
  * Create create game view
@@ -61,10 +55,6 @@ function createCreateGameView() {
 
     container.replaceChildren(header, form)
     return container
-}
-
-function canSearchGames(inputName, inputDev, selectedGenresView) {
-    return inputName.value.trim() || inputDev.value.trim() || selectedGenresView.children.length > 0
 }
 
 /**
@@ -130,6 +120,88 @@ function createSearchGamesView() {
 }
 
 /**
+ * Create get game view
+ *
+ * @param games games to display
+ * @returns {HTMLElement} get game view
+ */
+function createGetGameView(games) {
+    const container = views.div({class: "player-details-container"});
+    const header = handlerViews.createHeader("Games")
+    const hr = views.hr({class:"w3-opacity"})
+    const gameList = views.ul({class: "w3-ul w3-border w3-center w3-hover-shadow"})
+    games.forEach(game => {
+            gameList.appendChild(
+                views.li(
+                    views.a({
+                            href: `#games/${game.gid}`},
+                        game.name
+                    )
+                )
+            )
+        }
+    )
+
+    const pagination = handlerViews.createPagination(
+        requestUtils.getQuery(),
+        "games",
+        games.length === constants.LIMIT
+    )
+
+    container.replaceChildren(header, hr, gameList, pagination)
+    return container
+}
+
+/**
+ * Create game details view
+ *
+ * @param game game to display
+ * @param createSession create session function
+ * @returns {HTMLElement} game details view
+ */
+function createGameDetailsView(game, createSession) {
+    const container = views.div({class: "player-details-container"});
+    const header = handlerViews.createHeader("Game Details")
+    const hr = views.hr({class:"w3-opacity"})
+
+    const createSessionButton = handlerViews.createButtonView("CreateSessionButton", "button", "general-button", "Create Session")
+    createSessionButton.addEventListener('click', () => {
+        createSession(
+            document.getElementById("mainContent"),
+            game.gid,
+            game.name
+        );
+    });
+
+    const genresList = views.ul({
+        id: "GenresList"
+    })
+
+    game.genres.forEach(genre => {
+        genresList.appendChild(views.li(genre))
+    })
+
+    const div = views.div(
+        {},
+        views.h2({class: "w3-wide blue-letters centered"}, game.name),
+        views.ul({class: "w3-ul w3-border w3-center w3-hover-shadow"},
+            views.li(views.div({},views.h4({class: "w3-wide blue-letters"}, "Developer"), views.li(game.dev))),
+            views.li(views.div({}, views.h4({class: "w3-wide blue-letters"}, "Genres"), genresList)),
+        ),
+        views.p(),
+        handlerViews.createBackButtonView(),
+        views.p(),
+        handlerViews.hrefButtonView("Sessions",
+            `${constants.SESSION_ROUTE}?gid=${game.gid}&offset=0`),
+        views.p(),
+        createSessionButton
+    )
+
+    container.replaceChildren(header, hr, div)
+    return container
+}
+
+/**
  * Create genres view
  *
  * @returns {*[]}
@@ -179,95 +251,35 @@ function createGenresListener(selectedGenresView, inputGenres, genresValues, tog
             toggleButton()
         }
         selectedGenresView.appendChild(p)
-
         selectedGenresView.appendChild(p)
-
         toggleButton()
     }
 }
 
+
 /**
- * Create get game view
+ * Can create game
  *
- * @param games games to display
- * @returns {HTMLElement} get game view
+ * @param inputName input name
+ * @param inputDev input dev
+ * @param selectedGenresView selected genres view
+ * @returns {*|boolean}
  */
-function createGetGameView(games) {
-    const container = views.div({class: "player-details-container"});
-    const header = handlerViews.createHeader("Games")
-    const hr = views.hr({class:"w3-opacity"})
-    const gameList = views.ul({class: "w3-ul w3-border w3-center w3-hover-shadow"})
-    games.forEach(game => {
-            gameList.appendChild(
-                views.li(
-                    views.a({
-                            href: `#games/${game.gid}`},
-                        game.name
-                    )
-                )
-            )
-        }
-    )
-
-    const pagination = handlerViews.createPagination(
-        requestUtils.getQuery(),
-        "games",
-        games.length === constants.LIMIT
-    )
-
-    container.replaceChildren(header, hr, gameList, pagination)
-    return container
+function canCreateGame(inputName, inputDev, selectedGenresView) {
+    return inputName.value.trim() && inputDev.value.trim() && selectedGenresView.children.length > 0
 }
 
 /**
- * Create game details view
+ * Can search games
  *
- * @param game game to display
- * @returns {HTMLElement} game details view
+ * @param inputName input name
+ * @param inputDev input dev
+ * @param selectedGenresView selected genres view
+ * @returns {*|boolean}
  */
-function createGameDetailsView(game) {
-    const container = views.div({class: "player-details-container"});
-    const header = handlerViews.createHeader("Game Details")
-    const hr = views.hr({class:"w3-opacity"})
-
-    const createSessionButton = handlerViews.createButtonView("CreateSessionButton", "button", "general-button", "Create Session")
-    createSessionButton.addEventListener('click', () => {
-        sessionHandlers.createSession(
-            document.getElementById("mainContent"),
-            game.gid,
-            game.name
-        );
-    });
-
-    const genresList = views.ul({
-        id: "GenresList"
-    })
-
-    game.genres.forEach(genre => {
-        genresList.appendChild(views.li(genre))
-    })
-
-    const div = views.div(
-        {},
-        views.h2({class: "w3-wide blue-letters centered"}, game.name),
-        views.ul({class: "w3-ul w3-border w3-center w3-hover-shadow"},
-            views.li(views.div({},views.h4({class: "w3-wide blue-letters"}, "Developer"), views.li(game.dev))),
-            views.li(views.div({}, views.h4({class: "w3-wide blue-letters"}, "Genres"), genresList)),
-        ),
-        views.p(),
-        handlerViews.createBackButtonView(),
-        views.p(),
-        handlerViews.hrefButtonView("Sessions",
-            `${constants.SESSION_ROUTE}?gid=${game.gid}&offset=0`),
-        views.p(),
-        createSessionButton
-    )
-
-    container.replaceChildren(header, hr, div)
-    return container
+function canSearchGames(inputName, inputDev, selectedGenresView) {
+    return inputName.value.trim() || inputDev.value.trim() || selectedGenresView.children.length > 0
 }
-
-
 
 const gameHandlerViews = {
     createSearchGamesView,

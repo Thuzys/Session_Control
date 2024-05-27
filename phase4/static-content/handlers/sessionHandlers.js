@@ -6,7 +6,6 @@ import {fetcher} from "../utils/fetchUtils.js";
 import {isPlayerOwner} from "./handlerUtils/sessionHandlersUtils.js";
 import handlerViews from "../views/handlerViews/handlerViews.js";
 
-
 /**
  * Search sessions by game id, player id, date and state
  *
@@ -25,6 +24,7 @@ function searchSessions(mainContent) {
  */
 function handleSearchSessionsSubmit(e) {
     e.preventDefault();
+
     const params = new URLSearchParams();
     ['gameName', 'username', 'date'].forEach(id => {
         const value = document.getElementById(id).value;
@@ -34,6 +34,7 @@ function handleSearchSessionsSubmit(e) {
         if (document.querySelector(`input[name="state"][value="${state}"]`).checked) params.set('state', state);
     });
     params.set('offset', "0");
+
     handlerUtils.changeHash(`#sessions?${params}`);
 }
 
@@ -43,10 +44,9 @@ function handleSearchSessionsSubmit(e) {
  * @param mainContent main content of the page
  */
 function getSessions(mainContent) {
-    const query = requestUtils.getQuery();
-    const queryString = handlerUtils.makeQueryString(query);
     const token = sessionStorage.getItem('token');
-    const url = `${constants.API_BASE_URL}${constants.SESSION_ROUTE}?${queryString}`;
+    const url = handlerUtils.createURL(constants.SESSION_ROUTE, requestUtils.getQuery());
+
     fetcher.get(url, token)
         .then(
             response =>
@@ -89,13 +89,14 @@ function handleCreateSessionSubmit(e, gid) {
     const date = document.getElementById('dateCreate').value;
     const pid = sessionStorage.getItem('pid');
     const token = sessionStorage.getItem('token');
-    const url = `${constants.API_BASE_URL}${constants.SESSION_ROUTE}`;
+    const url = handlerUtils.createURL(constants.SESSION_ROUTE);
     const body = {
         gid: gid.toString(),
         capacity: capacity,
         date: date,
         owner: pid,
     };
+
     fetcher
         .post(url, body, token)
         .then(response => handleCreateSessionResponse(response))
@@ -115,8 +116,10 @@ function handleCreateSessionResponse(response) {
  * @param mainContent main content of the page
  */
 function getSessionDetails(mainContent) {
-    const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${requestUtils.getParams()}`;
+    const route = `${constants.SESSION_ID_ROUTE}${requestUtils.getParams()}`
+    const url = handlerUtils.createURL(route);
     const token = sessionStorage.getItem('token');
+
     fetcher.get(url, token)
         .then(
             response =>
@@ -127,8 +130,8 @@ function getSessionDetails(mainContent) {
 /**
  * Make session details
  *
- * @param session
- * @param mainContent
+ * @param session session to display
+ * @param mainContent main content of the page
  */
 function makeSessionDetails(session, mainContent) {
     const playerListView = sessionHandlerViews.createPlayerListView(session);
@@ -142,23 +145,6 @@ function makeSessionDetails(session, mainContent) {
         deleteSession
     );
     mainContent.replaceChildren(container);
-    // Promise.resolve(sessionStorage.getItem('isInSession') === "true")
-    //     .then(isInSession => {
-    //         const playerListView = sessionHandlerViews.createPlayerListView(session);
-    //         Promise.resolve(sessionStorage.getItem('isOwner') === "true")
-    //             .then(isOwner => {
-    //                 const container = sessionHandlerViews.createSessionDetailsView(
-    //                     session,
-    //                     playerListView,
-    //                     isOwner,
-    //                     isInSession,
-    //                     addPlayerToSession,
-    //                     removePlayerFromSession,
-    //                     deleteSession
-    //                 );
-    //                 mainContent.replaceChildren(container);
-    //             });
-    //     });
 }
 
 /**
@@ -170,8 +156,9 @@ function makeSessionDetails(session, mainContent) {
 function handleGetSessionDetailsResponse(session, mainContent) {
     const pid = sessionStorage.getItem('pid');
     const token = sessionStorage.getItem('token');
+    const route = `${constants.SESSION_ID_ROUTE}${session.sid}/${pid}`;
+    const url = handlerUtils.createURL(route);
 
-    const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${session.sid}/${pid}`;
     const isInSession = sessionStorage.getItem('isInSession');
     if (isInSession === null) {
         fetcher.get(
@@ -198,7 +185,9 @@ function handleGetSessionDetailsResponse(session, mainContent) {
 function addPlayerToSession(sid) {
     const pid = sessionStorage.getItem('pid');
     const token = sessionStorage.getItem('token');
-    const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${sid}/${pid}`;
+    const route = `${constants.SESSION_ID_ROUTE}${sid}/${pid}`;
+    const url = handlerUtils.createURL(route);
+
     fetcher.put(url, token)
         .then( _ =>
             window.location.reload()
@@ -212,7 +201,9 @@ function addPlayerToSession(sid) {
 function removePlayerFromSession(sid) {
     const pid = sessionStorage.getItem('pid');
     const token = sessionStorage.getItem('token');
-    const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${sid}/${pid}`;
+    const route = `${constants.SESSION_ID_ROUTE}${sid}/${pid}`;
+    const url = handlerUtils.createURL(route);
+
     fetcher.del(url, token)
         .then( _ =>
             window.location.reload()
@@ -224,8 +215,10 @@ function removePlayerFromSession(sid) {
  * @param mainContent main content of the page
  */
 function updateSession(mainContent) {
-    const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${requestUtils.getParams()}`;
+    const route = `${constants.SESSION_ID_ROUTE}${requestUtils.getParams()}`;
+    const url = handlerUtils.createURL(route);
     const token = sessionStorage.getItem('token');
+
     fetcher
         .get(url, token)
         .then(session => {
@@ -246,12 +239,14 @@ function handleUpdateSessionSubmit(e) {
     const date = document.getElementById('dateChange').value;
     const pid = sessionStorage.getItem('pid');
     const token = sessionStorage.getItem('token');
-    const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${sid}`;
+    const route = `${constants.SESSION_ID_ROUTE}${sid}`;
+    const url = handlerUtils.createURL(route);
     const body = {
         capacity: capacity,
         date: date,
         pid: pid,
     };
+
     fetcher
         .put(url, token, body)
         .then(_ => handlerUtils.changeHash("#sessions/" + sid + "?offset=0"))
@@ -262,8 +257,10 @@ function handleUpdateSessionSubmit(e) {
  * @param sid
  */
 function deleteSession(sid) {
-    const url = constants.API_BASE_URL + constants.SESSION_ID_ROUTE + sid;
+    const route = `${constants.SESSION_ID_ROUTE}${sid}`;
+    const url = handlerUtils.createURL(route);
     const token = sessionStorage.getItem('token');
+
     fetcher.del(url, token)
         .then(() => {
             handlerViews.showAlert("Session deleted successfully");

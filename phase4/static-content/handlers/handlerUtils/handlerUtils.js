@@ -1,3 +1,5 @@
+import constants from "../../constants/constants.js";
+
 /**
  * Change the hash of the current URL
  * @param hash the new hash
@@ -35,10 +37,22 @@ function makeQueryString(query) {
     return queryString;
 }
 
+/**
+ * Create a URL from a route and query
+ *
+ * @param route the route
+ * @param query the query
+ * @returns {string} the URL
+ */
+function createURL(route, query = undefined) {
+    return `${constants.API_BASE_URL}${route}${query ? `?${handlerUtils.makeQueryString(query)}` : ""}`
+}
+
 const handlerUtils = {
     childrenToString,
     changeHash,
     makeQueryString,
+    createURL
 }
 
 export default handlerUtils

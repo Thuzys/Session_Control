@@ -10,8 +10,10 @@ import handlerUtils from "./handlerUtils/handlerUtils.js";
  * @param mainContent main content of the page
  */
 function getPlayerDetailsByPid(mainContent) {
-    const url = `${constants.API_BASE_URL}${constants.PLAYER_ID_ROUTE}${requestUtils.getParams()}`;
+    const route = `${constants.PLAYER_ID_ROUTE}${requestUtils.getParams()}`
+    const url = handlerUtils.createURL(route);
     const token = sessionStorage.getItem('token');
+
     fetcher
         .get(url, token)
         .then(
@@ -26,9 +28,10 @@ function getPlayerDetailsByPid(mainContent) {
  * @param mainContent main content of the page
  */
 function getPlayerDetails(mainContent) {
-    const route = constants.PLAYER_ID_ROUTE.substring(0, constants.PLAYER_ID_ROUTE.length - 1);
-    const url = `${constants.API_BASE_URL}${route}?${handlerUtils.makeQueryString(requestUtils.getQuery())}`;
+    const route = constants.PLAYER_ID_ROUTE.replace("/", "");
+    const url = handlerUtils.createURL(route, requestUtils.getQuery());
     const token = sessionStorage.getItem('token');
+
     fetcher
         .get(url, token)
         .then(
@@ -72,7 +75,6 @@ function handlePlayerSearchSubmit(e) {
     }
     handlerUtils.changeHash(`#players?username=${pid.value}`);
 }
-
 
 export default {
     getPlayerDetails,

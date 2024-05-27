@@ -109,10 +109,12 @@ interface SessionServices {
      *
      * @param player The identifier of the player to remove.
      * @param session The identifier of the session from which the player will be removed.
+     * @param token The token of the player requesting the removal.
      */
     fun removePlayer(
         player: UInt,
         session: UInt,
+        token: String,
     )
 
     /**

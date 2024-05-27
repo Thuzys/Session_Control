@@ -66,7 +66,10 @@ class GameStorage(envVarName: String) : GameStorageInterface {
     ): Collection<Game> =
         dataSource.connection.use {
             it.executeCommand {
-                val getGameStr = buildGameGetterString(dev, name)
+                val baseQuery = StringBuilder("SELECT gid, name, developer FROM GAME WHERE 1=1")
+                dev?.let { baseQuery.append(" AND compare_name(developer, ?)") }
+                name?.let { baseQuery.append(" AND compare_name(name, ?)") }
+                val getGameStr = baseQuery.toString()
                 val getGamesStmt = it.prepareStatement("$getGameStr LIMIT ? OFFSET ?")
 
                 val getGenresStmt =

@@ -113,9 +113,7 @@ function logOut() {
     const url = handlerUtils.createURL(route);
 
     fetcher
-        .put(url, sessionStorage.getItem('token'))
-        .then(_ => {})
-
+        .put(url, sessionStorage.getItem('token')).then(_ => {})
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('pid');
     handlerUtils.changeHash('#logIn');

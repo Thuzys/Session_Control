@@ -6,6 +6,7 @@ import pt.isel.ls.domain.Email
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
+import pt.isel.ls.domain.errors.StorageError
 import pt.isel.ls.domain.info.GameInfo
 import pt.isel.ls.domain.info.PlayerInfo
 import pt.isel.ls.domain.info.SessionInfo
@@ -17,6 +18,22 @@ import java.util.UUID
 
 internal const val LIMIT = 10
 internal const val OFFSET = 0
+
+/**
+ * Checks if a value used as param is valid.
+ *
+ * @param condition The condition to be checked.
+ * @param lazyMessage The message to be displayed in case of an error.
+ * @throws StorageError containing the message of the error.
+ */
+internal inline fun checkValidStorage(
+    condition: Boolean,
+    lazyMessage: () -> String,
+) {
+    if (!condition) {
+        throw StorageError(lazyMessage())
+    }
+}
 
 /**
  * Makes a list of [Game] objects from a [PreparedStatement].
@@ -197,30 +214,15 @@ private fun gameGenresRelation(
  *
  * @param stmt The [PreparedStatement] to get the id from.
  * @return The id.
+ * @throws StorageError if no key is returned.
  */
 internal fun uInt(stmt: PreparedStatement): UInt {
     val key = stmt.generatedKeys
     if (!key.next()) {
-        throw SQLException("No key returned.")
+        throw StorageError("No key returned.")
     }
     val id = key.getInt(1)
     return id.toUInt()
-}
-
-/**
- * Builds the string to get games from the database.
- *
- * @param dev The developer to get the games from.
- * @return The string to get games from the database.
- */
-internal fun buildGameGetterString(
-    dev: String?,
-    name: String?,
-): String {
-    val baseQuery = StringBuilder("SELECT gid, name, developer FROM GAME WHERE 1=1")
-    dev?.let { baseQuery.append(" AND compare_name(developer, ?)") }
-    name?.let { baseQuery.append(" AND compare_name(name, ?)") }
-    return baseQuery.toString()
 }
 
 /**
@@ -261,7 +263,7 @@ internal fun makePlayers(stmt: PreparedStatement): Collection<Player> {
  *
  * @param stmt The [PreparedStatement] to make the [Player] object from.
  * @return A [Player] object.
- * @throws SQLException if an exception occurs.
+ * @throws StorageError if an exception occurs.
  */
 internal fun makePlayer(stmt: PreparedStatement): Player? {
     val rs = stmt.executeQuery()
@@ -298,7 +300,7 @@ private fun buildPlayer(rs: ResultSet): Player =
  * @param l The limit of playersInfo.
  * @param o The offset of playersInfo.
  * @return A [Session] object.
- * @throws SQLException if an exception occurs.
+ * @throws StorageError if an exception occurs.
  */
 internal fun Connection.makeSession(
     stmt: PreparedStatement,
@@ -315,7 +317,7 @@ internal fun Connection.makeSession(
                 """.trimIndent(),
             )
         ownerPreparedStatement.setInt(1, rs.getInt("owner"))
-        val owner = makePlayersInfo(ownerPreparedStatement).firstOrNull() ?: throw SQLException("Owner not found")
+        val owner = makePlayersInfo(ownerPreparedStatement).firstOrNull() ?: throw StorageError("Owner not found")
         val playerStmt =
             prepareStatement(
                 """
@@ -372,14 +374,6 @@ internal fun Connection.makeSessionInfo(sessionStmt: PreparedStatement): Collect
             )
         ownerPreparedStatement.setInt(1, rs.getInt("owner"))
         val owner = makePlayersInfo(ownerPreparedStatement).first()
-//        val owner = makePlayers(ownerPreparedStatement).first()
-//        val playerStmt =
-//            prepareStatement(
-//                "SELECT PLAYER.pid, name, userName, email, token FROM PLAYER " +
-//                    "JOIN PLAYER_SESSION ON PLAYER.pid = PLAYER_SESSION.pid" +
-//                    " WHERE sid = ?;",
-//            )
-//        playerStmt.setInt(1, rs.getInt("sid"))
         sessions.add(
             SessionInfo(
                 rs.getInt("sid").toUInt(),
@@ -388,14 +382,6 @@ internal fun Connection.makeSessionInfo(sessionStmt: PreparedStatement): Collect
                 rs.getString("date").toLocalDate(),
             ),
         )
-//            Session(
-//                rs.getInt("sid").toUInt(),
-//                rs.getInt("capacity").toUInt(),
-//                GameInfo(rs.getInt("gid").toUInt(), rs.getString("name")),
-//                rs.getString("date").toLocalDate(),
-//                owner,
-//                makePlayers(playerStmt),
-//            ),
     }
     return sessions
 }
@@ -405,7 +391,9 @@ internal fun Connection.makeSessionInfo(sessionStmt: PreparedStatement): Collect
  * If an exception occurs, the connection will be rolled back and the auto-commit will be set to true.
  * Otherwise, the connection will be committed and the auto-commit will be set to true.
  * @param cmd The command to be executed.
- * @throws SQLException if an exception occurs.
+ * @throws StorageError if an exception occurs.
+ * @throws Exception if an unexpected exception occurs.
+ * @return The response of the command.
  */
 internal fun <T> Connection.executeCommand(cmd: Connection.() -> T): T {
     try {
@@ -416,12 +404,8 @@ internal fun <T> Connection.executeCommand(cmd: Connection.() -> T): T {
     } catch (e: SQLException) {
         rollback()
         autoCommit = true
-        throw e
-    } catch (e: IllegalArgumentException) {
-        rollback()
-        autoCommit = true
-        throw e
-    } catch (e: IllegalStateException) {
+        throw StorageError(e.message ?: "An error occurred.")
+    } catch (e: Exception) {
         rollback()
         autoCommit = true
         throw e

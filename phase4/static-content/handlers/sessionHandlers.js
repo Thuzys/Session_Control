@@ -134,7 +134,12 @@ function getSessionDetails(mainContent) {
  * @param mainContent main content of the page
  */
 function makeSessionDetails(session, mainContent) {
-    const playerListView = sessionHandlerViews.createPlayerListView(session);
+    let playerListView;
+    if (!isPlayerOwner(session)) {
+        playerListView = sessionHandlerViews.createPlayerListView(session);
+    } else {
+        playerListView = sessionHandlerViews.createPlayerListView(session, removePlayerFromSession);
+    }
     const container = sessionHandlerViews.createSessionDetailsView(
         session,
         playerListView,
@@ -197,9 +202,15 @@ function addPlayerToSession(sid) {
 /**
  * Remove player from session
  * @param sid
+ * @param pid_remove
  */
-function removePlayerFromSession(sid) {
-    const pid = sessionStorage.getItem('pid');
+function removePlayerFromSession(sid, pid_remove = undefined) {
+    let pid;
+    if (pid_remove === undefined) {
+        pid = sessionStorage.getItem('pid');
+    }  else  {
+        pid = pid_remove;
+    }
     const token = sessionStorage.getItem('token');
     const route = `${constants.SESSION_ID_ROUTE}${sid}/${pid}`;
     const url = handlerUtils.createURL(route);

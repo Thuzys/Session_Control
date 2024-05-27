@@ -3,8 +3,9 @@ package pt.isel.ls.services
 import kotlinx.datetime.toKotlinLocalDate
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
+import pt.isel.ls.domain.errors.ParamError
 import pt.isel.ls.domain.errors.ServicesError
-import java.sql.SQLException
+import pt.isel.ls.domain.errors.StorageError
 import java.time.LocalDate
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
@@ -28,7 +29,7 @@ internal inline fun <T> tryCatch(
         block()
     } catch (error: NoSuchElementException) {
         throw ServicesError("$msg: ${treatResponse(error.message)}")
-    } catch (storageError: SQLException) {
+    } catch (storageError: StorageError) {
         throw ServicesError("$msg: ${treatResponse(storageError.message)}")
     }
 
@@ -47,23 +48,46 @@ private fun treatResponse(msg: String?): String {
 }
 
 /**
- * Checks if a value is valid.
+ * Checks if a value used as param is valid.
  *
  * @param condition The condition to be checked.
  * @param lazyMessage The message to be displayed in case of an error.
- * @throws ServicesError containing the message of the error.
+ * @throws ParamError containing the message of the error.
  */
-internal inline fun checkValidService(
+internal inline fun requireValidParam(
     condition: Boolean,
     lazyMessage: () -> String,
 ) {
     if (!condition) {
-        throw ServicesError(lazyMessage())
+        throw ParamError(lazyMessage())
     }
 }
 
 /**
+ * Checks if a value used as param is not null.
+ *
+ * @see ExperimentalContracts
+ *
+ * @param value The value to be checked.
+ * @param lazyMessage The message to be displayed in case of an error.
+ * @return The value if it is not null.
+ * @throws ParamError containing the message of the error.
+ */
+@OptIn(ExperimentalContracts::class)
+internal inline fun <T> checkNotNullParam(
+    value: T?,
+    lazyMessage: () -> String,
+): T {
+    contract {
+        returns() implies (value != null)
+    }
+    return value ?: throw ParamError(lazyMessage())
+}
+
+/**
  * Checks if a value is not null.
+ *
+ * @see ExperimentalContracts
  *
  * @param value The value to be checked.
  * @param lazyMessage The message to be displayed in case of an error.

@@ -24,9 +24,9 @@ class PlayerManagement(private val mem: PlayerStorageInterface) : PlayerServices
     ): PlayerAuthentication =
         tryCatch("Unable to create a new Player due") {
             val (name, username) = nameUsername
-            checkValidService(name.isNotBlank()) { "Name must not be blank." }
+            requireValidParam(name.isNotBlank()) { "Name must not be blank." }
             val condition = !username.isNullOrBlank() || username == null
-            checkValidService(condition) { "Username cannot be empty." }
+            requireValidParam(condition) { "Username cannot be empty." }
             val player = nameUsername associateWith emailPassword
             val pid = mem.create(player)
             PlayerAuthentication(pid, player.token)
@@ -44,7 +44,7 @@ class PlayerManagement(private val mem: PlayerStorageInterface) : PlayerServices
 
     override fun getPlayerDetailsBy(username: String): Player {
         return tryCatch("Unable to get the details of a Player due") {
-            checkValidService(username.isNotBlank()) { "username cannot be empty" }
+            requireValidParam(username.isNotBlank()) { "username cannot be empty" }
             mem.readBy(username = username)?.firstOrNull() ?: throw ServicesError("Player not found.")
         }
     }

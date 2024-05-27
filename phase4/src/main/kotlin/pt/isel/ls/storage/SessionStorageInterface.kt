@@ -77,10 +77,12 @@ interface SessionStorageInterface {
      *
      * @param sid The unique identifier of the [Session] to be updated.
      * @param pid The unique identifier of the [Player] to be removed from the session.
+     * @param token The token of the player requesting the removal.
      */
     fun updateRemovePlayer(
         sid: UInt,
         pid: UInt,
+        token: String,
     )
 
     /**

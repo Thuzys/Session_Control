@@ -50,13 +50,13 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
     ): UInt =
         tryCatch("Unable to create a new session due") {
             val (gid, name) = gameInfo
-            checkNotNullService(gid) { "Game must be provided" }
+            checkNotNullParam(gid) { "Game must be provided" }
             val game = GameInfo(gid, name ?: "")
             val (pid, username) = owner
-            checkNotNullService(pid) { "Owner pid must be provided" }
-            checkValidService(!username.isNullOrBlank()) { "Owner username must be provided" }
+            checkNotNullParam(pid) { "Owner pid must be provided" }
+            requireValidParam(!username.isNullOrBlank()) { "Owner username must be provided" }
             username as String
-            checkValidService(date >= currentLocalDate()) { "Date must not be in the past." }
+            requireValidParam(date >= currentLocalDate()) { "Date must not be in the past." }
             val ownerInfo = pid associateWith username
             sessionDataMem.create(Session(gameInfo = game, date = date, capacity = capacity, owner = ownerInfo))
         }
@@ -70,8 +70,8 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
         limit: UInt?,
     ): Collection<SessionInfo> =
         tryCatch("Unable to get the sessions due") {
-            val condition = gameInfo != null || date != null || state != null || playerInfo != null
-            checkValidService(condition) { "At least one parameter must be provided." }
+            val condition = arrayOf(gameInfo, date, state, playerInfo).any { it != null }
+            requireValidParam(condition) { "At least one parameter must be provided." }
             sessionDataMem.readBy(
                 gameInfo = gameInfo,
                 date = date,
@@ -88,8 +88,8 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
         date: LocalDate?,
     ) = tryCatch("Unable to update session ${authentication.second} due") {
         val condition = date == null || date >= currentLocalDate()
-        checkValidService(date != null || capacity != null) { "At least one parameter must be provided." }
-        checkValidService(condition) { "Date must not be in the past." }
+        requireValidParam(date != null || capacity != null) { "At least one parameter must be provided." }
+        requireValidParam(condition) { "Date must not be in the past." }
         sessionDataMem.updateCapacityOrDate(
             authentication = authentication,
             capacity = capacity,
@@ -105,8 +105,9 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
     override fun removePlayer(
         player: UInt,
         session: UInt,
+        token: String,
     ) = tryCatch("Unable to remove player from session due") {
-        sessionDataMem.updateRemovePlayer(session, player)
+        sessionDataMem.updateRemovePlayer(session, player, token)
     }
 
     override fun getPlayerFromSession(

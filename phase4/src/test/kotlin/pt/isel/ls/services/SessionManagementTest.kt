@@ -3,6 +3,7 @@ package pt.isel.ls.services
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.plus
 import pt.isel.ls.domain.SessionState
+import pt.isel.ls.domain.errors.ParamError
 import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.storage.SessionStorageStunt
 import kotlin.test.Test
@@ -142,7 +143,7 @@ class SessionManagementTest {
         actionSessionManagementTest { sessionManagement: SessionServices ->
             val currentCollection = sessionManagement.sessionDetails(1u)
             val currentSize = currentCollection.players.size
-            sessionManagement.removePlayer(1u, 1u)
+            sessionManagement.removePlayer(1u, 1u, "valid_token")
             val newCollection = sessionManagement.sessionDetails(1u)
             assertTrue { newCollection.players.size == currentSize.dec() }
         }
@@ -165,7 +166,7 @@ class SessionManagementTest {
         actionSessionManagementTest { sessionManagement: SessionServices ->
             val currentCollection = sessionManagement.sessionDetails(1u)
             val currentSize = currentCollection.players.size
-            sessionManagement.removePlayer(4u, 1u)
+            sessionManagement.removePlayer(4u, 1u, "valid_token")
             val newCollection = sessionManagement.sessionDetails(1u)
             assertTrue { newCollection.players.size == currentSize }
         }
@@ -197,7 +198,7 @@ class SessionManagementTest {
     fun `trying to update a session with capacity and date null does not affect the session due ServiceError`() {
         actionSessionManagementTest { sessionManagement: SessionServices ->
             val authentication = Pair(1u, 1u)
-            assertFailsWith<ServicesError> {
+            assertFailsWith<ParamError> {
                 sessionManagement.updateCapacityOrDate(authentication, null, null)
             }
         }

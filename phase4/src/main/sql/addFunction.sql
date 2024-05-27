@@ -4,6 +4,14 @@ drop function if exists add_owner_to_session();
 drop function if exists check_capacity(int);
 drop function if exists is_session_closed();
 drop function if exists check_capacity();
+drop function if exists delete_player_from_sessions();
+
+create or replace function delete_player_from_sessions() returns trigger as $$
+begin
+    delete from player_session where player_session.pid = old.pid;
+    return old;
+end;
+$$ language plpgsql;
 
 create or replace function check_capacity() returns trigger as $$
 begin

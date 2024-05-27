@@ -116,6 +116,7 @@ object SessionManagementStunt : SessionServices {
     override fun removePlayer(
         player: UInt,
         session: UInt,
+        token: String,
     ) {
         if (player != pid || session != sid1) throw ServicesError("Unable to remove player")
     }

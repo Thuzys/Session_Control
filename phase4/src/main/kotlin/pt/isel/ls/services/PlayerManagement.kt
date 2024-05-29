@@ -7,6 +7,7 @@ import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.domain.info.CreatePlayerEmailPasswordParam
 import pt.isel.ls.domain.info.CreatePlayerNameParam
 import pt.isel.ls.domain.info.PlayerAuthentication
+import pt.isel.ls.domain.validatePassword
 import pt.isel.ls.storage.PlayerStorageInterface
 import java.util.UUID
 
@@ -24,6 +25,7 @@ class PlayerManagement(private val mem: PlayerStorageInterface) : PlayerServices
         emailPassword: CreatePlayerEmailPasswordParam,
     ): PlayerAuthentication =
         tryCatch("Unable to create a new Player due") {
+            require(validatePassword(emailPassword.second)) //TODO: change require
             val player = nameUsername associateWith emailPassword
             val pid = mem.create(player)
             PlayerAuthentication(pid, player.token)

@@ -39,7 +39,7 @@ class GameManagementTest {
             val invalidGenres = setOf<String>()
 
             // ACT & ASSERT
-            assertFailsWith<ServicesError> {
+            assertFailsWith<IllegalArgumentException> {
                 handler.createGame(gameName, gameDev, invalidGenres)
             }
         }

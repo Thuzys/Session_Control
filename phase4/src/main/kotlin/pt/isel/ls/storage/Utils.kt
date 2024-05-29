@@ -136,7 +136,7 @@ internal fun addGameToDB(
     addGameStmt.setString(2, newItem.dev)
     addGameStmt.executeUpdate()
 
-    val gid = getGameId(addGameStmt)
+    val gid = uInt(addGameStmt)
     setGameGenres(gid, newItem.genres, relateGameToGenreStmt, addGenreStmt)
     return gid
 }
@@ -195,13 +195,16 @@ private fun gameGenresRelation(
 /**
  * Gets the id from the prepared statement.
  *
- * @param addGameStmt The [PreparedStatement] to get the game id from.
- * @return The game id.
+ * @param stmt The [PreparedStatement] to get the id from.
+ * @return The id.
  */
-private fun getGameId(addGameStmt: PreparedStatement): UInt {
-    val key = addGameStmt.generatedKeys
-    check(key.next()) { "Failed to create game." }
-    return key.getUInt("gid")
+internal fun uInt(stmt: PreparedStatement): UInt {
+    val key = stmt.generatedKeys
+    if (!key.next()) {
+        throw SQLException("No key returned.")
+    }
+    val id = key.getInt(1)
+    return id.toUInt()
 }
 
 /**

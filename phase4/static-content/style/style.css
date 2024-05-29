@@ -314,7 +314,7 @@ input.light-mode:focus {
 .card-a.light-mode {
     text-decoration: none;
     font-size: 120px;
-    color: #000000;
+    color: #007bff;
     transition: color 0.3s ease;
     margin: 2px;
 }

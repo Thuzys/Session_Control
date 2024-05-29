@@ -2,6 +2,28 @@ drop function if exists get_sessions_by(int, varchar, varchar, int, varchar, var
 drop function if exists compare_name(varchar, varchar);
 drop function if exists add_owner_to_session();
 drop function if exists check_capacity(int);
+drop function if exists is_session_closed();
+drop function if exists check_capacity();
+
+create or replace function check_capacity() returns trigger as $$
+begin
+    if (
+    select count(*) from player_session where player_session.sid = new.sid) >= (select capacity from session where session.sid = new.sid
+    ) then
+        raise exception 'Session is full';
+    end if;
+    return new;
+end;
+$$ language plpgsql;
+
+create or replace function is_session_closed() returns trigger as $$
+begin
+    if (select date < now() from session where session.sid = new.sid) then
+        raise exception 'Session is closed';
+    end if;
+    return new;
+end;
+$$ language plpgsql;
 
 create or replace function check_capacity(sid int)
     returns boolean as $$

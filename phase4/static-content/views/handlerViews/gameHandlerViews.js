@@ -13,8 +13,8 @@ function createCreateGameView() {
     const container = views.div({class: "player-details-container"})
     const header = handlerViews.createHeader("Create Game: ")
     const genresHeader = views.h4({class:"w3-wide centered"}, "Genres Selected")
-    const inputName = handlerViews.createLabeledInput("InputName", "Insert Game Name")
-    const inputDev = handlerViews.createLabeledInput("InputDev", "Insert Developer Name")
+    const inputName = handlerViews.createLabeledInput("text", "InputName", "Insert Game Name")
+    const inputDev = handlerViews.createLabeledInput("text", "InputDev", "Insert Developer Name")
     const submitButton = views.button({
         type: "submit",
         disabled: true,
@@ -71,8 +71,8 @@ function createSearchGamesView() {
     const header = handlerViews.createHeader("Search Games")
     const genresHeader = views.h4({class:"w3-wide centered"}, "Genres Selected")
     const hr = views.hr({class:"w3-opacity"})
-    const inputName = handlerViews.createLabeledInput("InputName", "Insert Game Name")
-    const inputDev = handlerViews.createLabeledInput("InputDev", "Insert Developer Name")
+    const inputName = handlerViews.createLabeledInput("text", "InputName", "Insert Game Name")
+    const inputDev = handlerViews.createLabeledInput("text", "InputDev", "Insert Developer Name")
     const searchGamesButton =
         views.button({
             id: "SearchGamesButton",

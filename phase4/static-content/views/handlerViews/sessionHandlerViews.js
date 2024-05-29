@@ -11,9 +11,9 @@ import handlerUtils from "../../handlers/handlerUtils/handlerUtils.js";
 function createSearchSessionsView() {
     const container = views.div({class: "player-details-container"});
     const header = handlerViews.createHeader("Search Sessions");
-    const gidInput = handlerViews.createLabeledInput("gameName", "Enter Game name");
-    const pidInput = handlerViews.createLabeledInput("username", "Enter Player name");
-    const dateInput = views.input({ type: "date", id: "date", placeholder: "Enter Date" });
+    const gidInput = handlerViews.createLabeledInput("text", "gameName", "Enter Game name");
+    const pidInput = handlerViews.createLabeledInput("text", "username", "Enter Player name");
+    const dateInput = handlerViews.createLabeledInput("date", "date", "Enter Date");
 
     const stateLabel = views.h5({class: "w3-wide padding-left enter-state"}, "Enter State");
     const radioOpen = handlerViews.createRadioButton("open", "OPEN");
@@ -274,11 +274,8 @@ function canCreateSession(labelCapacity, labelDate) {
 function createCreateSessionView(gameName) {
     const container = views.div({class: "player-details-container"});
     const header = handlerViews.createHeader("Create Session");
-    const labelCapacity = views.input({type: "number", id: "capacity", placeholder: "Enter Capacity"})
-    const labelDate = views.input({
-        type: "date",
-        id: "dateCreate",
-        placeholder: "Enter Date"});
+    const labelCapacity = handlerViews.createLabeledInput("number", "capacity", "Enter Capacity");
+    const labelDate = handlerViews.createLabeledInput("date", "dateCreate", "Enter Date");
     const createSessionButton = views.button({
         type: "submit",
         class: "general-button",
@@ -335,8 +332,8 @@ function canUpdateSession(labelCapacity, labelDate, session) {
 function createUpdateSessionView(session) {
     const container = views.div({class: "player-details-container"});
     const header = handlerViews.createHeader("Update Session");
-    const labelCapacity = views.input({type: "number", id: "capacity", placeholder: "Enter Capacity", value: session.capacity})
-    const labelDate = views.input({type: "date", id: "dateChange", placeholder: "Enter Date", value: session.date});
+    const labelCapacity = handlerViews.createLabeledInput("number", "capacity", "Enter Capacity", session.capacity);
+    const labelDate = handlerViews.createLabeledInput("date", "dateChange", "Enter Date", session.date);
 
     const updateSessionButton =
         views.button(

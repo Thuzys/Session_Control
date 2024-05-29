@@ -50,8 +50,7 @@ function createPlayerDetailsView(player, backButton = true) {
 function createSearchPlayerView() {
     const container = views.div({class: "player-details-container"});
     const h1 = handlerViews.createHeader("Search Player")
-    const playerInput =
-        views.input({type: "text", id: "pid", placeholder: "Username"});
+    const playerInput = handlerViews.createLabeledInput("text", "pid", "Username");
     const searchButton =
         views.button(
             {type: "submit", class: "general-button", disabled: true},

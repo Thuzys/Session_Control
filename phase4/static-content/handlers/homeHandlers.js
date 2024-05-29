@@ -12,7 +12,9 @@ import handlerUtils from "./handlerUtils/handlerUtils.js";
 function getHome(mainContent) {
     const pid = sessionStorage.getItem('pid');
     const token = sessionStorage.getItem('token');
-    const url = `${constants.API_BASE_URL}${constants.PLAYER_ID_ROUTE}${pid}`;
+    const route = handlerUtils.createRoute(constants.API_PLAYER_ROUTE, pid);
+    const url = handlerUtils.createURL(route);
+
     fetcher
         .get(url, token)
         .then(
@@ -39,7 +41,7 @@ function handleLoginSubmit(e) {
     e.preventDefault();
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-    const url = `${constants.API_BASE_URL}${constants.LOGIN_ROUTE}`;
+    const url = handlerUtils.createURL(constants.API_LOGIN_ROUTE);
     const body = {username: username, password: password};
     fetcher
         .post(url, body, undefined, false)
@@ -73,13 +75,17 @@ function handleCreateAccountSubmit(e) {
         return;
     }
 
-    const url = `${constants.API_BASE_URL}${constants.PLAYER_ROUTE}`;
+    const url = handlerUtils.createURL(constants.API_PLAYER_ROUTE);
     const body = {
         name: name,
-        username: username,
         email: email,
         password: password,
     };
+
+    if (username !== '') {
+        body.username = username;
+    }
+
     fetcher
         .post(url, body, undefined, false)
         .then(response => handleLogInRegisterResponse(response))
@@ -91,9 +97,9 @@ function handleCreateAccountSubmit(e) {
  */
 function handleLogInRegisterResponse(response) {
     sessionStorage.setItem('pid', response.pid);
-        sessionStorage.setItem('isAuthenticated', 'true');
-        sessionStorage.setItem('token', response.token);
-        handlerUtils.changeHash('#players/home');
+    sessionStorage.setItem('isAuthenticated', 'true');
+    sessionStorage.setItem('token', response.token);
+    handlerUtils.changeHash(constants.PLAYERS_HOME_ROUTE);
 }
 
 /**
@@ -104,12 +110,16 @@ function logOut() {
         return;
     }
     sessionStorage.setItem('isAuthenticated', 'false');
-    const url = `${constants.API_BASE_URL}${constants.PLAYER_ID_ROUTE}${sessionStorage.getItem("pid")}`;
+
+    const pid = sessionStorage.getItem("pid")
+    const route = handlerUtils.createRoute(constants.API_PLAYER_ROUTE, pid);
+    const url = handlerUtils.createURL(route);
+
     fetcher
         .del(url, sessionStorage.getItem('token')).then(_ => {})
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('pid');
-    handlerUtils.changeHash('#logIn');
+    handlerUtils.changeHash(constants.LOGIN_ROUTE);
     window.location.reload();
 }
 

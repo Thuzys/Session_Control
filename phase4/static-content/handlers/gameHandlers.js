@@ -1,4 +1,5 @@
 import gameHandlerViews from "../views/handlerViews/gameHandlerViews.js";
+import sessionHandlers from "./sessionHandlers.js";
 import handlerUtils from "./handlerUtils/handlerUtils.js";
 import requestUtils from "../utils/requestUtils.js";
 import constants from "../constants/constants.js"
@@ -7,7 +8,7 @@ import { fetcher } from "../utils/fetchUtils.js";
 /**
  * Create game
  *
- * @param mainContent
+ * @param mainContent main content of the page
  */
 function createGame(mainContent) {
     const container = gameHandlerViews.createCreateGameView()
@@ -25,17 +26,15 @@ function handleCreateGameSubmit(e) {
     const inputName = document.getElementById("InputName")
     const inputDev = document.getElementById("InputDev")
     const selectedGenresView = document.getElementById("ul")
-
     const genres = handlerUtils.childrenToString(selectedGenresView.children)
-
     const game = {
         name: inputName.value,
         dev: inputDev.value,
         genres: genres
     }
-
-    const url = `${constants.API_BASE_URL}${constants.GAME_ROUTE}`
+    const url = handlerUtils.createURL(constants.API_GAME_ROUTE)
     const token = sessionStorage.getItem('token')
+
     fetcher
         .post(url, game, token)
         .then(response => handleCreateGameResponse(response))
@@ -46,7 +45,7 @@ function handleCreateGameSubmit(e) {
  * @param response response of the create game request
  */
 function handleCreateGameResponse(response) {
-    handlerUtils.changeHash(`games/${response.id}`)
+    handlerUtils.changeHash(`${constants.GAME_ROUTE}/${response.id}`)
 }
 
 /**
@@ -81,7 +80,7 @@ function handleSearchGamesSubmit(e) {
 
     params.set('offset', "0")
 
-    handlerUtils.changeHash(`games?${params}`)
+    handlerUtils.changeHash(`${constants.GAME_ROUTE}?${params}`)
 }
 
 /**
@@ -90,9 +89,9 @@ function handleSearchGamesSubmit(e) {
  * @param mainContent main content of the page
  */
 function getGames(mainContent) {
-    const query = handlerUtils.makeQueryString(requestUtils.getQuery())
-    const url = `${constants.API_BASE_URL}${constants.GAME_ROUTE}?${query}`
+    const url = handlerUtils.createURL(constants.API_GAME_ROUTE, requestUtils.getQuery())
     const token = sessionStorage.getItem('token')
+
     fetcher
         .get(url, token)
         .then(response =>
@@ -117,9 +116,11 @@ function handleGetGamesResponse(games, mainContent) {
  * @param mainContent main content of the page
  */
 function getGameDetails(mainContent){
-    const gameId = requestUtils.getParams()
-    const url = `${constants.API_BASE_URL}${constants.GAME_ID_ROUTE}${gameId}`
+    const gid = requestUtils.getParams();
+    const route = handlerUtils.createRoute(constants.API_GAME_ROUTE, gid)
+    const url = handlerUtils.createURL(route)
     const token = sessionStorage.getItem('token')
+
     fetcher
         .get(url, token)
         .then(response =>
@@ -134,7 +135,7 @@ function getGameDetails(mainContent){
  * @param mainContent main content of the page
  */
 function handleGetGameDetailsResponse(game, mainContent) {
-    const container = gameHandlerViews.createGameDetailsView(game)
+    const container = gameHandlerViews.createGameDetailsView(game, sessionHandlers.createSession)
     mainContent.replaceChildren(container)
 }
 

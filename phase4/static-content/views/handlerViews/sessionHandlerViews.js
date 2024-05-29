@@ -248,7 +248,7 @@ function createPlayerListView(session, removePlayerFromSession = undefined) {
     const nextPrev = handlerViews.createPagination(
         requestUtils.getQuery(),
         `${constants.SESSION_ROUTE}/${session.sid}`,
-        session.players && session.players.length >= constants.LIMIT_PLAYERS,
+        session.players !== undefined && session.players.length >= constants.LIMIT_PLAYERS,
         constants.ELEMENTS_PER_PAGE_PLAYERS
     );
     div.appendChild(nextPrev)

@@ -18,7 +18,7 @@ typealias PlayerInfoParam = Pair<UInt?, String?>
  * - first [String] is the name of the player.
  * - second [String] is the username of the player, if null the name will be used as username.
  */
-typealias CreatePlayerNameParam = Pair<String, String?>
+typealias name_username = Pair<String, String?>
 
 /**
  * The information to create a player.
@@ -27,7 +27,7 @@ typealias CreatePlayerNameParam = Pair<String, String?>
  * - first [String] is the email of the player.
  * - second [String] is the password of the player.
  */
-typealias CreatePlayerEmailPasswordParam = Pair<String, String>
+typealias email_password = Pair<String, String>
 
 /**
  * Represents the player information with a specified identifier, username, and email.

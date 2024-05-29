@@ -5,6 +5,7 @@ interface GameServices {
     +createGame()
     +getGameDetails()
     +getGames()
+    +getAllGenres()
 }
 
 interface PlayerServices {
@@ -12,23 +13,26 @@ interface PlayerServices {
     +getPlayerDetails()
     +isValidToken()
     +getPlayerDetailsBy()
+    +login()
+    +logout()
 }
 
 interface SessionServices {
-    + createSession()
-    + getSessions()
-    + getSessionDetails()
-    + addPlayer()
-    + updateCapacityOrDate()
-    + removePlayer()
-    + deleteSession()
-    + isPlayerInSession()
+    +addPlayer()
+    +sessionDetails()
+    +createSession()
+    +getSessions()
+    +updateCapacityOrDate()
+    +removePlayer()
+    +deleteSession()
+    +getPlayerFromSession()
 }
 
 class GameManagement {
     +createGame()
     +getGameDetails()
     +getGames()
+    +getAllGenres()
     -storage: GameStorageInterface
 }
 
@@ -37,19 +41,21 @@ class PlayerManagement {
     +getPlayerDetails()
     +isValidToken()
     +getPlayerDetailsBy()
-    -mem: PlayerStorageInterface
+    +login()
+    +logout()
+    -storage: PlayerStorageInterface
 }
 
 class SessionManagement {
-    + createSession()
-    + getSessions()
-    + getSessionDetails()
-    + addPlayer()
-    + updateCapacityOrDate()
-    + removePlayer()
-    + deleteSession()
-    + isPlayerInSession()
-    -sessionDataMem: SessionStorageInterface
+    +addPlayer()
+    +sessionDetails()
+    +createSession()
+    +getSessions()
+    +updateCapacityOrDate()
+    +removePlayer()
+    +deleteSession()
+    +getPlayerFromSession()
+    -storage: SessionStorageInterface
 }
 
 GameServices <|-- GameManagement
@@ -64,8 +70,7 @@ package storage {
 }
 
 GameManagement *-- storage.GameStorageInterface : storage
-PlayerManagement *-- storage.PlayerStorageInterface : mem
-SessionManagement *-- storage.SessionStorageInterface : sessionDataMem
-
+PlayerManagement *-- storage.PlayerStorageInterface : storage
+SessionManagement *-- storage.SessionStorageInterface : storage
 
 @enduml

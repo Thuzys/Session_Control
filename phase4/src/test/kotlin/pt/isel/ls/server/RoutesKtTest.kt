@@ -139,7 +139,7 @@ class RoutesKtTest {
     @Test
     fun `buildRoutes returns router with post PLAYER_LOGOUT_ROUTE`() =
         actionOfRoutesArrangement { handler: RoutingHttpHandler ->
-            val request = Request(Method.PUT, PLAYER_ID_ROUTE)
+            val request = Request(Method.DELETE, PLAYER_ID_ROUTE)
             assertIs<RouterMatch.MatchingHandler>(
                 handler.match(request),
                 "No matching handler found for $request",

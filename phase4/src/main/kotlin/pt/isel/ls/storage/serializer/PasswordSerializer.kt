@@ -8,6 +8,12 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import org.eclipse.jetty.util.security.Password
 
+/**
+ * Serializer for the Password class.
+ * This class is used to serialize and deserialize Password objects.
+ * @see KSerializer
+ * @see Password
+ */
 object PasswordSerializer : KSerializer<Password> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Password", PrimitiveKind.STRING)
 

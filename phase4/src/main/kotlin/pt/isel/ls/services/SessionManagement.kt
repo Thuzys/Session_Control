@@ -16,15 +16,15 @@ import pt.isel.ls.storage.SessionStorageInterface
 /**
  * Represents the services related to the session in the application.
  *
- * @property sessionDataMem the session storage interface
+ * @property storage the session storage interface
  * @throws ServicesError containing the message of the error.
  */
-class SessionManagement(private val sessionDataMem: SessionStorageInterface) : SessionServices {
+class SessionManagement(private val storage: SessionStorageInterface) : SessionServices {
     override fun addPlayer(
         player: UInt,
         session: UInt,
     ) = tryCatch("Unable to add player to session due") {
-        if (!sessionDataMem.updateAddPlayer(session, setOf(player))) {
+        if (!storage.updateAddPlayer(session, setOf(player))) {
             throw ServicesError("Unable to add player to session.")
         }
     }
@@ -35,7 +35,7 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
         offset: UInt?,
     ): Session =
         tryCatch("Unable to get the details of a Session due") {
-            sessionDataMem.read(
+            storage.read(
                 sid,
                 limit ?: DEFAULT_LIMIT,
                 offset ?: DEFAULT_OFFSET,
@@ -54,11 +54,9 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
             val game = GameInfo(gid, name ?: "")
             val (pid, username) = owner
             checkNotNullParam(pid) { "Owner pid must be provided" }
-            requireValidParam(!username.isNullOrBlank()) { "Owner username must be provided" }
-            username as String
             requireValidParam(date >= currentLocalDate()) { "Date must not be in the past." }
-            val ownerInfo = pid associateWith username
-            sessionDataMem.create(Session(gameInfo = game, date = date, capacity = capacity, owner = ownerInfo))
+            val ownerInfo = pid associateWith (username ?: "")
+            storage.create(Session(gameInfo = game, date = date, capacity = capacity, owner = ownerInfo))
         }
 
     override fun getSessions(
@@ -72,7 +70,7 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
         tryCatch("Unable to get the sessions due") {
             val condition = arrayOf(gameInfo, date, state, playerInfo).any { it != null }
             requireValidParam(condition) { "At least one parameter must be provided." }
-            sessionDataMem.readBy(
+            storage.readBy(
                 gameInfo = gameInfo,
                 date = date,
                 state = state,
@@ -90,7 +88,7 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
         val condition = date == null || date >= currentLocalDate()
         requireValidParam(date != null || capacity != null) { "At least one parameter must be provided." }
         requireValidParam(condition) { "Date must not be in the past." }
-        sessionDataMem.updateCapacityOrDate(
+        storage.updateCapacityOrDate(
             authentication = authentication,
             capacity = capacity,
             date = date,
@@ -99,7 +97,7 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
 
     override fun deleteSession(sid: UInt) =
         tryCatch("Unable to delete the session due") {
-            sessionDataMem.delete(sid = sid)
+            storage.delete(sid = sid)
         }
 
     override fun removePlayer(
@@ -107,7 +105,7 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
         session: UInt,
         token: String,
     ) = tryCatch("Unable to remove player from session due") {
-        sessionDataMem.updateRemovePlayer(session, player, token)
+        storage.updateRemovePlayer(session, player, token)
     }
 
     override fun getPlayerFromSession(
@@ -115,6 +113,6 @@ class SessionManagement(private val sessionDataMem: SessionStorageInterface) : S
         session: UInt,
     ): Player? =
         tryCatch("Unable to get player from session due") {
-            sessionDataMem.readPlayer(player, session)
+            storage.readPlayer(player, session)
         }
 }

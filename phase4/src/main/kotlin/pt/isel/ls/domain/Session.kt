@@ -8,13 +8,13 @@ import pt.isel.ls.domain.info.PlayerInfo
 /**
  * Represents a game session with specified capacity, game identifier, date, and UUID.
  *
- * @param sid The universally unique identifier (UUID) of the session.
+ * @param sid The universally unique identifier of the session.
  * @param capacity The maximum number of players allowed in the session.
  * @param gameInfo The game being played in the session.
  * @param date The date and time of the session.
  * @param owner The player that created the session.
  * @param players Collection of players currently in the session.
- * @throws IllegalArgumentException If the capacity is zero.
+ * @throws IllegalArgumentException If the capacity is zero or lower.
  */
 @Serializable
 data class Session(

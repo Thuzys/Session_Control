@@ -55,7 +55,6 @@ interface SessionServices {
      * @param capacity The capacity of the session.
      * @param owner The player that created the session.
      * @return The unique identifier of the new session.
-     * @throws ServicesError containing the message of the error.
      */
     fun createSession(
         gameInfo: GameInfoParam,
@@ -96,7 +95,6 @@ interface SessionServices {
      * @param authentication The identifier of the player and the session.
      * @param capacity The new capacity of the session (optional). If null, the capacity will not be updated.
      * @param date The new date and time of the session (optional). If null, the date will not be updated.
-     * @throws ServicesError if there's an issue updating the session.
      */
     fun updateCapacityOrDate(
         authentication: AuthenticationParam,

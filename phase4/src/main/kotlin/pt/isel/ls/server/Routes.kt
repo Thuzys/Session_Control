@@ -43,6 +43,6 @@ fun buildRoutes(
     SESSION_PLAYER_ROUTE bind Method.DELETE to sessionHandler::removePlayerFromSession,
     SESSION_ID_ROUTE bind Method.DELETE to sessionHandler::deleteSession,
     PLAYER_LOGIN_ROUTE bind Method.POST to playerHandler::login,
-    PLAYER_ID_ROUTE bind Method.PUT to playerHandler::logout,
+    PLAYER_ID_ROUTE bind Method.DELETE to playerHandler::logout,
     GAME_GENRES_ROUTE bind Method.GET to gameHandler::getAllGenres,
 )

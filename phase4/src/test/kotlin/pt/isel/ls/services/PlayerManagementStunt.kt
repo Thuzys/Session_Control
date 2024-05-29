@@ -4,8 +4,8 @@ import org.eclipse.jetty.util.security.Password
 import pt.isel.ls.domain.Email
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.errors.ServicesError
-import pt.isel.ls.domain.info.CreatePlayerEmailPasswordParam
-import pt.isel.ls.domain.info.CreatePlayerNameParam
+import pt.isel.ls.domain.info.email_password
+import pt.isel.ls.domain.info.name_username
 import pt.isel.ls.domain.info.PlayerAuthentication
 import java.util.UUID
 
@@ -27,8 +27,8 @@ object PlayerManagementStunt : PlayerServices {
         )
 
     override fun createPlayer(
-        nameUsername: CreatePlayerNameParam,
-        emailPassword: CreatePlayerEmailPasswordParam,
+        nameUsername: name_username,
+        emailPassword: email_password,
     ): PlayerAuthentication =
         if (nameUsername.first.isNotBlank() && emailPassword.first.isNotBlank() && emailPassword.second.isNotBlank()) {
             PlayerAuthentication(playerId, playerToken)

@@ -3,7 +3,9 @@
 class Player {
     +pid : Uint?
     +name : String
+    +username: String
     +email : Email
+    +password: Password
     +token : UUID
 }
 class Game {

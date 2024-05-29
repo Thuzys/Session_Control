@@ -36,7 +36,7 @@ class SessionHandler(
         val date = dateVerification(body["date"])
         val ownerName = body["ownerName"]
         val capacity = body["capacity"]?.toUIntOrNull()
-        val params = arrayOf(gid, date, capacity, owner)
+        val params = arrayOf(gid, date, capacity)
         return if (params.any { it == null }) {
             badResponse(invalidParamsRspCreateSession(gid, date, capacity))
         } else {

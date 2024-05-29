@@ -81,7 +81,7 @@ function handleCreateAccountSubmit(e) {
         password: password,
     };
     fetcher
-        .post(url, body)
+        .post(url, body, undefined, false)
         .then(response => handleLogInRegisterResponse(response))
 }
 
@@ -106,7 +106,7 @@ function logOut() {
     sessionStorage.setItem('isAuthenticated', 'false');
     const url = `${constants.API_BASE_URL}${constants.PLAYER_ID_ROUTE}${sessionStorage.getItem("pid")}`;
     fetcher
-        .put(url, sessionStorage.getItem('token')).then(_ => {})
+        .del(url, sessionStorage.getItem('token')).then(_ => {})
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('pid');
     handlerUtils.changeHash('#logIn');

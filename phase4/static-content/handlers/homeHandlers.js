@@ -79,10 +79,13 @@ function handleCreateAccountSubmit(e) {
     const url = handlerUtils.createURL(constants.API_PLAYER_ROUTE);
     const body = {
         name: name,
-        username: username,
         email: email,
         password: password,
     };
+
+    if (username !== '') {
+        body.username = username;
+    }
 
     fetcher
         .post(url, body)

@@ -88,7 +88,7 @@ function hrefConstructor(hrefBase, id, textBase, offset = undefined) {
 function hrefButtonView(textContent, query) {
     const backButton = views.button({type: "button", class: "general-button"}, textContent);
     backButton.addEventListener('click', () => {
-        window.location.hash = query;
+        handlerUtils.changeHash(query);
     });
     return backButton;
 }
@@ -102,7 +102,7 @@ function createBackButtonView(previousHash) {
     const backButton = views.button({type: "button", class: "general-button"}, "Back");
     backButton.addEventListener('click', () => {
         if (previousHash) {
-            window.location.hash = previousHash;
+            handlerUtils.changeHash(previousHash);
         } else {
             window.history.back();
         }
@@ -200,25 +200,6 @@ function toggleButtonState(button, condition) {
     button.disabled = condition
 }
 
-/**
- * Create button view
- *
- * @param buttonId button id
- * @param buttonType button type
- * @param buttonClass button class
- * @param buttonText button text
- * @param isButtonDisabled is button disabled
- * @returns {HTMLButtonElement} button view
- */
-function createButtonView(buttonId, buttonType, buttonClass, buttonText, isButtonDisabled = false) {
-    return views.button({
-        id: buttonId,
-        type: buttonType,
-        disabled: isButtonDisabled,
-        class: buttonClass
-    }, buttonText)
-}
-
 const handlerViews = {
     hrefButtonView,
     createHeader,
@@ -233,7 +214,6 @@ const handlerViews = {
     createRadioButton,
     createLabeledPasswordInput,
     createLabeledEmailInput,
-    createButtonView
 }
 
 export default handlerViews

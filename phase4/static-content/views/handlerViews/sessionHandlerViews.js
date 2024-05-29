@@ -115,13 +115,17 @@ function createSessionDetailsView(
         views.hr({class:"w3-opacity)"}),
         views.div({class: "w3-margin-bottom"},
             views.ul({class: "w3-ul w3-border w3-center w3-hover-shadow"},
-                views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Game"),
                 views.li(
-                    ...handlerViews.hrefConstructor(
-                        "#games",
-                        session.gameInfo.gid, `${session.gameInfo.name}`
-                    )
-                ),),),
+                    views.div({}, views.h3({class: "w3-wide blue-letters"}, "Game"),
+                        views.li(
+                            ...handlerViews.hrefConstructor(
+                                `#${constants.GAME_ROUTE}`,
+                                session.gameInfo.gid,
+                                `${session.gameInfo.name}`
+                            )
+                        ),
+                    ),
+                ),
                 views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Date"), views.li(session.date))),
                 views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Owner"), views.li(session.owner.username))),
                 views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Capacity"), views.li(session.capacity.toString()))),
@@ -190,13 +194,13 @@ function createGetSessionsView(sessions) {
         const sessionHref =
             views.li(
                 ...handlerViews.hrefConstructor(
-                "#sessions",
+                `#${constants.SESSION_ROUTE}`,
                 session.sid, session.owner.username + "´s Session" + " - " + session.date,
                 0,
             ));
         sessionsElems.appendChild(sessionHref);
     });
-    const nextPrev = handlerViews.createPagination(query, "#sessions", sessions.length === constants.LIMIT);
+    const nextPrev = handlerViews.createPagination(query, `#${constants.SESSION_ROUTE}`, sessions.length === constants.LIMIT);
     div.appendChild(sessionsElems);
     container.replaceChildren(div, nextPrev);
     sessionStorage.setItem('back', window.location.hash);
@@ -218,7 +222,7 @@ function createPlayerListView(session, removePlayerFromSession = undefined) {
             .forEach(player => {
                 if (!removePlayerFromSession || removePlayerFromSession && player.pid === parseInt(sessionStorage.getItem('pid'))) {
                     const playerLi = views.li(
-                        ...handlerViews.hrefConstructor("#players", player.pid, player.username)
+                        ...handlerViews.hrefConstructor(`#${constants.PLAYER_ROUTE}`, player.pid, player.username)
                     );
                     playerList.appendChild(playerLi);
                 } else {
@@ -232,7 +236,7 @@ function createPlayerListView(session, removePlayerFromSession = undefined) {
                     const playerLi = views.li(
                         views.div(
                             {class: "player-list"},
-                            ...handlerViews.hrefConstructor("#players", player.pid, player.username),
+                            ...handlerViews.hrefConstructor(`#${constants.PLAYER_ROUTE}`, player.pid, player.username),
                             button
                         )
                     )
@@ -243,8 +247,8 @@ function createPlayerListView(session, removePlayerFromSession = undefined) {
     div.appendChild(playerList);
     const nextPrev = handlerViews.createPagination(
         requestUtils.getQuery(),
-        "#sessions/"+session.sid,
-        session.players !== undefined && session.players.length >= constants.LIMIT_PLAYERS,
+        `${constants.SESSION_ROUTE}/${session.sid}`,
+        session.players && session.players.length >= constants.LIMIT_PLAYERS,
         constants.ELEMENTS_PER_PAGE_PLAYERS
     );
     div.appendChild(nextPrev)
@@ -380,7 +384,7 @@ function createUpdateSessionButtonView(session) {
     const updateSessionButton = views.button({type: "submit", class: "general-button"}, "Update Session");
     updateSessionButton.addEventListener('click', (e) => {
         e.preventDefault();
-        handlerUtils.changeHash("#updateSession/" + session.sid)
+        handlerUtils.changeHash(`updateSession/${session.sid}`)
     });
     return updateSessionButton;
 }
@@ -394,8 +398,10 @@ function createUpdateSessionButtonView(session) {
  * @returns {*} delete session button view
  */
 function createDeleteOrLeaveSessionButtonView(
-    session, isLeaveButton = false,
-    deleteSession = undefined, removePlayerFromSession = undefined
+    session,
+    isLeaveButton = false,
+    deleteSession = undefined,
+    removePlayerFromSession = undefined
 ) {
     const buttonText = isLeaveButton ? "Leave Session" : "Delete Session";
     const button = views.button({type: "submit", class: "general-button"}, buttonText);

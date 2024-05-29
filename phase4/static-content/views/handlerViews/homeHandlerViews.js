@@ -74,7 +74,7 @@ function createRegisterView() {
     const container = views.div({class: "player-details-container"});
     const header = handlerViews.createHeader("Create Account");
     const name = handlerViews.createLabeledInput("name", "Name");
-    const username = handlerViews.createLabeledInput("username", "Username (optional)");
+    const username = handlerViews.createLabeledInput("username", "Username");
     const email = handlerViews.createLabeledEmailInput("email", "Email");
     const password = handlerViews.createLabeledPasswordInput("password", "Password");
     const confirmPassword = handlerViews.createLabeledPasswordInput("confirm-password", "Confirm Password");

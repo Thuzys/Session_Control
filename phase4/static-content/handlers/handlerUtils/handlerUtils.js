@@ -48,11 +48,27 @@ function createURL(route, query = undefined) {
     return `${constants.API_BASE_URL}${route}${query ? `?${handlerUtils.makeQueryString(query)}` : ""}`
 }
 
+/**
+ * Create a route from a base path and path parameters
+ *
+ * @param basePath the base path
+ * @param pathParams the path parameters
+ * @returns {string|*} the route
+ */
+function createRoute(basePath, ...pathParams) {
+    if (pathParams.length === 0) {
+        return basePath;
+    }
+
+    return `${basePath}/${pathParams.join('/')}`
+}
+
 const handlerUtils = {
     childrenToString,
     changeHash,
     makeQueryString,
-    createURL
+    createURL,
+    createRoute
 }
 
 export default handlerUtils

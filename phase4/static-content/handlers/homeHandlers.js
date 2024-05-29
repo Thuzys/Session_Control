@@ -12,7 +12,7 @@ import handlerUtils from "./handlerUtils/handlerUtils.js";
 function getHome(mainContent) {
     const pid = sessionStorage.getItem('pid');
     const token = sessionStorage.getItem('token');
-    const route = `${constants.PLAYER_ID_ROUTE}${pid}`;
+    const route = handlerUtils.createRoute(constants.API_PLAYER_ROUTE, pid);
     const url = handlerUtils.createURL(route);
 
     fetcher
@@ -41,7 +41,7 @@ function handleLoginSubmit(e) {
     e.preventDefault();
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-    const url = handlerUtils.createURL(constants.LOGIN_ROUTE);
+    const url = handlerUtils.createURL(constants.API_LOGIN_ROUTE);
     const body = {username: username, password: password};
 
     fetcher
@@ -76,7 +76,7 @@ function handleCreateAccountSubmit(e) {
         return;
     }
 
-    const url = handlerUtils.createURL(constants.PLAYER_ROUTE);
+    const url = handlerUtils.createURL(constants.API_PLAYER_ROUTE);
     const body = {
         name: name,
         username: username,
@@ -97,7 +97,7 @@ function handleLogInRegisterResponse(response) {
     sessionStorage.setItem('pid', response.pid);
     sessionStorage.setItem('isAuthenticated', 'true');
     sessionStorage.setItem('token', response.token);
-    handlerUtils.changeHash('#players/home');
+    handlerUtils.changeHash(constants.PLAYERS_HOME_ROUTE);
 }
 
 /**
@@ -109,14 +109,16 @@ function logOut() {
     }
     sessionStorage.setItem('isAuthenticated', 'false');
 
-    const route = `${constants.PLAYER_ID_ROUTE}${sessionStorage.getItem("pid")}`
+    const pid = sessionStorage.getItem("pid")
+    const route = handlerUtils.createRoute(constants.API_PLAYER_ROUTE, pid);
     const url = handlerUtils.createURL(route);
 
     fetcher
         .put(url, sessionStorage.getItem('token')).then(_ => {})
+
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('pid');
-    handlerUtils.changeHash('#logIn');
+    handlerUtils.changeHash(constants.LOGIN_ROUTE);
     window.location.reload();
 }
 

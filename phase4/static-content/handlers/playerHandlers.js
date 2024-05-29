@@ -10,7 +10,8 @@ import handlerUtils from "./handlerUtils/handlerUtils.js";
  * @param mainContent main content of the page
  */
 function getPlayerDetailsByPid(mainContent) {
-    const route = `${constants.PLAYER_ID_ROUTE}${requestUtils.getParams()}`
+    const pid = requestUtils.getParams();
+    const route = handlerUtils.createRoute(constants.API_PLAYER_ROUTE, pid);
     const url = handlerUtils.createURL(route);
     const token = sessionStorage.getItem('token');
 
@@ -28,8 +29,7 @@ function getPlayerDetailsByPid(mainContent) {
  * @param mainContent main content of the page
  */
 function getPlayerDetails(mainContent) {
-    const route = constants.PLAYER_ID_ROUTE.replace("/", "");
-    const url = handlerUtils.createURL(route, requestUtils.getQuery());
+    const url = handlerUtils.createURL(constants.API_PLAYER_ROUTE, requestUtils.getQuery());
     const token = sessionStorage.getItem('token');
 
     fetcher
@@ -73,7 +73,7 @@ function handlePlayerSearchSubmit(e) {
     if (pid.value === "") {
         return;
     }
-    handlerUtils.changeHash(`#players?username=${pid.value}`);
+    handlerUtils.changeHash(`${constants.PLAYER_ROUTE}?username=${pid.value}`);
 }
 
 export default {

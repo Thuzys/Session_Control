@@ -32,7 +32,7 @@ function handleCreateGameSubmit(e) {
         dev: inputDev.value,
         genres: genres
     }
-    const url = handlerUtils.createURL(constants.GAME_ROUTE)
+    const url = handlerUtils.createURL(constants.API_GAME_ROUTE)
     const token = sessionStorage.getItem('token')
 
     fetcher
@@ -45,7 +45,7 @@ function handleCreateGameSubmit(e) {
  * @param response response of the create game request
  */
 function handleCreateGameResponse(response) {
-    handlerUtils.changeHash(`games/${response.id}`)
+    handlerUtils.changeHash(`${constants.GAME_ROUTE}/${response.id}`)
 }
 
 /**
@@ -80,7 +80,7 @@ function handleSearchGamesSubmit(e) {
 
     params.set('offset', "0")
 
-    handlerUtils.changeHash(`games?${params}`)
+    handlerUtils.changeHash(`${constants.GAME_ROUTE}?${params}`)
 }
 
 /**
@@ -89,7 +89,7 @@ function handleSearchGamesSubmit(e) {
  * @param mainContent main content of the page
  */
 function getGames(mainContent) {
-    const url = handlerUtils.createURL(constants.GAME_ROUTE, requestUtils.getQuery())
+    const url = handlerUtils.createURL(constants.API_GAME_ROUTE, requestUtils.getQuery())
     const token = sessionStorage.getItem('token')
 
     fetcher
@@ -116,7 +116,8 @@ function handleGetGamesResponse(games, mainContent) {
  * @param mainContent main content of the page
  */
 function getGameDetails(mainContent){
-    const route = `${constants.GAME_ID_ROUTE}${requestUtils.getParams()}`
+    const gid = requestUtils.getParams();
+    const route = handlerUtils.createRoute(constants.API_GAME_ROUTE, gid)
     const url = handlerUtils.createURL(route)
     const token = sessionStorage.getItem('token')
 

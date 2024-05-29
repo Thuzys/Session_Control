@@ -12,7 +12,7 @@ object GameHandlerStunt : GameHandlerInterface {
         TODO()
     }
 
-    override fun getGames(request: Request): Response {
+    override fun getGameByDevAndGenres(request: Request): Response {
         TODO()
     }
 }

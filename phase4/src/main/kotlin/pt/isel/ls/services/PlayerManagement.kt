@@ -7,6 +7,8 @@ import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.domain.info.email_password
 import pt.isel.ls.domain.info.name_username
 import pt.isel.ls.domain.info.PlayerAuthentication
+import pt.isel.ls.domain.validateEmail
+import pt.isel.ls.domain.validatePassword
 import pt.isel.ls.storage.PlayerStorageInterface
 
 /**
@@ -24,7 +26,12 @@ class PlayerManagement(private val storage: PlayerStorageInterface) : PlayerServ
     ): PlayerAuthentication =
         tryCatch("Unable to create a new Player due") {
             val (name, username) = nameUsername
+            val (email, password) = emailPassword
             requireValidParam(name.isNotBlank()) { "Name must not be blank." }
+            requireValidParam(validatePassword(password)) {
+                "Password must have at least 8 characters, one letter, and one digit."
+            }
+            requireValidParam(validateEmail(email)) { "Email must have the correct pattern." }
             val condition = !username.isNullOrBlank() || username == null
             requireValidParam(condition) { "Username cannot be empty." }
             val player = nameUsername associateWith emailPassword

@@ -41,12 +41,11 @@ function option(attributes = {}) {
 
 /**
  * Create ul element with the given items.
- * @param attributes
  * @param items
  * @returns {HTMLUListElement}
  */
-function ul(attributes = {},...items) {
-    return createElement("ul", addAttribute(attributes, "id", "ul" ), ...items.map(li))
+function ul(...items) {
+    return createElement("ul", {id: "ul"}, ...items.map(li))
 }
 
 /**
@@ -55,7 +54,7 @@ function ul(attributes = {},...items) {
  * @returns {HTMLLIElement}
  */
 function li(content) {
-    return createElement("li", {id: "il"}, content);
+    return createElement("li", {}, content);
 }
 
 /**
@@ -109,39 +108,7 @@ function h3(attributes = {}, ...children) {
 }
 
 /**
- * Create h4 element with the given attributes and children.
- * @param attributes
- * @param children
- * @returns {HTMLElement}
- */
-function h4(attributes = {}, ...children) {
-    return createElement("h4", attributes, ...children);
-}
-
-/**
- * Create h5 element with the given attributes and children.
- * @param attributes
- * @param children
- * @returns {HTMLElement}
- */
-function h5(attributes = {}, ...children) {
-    return createElement("h5", attributes, ...children);
-
-}
-
-/**
- * Create h6 element with the given attributes and children.
- * @param attributes
- * @param children
- * @returns {HTMLElement}
- */
-function h6(attributes = {}, ...children) {
-    return createElement("h6", attributes, ...children);
-
-}
-
-/**
- * Create a element with the given attributes and children.
+ * Create anchor element with the given attributes and children.
  * @param attributes
  * @param children
  * @returns {HTMLAnchorElement}
@@ -162,11 +129,11 @@ function input(attributes = {}) {
 /**
  * Create a label element with the given attributes and text content.
  * @param attributes
- * @param children
+ * @param textContent
  * @returns {HTMLLabelElement}
  */
-function label(attributes = {}, ...children) {
-    return createElement("label", attributes, ...children);
+function label(attributes = {}, textContent) {
+    return createElement("label", attributes, textContent);
 }
 
 /**
@@ -218,50 +185,6 @@ function image(attributes) {
     return createElement('img', attributes);
 }
 
-/**
- * Create an i element with the given attributes and children.
- * @param attributes
- * @param children
- * @returns {HTMLElement}
- */
-function i(attributes = {}, ...children) {
-    return createElement("i", attributes, ...children);
-}
-
-/**
- * Create a nav element with the given attributes and children.
- * @param attributes
- * @param children
- * @returns {HTMLElement}
- */
-function nav(attributes = {}, ...children) {
-    return createElement("nav", attributes, ...children);
-}
-
-/**
- * Create an hr element with the given attributes.
- * @param attributes
- * @returns {HTMLElement}
- */
-function hr(attributes = {}) {
-    return createElement("hr", attributes);
-}
-
-function span(attributes = {}, ...children) {
-    return createElement("span", attributes, ...children);
-}
-
-/**
- * Add an attribute to the given attributes object.
- * @param attributes
- * @param key
- * @param value
- * @returns {*}
- */
-function addAttribute(attributes, key, value) {
-    return {...attributes, [key]: value};
-}
-
 const views = {
     datalist,
     option,
@@ -279,14 +202,7 @@ const views = {
     a,
     h2,
     h3,
-    image,
-    i,
-    nav,
-    h4,
-    hr,
-    span,
-    h5,
-    h6,
+    image
 }
 
 export default views

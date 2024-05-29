@@ -53,8 +53,6 @@ function enableLightMode() {
     localStorage.setItem('lightMode', 'enabled');
 }
 
-
-
 /** Disable light mode **/
 function disableLightMode() {
     const mainContent = document.getElementById('mainContent');

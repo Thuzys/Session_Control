@@ -176,9 +176,39 @@ class SessionStorage(envName: String) : SessionStorageInterface {
     override fun updateRemovePlayer(
         sid: UInt,
         pid: UInt,
+        token: String,
     ) {
         dataSource.connection.use { connection ->
             connection.executeCommand {
+                var verificationCMD =
+                    """
+                    select p.token from player p join session s on p.pid = s.owner
+                    where s.sid = ? and p.token = ?;
+                    """.trimIndent()
+                val stmt0 = connection.prepareStatement(verificationCMD)
+                var idx = 1
+                stmt0.setInt(idx++, sid.toInt())
+                stmt0.setString(idx, token)
+                val rs = stmt0.executeQuery()
+                val errorMsg =
+                    """
+                    Invalid player to delete.
+                    User must be the owner of the session or the player itself to realize this operation.
+                    """.trimIndent()
+                if (!rs.next()) {
+                    verificationCMD =
+                        """
+                        select p.token from player p join player_session ps on p.pid = ps.pid
+                        where ps.sid = ? and ps.pid = ? and p.token = ?;
+                        """.trimIndent()
+                    val stmt01 = connection.prepareStatement(verificationCMD)
+                    idx = 1
+                    stmt01.setInt(idx++, sid.toInt())
+                    stmt01.setInt(idx++, pid.toInt())
+                    stmt01.setString(idx, token)
+                    val rs1 = stmt01.executeQuery()
+                    checkValidStorage(rs1.next()) { errorMsg }
+                }
                 val deletePlayerCMD = "DELETE FROM PLAYER_SESSION WHERE pid = ? AND sid = ?;"
                 val stmt1 = connection.prepareStatement(deletePlayerCMD)
                 stmt1.setInt(1, pid.toInt())

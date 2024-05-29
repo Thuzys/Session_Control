@@ -83,7 +83,7 @@ class SessionHandler(
                 """.trimIndent()
             return badResponse(msg)
         }
-        return tryResponse(Status.INTERNAL_SERVER_ERROR, "An error occurred while retrieving sessions.") {
+        return tryResponse(Status.NOT_FOUND, "An error occurred while retrieving sessions.") {
             val gameInfo = Pair(gid, gameName)
             val playerInfo = Pair(pid, userName)
             val sessionsInfo = sessionManagement.getSessions(gameInfo, date, state, playerInfo, offset, limit)
@@ -120,7 +120,7 @@ class SessionHandler(
             return badResponse("capacity and date not provided. Session not modified")
         }
         return tryResponse(
-            Status.NOT_MODIFIED,
+            Status.CONFLICT,
             "Error updating session $sid. Check if $sid is valid",
         ) {
             val authentication = Pair(pid, sid)
@@ -133,12 +133,17 @@ class SessionHandler(
         unauthorizedAccess(request, playerManagement)?.let { return unauthorizedResponse(it) }
         val player = request.toPidOrNull()
         val session = request.toSidOrNull()
-        return if (player == null || session == null) {
+        val token = request.toTokenOrNull()
+        val args = arrayOf(player, session, token)
+        return if (args.any { it == null }) {
             val msg = "Invalid or Missing parameters. Please provide 'player' and 'session' as valid values"
             badResponse(msg)
         } else {
-            tryResponse(Status.NOT_MODIFIED, "Error removing Player $player from the Session $session.") {
-                sessionManagement.removePlayer(player, session)
+            tryResponse(Status.FORBIDDEN, "Error removing Player $player from the Session $session.") {
+                checkNotNull(player) { "Player is null" }
+                checkNotNull(session) { "Session is null" }
+                checkNotNull(token) { "Token is null" }
+                sessionManagement.removePlayer(player, session, token.toString())
                 val msg = "Player $player removed from Session $session successfully."
                 return okResponse(createJsonRspMessage(msg))
             }
@@ -151,7 +156,7 @@ class SessionHandler(
         return if (sid == null) {
             badResponse("Invalid or Missing 'sid'")
         } else {
-            tryResponse(Status.NOT_MODIFIED, "Error deleting Session $sid.") {
+            tryResponse(Status.FORBIDDEN, "Error deleting Session $sid.") {
                 sessionManagement.deleteSession(sid)
                 return okResponse(createJsonRspMessage("Session $sid deleted successfully."))
             }

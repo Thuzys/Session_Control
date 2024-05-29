@@ -36,9 +36,6 @@ class GameHandler(
                 checkNotNull(name) { "Name must be provided." }
                 checkNotNull(dev) { "Dev must be provided." }
                 checkNotNull(genres) { "Genres must be provided." }
-                if (genres.isEmpty()) {
-                    return badResponse("Genres cannot be empty.")
-                }
                 val gid = gameManagement.createGame(name, dev, genres)
                 createdResponse(createJsonRspMessage(message = "Game created with id $gid.", id = gid))
             }
@@ -65,7 +62,7 @@ class GameHandler(
         val offset = request.query("offset")?.toUIntOrNull()
         val limit = request.query("limit")?.toUIntOrNull()
         val dev = request.query("dev")
-        val genres = request.query("genres") ?.let { processGenres(it) }
+        val genres = request.query("genres")?.let { processGenres(it) }
         val name = request.query("name")
         val params = arrayOf(dev, genres, name)
 
@@ -73,7 +70,7 @@ class GameHandler(
             val msg = "Invalid arguments: at least one of the following must be provided: dev, genres, name"
             badResponse(msg)
         } else {
-            tryResponse(Status.INTERNAL_SERVER_ERROR, "An error occurred while retrieving games.") {
+            tryResponse(Status.NOT_FOUND, "An error occurred while retrieving games.") {
                 val games = gameManagement.getGames(dev, genres, name, offset, limit)
                 foundResponse(Json.encodeToString(games))
             }

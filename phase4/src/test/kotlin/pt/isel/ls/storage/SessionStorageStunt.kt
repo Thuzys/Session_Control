@@ -12,6 +12,7 @@ import pt.isel.ls.domain.info.GameInfoParam
 import pt.isel.ls.domain.info.PlayerInfo
 import pt.isel.ls.domain.info.PlayerInfoParam
 import pt.isel.ls.domain.info.SessionInfo
+import pt.isel.ls.services.currentLocalDate
 import pt.isel.ls.services.getSessionState
 import kotlin.collections.HashMap
 
@@ -36,7 +37,7 @@ class SessionStorageStunt : SessionStorageInterface {
         )
 
     private var sessionUuid: UInt = 4u
-    private val date1 = LocalDate(2024, 3, 10)
+    private val date1 = currentLocalDate()
     private val players: Collection<PlayerInfo> = listOf(player1)
     private val players2: Collection<PlayerInfo> = listOf(player1, player2)
     private val completePlayers = listOf(completePlayer1, completePlayer2)
@@ -86,7 +87,7 @@ class SessionStorageStunt : SessionStorageInterface {
                     (
                         playerInfo == null ||
                             session.players.any { player ->
-                                player.pid == playerInfo.first || player.userName == playerInfo.second
+                                player.pid == playerInfo.first || player.username == playerInfo.second
                             }
                     )
             }
@@ -149,9 +150,14 @@ class SessionStorageStunt : SessionStorageInterface {
     override fun updateRemovePlayer(
         sid: UInt,
         pid: UInt,
+        token: String,
     ) {
         hashSession[sid]?.let { session ->
-            hashSession[sid] = session.copy(players = session.players.filter { player -> player.pid != pid })
+            hashSession[sid] =
+                session
+                    .copy(
+                        players = session.players.filter { player -> player.pid != pid && token != "invalid_token" },
+                    )
         }
     }
 

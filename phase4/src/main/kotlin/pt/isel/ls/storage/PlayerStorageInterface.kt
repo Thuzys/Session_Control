@@ -39,7 +39,7 @@ interface PlayerStorageInterface {
     fun readBy(
         email: Email? = null,
         token: String? = null,
-        userName: String? = null,
+        username: String? = null,
         limit: UInt = LIMIT.toUInt(),
         offset: UInt = OFFSET.toUInt(),
     ): Collection<Player>?
@@ -61,7 +61,7 @@ interface PlayerStorageInterface {
     /**
      * Deletes a token from the storage.
      *
-     * @param token The token to be deleted.
+     * @param pid The token to be deleted.
      */
-    fun deleteToken(token: String)
+    fun deleteToken(pid: UInt)
 }

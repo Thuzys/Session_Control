@@ -33,11 +33,6 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
             checkNotNull(name) { "name not found or invalid." }
             checkNotNull(email) { "email not found or invalid." }
             checkNotNull(password) { "password not found or invalid." }
-            if (name.isBlank()) {
-                return badResponse("name cannot be empty")
-            } else if (username != null && username.isBlank()) {
-                return badResponse("username cannot be empty")
-            }
             tryResponse(Status.BAD_REQUEST, "Unable to create player.") {
                 val nameParam = name to username
                 val emailPassParam = email to password
@@ -58,14 +53,10 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
 
     override fun getPlayerBy(request: Request): Response {
         unauthorizedAccess(request, playerManagement)?.let { return unauthorizedResponse(it) }
-        val userName = request.readQuery("username")
-        return if (userName == null) {
-            badResponse("insufficient parameters")
-        } else {
-            tryResponse(Status.NOT_FOUND, "Player not found.") {
-                val player = playerManagement.getPlayerDetailsBy(userName)
-                foundResponse(Json.encodeToString(player))
-            }
+        val userName = request.readQuery("username") ?: return badResponse("username not found or invalid")
+        return tryResponse(Status.NOT_FOUND, "Player not found.") {
+            val player = playerManagement.getPlayerDetailsBy(userName)
+            foundResponse(Json.encodeToString(player))
         }
     }
 
@@ -78,8 +69,8 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
             badResponse("insufficient parameters")
         } else {
             tryResponse(Status.BAD_REQUEST, "Unable to login player.") {
-                username as String
-                password as String
+                checkNotNull(username) { "username must not be null." }
+                checkNotNull(password) { "password must not be null." }
                 val playerInfo = playerManagement.login(username, password)
                 okResponse(Json.encodeToString(playerInfo))
             }
@@ -88,10 +79,9 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
 
     override fun logout(request: Request): Response {
         unauthorizedAccess(request, playerManagement)?.let { return unauthorizedResponse(it) }
-        val token = request.toTokenOrNull()
-        checkNotNull(token) { "token not found or invalid." }
-        return tryResponse(Status.BAD_REQUEST, "Unable to logout player.") {
-            playerManagement.logout(token)
+        val pid = request.toPidOrNull() ?: return badResponse("pid not found or invalid")
+        return tryResponse(Status.FORBIDDEN, "Unable to logout player.") {
+            playerManagement.logout(pid)
             okResponse(createJsonRspMessage("Player logged out successfully."))
         }
     }

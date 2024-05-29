@@ -1,8 +1,8 @@
 package pt.isel.ls.utils
 
 import pt.isel.ls.domain.errors.ServicesError
+import pt.isel.ls.domain.errors.StorageError
 import pt.isel.ls.services.tryCatch
-import java.sql.SQLException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -29,7 +29,7 @@ class TryCatchTest {
             expected = "test: the reason.",
             actual =
                 runCatching {
-                    tryCatch("test") { throw SQLException("the reason.") }
+                    tryCatch("test") { throw StorageError("the reason.") }
                 }.exceptionOrNull()?.message,
         )
     }

@@ -1,16 +1,19 @@
 package pt.isel.ls.services
 
-import kotlinx.datetime.LocalDate
+import kotlinx.datetime.DatePeriod
+import kotlinx.datetime.plus
 import pt.isel.ls.domain.SessionState
+import pt.isel.ls.domain.errors.ParamError
 import pt.isel.ls.domain.errors.ServicesError
 import pt.isel.ls.storage.SessionStorageStunt
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-private val date1 = LocalDate(2024, 3, 10)
-private val date2 = LocalDate(1904, 3, 10)
+private val date1 = currentLocalDate()
+private val date2 = date1.plus(DatePeriod(days = 1))
 private val owner = Pair(1u, "username")
 
 class SessionManagementTest {
@@ -95,7 +98,7 @@ class SessionManagementTest {
     @Test
     fun `get Sessions by date returns successfully`() {
         actionSessionManagementTest { sessionManagement: SessionServices ->
-            val date = LocalDate(2024, 3, 10)
+            val date = currentLocalDate()
             val sessions = sessionManagement.getSessions(date = date)
             assertEquals(3, sessions.size)
             assertTrue(sessions.all { session -> session.date == date })
@@ -140,7 +143,7 @@ class SessionManagementTest {
         actionSessionManagementTest { sessionManagement: SessionServices ->
             val currentCollection = sessionManagement.sessionDetails(1u)
             val currentSize = currentCollection.players.size
-            sessionManagement.removePlayer(1u, 1u)
+            sessionManagement.removePlayer(1u, 1u, "valid_token")
             val newCollection = sessionManagement.sessionDetails(1u)
             assertTrue { newCollection.players.size == currentSize.dec() }
         }
@@ -163,7 +166,7 @@ class SessionManagementTest {
         actionSessionManagementTest { sessionManagement: SessionServices ->
             val currentCollection = sessionManagement.sessionDetails(1u)
             val currentSize = currentCollection.players.size
-            sessionManagement.removePlayer(4u, 1u)
+            sessionManagement.removePlayer(4u, 1u, "valid_token")
             val newCollection = sessionManagement.sessionDetails(1u)
             assertTrue { newCollection.players.size == currentSize }
         }
@@ -192,14 +195,12 @@ class SessionManagementTest {
     }
 
     @Test
-    fun `trying to update a session with capacity and date null does not affect the session`() {
+    fun `trying to update a session with capacity and date null does not affect the session due ServiceError`() {
         actionSessionManagementTest { sessionManagement: SessionServices ->
-            val oldSession = sessionManagement.sessionDetails(1u)
             val authentication = Pair(1u, 1u)
-            sessionManagement.updateCapacityOrDate(authentication, null, null)
-            val updatedSession = sessionManagement.sessionDetails(1u)
-            assertEquals(oldSession.date, updatedSession.date)
-            assertEquals(oldSession.capacity, updatedSession.capacity)
+            assertFailsWith<ParamError> {
+                sessionManagement.updateCapacityOrDate(authentication, null, null)
+            }
         }
     }
 
@@ -224,7 +225,7 @@ class SessionManagementTest {
     fun `getPlayerFromSession returns a player successfully`() {
         actionSessionManagementTest { sessionManagement: SessionServices ->
             val player = sessionManagement.getPlayerFromSession(1u, 1u)
-            assertEquals(1u, player.pid)
+            assertEquals(1u, player?.pid)
         }
     }
 
@@ -232,9 +233,7 @@ class SessionManagementTest {
     fun `getPlayerFromSession fails due to player not found with Services Error`() {
         actionSessionManagementTest { sessionManagement: SessionServices ->
             val nonExistentPid = 70u
-            assertFailsWith<ServicesError> {
-                sessionManagement.getPlayerFromSession(nonExistentPid, 1u)
-            }
+            assertNull(sessionManagement.getPlayerFromSession(nonExistentPid, 1u))
         }
     }
 }

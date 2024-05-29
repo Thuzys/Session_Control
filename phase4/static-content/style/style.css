@@ -82,7 +82,7 @@ a[hRef].light-mode:hover {
 .player-details-container {
     min-width: 800px;
     min-height: 200px;
-    background: black;
+    background: #313338;
 }
 
 .player-details-container.light-mode {
@@ -254,7 +254,7 @@ input.light-mode:focus {
 
 .card {
     background-color: #111;
-    box-shadow: 0 4px 8px 0 rgb(0, 123, 255);
+    box-shadow: 0 4px 8px 0 rgb(0, 0, 0);
     max-width: 300px;
     margin: 10px;
     text-align: center;
@@ -314,13 +314,13 @@ input.light-mode:focus {
 .card-a.light-mode {
     text-decoration: none;
     font-size: 120px;
-    color: #007bff;
+    color: #000000;
     transition: color 0.3s ease;
     margin: 2px;
 }
 
 .card-a.light-mode:hover {
-    color: #111;
+    color: #007bff;
 }
 
 .title.light-mode {
@@ -425,7 +425,7 @@ body {
     justify-content: center;
     align-items: center;
     font-family: "Montserrat", sans-serif;
-    background: #000;
+    background: #313338;
 }
 
 body.light-mode {
@@ -456,7 +456,7 @@ h5.light-mode {
     min-height: 1200px;
     margin-top: 100px;
     margin-left: 120px;
-    background-color: #000000;
+    background-color: #313338;
     color: white;
 }
 
@@ -694,5 +694,36 @@ hr.light-mode {
 
 .background-state.light-mode {
     background-color: white;
+    color: black;
+}
+
+.player-list {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 25px;
+}
+
+.player-list  :first-child {
+    margin-left: 20px;
+}
+
+.player-list > :first-child {
+    margin: auto;
+}
+
+.remove-button {
+    float: right;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: white;
+}
+
+.remove-button:hover {
+    color: darkred;
+}
+
+.remove-button.light-mode {
     color: black;
 }

@@ -79,6 +79,9 @@ function hashChangeHandler() {
         const navigationBar = navigationViews.createNavigationBarView();
         document.body.insertBefore(navigationBar, document.getElementById("mainContent"));
     }
+    if (!location.hash.includes('sessions/')) {
+        sessionStorage.removeItem('isInSession');
+    }
 
     const mainContent = document.getElementById("mainContent")
     const path =  requestUtils.getPath()

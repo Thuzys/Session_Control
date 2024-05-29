@@ -4,6 +4,23 @@ drop function if exists add_owner_to_session();
 drop function if exists check_capacity(int);
 drop function if exists is_session_closed();
 drop function if exists check_capacity();
+drop function if exists delete_player_from_sessions();
+
+create or replace function check_valid_capacity() returns trigger as $$
+begin
+    if (new.capacity < (select count(pid) from player_session where sid = new.sid)) then
+        raise exception 'Capacity must be greater than the number of players in the session';
+    end if;
+    return new;
+end;
+$$ language plpgsql;
+
+create or replace function delete_player_from_sessions() returns trigger as $$
+begin
+    delete from player_session where player_session.pid = old.pid;
+    return old;
+end;
+$$ language plpgsql;
 
 create or replace function check_capacity() returns trigger as $$
 begin
@@ -76,7 +93,7 @@ begin
         where
             (Pgid is null or s.gid = Pgid) and
             (currDate is null or s.date = to_date(currDate, 'YYYY-MM-DD')) and
-            (gameName is null or s.game_name = gameName)
+            (gameName is null or compare_name(s.game_name, gameName))
         group by s.sid, s.capacity, s.game_name, s.date, s.gid, s.owner
         having (state is null) or
             (state = 'OPEN' and count(u.pid) < s.capacity and now() <= s.date) or

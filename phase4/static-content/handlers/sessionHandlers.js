@@ -131,23 +131,22 @@ function getSessionDetails(mainContent) {
  * @param mainContent
  */
 function makeSessionDetails(session, mainContent) {
-    Promise.resolve(sessionStorage.getItem('isInSession') === "true")
-        .then(isInSession => {
-            const playerListView = sessionHandlerViews.createPlayerListView(session);
-            Promise.resolve(sessionStorage.getItem('isOwner') === "true")
-                .then(isOwner => {
-                    const container = sessionHandlerViews.createSessionDetailsView(
-                        session,
-                        playerListView,
-                        isOwner,
-                        isInSession,
-                        addPlayerToSession,
-                        removePlayerFromSession,
-                        deleteSession
-                    );
-                    mainContent.replaceChildren(container);
-                });
-        });
+    let playerListView;
+    if (!isPlayerOwner(session)) {
+        playerListView = sessionHandlerViews.createPlayerListView(session);
+    } else {
+        playerListView = sessionHandlerViews.createPlayerListView(session, removePlayerFromSession);
+    }
+    const container = sessionHandlerViews.createSessionDetailsView(
+        session,
+        playerListView,
+        isPlayerOwner(session),
+        sessionStorage.getItem('isInSession') === "true",
+        addPlayerToSession,
+        removePlayerFromSession,
+        deleteSession
+    );
+    mainContent.replaceChildren(container);
 }
 
 /**
@@ -157,36 +156,21 @@ function makeSessionDetails(session, mainContent) {
  * @param mainContent main content of the page
  */
 function handleGetSessionDetailsResponse(session, mainContent) {
-    window.addEventListener('hashchange', function() {
-        if (!location.hash.includes('sessions/')) {
-            sessionStorage.removeItem('isOwner');
-            sessionStorage.removeItem('isInSession');
-        }
-    });
-
-    let isOwner = sessionStorage.getItem('isOwner');
-    if (isOwner == null) {
-        isOwner = isPlayerOwner(session);
-        sessionStorage.setItem('isOwner', isOwner.toString());
-    }
     const pid = sessionStorage.getItem('pid');
     const token = sessionStorage.getItem('token');
 
     const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${session.sid}/${pid}`;
-    let isInSession = sessionStorage.getItem('isInSession');
-    let getPlayerFromSessionError = false;
+    const isInSession = sessionStorage.getItem('isInSession');
     if (isInSession === null) {
         fetcher.get(
             url,
             token,
-            false,
-            () => {
-                sessionStorage.setItem('isInSession', "false")
-                getPlayerFromSessionError = true;
-            }
-        ).then(_ => {
-            if (!getPlayerFromSessionError) {
+            false
+        ).then(response => {
+            if (response !== null) {
                 sessionStorage.setItem('isInSession', "true");
+            } else {
+                sessionStorage.setItem('isInSession', "false");
             }
             makeSessionDetails(session, mainContent);
         });
@@ -212,9 +196,15 @@ function addPlayerToSession(sid) {
 /**
  * Remove player from session
  * @param sid
+ * @param pid_remove
  */
-function removePlayerFromSession(sid) {
-    const pid = sessionStorage.getItem('pid');
+function removePlayerFromSession(sid, pid_remove = undefined) {
+    let pid;
+    if (pid_remove === undefined) {
+        pid = sessionStorage.getItem('pid');
+    }  else  {
+        pid = pid_remove;
+    }
     const token = sessionStorage.getItem('token');
     const url = `${constants.API_BASE_URL}${constants.SESSION_ID_ROUTE}${sid}/${pid}`;
     fetcher.del(url, token)

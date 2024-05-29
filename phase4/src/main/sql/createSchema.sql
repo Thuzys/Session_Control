@@ -26,7 +26,7 @@ create table PLAYER (
     name varchar(80),
     username varchar(40) unique not null,
     email varchar(40) check (position('@' in email) > 0) unique,
-    password varchar(40) not null,
+    password varchar(120) not null,
     token varchar(40)
 );
 

@@ -14,14 +14,26 @@ function getHome(mainContent) {
     const token = sessionStorage.getItem('token');
     const route = handlerUtils.createRoute(constants.API_PLAYER_ROUTE, pid);
     const url = handlerUtils.createURL(route);
-
-    fetcher
-        .get(url, token)
-        .then(
-            response =>
-                playerHandlers.handleGetPlayerDetailsResponse(response, mainContent)
-        );
-    mainContent.replaceChildren(handlerViews.createLoaderView());
+    const player = sessionStorage.getItem('player');
+    if (player == null) {
+        fetcher
+            .get(url, token)
+            .then(
+                response => {
+                    const userPlayer = {
+                        name: response.name,
+                        username: response.username,
+                        email: response.email,
+                        pid: response.pid,
+                    }
+                    sessionStorage.setItem('player', JSON.stringify(userPlayer));
+                    playerHandlers.handleGetPlayerDetailsResponse(userPlayer, mainContent)
+                }
+    );
+        mainContent.replaceChildren(handlerViews.createLoaderView());
+    } else {
+        playerHandlers.handleGetPlayerDetailsResponse(JSON.parse(player), mainContent);
+    }
 }
 
 /**
@@ -30,7 +42,7 @@ function getHome(mainContent) {
  */
 function logIn(mainContent) {
     const container = homeHandlerViews.createLoginView()
-    container.onsubmit = (e) => handleLoginSubmit(e);
+    container.onsubmit = (e) => handleLoginSubmit(e, mainContent);
     mainContent.replaceChildren(container);
 }
 
@@ -111,6 +123,7 @@ function logOut() {
         return;
     }
     sessionStorage.setItem('isAuthenticated', 'false');
+    sessionStorage.removeItem('player');
 
     const pid = sessionStorage.getItem("pid")
     const route = handlerUtils.createRoute(constants.API_PLAYER_ROUTE, pid);

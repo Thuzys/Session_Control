@@ -127,6 +127,7 @@ function getSessionDetails(mainContent) {
             response =>
                 handleGetSessionDetailsResponse(response, mainContent)
         )
+    mainContent.replaceChildren(handlerViews.createLoaderView());
 }
 
 /**
@@ -180,10 +181,10 @@ function handleGetSessionDetailsResponse(session, mainContent) {
             }
             makeSessionDetails(session, mainContent);
         });
+        mainContent.replaceChildren(handlerViews.createLoaderView());
     } else {
         makeSessionDetails(session, mainContent);
     }
-    mainContent.replaceChildren(handlerViews.createLoaderView());
 }
 
 /**

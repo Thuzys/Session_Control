@@ -92,7 +92,6 @@ function handleSearchGamesSubmit(e) {
 function getGames(mainContent) {
     const url = handlerUtils.createURL(constants.API_GAME_ROUTE, requestUtils.getQuery())
     const token = sessionStorage.getItem('token')
-
     fetcher
         .get(url, token)
         .then(response =>
@@ -128,6 +127,7 @@ function getGameDetails(mainContent){
         .then(response =>
             handleGetGameDetailsResponse(response, mainContent)
         );
+    mainContent.replaceChildren(handlerViews.createLoaderView());
 }
 
 /**

@@ -45,7 +45,8 @@ function makeQueryString(query) {
  * @returns {string} the URL
  */
 function createURL(route, query = undefined) {
-    return `${constants.API_BASE_URL}${route}${query ? `?${handlerUtils.makeQueryString(query)}` : ""}`
+    const host = `${window.location.protocol}//${window.location.host}/`;
+    return `${host}${route}${query ? `?${handlerUtils.makeQueryString(query)}` : ""}`
 }
 
 /**

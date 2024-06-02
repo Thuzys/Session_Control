@@ -63,7 +63,8 @@ create or replace function compare_name(
     name1 varchar(50), name2 varchar(50)
 ) returns boolean as $$
 begin
-    return name1 ILIKE '%' || name2 || '%';
+    raise notice 'name1: %, name2: %', name1, name2;
+    return name1 LIKE '%' || name2 || '%';
 end
 $$ language plpgsql;
 

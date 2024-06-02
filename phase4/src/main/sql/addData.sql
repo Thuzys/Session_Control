@@ -14,13 +14,59 @@ VALUES
     ('MOBA'), ('Tower Defense'),
     ('Battle Royale');
 
--- Insert values into GAME table
+-- Insert games into the GAME table
 INSERT INTO GAME (name, developer)
-VALUES ('Game 1', 'Developer A'), ('Game 2', 'Developer B'), ('Game 3', 'Developer C'), ('Game 4', 'Developer D'), ('Game 5', 'Developer E');
+VALUES
+    ('The Legend of Zelda: Breath of the Wild', 'Nintendo'),
+    ('The Witcher 3: Wild Hunt', 'CD Projekt Red'),
+    ('Minecraft', 'Mojang Studios'),
+    ('Fortnite', 'Epic Games'),
+    ('Dark Souls III', 'FromSoftware'),
+    ('Overwatch', 'Blizzard Entertainment'),
+    ('Stardew Valley', 'ConcernedApe'),
+    ('Civilization VI', 'Firaxis Games'),
+    ('Red Dead Redemption 2', 'Rockstar Games'),
+    ('Animal Crossing: New Horizons', 'Nintendo');
 
--- Insert values into GAME_GENRES table
+-- For 'The Legend of Zelda: Breath of the Wild'
 INSERT INTO GAME_GENRE (gid, genre)
-VALUES (1, 'Action'), (1, 'Adventure'), (2, 'RPG'), (3, 'Simulation'), (4, 'Turn-based Strategy'), (5, 'Sports');
+SELECT GAME.gid, GENRE.name FROM GAME JOIN GENRE ON GAME.name='The Legend of Zelda: Breath of the Wild' AND GAME.developer='Nintendo' AND GENRE.name IN ('RPG', 'Action', 'Adventure', 'Open world');
+
+-- For 'The Witcher 3: Wild Hunt'
+INSERT INTO GAME_GENRE (gid, genre)
+SELECT GAME.gid, GENRE.name FROM GAME JOIN GENRE ON GAME.name='The Witcher 3: Wild Hunt' AND GAME.developer='CD Projekt Red' AND GENRE.name IN ('RPG', 'Action', 'Open world');
+
+-- For 'Minecraft'
+INSERT INTO GAME_GENRE (gid, genre)
+SELECT GAME.gid, GENRE.name FROM GAME JOIN GENRE ON GAME.name='Minecraft' AND GAME.developer='Mojang Studios' AND GENRE.name IN ('Sandbox', 'Survival', 'Open world');
+
+-- For 'Fortnite'
+INSERT INTO GAME_GENRE (gid, genre)
+SELECT GAME.gid, GENRE.name FROM GAME JOIN GENRE ON GAME.name='Fortnite' AND GAME.developer='Epic Games' AND GENRE.name IN ('Shooter', 'Battle Royale', 'Survival');
+
+-- For 'Dark Souls III'
+INSERT INTO GAME_GENRE (gid, genre)
+SELECT GAME.gid, GENRE.name FROM GAME JOIN GENRE ON GAME.name='Dark Souls III' AND GAME.developer='FromSoftware' AND GENRE.name IN ('RPG', 'Action', 'Horror');
+
+-- For 'Overwatch'
+INSERT INTO GAME_GENRE (gid, genre)
+SELECT GAME.gid, GENRE.name FROM GAME JOIN GENRE ON GAME.name='Overwatch' AND GAME.developer='Blizzard Entertainment' AND GENRE.name IN ('Shooter', 'Action');
+
+-- For 'Stardew Valley'
+INSERT INTO GAME_GENRE (gid, genre)
+SELECT GAME.gid, GENRE.name FROM GAME JOIN GENRE ON GAME.name='Stardew Valley' AND GAME.developer='ConcernedApe' AND GENRE.name IN ('Simulation', 'RPG');
+
+-- For 'Civilization VI'
+INSERT INTO GAME_GENRE (gid, genre)
+SELECT GAME.gid, GENRE.name FROM GAME JOIN GENRE ON GAME.name='Civilization VI' AND GAME.developer='Firaxis Games' AND GENRE.name IN ('Turn-based Strategy', 'Simulation');
+
+-- For 'Red Dead Redemption 2'
+INSERT INTO GAME_GENRE (gid, genre)
+SELECT GAME.gid, GENRE.name FROM GAME JOIN GENRE ON GAME.name='Red Dead Redemption 2' AND GAME.developer='Rockstar Games' AND GENRE.name IN ('RPG', 'Action', 'Open world');
+
+-- For 'Animal Crossing: New Horizons'
+INSERT INTO GAME_GENRE (gid, genre)
+SELECT GAME.gid, GENRE.name FROM GAME JOIN GENRE ON GAME.name='Animal Crossing: New Horizons' AND GAME.developer='Nintendo' AND GENRE.name IN ('Simulation', 'Sandbox');
 
 -- Insert values into PLAYER table
 INSERT INTO PLAYER (name, email, token, username, password)
@@ -30,75 +76,3 @@ VALUES ('Player 1', 'player1@example.com', 'e247758f-02b6-4037-bd85-fc245b84d5f2
        ('Player 4', 'player4@example.com', 'e247758f-02b6-4037-bd85-fc245b84d5f2', 'Player 4', 'OBF:1v2j1uum1xtv1zej1zer1xtn1uvk1v1v'),
        ('Player 5', 'player5@example.com', 'e247758f-02b6-4037-bd85-fc245b84d5f2', 'Player 5', 'OBF:1v2j1uum1xtv1zej1zer1xtn1uvk1v1v'),
        ('Player 5', 'player6@exemple.com', 'e247758f-02b6-4037-bd85-fc245b84d5f2', 'Player 6', 'OBF:1v2j1uum1xtv1zej1zer1xtn1uvk1v1v');
-
--- Insert values into SESSION table
-INSERT INTO SESSION (capacity, gid, date, owner)
-VALUES
-    (10, 1, '2024-03-11', 2),
-    (8, 2, '2024-03-11', 1),
-    (12, 3, '2024-03-13', 1),
-    (15, 4, '2024-03-14', 1),
-    (10, 5, '2024-03-15', 1),
-    (8, 1, '2024-03-16', 1),
-    (12, 2, '2024-03-17', 1),
-    (15, 3, '2024-03-18', 1),
-    (10, 4, '2024-03-19', 1),
-    (8, 5, '2024-03-20', 1),
-    (12, 1, '2024-03-21', 1),
-    (15, 2, '2024-03-22', 1),
-    (10, 3, '2024-03-23', 1),
-    (8, 4, '2024-03-24', 1),
-    (12, 5, '2024-03-25', 1),
-    (15, 1, '2024-03-26', 1),
-    (10, 2, '2024-03-27', 1),
-    (8, 3, '2024-03-28', 1),
-    (12, 4, '2024-03-29', 1),
-    (10, 1, '2024-03-11', 1),
-    (10, 1, '2024-03-12', 1),
-    (10, 1, '2024-03-13', 1),
-    (10, 1, '2024-03-14', 1),
-    (10, 1, '2024-03-15', 1),
-    (10, 1, '2024-03-16', 1),
-    (10, 1, '2024-03-17', 1),
-    (10, 1, '2024-03-18', 1),
-    (10, 1, '2024-03-19', 1),
-    (10, 1, '2024-03-20', 1),
-    (10, 1, '2024-03-21', 1),
-    (10, 1, '2024-03-22', 1),
-    (10, 1, '2024-03-23', 1),
-    (10, 1, '2024-03-24', 1),
-    (10, 1, '2024-03-25', 1),
-    (10, 1, '2024-03-26', 1),
-    (10, 1, '2024-03-27', 1),
-    (10, 1, '2024-03-28', 1),
-    (10, 1, '2024-03-29', 1),
-    (10, 1, '2024-03-30', 1),
-    (15, 5, '2024-03-30', 1);
-
--- Insert values into PLAYER_SESSION table
-INSERT INTO PLAYER_SESSION (pid, sid)
-VALUES
-    (1, 1),
-    (2, 1),
-    (3, 1),
-    (4, 1),
-    (5, 1),
-    (2, 2),
-    (3, 3),
-    (4, 4),
-    (5, 5),
-    (1, 6),
-    (2, 7),
-    (3, 8),
-    (4, 9),
-    (5, 10),
-    (1, 11),
-    (2, 12),
-    (3, 13),
-    (4, 14),
-    (5, 15),
-    (1, 16),
-    (2, 17),
-    (3, 18),
-    (4, 19),
-    (5, 20);

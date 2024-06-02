@@ -195,9 +195,10 @@ function addPlayerToSession(sid) {
     const url = handlerUtils.createURL(route);
 
     fetcher.put(url, token)
-        .then( _ =>
-            window.location.reload()
-        )
+        .then( _ => {
+            sessionStorage.setItem('isInSession', "true");
+            window.location.reload();
+        })
 }
 
 /**

@@ -23,7 +23,7 @@ class PlayerHandler(private val playerManagement: PlayerServices) : PlayerHandle
     override fun createPlayer(request: Request): Response {
         val body = readBody(request)
         val name = body["name"]
-        val username = body["username"]
+        val username = body["username"]?.trim()
         val email = body["email"]
         val password = body["password"]
         val params = arrayOf(name, email, password)

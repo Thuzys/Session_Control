@@ -4,9 +4,9 @@ import org.eclipse.jetty.util.security.Password
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.associateWith
 import pt.isel.ls.domain.errors.ServicesError
+import pt.isel.ls.domain.info.PlayerAuthentication
 import pt.isel.ls.domain.info.email_password
 import pt.isel.ls.domain.info.name_username
-import pt.isel.ls.domain.info.PlayerAuthentication
 import pt.isel.ls.domain.validateEmail
 import pt.isel.ls.domain.validatePassword
 import pt.isel.ls.storage.PlayerStorageInterface

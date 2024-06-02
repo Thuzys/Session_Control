@@ -21,6 +21,7 @@ function getHome(mainContent) {
             response =>
                 playerHandlers.handleGetPlayerDetailsResponse(response, mainContent)
         );
+    mainContent.replaceChildren(handlerViews.createLoaderView());
 }
 
 /**

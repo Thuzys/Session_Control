@@ -52,6 +52,7 @@ function getSessions(mainContent) {
             response =>
                 handleGetSessionsResponse(response, mainContent)
         )
+    mainContent.replaceChildren(handlerViews.createLoaderView());
 }
 
 /**
@@ -182,6 +183,7 @@ function handleGetSessionDetailsResponse(session, mainContent) {
     } else {
         makeSessionDetails(session, mainContent);
     }
+    mainContent.replaceChildren(handlerViews.createLoaderView());
 }
 
 /**
@@ -240,6 +242,7 @@ function updateSession(mainContent) {
             container.onsubmit = (e) => handleUpdateSessionSubmit(e);
             mainContent.replaceChildren(container);
         });
+    mainContent.replaceChildren(handlerViews.createLoaderView());
 }
 
 /**

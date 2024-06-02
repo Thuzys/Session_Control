@@ -4,6 +4,7 @@ import handlerUtils from "./handlerUtils/handlerUtils.js";
 import requestUtils from "../utils/requestUtils.js";
 import constants from "../constants/constants.js"
 import { fetcher } from "../utils/fetchUtils.js";
+import handlerViews from "../views/handlerViews/handlerViews.js";
 
 /**
  * Create game
@@ -97,6 +98,7 @@ function getGames(mainContent) {
         .then(response =>
             handleGetGamesResponse(response, mainContent)
         );
+    mainContent.replaceChildren(handlerViews.createLoaderView());
 }
 
 /**

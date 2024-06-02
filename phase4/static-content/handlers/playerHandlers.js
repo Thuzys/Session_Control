@@ -3,6 +3,7 @@ import constants from "../constants/constants.js";
 import playerHandlerViews from "../views/handlerViews/playerHandlerViews.js";
 import {fetcher} from "../utils/fetchUtils.js";
 import handlerUtils from "./handlerUtils/handlerUtils.js";
+import handlerViews from "../views/handlerViews/handlerViews.js";
 
 /**
  * Get player details by player id
@@ -21,6 +22,7 @@ function getPlayerDetailsByPid(mainContent) {
             response =>
                 handleGetPlayerDetailsResponse(response, mainContent, true)
         );
+    mainContent.replaceChildren(handlerViews.createLoaderView());
 }
 
 /**
@@ -38,6 +40,7 @@ function getPlayerDetails(mainContent) {
             response =>
                 handleGetPlayerDetailsResponse(response, mainContent, true)
         );
+    mainContent.replaceChildren(handlerViews.createLoaderView());
 }
 
 /**

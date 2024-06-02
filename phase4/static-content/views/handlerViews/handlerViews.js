@@ -15,6 +15,14 @@ function createRadioButton(labelText, name) {
 }
 
 /**
+ * Create loader view
+ * @returns {HTMLDivElement}
+ */
+function createLoaderView() {
+    return views.div({class: "loader"});
+}
+
+/**
  * Create labeled input
  * @param type type of the input
  * @param id id of the input
@@ -199,6 +207,7 @@ const handlerViews = {
     addToggleEventListeners,
     ulHasItem,
     createRadioButton,
+    createLoaderView
 }
 
 export default handlerViews

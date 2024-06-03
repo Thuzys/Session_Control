@@ -74,7 +74,7 @@ function handleGetSessionsResponse(sessions, mainContent) {
  */
 function createSession(mainContent, gid, gameName) {
     const container = sessionHandlerViews.createCreateSessionView(gameName);
-    container.onsubmit = (e) => handleCreateSessionSubmit(e, gid);
+    container.onsubmit = (e) => handleCreateSessionSubmit(e, gid, mainContent);
     mainContent.replaceChildren(container);
 }
 
@@ -83,8 +83,9 @@ function createSession(mainContent, gid, gameName) {
  *
  * @param e event that triggered submit
  * @param gid game id
+ * @param mainContent main content of the page
  */
-function handleCreateSessionSubmit(e, gid) {
+function handleCreateSessionSubmit(e, gid, mainContent) {
     e.preventDefault();
     const capacity = document.getElementById('capacity').value;
     const date = document.getElementById('dateCreate').value;
@@ -101,6 +102,7 @@ function handleCreateSessionSubmit(e, gid) {
     fetcher
         .post(url, body, token)
         .then(response => handleCreateSessionResponse(response))
+    mainContent.replaceChildren(handlerViews.createLoaderView());
 }
 
 /**

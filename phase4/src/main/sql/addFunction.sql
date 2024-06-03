@@ -35,7 +35,7 @@ $$ language plpgsql;
 
 create or replace function is_session_closed() returns trigger as $$
 begin
-    if (select date < now() from session where session.sid = new.sid) then
+    if (select date < now()::date from session where session.sid = new.sid) then
         raise exception 'Session is closed';
     end if;
     return new;

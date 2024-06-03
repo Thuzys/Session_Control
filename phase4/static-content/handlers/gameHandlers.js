@@ -13,7 +13,7 @@ import handlerViews from "../views/handlerViews/handlerViews.js";
  */
 function createGame(mainContent) {
     const container = gameHandlerViews.createCreateGameView()
-    container.onsubmit = (e) => handleCreateGameSubmit(e)
+    container.onsubmit = (e) => handleCreateGameSubmit(e, mainContent)
     mainContent.replaceChildren(container)
 }
 
@@ -21,8 +21,9 @@ function createGame(mainContent) {
  * Handle create game submit
  *
  * @param e event that triggered submit
+ * @param mainContent main content of the page
  */
-function handleCreateGameSubmit(e) {
+function handleCreateGameSubmit(e, mainContent) {
     e.preventDefault()
     const inputName = document.getElementById("InputName")
     const inputDev = document.getElementById("InputDev")
@@ -39,6 +40,7 @@ function handleCreateGameSubmit(e) {
     fetcher
         .post(url, game, token)
         .then(response => handleCreateGameResponse(response))
+    mainContent.replaceChildren(handlerViews.createLoaderView());
 }
 
 /**

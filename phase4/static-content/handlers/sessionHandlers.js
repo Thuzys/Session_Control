@@ -145,6 +145,9 @@ function makeSessionDetails(session, mainContent) {
     } else {
         playerListView = sessionHandlerViews.createPlayerListView(session, removePlayerFromSession);
     }
+    const deleteSessionWithMainContent = (id) => {
+        deleteSession(id, mainContent);
+    }
     const container = sessionHandlerViews.createSessionDetailsView(
         session,
         playerListView,
@@ -152,7 +155,7 @@ function makeSessionDetails(session, mainContent) {
         sessionStorage.getItem('isInSession') === "true",
         addPlayerToSession,
         removePlayerFromSession,
-        deleteSession
+        deleteSessionWithMainContent,
     );
     mainContent.replaceChildren(container);
 }
@@ -242,7 +245,7 @@ function updateSession(mainContent) {
         .get(url, token)
         .then(session => {
             const container = sessionHandlerViews.createUpdateSessionView(session);
-            container.onsubmit = (e) => handleUpdateSessionSubmit(e);
+            container.onsubmit = (e) => handleUpdateSessionSubmit(e, mainContent);
             mainContent.replaceChildren(container);
         });
     mainContent.replaceChildren(handlerViews.createLoaderView());
@@ -251,8 +254,9 @@ function updateSession(mainContent) {
 /**
  * Handle update session submit event
  * @param e event that triggered submit
+ * @param mainContent main content of the page
  */
-function handleUpdateSessionSubmit(e) {
+function handleUpdateSessionSubmit(e, mainContent) {
     e.preventDefault();
     const sid = requestUtils.getParams();
     const capacity = document.getElementById('capacity').value;
@@ -270,13 +274,15 @@ function handleUpdateSessionSubmit(e) {
     fetcher
         .put(url, token, body)
         .then(_ => handlerUtils.changeHash(`${constants.SESSION_ROUTE}/${sid}?offset=0`))
+    mainContent.replaceChildren(handlerViews.createLoaderView());
 }
 
 /**
  * Delete session by session id
  * @param sid
+ * @param mainContent main content of the page
  */
-function deleteSession(sid) {
+function deleteSession(sid, mainContent) {
     const route = handlerUtils.createRoute(constants.API_SESSION_ROUTE, sid);
     const url = handlerUtils.createURL(route);
     const token = sessionStorage.getItem('token');
@@ -287,6 +293,8 @@ function deleteSession(sid) {
             handlerUtils.changeHash(constants.SESSION_SEARCH_ROUTE);
         })
         .catch(() => window.alert("Session could not be deleted"))
+
+    mainContent.replaceChildren(handlerViews.createLoaderView());
 }
 
 export default {

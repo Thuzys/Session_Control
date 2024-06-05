@@ -147,8 +147,10 @@ function createPagination(query, hash, hasNext, elementsPerPage = constants.ELEM
 /**
  * Show alert
  * @param message
+ * @param isToGoBack
+ * @param isToReload
  */
-function showAlert(message) {
+function showAlert(message, isToGoBack = false,isToReload = false) {
     let modal = document.getElementById("alertModal");
     if (!modal) {
         modal = views.div({class: "alert-modal", id: "alertModal"});
@@ -166,6 +168,12 @@ function showAlert(message) {
         const closeButton = views.button({type: "button"}, "OK");
         closeButton.onclick = () => {
             modal.style.display = "none";
+            if (isToReload) {
+                window.location.reload();
+            }
+            else if (isToGoBack) {
+                window.history.back();
+            }
         };
         buttonContainer.appendChild(closeButton);
     }

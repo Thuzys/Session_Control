@@ -404,10 +404,17 @@ internal fun <T> Connection.executeCommand(cmd: Connection.() -> T): T {
     } catch (e: SQLException) {
         rollback()
         autoCommit = true
-        throw StorageError(e.message ?: "An error occurred.")
+        throw StorageError(handleSQLExceptionMessage(e))
     } catch (e: Exception) {
         rollback()
         autoCommit = true
         throw e
     }
+}
+
+/**
+ * Make a user-friendly message from a SQLException.
+ */
+private fun handleSQLExceptionMessage(e: SQLException): String {
+    return e.message?.substringAfter("ERROR:")?.dropLastWhile { it != '\n' } ?: "An error occurred."
 }

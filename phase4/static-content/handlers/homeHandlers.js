@@ -49,16 +49,22 @@ function logIn(mainContent) {
 /**
  * Handle logIn submit event
  * @param e event that triggered submit
+ * @param mainContent main content of the page
  */
-function handleLoginSubmit(e) {
+function handleLoginSubmit(e, mainContent) {
     e.preventDefault();
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
     const url = handlerUtils.createURL(constants.API_LOGIN_ROUTE);
     const body = {username: username, password: password};
+    sessionStorage.setItem('loginParams', JSON.stringify(body));
     fetcher
-        .post(url, body, undefined, false)
-        .then(response => handleLogInRegisterResponse(response))
+        .post(url, body, undefined, false, true)
+        .then(response => {
+            sessionStorage.removeItem('loginParams')
+            handleLogInRegisterResponse(response)
+        })
+    mainContent.replaceChildren(handlerViews.createLoaderView());
 }
 
 /**
@@ -67,15 +73,16 @@ function handleLoginSubmit(e) {
  */
 function register(mainContent) {
     const container = homeHandlerViews.createRegisterView()
-    container.onsubmit = (e) => handleCreateAccountSubmit(e);
+    container.onsubmit = (e) => handleCreateAccountSubmit(e, mainContent);
     mainContent.replaceChildren(container);
 }
 
 /**
  * Handle create account submit event
  * @param e event that triggered submit
+ * @param mainContent main content of the page
  */
-function handleCreateAccountSubmit(e) {
+function handleCreateAccountSubmit(e, mainContent) {
     e.preventDefault();
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
@@ -98,10 +105,12 @@ function handleCreateAccountSubmit(e) {
     if (username !== '') {
         body.username = username;
     }
-
     fetcher
-        .post(url, body, undefined, false)
-        .then(response => handleLogInRegisterResponse(response))
+        .post(url, body, undefined, false, true)
+        .then(response => {
+            handleLogInRegisterResponse(response)
+        })
+    mainContent.replaceChildren(handlerViews.createLoaderView());
 }
 
 /**

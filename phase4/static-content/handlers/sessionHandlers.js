@@ -3,7 +3,7 @@ import requestUtils from "../utils/requestUtils.js";
 import constants from "../constants/constants.js";
 import sessionHandlerViews from "../views/handlerViews/sessionHandlerViews.js";
 import {fetcher} from "../utils/fetchUtils.js";
-import {isPlayerOwner} from "./handlerUtils/sessionHandlersUtils.js";
+import {isPlayerOwner} from "./handlerUtils/sessionHandlerUtils.js";
 import handlerViews from "../views/handlerViews/handlerViews.js";
 
 /**

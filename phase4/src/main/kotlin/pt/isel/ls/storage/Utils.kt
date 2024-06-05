@@ -40,6 +40,8 @@ internal inline fun checkValidStorage(
  *
  * @param getGameStmt The [PreparedStatement] to make the list from.
  * @param getGenresStmt The [PreparedStatement] to make the list from.
+ * @param limit The limit of games.
+ * @param offset The offset of games.
  * @return A list of [Game] objects.
  */
 internal fun getGamesFromDB(
@@ -47,22 +49,28 @@ internal fun getGamesFromDB(
     getGenresStmt: PreparedStatement,
     areGenresInGameStmt: PreparedStatement,
     genres: Collection<String>?,
+    limit: Int,
+    offset: Int,
 ): Collection<Game> =
     mutableListOf<Game>().also {
         val rs = getGameStmt.executeQuery()
-
-        while (rs.next()) {
+        var l = 0
+        var o = 0
+        while (rs.next() && l <= limit) {
             val gid = rs.getUInt("gid")
 
             if (genres == null || areGenresInGame(areGenresInGameStmt, gid, genres)) {
-                it.add(
-                    Game(
-                        gid = gid,
-                        name = rs.getString("name"),
-                        dev = rs.getString("developer"),
-                        genres = processGenres(getGenresStmt, gid),
-                    ),
-                )
+                if (o++ >= offset) {
+                    it.add(
+                        Game(
+                            gid = gid,
+                            name = rs.getString("name"),
+                            dev = rs.getString("developer"),
+                            genres = processGenres(getGenresStmt, gid),
+                        ),
+                    )
+                    l++
+                }
             }
         }
     }

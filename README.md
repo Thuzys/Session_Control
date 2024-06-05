@@ -46,6 +46,12 @@ The following diagram holds the Entity-Relationship model for the information ma
 
 ---
 
+### ErrorDiagram:
+
+<img src="resources/ErrorDiagram.png">
+
+---
+
 ### StorageDiagram:
 
 <img src="resources/StorageDiagram.png">
@@ -90,7 +96,7 @@ The following diagram holds the Entity-Relationship model for the information ma
 
 ## Physical Model
 
-The physical model of the database is available in [SQL script](phase3/src/main/sql).
+The physical model of the database is available in [SQL script](phase4/src/main/sql).
 
 ---
 
@@ -106,6 +112,9 @@ The physical model of the database is available in [SQL script](phase3/src/main/
 ---
 
 ## Web page
+
+The [web page](https://service-ls-2324-2-43d-g08.onrender.com) is the interface that the user will use to interact with the application.
+- https://service-ls-2324-2-43d-g08.onrender.com
 
 # Web Application User Guide
 
@@ -133,9 +142,22 @@ The application currently doesn't have a login or registration system, so you ca
 
 The web application has a simple and intuitive interface that allows users to easily access the main features of the application.
 
-### Home Page
+### Login Page
 
-<img src="resources/homePage.jpeg">
+<div align="center">
+    <img src="resources/loginpage.png">
+</div>
+
+### Registration Page
+
+<div align="center">
+    <img src="resources/registerPage.png">
+</div>
+
+### Home Page
+<div align="center">
+    <img src="resources/homePage.jpeg">
+</div>
 
 The home page is the main landing page of the application. It provides information of the current user such as the name, username, and email. It also displays two buttons:
 - Your sessions: when clicked it will show the sessions that the user is part of.
@@ -149,7 +171,13 @@ The home page is the main landing page of the application. It provides informati
 
 The navigation menu is located at the left of the page and provides links to different parts of the application. The menu includes the following options:
 
+### Change Theme Button
 
+<div align="center">
+    <img src="resources/buttonTheme.png">
+</div>
+
+The change theme button allows the user to change the theme of the application. The application has two themes: light and dark. Clicking the button will toggle between the two themes.
 
 - Home: navigates to the home page.
 
@@ -532,7 +560,7 @@ SELECT name FROM GENRE JOIN GAME_GENRE ON GENRE.name = GAME_GENRE.genre
 ---
 - to create a player:
 ```sql
-INSERT INTO PLAYER (name, email, token, username) VALUES (?, ?, ?, ?)
+INSERT INTO PLAYER (name, email, token, username, password) VALUES (?, ?, ?, ?, ?)
 ```
 ---
 - to read a player:
@@ -612,22 +640,18 @@ SELECT * FROM PLAYER_SESSION WHERE pid = ? AND sid = ?
 The errors are handled in the services module, where the exceptions are caught,
 and a response with ServicesError is sent to the webApi handler.
 
-the error caught are:
-- IllegalArgumentException
-- IllegalStateException
+the error caught are:n
 - NoSuchElementException
-- SQLException
+- StorageError
+- ServicesError
+- ParamError
 
 ---
 
 # Critical Evaluation
 
-## Not concluded functionalities and defects
-- the lack of possibility to update a player. (can be used to update the token).
+## Not concluded functionalities and defects:
 - the lack of possibility to delete a player or game
-- the possibility to filter the players using its email.
 
 ## Improvements to be made:
-- Implement the possibility to update a player.
 - Implement the possibility to delete a player or game.
-- Implement the possibility to filter the players using its email.

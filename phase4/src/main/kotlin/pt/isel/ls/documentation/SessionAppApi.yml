@@ -28,10 +28,13 @@ paths:
                   sid:
                     type: integer
                     format: uint
+                  token:
+                    type: string
+                    format: UUID
         '400':
           description: Bad Request, insufficient parameters.
     get:
-      summary: Get players
+      summary: Get player by
       description: Retrieve players based on specified criteria.
       parameters:
         - name: userName
@@ -498,6 +501,21 @@ paths:
             description: Unauthorized, authentication token is missing or invalid.
           '304':
             description: Not Modified, error deleting session.
+  /genres:
+    get:
+      summary: Get genres
+      description: Retrieve all genres.
+      responses:
+        '200':
+          description: Genres retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '404':
+          description: Not Found, no genres found.
 components:
   schemas:
     RemoveSession:
@@ -564,14 +582,21 @@ components:
         name:
           type: string
           description: The player's name
-        email:
+        username:
           type: string
+          description: The player's username
+        password:
+          type: object
+          description: The player's password
+        email:
+          type: object
           format: email
           description: The player's email
         token:
           type: string
           format: UUID
           description: The player's authentication token
+      description: The player
     NewGame:
       type: object
       properties:
@@ -621,7 +646,7 @@ components:
     Session:
       type: object
       properties:
-        sessionId:
+        sid:
           type: integer
           description: The unique identifier of the session
           format: uint
@@ -629,17 +654,70 @@ components:
           type: integer
           description: The maximum number of players for the session
           format: uint
-        gameId:
-          type: integer
-          description: The unique identifier of the game associated with the session
-          format: uint
+        gameInfo:
+          type: object
+          properties:
+            gid:
+              type: integer
+              description: The unique identifier of the game
+              format: uint
+            name:
+              type: string
+              description: The game's name
+          description: The game associated with the session
         date:
           type: string
           format: date-time
           description: The date and time of the session
+        owner:
+          type: object
+          properties:
+            pid:
+              type: integer
+              description: The unique identifier of the player
+              format: uint
+            username:
+              type: string
+              description: The player's username
+          description: The owner of the session
+        players:
+            type: array
+            items:
+              type: object
+              properties:
+                pid:
+                  type: integer
+                  description: The unique identifier of the player
+                  format: uint
+                username:
+                  type: string
+                  description: The player's username
+            description: The players in the session
     isPlayerInSession:
       type: object
       properties:
         result:
-          type: boolean
-          description: Indicates if the player is in the session
+            type: object
+            properties:
+              playerId:
+                type: integer
+                description: The unique identifier of the player
+                format: uint
+              name:
+                type: string
+                description: The player's name
+              username:
+                type: string
+                description: The player's username
+              password:
+                type: object
+                description: The player's password
+              email:
+                type: object
+                format: email
+                description: The player's email
+              token:
+                type: string
+                format: UUID
+                description: The player's authentication token
+            description: The player in the session

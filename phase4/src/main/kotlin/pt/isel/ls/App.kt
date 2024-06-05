@@ -7,7 +7,9 @@ private const val ENV_NAME = "JDBC_DATABASE_URL"
 
 fun main() {
     val routes = routingHttpHandler(ENV_NAME)
-    val server = routes.asServer(Jetty(8080)).start()
+    val port = System.getenv("PORT")?.toInt()
+    checkNotNull(port) { "PORT environment variable not set" }
+    val server = routes.asServer(Jetty(port)).start()
     println("Server started at ${server.port()}")
 
     println("Press Enter to stop the server:")

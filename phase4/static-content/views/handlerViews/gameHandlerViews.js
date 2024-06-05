@@ -198,7 +198,7 @@ function createGameDetailsView(game, createSession) {
     })
 
     const div = views.div(
-        {},
+        {id: "GameDetails"},
         views.h2({class: "w3-wide blue-letters centered"}, game.name),
         views.ul({class: "w3-ul w3-border w3-center w3-hover-shadow"},
             views.li(views.div({},views.h4({class: "w3-wide blue-letters"}, "Developer"), views.li(game.dev))),

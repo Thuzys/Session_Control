@@ -145,7 +145,7 @@ The web application has a simple and intuitive interface that allows users to ea
 ### Login Page
 
 <div align="center">
-    <img src="resources/loginpage.png">
+    <img src="resources/loginPage.png">
 </div>
 
 ### Registration Page

@@ -140,21 +140,27 @@ function getSessionDetails(mainContent) {
  */
 function makeSessionDetails(session, mainContent) {
     let playerListView;
+    const removePlayerFromSessionWithMainContent = (sid, pid) => {
+        removePlayerFromSession(sid, pid, mainContent);
+    }
     if (!isPlayerOwner(session)) {
         playerListView = sessionHandlerViews.createPlayerListView(session);
     } else {
-        playerListView = sessionHandlerViews.createPlayerListView(session, removePlayerFromSession);
+        playerListView = sessionHandlerViews.createPlayerListView(session, removePlayerFromSessionWithMainContent);
     }
     const deleteSessionWithMainContent = (id) => {
         deleteSession(id, mainContent);
+    }
+    const addPlayerToSessionWithMainContent = (sid) => {
+        addPlayerToSession(sid, mainContent);
     }
     const container = sessionHandlerViews.createSessionDetailsView(
         session,
         playerListView,
         isPlayerOwner(session),
         sessionStorage.getItem('isInSession') === "true",
-        addPlayerToSession,
-        removePlayerFromSession,
+        addPlayerToSessionWithMainContent,
+        removePlayerFromSessionWithMainContent,
         deleteSessionWithMainContent,
     );
     mainContent.replaceChildren(container);
@@ -195,8 +201,9 @@ function handleGetSessionDetailsResponse(session, mainContent) {
 /**
  * Add player to session
  * @param sid
+ * @param mainContent
  */
-function addPlayerToSession(sid) {
+function addPlayerToSession(sid, mainContent) {
     const pid = sessionStorage.getItem('pid');
     const token = sessionStorage.getItem('token');
     const route = handlerUtils.createRoute(constants.API_SESSION_ROUTE, sid, pid);
@@ -207,14 +214,16 @@ function addPlayerToSession(sid) {
             sessionStorage.setItem('isInSession', "true");
             window.location.reload();
         })
+    mainContent.replaceChildren(handlerViews.createLoaderView());
 }
 
 /**
  * Remove player from session
  * @param sid
  * @param pid_remove
+ * @param mainContent
  */
-function removePlayerFromSession(sid, pid_remove = undefined) {
+function removePlayerFromSession(sid, pid_remove = undefined, mainContent) {
     let pid;
     if (!pid_remove) {
         pid = sessionStorage.getItem('pid');
@@ -229,6 +238,7 @@ function removePlayerFromSession(sid, pid_remove = undefined) {
         .then( _ =>
             window.location.reload()
         )
+    mainContent.replaceChildren(handlerViews.createLoaderView());
 }
 
 /**

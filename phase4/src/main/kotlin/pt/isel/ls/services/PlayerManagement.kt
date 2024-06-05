@@ -4,66 +4,76 @@ import org.eclipse.jetty.util.security.Password
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.associateWith
 import pt.isel.ls.domain.errors.ServicesError
-import pt.isel.ls.domain.info.CreatePlayerEmailPasswordParam
-import pt.isel.ls.domain.info.CreatePlayerNameParam
 import pt.isel.ls.domain.info.PlayerAuthentication
+import pt.isel.ls.domain.info.email_password
+import pt.isel.ls.domain.info.name_username
+import pt.isel.ls.domain.validateEmail
+import pt.isel.ls.domain.validatePassword
 import pt.isel.ls.storage.PlayerStorageInterface
-import java.util.UUID
 
 /**
  * Represents the services made by the application.
  *
  * This class provides methods for creating and reading [Player] objects.
  *
- * @property mem The player data memory.
+ * @property storage The player data memory.
  * @throws ServicesError containing the message of the error.
  */
-class PlayerManagement(private val mem: PlayerStorageInterface) : PlayerServices {
+class PlayerManagement(private val storage: PlayerStorageInterface) : PlayerServices {
     override fun createPlayer(
-        nameUSerName: CreatePlayerNameParam,
-        emailPassword: CreatePlayerEmailPasswordParam,
+        nameUsername: name_username,
+        emailPassword: email_password,
     ): PlayerAuthentication =
         tryCatch("Unable to create a new Player due") {
-            val player = nameUSerName associateWith emailPassword
-            val pid = mem.create(player)
+            val (name, username) = nameUsername
+            val (email, password) = emailPassword
+            requireValidParam(name.isNotBlank()) { "Name must not be blank." }
+            requireValidParam(validatePassword(password)) {
+                "Password must have at least 8 characters, one letter, and one digit."
+            }
+            requireValidParam(validateEmail(email)) { "Email must have the correct pattern." }
+            val condition = !username.isNullOrBlank() || username == null
+            requireValidParam(condition) { "Username cannot be empty." }
+            val player = nameUsername associateWith emailPassword
+            val pid = storage.create(player)
             PlayerAuthentication(pid, player.token)
         }
 
     override fun getPlayerDetails(pid: UInt): Player =
         tryCatch("Unable to get the details of a Player due") {
-            mem.read(pid)
+            storage.read(pid)
         }
 
     override fun isValidToken(token: String): Boolean =
         tryCatch("Unable to check if the token is valid due") {
-            mem.readBy(token = token) != null
+            storage.readBy(token = token) != null
         }
 
-    override fun getPlayerDetailsBy(userName: String): Player {
+    override fun getPlayerDetailsBy(username: String): Player {
         return tryCatch("Unable to get the details of a Player due") {
-            mem.readBy(userName = userName)?.firstOrNull() ?: throw ServicesError("Player not found.")
+            requireValidParam(username.isNotBlank()) { "username cannot be empty" }
+            storage.readBy(username = username)?.firstOrNull() ?: throw ServicesError("Player not found.")
         }
     }
 
     override fun login(
-        userName: String,
+        username: String,
         password: String,
     ): PlayerAuthentication =
         tryCatch("Unable to login due") {
-            mem.readBy(userName = userName)?.firstOrNull()?.let {
+            storage.readBy(username = username)?.firstOrNull()?.let {
                 if (Password(password) == it.password) {
-                    val newPlayer = it.copy(token = UUID.randomUUID())
-                    checkNotNull(newPlayer.pid) { "Player id is null." }
-                    mem.update(newPlayer)
-                    PlayerAuthentication(newPlayer.pid, newPlayer.token)
+                    checkNotNullService(it.pid) { "Player id is null." }
+                    storage.update(it)
+                    PlayerAuthentication(it.pid, it.token)
                 } else {
                     throw ServicesError("Invalid password.")
                 }
             } ?: throw ServicesError("Player not found.")
         }
 
-    override fun logout(token: UUID) =
+    override fun logout(pid: UInt) =
         tryCatch("Unable to logout due") {
-            mem.deleteToken(token.toString())
+            storage.deleteToken(pid)
         }
 }

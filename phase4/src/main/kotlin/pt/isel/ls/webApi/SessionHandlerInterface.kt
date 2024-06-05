@@ -76,10 +76,10 @@ interface SessionHandlerInterface {
     fun deleteSession(request: Request): Response
 
     /**
-     * Checks if a player is in a session based on the provided player ID and session ID.
+     * Retrieves the player associated with the session.
      *
-     * @param request The HTTP request containing the player and session data.
-     * @return A response indicating if the player is in the session or not.
+     * @param request The HTTP request containing the session and the player's ID.
+     * @return A response containing the player associated with the session.
      */
-    fun isPlayerInSession(request: Request): Response
+    fun getPlayerFromSession(request: Request): Response
 }

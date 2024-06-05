@@ -2,7 +2,7 @@ package pt.isel.ls.utils
 
 import org.http4k.core.Response
 import org.http4k.core.Status
-import pt.isel.ls.webApi.unauthorizedResponse
+import pt.isel.ls.webApi.response.unauthorizedResponse
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

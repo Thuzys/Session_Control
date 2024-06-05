@@ -18,3 +18,17 @@ describe('Test requestUtils', function() {
         path.should.contain("test/firstElement/secondElement")
     })
 })
+
+describe('getParams', () => {
+    it('should return the correct parameter from the URL hash', () => {
+        window.location.hash = '#/param1/param2'
+        const result = requestUtils.getParams();
+        result.should.equal('param1');
+    });
+
+    it('should return an empty string if there is no parameter', () => {
+        window.location.hash = '#/';
+        const result = requestUtils.getParams();
+        result.should.equal('');
+    });
+});

@@ -12,13 +12,28 @@ import handlerUtils from "./handlerUtils/handlerUtils.js";
 function getHome(mainContent) {
     const pid = sessionStorage.getItem('pid');
     const token = sessionStorage.getItem('token');
-    const url = `${constants.API_BASE_URL}${constants.PLAYER_ID_ROUTE}${pid}`;
-    fetcher
-        .get(url, token)
-        .then(
-            response =>
-                playerHandlers.handleGetPlayerDetailsResponse(response, mainContent)
-        );
+    const route = handlerUtils.createRoute(constants.API_PLAYER_ROUTE, pid);
+    const url = handlerUtils.createURL(route);
+    const player = sessionStorage.getItem('player');
+    if (player == null) {
+        fetcher
+            .get(url, token)
+            .then(
+                response => {
+                    const userPlayer = {
+                        name: response.name,
+                        username: response.username,
+                        email: response.email,
+                        pid: response.pid,
+                    }
+                    sessionStorage.setItem('player', JSON.stringify(userPlayer));
+                    playerHandlers.handleGetPlayerDetailsResponse(userPlayer, mainContent)
+                }
+    );
+        mainContent.replaceChildren(handlerViews.createLoaderView());
+    } else {
+        playerHandlers.handleGetPlayerDetailsResponse(JSON.parse(player), mainContent);
+    }
 }
 
 /**
@@ -27,23 +42,29 @@ function getHome(mainContent) {
  */
 function logIn(mainContent) {
     const container = homeHandlerViews.createLoginView()
-    container.onsubmit = (e) => handleLoginSubmit(e);
+    container.onsubmit = (e) => handleLoginSubmit(e, mainContent);
     mainContent.replaceChildren(container);
 }
 
 /**
  * Handle logIn submit event
  * @param e event that triggered submit
+ * @param mainContent main content of the page
  */
-function handleLoginSubmit(e) {
+function handleLoginSubmit(e, mainContent) {
     e.preventDefault();
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-    const url = `${constants.API_BASE_URL}${constants.LOGIN_ROUTE}`;
+    const url = handlerUtils.createURL(constants.API_LOGIN_ROUTE);
     const body = {username: username, password: password};
+    sessionStorage.setItem('loginParams', JSON.stringify(body));
     fetcher
-        .post(url, body, undefined, false)
-        .then(response => handleLogInRegisterResponse(response))
+        .post(url, body, undefined, false, true)
+        .then(response => {
+            sessionStorage.removeItem('loginParams')
+            handleLogInRegisterResponse(response)
+        })
+    mainContent.replaceChildren(handlerViews.createLoaderView());
 }
 
 /**
@@ -52,15 +73,16 @@ function handleLoginSubmit(e) {
  */
 function register(mainContent) {
     const container = homeHandlerViews.createRegisterView()
-    container.onsubmit = (e) => handleCreateAccountSubmit(e);
+    container.onsubmit = (e) => handleCreateAccountSubmit(e, mainContent);
     mainContent.replaceChildren(container);
 }
 
 /**
  * Handle create account submit event
  * @param e event that triggered submit
+ * @param mainContent main content of the page
  */
-function handleCreateAccountSubmit(e) {
+function handleCreateAccountSubmit(e, mainContent) {
     e.preventDefault();
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
@@ -73,16 +95,22 @@ function handleCreateAccountSubmit(e) {
         return;
     }
 
-    const url = `${constants.API_BASE_URL}${constants.PLAYER_ROUTE}`;
+    const url = handlerUtils.createURL(constants.API_PLAYER_ROUTE);
     const body = {
         name: name,
-        username: username,
         email: email,
         password: password,
     };
+
+    if (username !== '') {
+        body.username = username;
+    }
     fetcher
-        .post(url, body)
-        .then(response => handleLogInRegisterResponse(response))
+        .post(url, body, undefined, false, true)
+        .then(response => {
+            handleLogInRegisterResponse(response)
+        })
+    mainContent.replaceChildren(handlerViews.createLoaderView());
 }
 
 /**
@@ -90,10 +118,10 @@ function handleCreateAccountSubmit(e) {
  * @param response response from the server
  */
 function handleLogInRegisterResponse(response) {
-        sessionStorage.setItem('pid', response.pid);
-        sessionStorage.setItem('isAuthenticated', 'true');
-        sessionStorage.setItem('token', response.token);
-        handlerUtils.changeHash('#players/home');
+    sessionStorage.setItem('pid', response.pid);
+    sessionStorage.setItem('isAuthenticated', 'true');
+    sessionStorage.setItem('token', response.token);
+    handlerUtils.changeHash(constants.PLAYERS_HOME_ROUTE);
 }
 
 /**
@@ -103,10 +131,18 @@ function logOut() {
     if (sessionStorage.getItem('isAuthenticated') === 'false') {
         return;
     }
-    sessionStorage.removeItem('pid');
     sessionStorage.setItem('isAuthenticated', 'false');
-    //TODO(ERASE TOKEN FROM DATABASE)
-    handlerUtils.changeHash('#logIn');
+    sessionStorage.removeItem('player');
+
+    const pid = sessionStorage.getItem("pid")
+    const route = handlerUtils.createRoute(constants.API_PLAYER_ROUTE, pid);
+    const url = handlerUtils.createURL(route);
+
+    fetcher
+        .del(url, sessionStorage.getItem('token')).then(_ => {})
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('pid');
+    handlerUtils.changeHash(constants.LOGIN_ROUTE);
     window.location.reload();
 }
 

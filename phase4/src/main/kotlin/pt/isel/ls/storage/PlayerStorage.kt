@@ -38,10 +38,7 @@ class PlayerStorage(envName: String) : PlayerStorageInterface {
                 stm.setString(idx++, newItem.username)
                 stm.setString(idx, Password.obfuscate(newItem.password.toString()))
                 stm.executeUpdate()
-                val key = stm.generatedKeys
-                check(key.next()) { "No key returned" }
-                val pid = key.getInt(1)
-                pid.toUInt()
+                uInt(stm)
             }
         }
 
@@ -59,7 +56,7 @@ class PlayerStorage(envName: String) : PlayerStorageInterface {
     override fun readBy(
         email: Email?,
         token: String?,
-        userName: String?,
+        username: String?,
         limit: UInt,
         offset: UInt,
     ): Collection<Player>? =
@@ -73,7 +70,7 @@ class PlayerStorage(envName: String) : PlayerStorageInterface {
                 var idx = 1
                 stmt.setString(idx++, email?.email)
                 stmt.setString(idx++, token)
-                stmt.setString(idx++, userName)
+                stmt.setString(idx++, username)
                 stmt.setInt(idx++, offset.toInt())
                 stmt.setInt(idx, limit.toInt())
                 makePlayers(stmt).ifEmpty { null }
@@ -103,12 +100,12 @@ class PlayerStorage(envName: String) : PlayerStorageInterface {
         TODO("Not needed for this phase.")
     }
 
-    override fun deleteToken(token: String) {
+    override fun deleteToken(pid: UInt) {
         dataSource.connection.use { connection ->
             connection.executeCommand {
-                val deleteQuery = "UPDATE PLAYER SET token = NULL WHERE token = ?"
+                val deleteQuery = "UPDATE PLAYER SET token = NULL WHERE pid = ?"
                 val stmt = connection.prepareStatement(deleteQuery)
-                stmt.setString(1, token)
+                stmt.setInt(1, pid.toInt())
                 stmt.executeUpdate()
             }
         }

@@ -45,23 +45,19 @@ function createBB8Toggle() {
     return views.label({class: "bb8-toggle centered"}, input, container);
 }
 
-/**
- * Enable light mode
- */
+/** Enable light mode **/
 function enableLightMode() {
-    document.body.classList.add('light-mode');
     const mainContent = document.getElementById('mainContent');
     mainContent.classList.add('light-mode');
+    document.body.classList.add('light-mode');
     localStorage.setItem('lightMode', 'enabled');
 }
 
-/**
- * Disable light mode
- */
+/** Disable light mode **/
 function disableLightMode() {
-    document.body.classList.remove('light-mode');
     const mainContent = document.getElementById('mainContent');
     mainContent.classList.remove('light-mode');
+    document.body.classList.remove('light-mode');
     localStorage.setItem('lightMode', 'disabled');
 }
 

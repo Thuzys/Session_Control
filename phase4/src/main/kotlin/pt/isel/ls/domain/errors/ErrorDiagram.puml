@@ -1,0 +1,18 @@
+@startuml
+class ServiceError {
+    +msg
+}
+
+class ParamError {
+    +msg
+}
+
+class StorageError {
+    +msg
+}
+
+ParamError <|-- ServiceError
+
+ServiceError <|--- IllegalArgumentException
+StorageError <|--- IllegalArgumentException
+@enduml

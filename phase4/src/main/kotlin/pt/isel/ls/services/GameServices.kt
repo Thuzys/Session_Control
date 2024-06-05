@@ -53,7 +53,7 @@ interface GameServices {
     ): Collection<Game>
 
     /**
-     * Gets all genres.
+     * Gets all genres on the DB.
      *
      * @return [Genres].
      */

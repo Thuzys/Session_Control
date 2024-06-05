@@ -4,9 +4,9 @@ import org.eclipse.jetty.util.security.Password
 import pt.isel.ls.domain.Email
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.errors.ServicesError
-import pt.isel.ls.domain.info.CreatePlayerEmailPasswordParam
-import pt.isel.ls.domain.info.CreatePlayerNameParam
 import pt.isel.ls.domain.info.PlayerAuthentication
+import pt.isel.ls.domain.info.email_password
+import pt.isel.ls.domain.info.name_username
 import java.util.UUID
 
 object PlayerManagementStunt : PlayerServices {
@@ -27,10 +27,10 @@ object PlayerManagementStunt : PlayerServices {
         )
 
     override fun createPlayer(
-        nameUSerName: CreatePlayerNameParam,
-        emailPassword: CreatePlayerEmailPasswordParam,
+        nameUsername: name_username,
+        emailPassword: email_password,
     ): PlayerAuthentication =
-        if (nameUSerName.first.isNotBlank() && emailPassword.first.isNotBlank() && emailPassword.second.isNotBlank()) {
+        if (nameUsername.first.isNotBlank() && emailPassword.first.isNotBlank() && emailPassword.second.isNotBlank()) {
             PlayerAuthentication(playerId, playerToken)
         } else {
             throw ServicesError("Unable to create a new Player due to invalid name or email.")
@@ -47,8 +47,8 @@ object PlayerManagementStunt : PlayerServices {
         return token == playerToken.toString()
     }
 
-    override fun getPlayerDetailsBy(userName: String): Player {
-        if (userName == PLAYER_NAME) {
+    override fun getPlayerDetailsBy(username: String): Player {
+        if (username == PLAYER_NAME) {
             return player
         } else {
             throw ServicesError("Unable to get the details of a Player due to nonexistent userName.")
@@ -56,15 +56,15 @@ object PlayerManagementStunt : PlayerServices {
     }
 
     override fun login(
-        userName: String,
+        username: String,
         password: String,
     ): PlayerAuthentication {
         return PlayerAuthentication(playerId, playerToken)
     }
 
-    override fun logout(token: UUID) {
-        if (token != playerToken) {
-            throw ServicesError("Unable to logout due to invalid token.")
+    override fun logout(pid: UInt) {
+        if (pid != playerId) {
+            throw ServicesError("Unable to logout due invalid pid.")
         }
     }
 }

@@ -20,4 +20,19 @@ describe('Test handlerUtils', function() {
         handlerUtils.changeHash(hash)
         window.location.hash.should.equal(hash)
     });
+
+    it('createURL should return a URL from a route and query', function () {
+        const route = "test"
+        const query = new Map([["test", "test2"]])
+        const result = handlerUtils.createURL(route, query)
+        result.should.equal(`${window.location.protocol}//${window.location.host}/${route}?test=test2`)
+    });
+
+    it('createRoute should return a route from a URL', function () {
+        const basePath = "test"
+        const pathParam1 = "test1"
+        const pathParam2 = "test2"
+        const result = handlerUtils.createRoute(basePath, pathParam1, pathParam2)
+        result.should.equal(`${basePath}/${pathParam1}/${pathParam2}`)
+    });
 });

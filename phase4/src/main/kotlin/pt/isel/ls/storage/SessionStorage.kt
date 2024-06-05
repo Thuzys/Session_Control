@@ -2,6 +2,7 @@ package pt.isel.ls.storage
 
 import kotlinx.datetime.LocalDate
 import org.postgresql.ds.PGSimpleDataSource
+import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.info.AuthenticationParam
@@ -74,7 +75,7 @@ class SessionStorage(envName: String) : SessionStorageInterface {
         playerInfo: PlayerInfoParam?,
         offset: UInt,
         limit: UInt,
-    ): Collection<SessionInfo>? =
+    ): Collection<SessionInfo> =
         dataSource.connection.use { connection ->
             connection.executeCommand {
                 val selectSessionCMD =
@@ -96,8 +97,7 @@ class SessionStorage(envName: String) : SessionStorageInterface {
                 gameName?.let { stmt2.setString(idx++, it) } ?: stmt2.setNull(idx++, java.sql.Types.VARCHAR)
                 limit.let { stmt2.setInt(idx++, it.toInt()) }
                 offset.let { stmt2.setInt(idx, it.toInt()) }
-                val collection = makeSessionInfo(stmt2)
-                collection.ifEmpty { null }
+                makeSessionInfo(stmt2)
             }
         }
 
@@ -176,9 +176,39 @@ class SessionStorage(envName: String) : SessionStorageInterface {
     override fun updateRemovePlayer(
         sid: UInt,
         pid: UInt,
+        token: String,
     ) {
         dataSource.connection.use { connection ->
             connection.executeCommand {
+                var verificationCMD =
+                    """
+                    select p.token from player p join session s on p.pid = s.owner
+                    where s.sid = ? and p.token = ?;
+                    """.trimIndent()
+                val stmt0 = connection.prepareStatement(verificationCMD)
+                var idx = 1
+                stmt0.setInt(idx++, sid.toInt())
+                stmt0.setString(idx, token)
+                val rs = stmt0.executeQuery()
+                val errorMsg =
+                    """
+                    Invalid player to delete.
+                    User must be the owner of the session or the player itself to realize this operation.
+                    """.trimIndent()
+                if (!rs.next()) {
+                    verificationCMD =
+                        """
+                        select p.token from player p join player_session ps on p.pid = ps.pid
+                        where ps.sid = ? and ps.pid = ? and p.token = ?;
+                        """.trimIndent()
+                    val stmt01 = connection.prepareStatement(verificationCMD)
+                    idx = 1
+                    stmt01.setInt(idx++, sid.toInt())
+                    stmt01.setInt(idx++, pid.toInt())
+                    stmt01.setString(idx, token)
+                    val rs1 = stmt01.executeQuery()
+                    checkValidStorage(rs1.next()) { errorMsg }
+                }
                 val deletePlayerCMD = "DELETE FROM PLAYER_SESSION WHERE pid = ? AND sid = ?;"
                 val stmt1 = connection.prepareStatement(deletePlayerCMD)
                 stmt1.setInt(1, pid.toInt())
@@ -188,18 +218,21 @@ class SessionStorage(envName: String) : SessionStorageInterface {
         }
     }
 
-    override fun isPlayerInSession(
+    override fun readPlayer(
         player: UInt,
         session: UInt,
-    ): Boolean =
+    ): Player? =
         dataSource.connection.use { connection ->
             connection.executeCommand {
-                val selectCMD = "SELECT * FROM PLAYER_SESSION WHERE pid = ? AND sid = ?;"
-                val stmt1 = connection.prepareStatement(selectCMD)
-                stmt1.setInt(1, player.toInt())
-                stmt1.setInt(2, session.toInt())
-                val rs = stmt1.executeQuery()
-                rs.next()
+                val selectCMD =
+                    "SELECT p.pid, p.name, p.username, p.email, p.password, p.token " +
+                        "FROM PLAYER p " +
+                        "JOIN PLAYER_SESSION ps ON p.pid = ps.pid " +
+                        "WHERE p.pid = ? AND ps.sid = ?;"
+                val stmt = connection.prepareStatement(selectCMD)
+                stmt.setInt(1, player.toInt())
+                stmt.setInt(2, session.toInt())
+                makePlayer(stmt)
             }
         }
 }

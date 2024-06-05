@@ -29,10 +29,9 @@ object GameManagementStunt : GameServices {
             throw ServicesError("Unable to find the game due to invalid game id.")
         }
 
-    override fun getGames(
+    override fun getGameByDevAndGenres(
         dev: String?,
         genres: Collection<String>?,
-        name: String?,
         offset: UInt?,
         limit: UInt?,
     ): Collection<Game> =

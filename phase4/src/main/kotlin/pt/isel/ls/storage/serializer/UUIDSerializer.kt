@@ -13,6 +13,7 @@ import java.util.UUID
  *
  * This class provides methods for serializing and deserializing [UUID] objects.
  * @see KSerializer
+ * @see UUID
  */
 object UUIDSerializer : KSerializer<UUID> {
     override val descriptor: SerialDescriptor =

@@ -8,8 +8,8 @@ import handlerViews from "./handlerViews.js";
 function createLoginView() {
     const container = views.div({class: "player-details-container"});
     const header = handlerViews.createHeader("Log In");
-    const username = handlerViews.createLabeledInput("username", "Username");
-    const password = handlerViews.createLabeledPasswordInput("password", "Password");
+    const username = handlerViews.createLabeledInput("text", "username", "Username");
+    const password = handlerViews.createLabeledInput("password", "password", "Password");
     const div = views.div({},
         username,
         views.p(),
@@ -73,11 +73,11 @@ function canLogin(username, password) {
 function createRegisterView() {
     const container = views.div({class: "player-details-container"});
     const header = handlerViews.createHeader("Create Account");
-    const name = handlerViews.createLabeledInput("name", "Name");
-    const username = handlerViews.createLabeledInput("username", "Username (optional)");
-    const email = handlerViews.createLabeledEmailInput("email", "Email");
-    const password = handlerViews.createLabeledPasswordInput("password", "Password");
-    const confirmPassword = handlerViews.createLabeledPasswordInput("confirm-password", "Confirm Password");
+    const name = handlerViews.createLabeledInput("text", "name", "Name");
+    const username = handlerViews.createLabeledInput("text", "username", "Username (Optional)");
+    const email = handlerViews.createLabeledInput("email", "email", "Email");
+    const password = handlerViews.createLabeledInput("password", "password", "Password");
+    const confirmPassword = handlerViews.createLabeledInput("password", "confirm-password", "Confirm Password");
 
     const div = views.div({},
         name,

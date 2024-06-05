@@ -2,59 +2,63 @@
 'https://plantuml.com/sequence-diagram
 
 Interface GameStorageInterface {
-    + create()
-    + read()
-    + readBy()
-    + update()
-    + delete()
+    +create()
+    +read()
+    +readBy()
+    +update()
+    +delete()
+    +readGenres()
 }
 
 Interface PlayerStorageInterface {
-    + create()
-    + read()
-    + readBy()
-    + update()
-    + delete()
+    +create()
+    +read()
+    +readBy()
+    +update()
+    +delete()
+    +deleteToken()
 }
 
 Interface SessionStorageInterface {
-    + createSession()
-    + readSession()
-    + readSessions()
-    + updateAddPlayer()
-    + updateCapacityOrDate()
-    + updateRemovePlayer()
-    + deleteSession()
-    + isPlayerInSession()
+    +create()
+    +read()
+    +readBy()
+    +updateAddPlayer()
+    +updateCapacityOrDate()
+    +updateRemovePlayer()
+    +delete()
+    +readPlayer()
 }
 
 class GameStorage {
-    + create()
-    + read()
-    + readBy()
-    + update()
-    + delete()
+    +create()
+    +read()
+    +readBy()
+    +update()
+    +delete()
+    +readGenres()
     - dataSource
 }
 
 class PlayerStorage {
-    + create()
-    + read()
-    + readBy()
-    + update()
-    + delete()
+    +create()
+    +read()
+    +readBy()
+    +update()
+    +delete()
+    +deleteToken()
     - dataSource
 }
 
 class SessionStorage {
-    + createSession()
-    + readSession()
-    + readSessions()
-    + updateAddPlayer()
-    + updateCapacityOrDate()
-    + updateRemovePlayer()
-    + deleteSession()
-    + isPlayerInSession()
+    +create()
+    +read()
+    +readBy()
+    +updateAddPlayer()
+    +updateCapacityOrDate()
+    +updateRemovePlayer()
+    +delete()
+    +readPlayer()
     - dataSource
 }
 

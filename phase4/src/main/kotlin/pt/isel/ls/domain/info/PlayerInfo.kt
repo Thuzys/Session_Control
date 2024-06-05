@@ -18,7 +18,7 @@ typealias PlayerInfoParam = Pair<UInt?, String?>
  * - first [String] is the name of the player.
  * - second [String] is the username of the player, if null the name will be used as username.
  */
-typealias CreatePlayerNameParam = Pair<String, String?>
+typealias name_username = Pair<String, String?>
 
 /**
  * The information to create a player.
@@ -27,16 +27,24 @@ typealias CreatePlayerNameParam = Pair<String, String?>
  * - first [String] is the email of the player.
  * - second [String] is the password of the player.
  */
-typealias CreatePlayerEmailPasswordParam = Pair<String, String>
+typealias email_password = Pair<String, String>
 
 /**
  * Represents the player information with a specified identifier, username, and email.
  *
  * @param pid The unique identifier of the player.
- * @param userName The username of the player.
+ * @param username The username of the player.
  */
 @Serializable
 data class PlayerInfo(
     val pid: UInt,
-    val userName: String,
+    val username: String,
 )
+
+/**
+ * Represents the player information with a specified identifier, username, and email.
+ *
+ * @receiver The unique identifier of the player.
+ * @param username The username of the player.
+ */
+infix fun UInt.associateWith(username: String): PlayerInfo = PlayerInfo(this, username)

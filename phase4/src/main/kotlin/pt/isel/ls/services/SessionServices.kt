@@ -1,6 +1,7 @@
 package pt.isel.ls.services
 
 import kotlinx.datetime.LocalDate
+import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.domain.SessionState
 import pt.isel.ls.domain.errors.ServicesError
@@ -54,7 +55,6 @@ interface SessionServices {
      * @param capacity The capacity of the session.
      * @param owner The player that created the session.
      * @return The unique identifier of the new session.
-     * @throws ServicesError containing the message of the error.
      */
     fun createSession(
         gameInfo: GameInfoParam,
@@ -95,7 +95,6 @@ interface SessionServices {
      * @param authentication The identifier of the player and the session.
      * @param capacity The new capacity of the session (optional). If null, the capacity will not be updated.
      * @param date The new date and time of the session (optional). If null, the date will not be updated.
-     * @throws ServicesError if there's an issue updating the session.
      */
     fun updateCapacityOrDate(
         authentication: AuthenticationParam,
@@ -108,10 +107,12 @@ interface SessionServices {
      *
      * @param player The identifier of the player to remove.
      * @param session The identifier of the session from which the player will be removed.
+     * @param token The token of the player requesting the removal.
      */
     fun removePlayer(
         player: UInt,
         session: UInt,
+        token: String,
     )
 
     /**
@@ -122,13 +123,14 @@ interface SessionServices {
     fun deleteSession(sid: UInt)
 
     /**
-     * Checks if a player is in a session.
+     * Retrieves a player from a session.
      *
-     * @param player The identifier of the player to check.
-     * @param session The identifier of the session to check.
+     * @param player The identifier of the player to retrieve.
+     * @param session The identifier of the session from which the player will be retrieved.
+     * @return The player that was retrieved.
      */
-    fun isPlayerInSession(
+    fun getPlayerFromSession(
         player: UInt,
         session: UInt,
-    ): Boolean
+    ): Player?
 }

@@ -16,7 +16,7 @@ function createPlayerDetailsView(player, backButton = true) {
 
     const header = handlerViews.createHeader(headerText);
 
-    const detailsList = views.ul({class: "w3-ul w3-border w3-center w3-hover-shadow"},
+    const detailsList = views.ul({class: "w3-ul w3-border w3-center w3-hover-shadow", id: "test"},
         views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Name"),views.li(player.name) )),
         views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Username"), views.li(player.username))),
         views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Email"), views.li(player.email)))
@@ -50,8 +50,7 @@ function createPlayerDetailsView(player, backButton = true) {
 function createSearchPlayerView() {
     const container = views.div({class: "player-details-container"});
     const h1 = handlerViews.createHeader("Search Player")
-    const playerInput =
-        views.input({type: "text", id: "pid", placeholder: "Username"});
+    const playerInput = handlerViews.createLabeledInput("text", "pid", "Username");
     const searchButton =
         views.button(
             {type: "submit", class: "general-button", disabled: true},

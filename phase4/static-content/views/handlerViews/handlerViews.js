@@ -15,28 +15,23 @@ function createRadioButton(labelText, name) {
 }
 
 /**
- * Create labeled input
- * @param id id of the input
- * @param placeholder placeholder of the input
- * @returns {HTMLInputElement} labeled input
+ * Create loader view
+ * @returns {HTMLDivElement}
  */
-function createLabeledInput(id, placeholder) {
-    return views.input({type: "text", id, placeholder });
-}
-
-function createLabeledEmailInput(id, placeholder) {
-    return views.input({type: "email", id, placeholder });
-
+function createLoaderView() {
+    return views.div({class: "loader"});
 }
 
 /**
- * Create labeled password input
+ * Create labeled input
+ * @param type type of the input
  * @param id id of the input
  * @param placeholder placeholder of the input
- * @returns {HTMLInputElement} labeled password input
+ * @param value
+ * @returns {HTMLInputElement} labeled input
  */
-function createLabeledPasswordInput(id, placeholder) {
-    return views.input({type: "password", id, placeholder });
+function createLabeledInput(type, id, placeholder, value = "") {
+    return views.input({type, id, placeholder, value});
 }
 
 /**
@@ -54,7 +49,7 @@ function addToggleEventListeners(toggleFn, ...elements) {
  * @returns {*}
  */
 function createHeader(text) {
-    return views.h2({class:"w3-wide centered"}, text);
+    return views.h2({class:"w3-wide centered", id: "headerTest"}, text);
 }
 
 /**
@@ -63,10 +58,9 @@ function createHeader(text) {
  * @param id id of the href
  * @param textBase text of the href
  * @param offset offset parameter of the href (optional)
- * @param limit limit parameter of the href (optional)
  * @returns {*[]} href view
  */
-function hrefConstructor(hrefBase, id, textBase, offset = undefined, limit = undefined) {
+function hrefConstructor(hrefBase, id, textBase, offset = undefined) {
     if (offset !== undefined) {
         return [
             views.a({href: `${hrefBase}/${id}?offset=${offset}`}, `${textBase}`),
@@ -89,19 +83,24 @@ function hrefConstructor(hrefBase, id, textBase, offset = undefined, limit = und
 function hrefButtonView(textContent, query) {
     const backButton = views.button({type: "button", class: "general-button"}, textContent);
     backButton.addEventListener('click', () => {
-        window.location.hash = query;
+        handlerUtils.changeHash(query);
     });
     return backButton;
 }
 
 /**
  * Create back button view
+ * @param previousHash hash to go back
  * @returns {*} back button view
  */
-function createBackButtonView() {
+function createBackButtonView(previousHash) {
     const backButton = views.button({type: "button", class: "general-button"}, "Back");
     backButton.addEventListener('click', () => {
-        window.history.back();
+        if (previousHash) {
+            handlerUtils.changeHash(previousHash);
+        } else {
+            window.history.back();
+        }
     });
     return backButton;
 }
@@ -148,8 +147,10 @@ function createPagination(query, hash, hasNext, elementsPerPage = constants.ELEM
 /**
  * Show alert
  * @param message
+ * @param isToGoBack
+ * @param isToReload
  */
-function showAlert(message) {
+function showAlert(message, isToGoBack = false,isToReload = false) {
     let modal = document.getElementById("alertModal");
     if (!modal) {
         modal = views.div({class: "alert-modal", id: "alertModal"});
@@ -167,6 +168,12 @@ function showAlert(message) {
         const closeButton = views.button({type: "button"}, "OK");
         closeButton.onclick = () => {
             modal.style.display = "none";
+            if (isToReload) {
+                window.location.reload();
+            }
+            else if (isToGoBack) {
+                window.history.back();
+            }
         };
         buttonContainer.appendChild(closeButton);
     }
@@ -208,8 +215,7 @@ const handlerViews = {
     addToggleEventListeners,
     ulHasItem,
     createRadioButton,
-    createLabeledPasswordInput,
-    createLabeledEmailInput
+    createLoaderView
 }
 
 export default handlerViews

@@ -1,8 +1,8 @@
 package pt.isel.ls.domain
 
 import org.eclipse.jetty.util.security.Password
-import pt.isel.ls.domain.info.CreatePlayerEmailPasswordParam
-import pt.isel.ls.domain.info.CreatePlayerNameParam
+import pt.isel.ls.domain.info.email_password
+import pt.isel.ls.domain.info.name_username
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
@@ -31,8 +31,8 @@ class PlayerTest {
 
     @Test
     fun `create a new player with associatedTo function test`() {
-        val createPlayerName = CreatePlayerNameParam(goodTestName, null)
-        val createPlayerEmailPassword = CreatePlayerEmailPasswordParam(goodEmailNameTest, passwordNameTest)
+        val createPlayerName = name_username(goodTestName, null)
+        val createPlayerEmailPassword = email_password(goodEmailNameTest, passwordNameTest)
         createPlayerName associateWith createPlayerEmailPassword // should not throw an exception
     }
 }

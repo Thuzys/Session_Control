@@ -3,6 +3,7 @@ import constants from "../constants/constants.js";
 import playerHandlerViews from "../views/handlerViews/playerHandlerViews.js";
 import {fetcher} from "../utils/fetchUtils.js";
 import handlerUtils from "./handlerUtils/handlerUtils.js";
+import handlerViews from "../views/handlerViews/handlerViews.js";
 
 /**
  * Get player details by player id
@@ -10,14 +11,18 @@ import handlerUtils from "./handlerUtils/handlerUtils.js";
  * @param mainContent main content of the page
  */
 function getPlayerDetailsByPid(mainContent) {
-    const url = `${constants.API_BASE_URL}${constants.PLAYER_ID_ROUTE}${requestUtils.getParams()}`;
+    const pid = requestUtils.getParams();
+    const route = handlerUtils.createRoute(constants.API_PLAYER_ROUTE, pid);
+    const url = handlerUtils.createURL(route);
     const token = sessionStorage.getItem('token');
+
     fetcher
         .get(url, token)
         .then(
             response =>
                 handleGetPlayerDetailsResponse(response, mainContent, true)
         );
+    mainContent.replaceChildren(handlerViews.createLoaderView());
 }
 
 /**
@@ -26,16 +31,16 @@ function getPlayerDetailsByPid(mainContent) {
  * @param mainContent main content of the page
  */
 function getPlayerDetails(mainContent) {
-    const route = constants.PLAYER_ID_ROUTE.substring(0, constants.PLAYER_ID_ROUTE.length - 1);
-    const url =
-        `${constants.API_BASE_URL}${route}?${handlerUtils.makeQueryString(requestUtils.getQuery())}`;
+    const url = handlerUtils.createURL(constants.API_PLAYER_ROUTE, requestUtils.getQuery());
     const token = sessionStorage.getItem('token');
+
     fetcher
         .get(url, token)
         .then(
             response =>
                 handleGetPlayerDetailsResponse(response, mainContent, true)
         );
+    mainContent.replaceChildren(handlerViews.createLoaderView());
 }
 
 /**
@@ -71,9 +76,8 @@ function handlePlayerSearchSubmit(e) {
     if (pid.value === "") {
         return;
     }
-    handlerUtils.changeHash(`#players?username=${pid.value}`);
+    handlerUtils.changeHash(`${constants.PLAYER_ROUTE}?username=${pid.value}`);
 }
-
 
 export default {
     getPlayerDetails,

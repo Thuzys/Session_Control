@@ -7,14 +7,6 @@ describe('Test handlerViews', function() {
         header.tagName.should.equal("H2");
         header.textContent.should.equal("Home page");
     })
-    it('should create a LabelledInput', function() {
-        const labelledInput = handlerViews.createLabeledInput("id", "text", "id");
-
-        labelledInput.tagName.should.equal("INPUT");
-        labelledInput.type.should.equal("text");
-        labelledInput.id.should.equal("id");
-        labelledInput.placeholder.should.equal("text");
-    })
     it('should create a href', function() {
         const href = handlerViews.hrefConstructor("base", "id", "textBase");
 

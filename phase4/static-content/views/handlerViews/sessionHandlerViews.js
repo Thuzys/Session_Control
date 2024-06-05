@@ -164,7 +164,7 @@ function createSessionDetailsView(
  */
 function createJoinSessionButtonView(session, addPlayerToSession) {
     const joinSessionButton = views.button(
-        {type: "submit", class: "general-button"},
+        {type: "submit", class: "general-button", id: "joinButtonTest"},
         "Join Session"
     );
     joinSessionButton.addEventListener('click', () => {
@@ -299,7 +299,7 @@ function createCreateSessionView(gameName) {
         {},
         views.hr({class:"w3-opacity"}),
         views.h4({class: "w3-wide blue-letters"}, "Game"),
-        views.p({}, gameName.toString()),
+        views.p({id: "gameNameTest"}, gameName.toString()),
         views.h4({class: "w3-wide blue-letters"}, "Capacity"),
         labelCapacity,
         views.p(),
@@ -358,7 +358,7 @@ function createUpdateSessionView(session) {
         {},
         views.hr({class:"w3-opacity"}),
         views.h4({class: "w3-wide blue-letters"}, "Game"),
-        views.p({}, session.gameInfo.name),
+        views.p({id: "gameNameTest"}, session.gameInfo.name),
         views.h4({class: "w3-wide blue-letters"}, "Capacity"),
         labelCapacity,
         views.p(),
@@ -378,7 +378,7 @@ function createUpdateSessionView(session) {
  * @returns {HTMLButtonElement}
  */
 function createUpdateSessionButtonView(session) {
-    const updateSessionButton = views.button({type: "submit", class: "general-button"}, "Update Session");
+    const updateSessionButton = views.button({type: "submit", class: "general-button", id: "updateButtonTest"}, "Update Session");
     updateSessionButton.addEventListener('click', (e) => {
         e.preventDefault();
         handlerUtils.changeHash(`updateSession/${session.sid}`)
@@ -401,7 +401,8 @@ function createDeleteOrLeaveSessionButtonView(
     removePlayerFromSession = undefined
 ) {
     const buttonText = isLeaveButton ? "Leave Session" : "Delete Session";
-    const button = views.button({type: "submit", class: "general-button"}, buttonText);
+    const buttonId = isLeaveButton ? "leaveButtonTest" : "deleteButtonTest";
+    const button = views.button({type: "submit", class: "general-button", id: buttonId}, buttonText);
     button.addEventListener('click', (e) => {
         e.preventDefault();
         if (isLeaveButton) {

@@ -99,44 +99,60 @@ describe('Test sessionHandlerViews', function() {
         divChildren[5].tagName.should.equal("BUTTON")
     })
 
-    it('should create a sessionDetailsView - in session', function() {
+    it('should create a sessionDetailsView with the correct sid, capacity, owner, gameName and date', function() {
+        const owner = "username"
+        const gameName = "game"
+        const date = "date"
+        const capacity = 3
         const session = {
             sid: "1",
-            capacity: 3,
+            capacity: capacity,
             owner: {
-                username: "username"
+                username: owner
             },
             gameInfo: {
-                name: "name",
+                name: gameName,
                 gid: "1",
             },
-            date: "date",
+            date: date,
         }
         const player = [1, 2, 3]
         const isOwner = false
         const isInSession = true
         const sessionDetailsDiv = sessionHandlerViews.createSessionDetailsView(session, player, isOwner, isInSession)
-        const divChildren = sessionDetailsDiv.children
-        divChildren.length.should.equal(4)
-        divChildren[0].tagName.should.equal("H2")
-        divChildren[1].tagName.should.equal("HR")
-        divChildren[2].tagName.should.equal("DIV")
-        divChildren[2].children[0].tagName.should.equal("UL")
-        divChildren[3].tagName.should.equal("BUTTON")
+        const sessionNameElement = sessionDetailsDiv.querySelector("#headerTest");
+        const gameNameElement = sessionDetailsDiv.querySelector("#gameTest");
+        const dateElement = sessionDetailsDiv.querySelector("#dateTest");
+        const ownerElement = sessionDetailsDiv.querySelector("#ownerTest");
+        const capacityElement = sessionDetailsDiv.querySelector("#capacityTest");
+        sessionNameElement.textContent.should.equal(owner + "´s Session")
+        gameNameElement.textContent.should.equal("Game" + gameName)
+        dateElement.textContent.should.equal("Date" + date)
+        ownerElement.textContent.should.equal("Owner" + owner)
+        capacityElement.textContent.should.equal("Capacity" + capacity)
     })
 
-    it('should create a PlayerListView', function() {
+    it('should create a PlayerListView with correct player names', function() {
+        // Crie uma sessão com uma lista de três jogadores
         const session = {
-            players: [1, 2, 3]
+            players: [
+                { pid: 1, username: 'Player 1' },
+                { pid: 2, username: 'Player 2' },
+                { pid: 3, username: 'Player 3' }
+            ]
         }
+
+
+        sessionStorage.setItem('pid','1')
+
+        // Chame a função createPlayerListView com a sessão
         const playerListView = sessionHandlerViews.createPlayerListView(session)
-        playerListView.tagName.should.equal("DIV")
-        playerListView.children.length.should.equal(2)
-        const ul = playerListView.children[0]
-        ul.children[0].tagName.should.equal("LI")
-        ul.children[1].tagName.should.equal("LI")
-        ul.children[2].tagName.should.equal("LI")
-        playerListView.children[1].tagName.should.equal("DIV")
+
+        // Verifique se a visualização retornada contém os nomes dos jogadores no elemento correto
+        const ul = playerListView.children[1] // O elemento UL é o segundo filho do div retornado
+        ul.children[0].children[0].textContent.should.equal('Player 1') // O nome do primeiro jogador deve estar no primeiro filho do UL
+        ul.children[1].children[0].textContent.should.equal('Player 2') // O nome do segundo jogador deve estar no segundo filho do UL
+        ul.children[2].children[0].textContent.should.equal('Player 3') // O nome do terceiro jogador deve estar no terceiro filho do UL
     })
 
     it('should create a updateSessionView', function() {

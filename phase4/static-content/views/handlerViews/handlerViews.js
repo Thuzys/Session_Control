@@ -49,7 +49,7 @@ function addToggleEventListeners(toggleFn, ...elements) {
  * @returns {*}
  */
 function createHeader(text) {
-    return views.h2({class:"w3-wide centered"}, text);
+    return views.h2({class:"w3-wide centered", id: "headerTest"}, text);
 }
 
 /**

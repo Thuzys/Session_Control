@@ -116,7 +116,7 @@ function createSessionDetailsView(
         views.div({class: "w3-margin-bottom"},
             views.ul({class: "w3-ul w3-border w3-center w3-hover-shadow"},
                 views.li(
-                    views.div({}, views.h3({class: "w3-wide blue-letters"}, "Game"),
+                    views.div({id: "gameTest"}, views.h3({class: "w3-wide blue-letters"}, "Game"),
                         views.li(
                             ...handlerViews.hrefConstructor(
                                 `#${constants.GAME_ROUTE}`,
@@ -126,10 +126,10 @@ function createSessionDetailsView(
                         ),
                     ),
                 ),
-                views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Date"), views.li(session.date))),
-                views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Owner"), views.li(session.owner.username))),
-                views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Capacity"), views.li(session.capacity.toString()))),
-                views.li(views.div({}, views.h3({class: "w3-wide blue-letters"}, "Players"), playerList)),
+                views.li(views.div({id: "dateTest"}, views.h3({class: "w3-wide blue-letters"}, "Date"), views.li(session.date))),
+                views.li(views.div({id: "ownerTest"}, views.h3({class: "w3-wide blue-letters"}, "Owner"), views.li(session.owner.username))),
+                views.li(views.div({id: "capacityTest"}, views.h3({class: "w3-wide blue-letters"}, "Capacity"), views.li(session.capacity.toString()))),
+                views.li(views.div({id: "playersTest"}, views.h3({class: "w3-wide blue-letters"}, "Players"), playerList)),
             ),
         )
     );

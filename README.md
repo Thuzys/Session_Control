@@ -643,8 +643,6 @@ and a response with ServicesError is sent to the webApi handler.
 the error caught are:n
 - NoSuchElementException
 - StorageError
-- ServicesError
-- ParamError
 
 ---
 

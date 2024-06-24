@@ -88,12 +88,12 @@ class SessionStorage(envName: String) : SessionStorageInterface {
                 val stmt2 = connection.prepareStatement(selectSessionCMD)
                 var idx = 1
                 val (gid, gameName) = gameInfo ?: Pair(null, null)
-                val (pid, userName) = playerInfo ?: Pair(null, null)
+                val (pid, username) = playerInfo ?: Pair(null, null)
                 gid?.let { stmt2.setInt(idx++, it.toInt()) } ?: stmt2.setNull(idx++, java.sql.Types.INTEGER)
                 date?.let { stmt2.setString(idx++, it.toString()) } ?: stmt2.setNull(idx++, java.sql.Types.VARCHAR)
                 state?.let { stmt2.setString(idx++, it.toString()) } ?: stmt2.setNull(idx++, java.sql.Types.VARCHAR)
                 pid?.let { stmt2.setInt(idx++, it.toInt()) } ?: stmt2.setNull(idx++, java.sql.Types.INTEGER)
-                userName?.let { stmt2.setString(idx++, it) } ?: stmt2.setNull(idx++, java.sql.Types.VARCHAR)
+                username?.let { stmt2.setString(idx++, it) } ?: stmt2.setNull(idx++, java.sql.Types.VARCHAR)
                 gameName?.let { stmt2.setString(idx++, it) } ?: stmt2.setNull(idx++, java.sql.Types.VARCHAR)
                 limit.let { stmt2.setInt(idx++, it.toInt()) }
                 offset.let { stmt2.setInt(idx, it.toInt()) }
